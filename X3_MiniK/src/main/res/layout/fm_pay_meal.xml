@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/coupon_bg_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/countdown_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dlg_close_height"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/text_countdown_tip"
+            android:textColor="@color/dlg_countdown"
+            android:textSize="16sp" />
+
+        <com.beidousat.karaoke.widget.CountDownTextView
+            android:id="@+id/countdown"
+            style="@style/TextCountdown"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            app:maxCountDownSec="@integer/normal_countdown_sec" />
+    </LinearLayout>
+
+    <com.beidousat.karaoke.widget.PagerSlidingTabStrip
+        android:id="@+id/pager_strip"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_below="@id/countdown_layout"
+        android:layout_centerHorizontal="true"
+        app:pstsIndicatorColor="@color/primary_color"
+        app:pstsIndicatorHeight="4dp"
+        app:pstsIndicatorLRPadding="20dp"
+        app:pstsShouldExpand="true"
+        app:pstsTabBackground="@android:color/transparent"
+        app:pstsTabPaddingLeftRight="30dp"
+        app:pstsTextSelectColor="@color/primary_color"
+        app:pstsUnderlineHeight="0dp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/pager_strip" />
+
+    <TextView
+        android:id="@+id/tv_charges_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:drawableLeft="@drawable/ic_warn"
+        android:drawablePadding="6dp"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/charges_desc"
+        android:textColor="@drawable/selector_text_price_desc"
+        android:textSize="14sp" />
+</RelativeLayout>

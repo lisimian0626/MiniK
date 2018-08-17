@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contentView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_song_item"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tv_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:maxLines="1"
+        android:textColor="@drawable/selector_text"
+        android:textSize="@dimen/text_song_item_name" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/tv_no"
+        android:maxEms="12"
+        android:maxLines="1"
+        android:textColor="@drawable/selector_text"
+        android:textSize="@dimen/text_song_item_name" />
+
+
+    <TextView
+        android:id="@+id/tv_singer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="19dp"
+        android:layout_toRightOf="@+id/tv_no"
+        android:maxLines="1"
+        android:textColor="@color/song_list_item_text"
+        android:textSize="@dimen/text_song_item_singer" />
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_marginTop="19dp"
+        android:layout_toRightOf="@+id/tv_singer"
+        android:maxLines="1"
+        android:textColor="@color/song_list_item_text"
+        android:textSize="@dimen/text_song_item_version" />
+
+
+    <TextView
+        android:id="@+id/tv_restore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/song_list_item_padding"
+        android:background="@drawable/selector_list_item_button"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"
+        android:text="@string/replay"
+        android:textColor="@drawable/selector_text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/song_list_item_padding"
+        android:layout_toLeftOf="@+id/tv_restore"
+        android:background="@drawable/selector_list_item_button"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"
+        android:text="@string/download"
+        android:textColor="@drawable/selector_text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_listen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/tv_download"
+        android:background="@drawable/selector_list_item_button"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"
+        android:text="@string/listen"
+        android:textColor="@drawable/selector_text"
+        android:textSize="12sp" />
+
+
+</RelativeLayout>

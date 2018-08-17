@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">libbns</string>
+
+    <!--network-->
+    <string name="result_null">空数据</string>
+    <string name="request_fail">请求失败：%1$s</string>
+    <string name="network_timeout">网络超时</string>
+    <string name="network_failure">网络错误</string>
+
+    <string name="prompt">温馨提示</string>
+    <string name="network_erro">未连接网络，请联系服务员...</string>
+    <string name="device_auth_fail">此设备未授权，请联系管理员...</string>
+    <string name="try_again">重试</string>
+</resources>

@@ -1,0 +1,3 @@
+APP_PLATFORM := android-22
+APP_ABI := armeabi
+APP_CFLAGS += -DSTDC_HEADERS

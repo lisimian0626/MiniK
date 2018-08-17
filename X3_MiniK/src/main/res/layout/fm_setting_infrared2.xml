@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#353a41">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/infrared_setting"
+            android:textColor="#999"
+            android:textSize="30sp" />
+
+        <com.beidousat.libwidget.image.RecyclerImageView
+            android:id="@+id/iv_back"
+            android:layout_width="114dp"
+            android:layout_height="70dp"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/service_setting_back" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="70dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_back"
+            android:background="#666666" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_title"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="150dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/infrared_tips"
+            android:textColor="#fff"
+            android:textSize="24px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:gravity="center"
+            android:text="("
+            android:textColor="#ccc"
+            android:textSize="18px" />
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/bg_infrared_gray"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="@string/infrared_not_studied"
+            android:textColor="#ccc"
+            android:textSize="18px" />
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/bg_infrared_orange"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="@string/infrared_studied"
+            android:textColor="#ccc"
+            android:textSize="18px" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text=")"
+            android:textColor="#ccc"
+            android:textSize="18px" />
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/infrared_tv_reset"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_infrared_trans"
+            android:layout_marginRight="40dp"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/infrared_reset"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+    </LinearLayout>
+<LinearLayout
+    android:layout_margin="40dp"
+    android:layout_width="match_parent"
+    android:layout_height="350dp"
+    android:layout_below="@+id/lin_title"
+    android:background="@drawable/bg_infrared_trans"
+    >
+    <LinearLayout
+        android:layout_marginLeft="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/infrared_switch"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="24px" />
+        <TextView
+            android:id="@+id/infrared_tv_open"
+            android:layout_marginTop="30dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_infrared_gray"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/infrared_open"
+            android:textColor="@android:color/white"
+            android:textSize="28sp" />
+        <TextView
+            android:id="@+id/infrared_tv_close"
+            android:layout_marginTop="30dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_infrared_gray"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/infrared_close"
+            android:textColor="@android:color/white"
+            android:textSize="28sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginLeft="120dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/infrared_wind"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="24px" />
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/infrared_tv_auto"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/wind_auto"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/infrared_tv_high"
+                android:layout_marginLeft="40dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/wind_high"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/infrared_tv_mid"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/wind_mid"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/infrared_tv_low"
+                android:layout_marginLeft="40dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/wind_low"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginLeft="120dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/infrared_wind"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="24px" />
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/infrared_tv_21"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/twenty_one"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/infrared_tv_22"
+                android:layout_marginLeft="40dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/twenty_two"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/infrared_tv_23"
+                android:layout_marginLeft="40dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/twenty_three"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/infrared_tv_24"
+                android:layout_marginLeft="40dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/twenty_four"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/infrared_tv_25"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/twenty_five"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/infrared_tv_26"
+                android:layout_marginLeft="40dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/twenty_six"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/infrared_tv_27"
+                android:layout_marginLeft="40dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/twenty_seven"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/infrared_tv_28"
+                android:layout_marginLeft="40dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_infrared_gray"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/twenty_eight"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+
+</RelativeLayout>

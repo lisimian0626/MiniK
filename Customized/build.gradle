@@ -1,0 +1,82 @@
+apply plugin: 'com.android.application'
+//apply plugin: 'org.greenrobot.greendao' // apply plugin
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion '25.0.0'
+
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        applicationId "com.beidousat.karaoke"
+        minSdkVersion 22
+        targetSdkVersion 22
+        versionCode 321
+        versionName "V1.3.1"
+        multiDexEnabled true
+
+    }
+    //签名
+    signingConfigs {
+        debug {
+            storeFile file("beidousat_keys.jks")
+            storePassword "Beidousat_Karaoke"
+            keyAlias "beidousat"
+            keyPassword "Beidousat_Karaoke"
+        }
+        relealse {
+            storeFile file("beidousat_keys.jks")
+            storePassword "Beidousat_Karaoke"
+            keyAlias "beidousat"
+            keyPassword "Beidousat_Karaoke"
+        }
+    }
+
+
+    buildTypes {
+        debug {
+            // 显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            versionNameSuffix "-debug"
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+        }
+        release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            //混淆
+            minifyEnabled true
+            //Zipalign优化
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.relealse
+        }
+    }
+}
+
+//greendao {
+//    schemaVersion 1
+//    daoPackage 'com.greendao.gen'
+//    targetGenDir 'src/main/java'
+//}
+
+dependencies {
+    provided files('libs/cxclasses.jar')
+    compile project(':libbns')
+    compile project(':libwidget')
+    compile project(':libscore')
+    compile project(':liblame')
+    compile project(':libserial')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+    //    compile 'org.greenrobot:greendao:3.2.2' // add library
+    //    compile 'com.just.agentweb:agentweb:1.2.5'
+    compile project(':usbSerialForAndroid')
+}

@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="@dimen/hdmi_video_width"
+    android:layout_height="@dimen/hdmi_video_height"
+    android:background="@android:color/black">
+
+    <SurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/hdmi_video_margin_left"
+        android:layout_marginTop="@dimen/hdmi_video_margin_top">
+
+    </SurfaceView>
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="1920px"
+        android:layout_height="1080px">
+
+
+        <FrameLayout
+            android:id="@+id/fl_score_bg"
+            android:layout_width="match_parent"
+            android:layout_height="302px"
+            android:layout_gravity="center"
+            android:background="@drawable/tv_staff_bg">
+
+            <com.beidousat.karaoke.widget.VoiceGradeView
+                android:id="@+id/voicegrade"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_score_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="190px"
+            android:layout_marginTop="348px"
+            android:background="@drawable/bg_score_mode"
+            android:paddingLeft="20px"
+            android:paddingRight="10px"
+            android:text="娱乐"
+            android:textColor="#fe418c"
+            android:textSize="30px"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_score"
+            android:layout_width="220px"
+            android:layout_height="220px"
+            android:layout_marginTop="300px"
+            android:background="@drawable/tv_score_bg"
+            android:gravity="center"
+            android:textColor="#fe418c"
+            android:textSize="80px"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/ll_next"
+            android:layout_width="322px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:visibility="gone">
+
+            <com.beidousat.libwidget.image.RecyclerImageView
+                android:id="@+id/bg_cur_next"
+                android:layout_width="327px"
+                android:layout_height="178px"
+                android:src="@drawable/tv_cur_next_bg" />
+
+            <com.beidousat.libwidget.image.RecyclerImageView
+                android:id="@+id/iv_ads"
+                android:layout_width="312px"
+                android:layout_height="500px"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/bg_cur_next"
+                android:background="@drawable/bg_ad_corner"
+                android:paddingBottom="20px"
+                android:paddingLeft="10px"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ad_corner_default" />
+
+            <TextView
+                android:id="@+id/tv_current_song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50px"
+                android:layout_marginRight="30px"
+                android:layout_marginTop="80px"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:textColor="#FE5195"
+                android:textSize="28px" />
+
+            <TextView
+                android:id="@+id/tv_next_song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_current_song"
+                android:layout_marginLeft="30px"
+                android:layout_marginRight="20px"
+                android:layout_marginTop="4px"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="#898989"
+                android:textSize="28px" />
+        </RelativeLayout>
+
+
+        <com.beidousat.karaoke.widget.MarqueePlayer
+            android:id="@+id/ads_marquee"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="top"
+            app:direction="left"
+            app:isRepeat="false"
+            app:speed="3"
+            app:startPoint="end"
+            app:textSize="30sp"
+            app:textcolor="@android:color/white" />
+
+
+        <com.beidousat.libwidget.image.RecyclerImageView
+            android:id="@+id/iv_image"
+            android:layout_width="500px"
+            android:layout_height="650px"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="80px" />
+
+        <com.beidousat.libwidget.image.RecyclerImageView
+            android:id="@+id/iv_ad_pause"
+            android:layout_width="940px"
+            android:layout_height="600px"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <com.beidousat.libwidget.image.RecyclerImageView
+            android:id="@+id/iv_ad_last"
+            android:layout_width="500px"
+            android:layout_height="500px"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:visibility="gone" />
+
+
+        <TextView
+            android:id="@+id/tv_player_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_tv_operation_tip"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="38sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_vol"
+            android:layout_width="800px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_tv_music"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="@string/vol"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <com.beidousat.libwidget.progress.NumberProgressBar
+                android:id="@+id/npb_vol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:progress_current="4"
+                app:progress_max="15"
+                app:progress_reached_bar_height="10px"
+                app:progress_reached_color="@android:color/white"
+                app:progress_text_color="@android:color/white"
+                app:progress_text_offset="1dp"
+                app:progress_text_size="48sp"
+                app:progress_text_visibility="visible"
+                app:progress_unreached_bar_height="10px"
+                app:progress_unreached_color="#999999" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:background="#66000000"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:visibility="gone" />
+
+
+        <TextView
+            android:id="@+id/tv_device_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            android:layout_margin="5dp"
+            android:background="#66000000"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+
+        <RelativeLayout
+            android:id="@+id/rl_score_result"
+            android:layout_width="800px"
+            android:layout_height="430px"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="60px"
+            android:background="@drawable/tv_score_info_bg"
+            android:visibility="gone">
+
+            <View
+                android:id="@+id/v_center"
+                android:layout_width="1px"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="40px"
+                android:layout_marginRight="10px" />
+
+            <TextView
+                android:id="@+id/tv_got"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80px"
+                android:layout_toLeftOf="@+id/v_center"
+                android:text="得分"
+                android:textColor="@android:color/white"
+                android:textSize="36px" />
+
+            <TextView
+                android:id="@+id/tv_result_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_got"
+                android:layout_toRightOf="@+id/v_center"
+                android:textColor="#FF3690"
+                android:textSize="60px" />
+
+            <TextView
+                android:id="@+id/tv_result_song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_got"
+                android:layout_marginTop="60px"
+                android:layout_toLeftOf="@+id/v_center"
+                android:text="演唱歌曲"
+                android:textColor="@android:color/white"
+                android:textSize="36px" />
+
+            <TextView
+                android:id="@+id/tv_result_song_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_result_song"
+                android:layout_toRightOf="@+id/v_center"
+                android:textColor="@android:color/white"
+                android:textSize="36px" />
+
+
+            <TextView
+                android:id="@+id/tv_beat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_result_song"
+                android:layout_marginTop="80px"
+                android:layout_toLeftOf="@+id/v_center"
+                android:text="击败全国的人"
+                android:textColor="@android:color/white"
+                android:textSize="36px" />
+
+            <TextView
+                android:id="@+id/tv_beat_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_beat"
+                android:layout_toRightOf="@+id/v_center"
+                android:textColor="#FFBE22"
+                android:textSize="60px" />
+        </RelativeLayout>
+
+        <com.beidousat.libwidget.image.RecyclerImageView
+            android:id="@+id/iv_ktv_logo"
+            android:layout_width="120px"
+            android:layout_height="120px"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="50px"
+            android:layout_marginTop="70px"
+            android:visibility="gone" />
+
+        <com.beidousat.libwidget.image.RecyclerImageView
+            android:id="@+id/iv_hdmi_black"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</RelativeLayout>

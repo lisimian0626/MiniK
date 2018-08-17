@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_prompt_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="26dp"
+    android:paddingTop="26dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/prompt"
+        android:textColor="#ff5959"
+        android:textSize="@dimen/tab_font_size" />
+
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="#666"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@android:id/button1"
+            android:layout_width="150dp"
+            android:layout_height="@dimen/dlg_button_height"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/selector_dlg_share"
+            android:minWidth="150dp"
+            android:text="@string/close"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/dlg_countdown_small" />
+
+        <Button
+            android:id="@android:id/button2"
+            android:layout_width="150dp"
+            android:layout_height="@dimen/dlg_button_height"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/selector_dlg_back"
+            android:minWidth="150dp"
+            android:text="@android:string/cancel"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/dlg_countdown_small"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+</LinearLayout>

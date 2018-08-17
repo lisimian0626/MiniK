@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.beidousat.karaoke.widget.WidgetTopTabs
+        android:id="@+id/wtt_input_type"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_tabs_bar_height"
+        android:layout_marginBottom="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_keyboard"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <com.beidousat.karaoke.widget.EditTextEx
+            android:id="@android:id/edit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_tabs_bar_height"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/bg_keyboard_edit"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/selector_edit_text_clear"
+            android:editable="false"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="#CCC"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp" />
+
+
+        <LinearLayout
+            android:id="@+id/type_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_keyboard_line1"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="4dp"
+                android:overScrollMode="never" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_keyboard_line2"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="4dp"
+                android:overScrollMode="never" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingRight="20dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_keyboard_line3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:overScrollMode="never" />
+
+                <ImageView
+                    android:id="@+id/tv_key_del"
+                    android:layout_width="66dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="2dp"
+                    android:background="@drawable/selector_keyboard_key"
+                    android:gravity="center"
+                    android:scaleType="center"
+                    android:src="@drawable/selector_keyboard_del" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/type_handwriting"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_words"
+                android:layout_width="130dp"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/iv_del"
+                android:overScrollMode="never" />
+
+            <ImageView
+                android:id="@+id/iv_del"
+                android:layout_width="124dp"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/selector_keyboard_key"
+                android:gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/selector_keyboard_del" />
+
+            <com.beidousat.karaoke.widget.SelfAbsoluteLayout
+                android:id="@+id/tablet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/rv_words" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/type_number"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_number"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:overScrollMode="never" />
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_words_count"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never" />
+    </LinearLayout>
+
+</LinearLayout>
+

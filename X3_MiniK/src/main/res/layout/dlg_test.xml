@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/coupon_text_color_black"
+    >
+
+    <com.beidousat.libwidget.image.RecyclerImageView
+        android:id="@+id/riv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/selector_dlg_close" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"
+
+        >
+        <Button
+            android:id="@+id/btn_test_open"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="开启"
+            android:layout_margin="10dp"
+            />
+        <Button
+            android:id="@+id/btn_test_send"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="发送"
+            android:layout_margin="10dp"
+            />
+        <Button
+            android:id="@+id/btn_test_close"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="关闭"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

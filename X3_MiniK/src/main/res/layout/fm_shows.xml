@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="50dp">
+
+    <com.beidousat.libwidget.image.RecyclerImageView
+        android:id="@+id/riv_reflection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="65dp"
+        android:src="@drawable/show_reflection" />
+
+    <com.beidousat.karaoke.widget.WidgetMaterial
+        android:id="@+id/wm_show1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/riv_reflection"
+        android:layout_marginLeft="65dp"
+        android:background="@drawable/show_varietyshow01" />
+
+    <com.beidousat.karaoke.widget.WidgetMaterial
+        android:id="@+id/wm_show4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/riv_reflection"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@+id/wm_show1"
+        android:background="@drawable/show_varietyshow04" />
+
+
+    <com.beidousat.karaoke.widget.WidgetMaterial
+        android:id="@+id/wm_show5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/riv_reflection"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@+id/wm_show4"
+        android:background="@drawable/show_varietyshow05" />
+
+    <com.beidousat.karaoke.widget.WidgetMaterial
+        android:id="@+id/wm_show2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/wm_show4"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@+id/wm_show1"
+        android:background="@drawable/show_varietyshow02" />
+
+
+    <com.beidousat.karaoke.widget.WidgetMaterial
+        android:id="@+id/wm_show3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/wm_show4"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@+id/wm_show2"
+        android:background="@drawable/show_varietyshow03" />
+
+</RelativeLayout>

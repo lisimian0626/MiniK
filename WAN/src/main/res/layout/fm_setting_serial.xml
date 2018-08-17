@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#353a41">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/serial_setting"
+            android:textColor="#999"
+            android:textSize="30sp" />
+
+        <com.beidousat.libwidget.image.RecyclerImageView
+            android:id="@+id/iv_back"
+            android:layout_width="114dp"
+            android:layout_height="70dp"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/service_setting_back" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="70dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_back"
+            android:background="#666666" />
+
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/tl_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_top_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp">
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="波特率"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <com.beidousat.karaoke.widget.EditTextEx
+                android:id="@+id/et_baudrate"
+                android:layout_width="340dp"
+                android:layout_height="50dp"
+                android:background="@drawable/selector_edit_serial"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/selector_edit_text_clear"
+                android:gravity="center_vertical"
+                android:inputType="number"
+                android:paddingLeft="12dp"
+                android:paddingRight="20dp"
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="20dp"
+                android:text="重置"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <com.beidousat.karaoke.widget.EditTextEx
+                android:id="@+id/et_reset"
+                android:layout_width="340dp"
+                android:layout_height="50dp"
+                android:background="@drawable/selector_edit_serial"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/selector_edit_text_clear"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="20dp"
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="麦克风+"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <com.beidousat.karaoke.widget.EditTextEx
+                android:id="@+id/et_mic_up"
+                android:layout_width="340dp"
+                android:layout_height="50dp"
+                android:background="@drawable/selector_edit_serial"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/selector_edit_text_clear"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="20dp"
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="20dp"
+                android:text="麦克风-"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <com.beidousat.karaoke.widget.EditTextEx
+                android:id="@+id/et_mic_down"
+                android:layout_width="340dp"
+                android:layout_height="50dp"
+                android:background="@drawable/selector_edit_serial"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/selector_edit_text_clear"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="20dp"
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="混 响+"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <com.beidousat.karaoke.widget.EditTextEx
+                android:id="@+id/et_reverb_up"
+                android:layout_width="340dp"
+                android:layout_height="50dp"
+                android:background="@drawable/selector_edit_serial"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/selector_edit_text_clear"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="20dp"
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="20dp"
+                android:text="混 响-"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <com.beidousat.karaoke.widget.EditTextEx
+                android:id="@+id/et_reverb_down"
+                android:layout_width="340dp"
+                android:layout_height="50dp"
+                android:background="@drawable/selector_edit_serial"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/selector_edit_text_clear"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="20dp"
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="550dp"
+        android:layout_height="320dp"
+        android:layout_below="@+id/tl_input"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_keyboard"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="20dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_keyboard_num"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="4dp"
+            android:overScrollMode="never" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_keyboard_line1"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:overScrollMode="never" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_keyboard_line2"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:overScrollMode="never" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingRight="30dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_keyboard_line3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:overScrollMode="never" />
+
+            <ImageView
+                android:id="@+id/tv_key_del"
+                android:layout_width="66dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/selector_keyboard_key"
+                android:gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/selector_keyboard_del" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

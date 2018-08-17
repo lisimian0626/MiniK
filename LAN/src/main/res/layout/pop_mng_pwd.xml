@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_dialog_dark"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/pls_input_mng_pwd"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
+
+
+    <com.beidousat.karaoke.widget.EditTextEx
+        android:id="@android:id/input"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_edittext_n"
+        android:drawablePadding="10dp"
+        android:drawableRight="@drawable/selector_edit_text_clear"
+        android:editable="false"
+        android:gravity="center"
+        android:inputType="textPassword"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="#CCC"
+        android:textCursorDrawable="@null"
+        android:textSize="30sp" />
+
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@android:id/input"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="@string/wrong_pwd"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="22sp"
+        android:visibility="invisible" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_items"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_tip"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:overScrollMode="never" />
+</RelativeLayout>

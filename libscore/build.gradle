@@ -1,0 +1,33 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion '25.0.0'
+
+    defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+
+        ndk {
+            moduleName "BeidouScoreJniSo"         //生成的so名字
+            // cFlags "-std=c++11 -frtti -fexceptions -pthread" // Add provisions to allow C++11 functionality
+            cFlags "-fexceptions"
+            stl "stlport_static"
+            ldLibs "log"
+            abiFilters "armeabi", "armeabi-v7a"  //输出指定三种abi体系结构下的so库。目前可有可无。
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+}

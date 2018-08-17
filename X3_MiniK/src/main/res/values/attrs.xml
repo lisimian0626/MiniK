@@ -1,0 +1,138 @@
+<resources>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="JazzyViewPager">
+        <attr name="style">
+            <enum name="standard" value="0" />
+            <enum name="tablet" value="1" />
+            <enum name="cubein" value="2" />
+            <enum name="cubeout" value="3" />
+            <enum name="flipvertical" value="4" />
+            <enum name="fliphorizontal" value="5" />
+            <enum name="stack" value="6" />
+            <enum name="zoomin" value="7" />
+            <enum name="zoomout" value="8" />
+            <enum name="rotateup" value="9" />
+            <enum name="rotatedown" value="10" />
+            <enum name="accordion" value="11" />
+        </attr>
+        <attr name="fadeEnabled" format="boolean" />
+        <attr name="outlineEnabled" format="boolean" />
+        <attr name="outlineColor" format="color|reference" />
+    </declare-styleable>
+    <declare-styleable name="IconButtonAttr">
+        <!--<attr name="iconBg" format="reference" />-->
+        <attr name="iconSrc" format="reference" />
+        <attr name="iconText" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="CircularSeekBar">
+        <attr name="progress" format="integer"></attr>
+        <attr name="max" format="integer"></attr>
+        <attr name="move_outside_circle" format="boolean"></attr>
+        <attr name="maintain_equal_circle" format="boolean"></attr>
+        <attr name="use_custom_radii" format="boolean"></attr>
+        <attr name="lock_enabled" format="boolean"></attr>
+        <attr name="circle_x_radius" format="dimension" />
+        <attr name="circle_y_radius" format="dimension" />
+        <attr name="circle_stroke_width" format="dimension" />
+        <attr name="pointer_radius" format="dimension" />
+        <attr name="pointer_halo_width" format="dimension" />
+        <attr name="pointer_halo_border_width" format="dimension"></attr>
+        <attr name="circle_color" format="color"></attr>
+        <attr name="circle_progress_color" format="color"></attr>
+        <attr name="pointer_color" format="color"></attr>
+        <attr name="pointer_halo_color" format="color"></attr>
+        <attr name="pointer_halo_color_ontouch" format="color"></attr>
+        <attr name="pointer_alpha_ontouch" format="integer"></attr>
+        <attr name="start_angle" format="float"></attr>
+        <attr name="end_angle" format="float"></attr>
+        <attr name="circle_fill" format="color"></attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="WidgetMaterial">
+        <attr name="mater_bg" format="reference|color" />
+        <attr name="mater_text1" format="string" />
+        <attr name="mater_text2" format="string" />
+        <attr name="mater_tab_width" format="dimension"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="HorizontalListView">
+        <attr name="dividerWidth" format="dimension" />
+        <attr name="android:divider" />
+        <attr name="android:requiresFadingEdge" />
+        <attr name="android:fadingEdgeLength" />
+    </declare-styleable>
+
+    <declare-styleable name="WidgetKeyboard">
+        <attr name="keyboard_have_ads" format="boolean" />
+        <attr name="keyboard_input_hint" format="string" />
+        <attr name="show_word_count" format="boolean" />
+        <attr name="show_input_type" format="boolean" />
+        <attr name="keyboard_focus_input_type" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="WidgetMovieRecommend">
+        <attr name="wmr_title_text_size" format="dimension" />
+        <attr name="wmr_summary_text_size" format="dimension" />
+    </declare-styleable>
+
+
+    <declare-styleable name="PowerImageView">
+        <attr name="auto_play" format="boolean"></attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="MarquessText">
+        <attr name="marqueeTextSize" format="dimension"></attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="WidgetSongPage">
+        <attr name="verticalMargin" format="dimension" />
+        <attr name="horizontalMargin" format="dimension" />
+        <attr name="showSingerButton" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="WidgetTopTabs">
+        <attr name="leftTabWeight" format="float" />
+        <attr name="rightTabWeight" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="PagerSlidingTabStrip">
+        <attr name="pstsIndicatorColor" format="color" />
+        <attr name="pstsUnderlineColor" format="color" />
+        <attr name="pstsDividerColor" format="color" />
+        <attr name="pstsIndicatorLRPadding" format="dimension" />
+        <attr name="pstsIndicatorHeight" format="dimension" />
+        <attr name="pstsUnderlineHeight" format="dimension" />
+        <attr name="pstsDividerPadding" format="dimension" />
+        <attr name="pstsTabPaddingLeftRight" format="dimension" />
+        <attr name="pstsScrollOffset" format="dimension" />
+        <attr name="pstsTabBackground" format="reference" />
+        <attr name="pstsShouldExpand" format="boolean" />
+        <attr name="pstsTextAllCaps" format="boolean" />
+        <attr name="pstsTextSelectColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="CountDownTextView">
+        <attr name="maxCountDownSec" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="visualizerView">
+        <attr name="numColumns" format="integer" />
+        <attr name="renderColor" format="color" />
+        <attr name="renderType">
+            <flag name="bar" value="0x1" />
+            <flag name="pixel" value="0x2" />
+            <flag name="fade" value="0x4" />
+        </attr>
+    </declare-styleable>
+</resources>

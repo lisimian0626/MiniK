@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_prompt_dialog"
+    android:paddingBottom="100dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:gravity="center"
+        android:text="吻别"
+        android:textColor="#8561f7"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/tv_singer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="6dp"
+        android:text="张学友"
+        android:textColor="#999"
+        android:textSize="18sp" />
+
+    <com.beidousat.libwidget.image.RecyclerImageView
+        android:id="@+id/iv_qrcode"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="微信扫一扫分享"
+        android:textColor="#666"
+        android:textSize="18sp" />
+
+    <com.beidousat.libwidget.image.RecyclerImageView
+        android:id="@+id/iv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/selector_dlg_close" />
+</RelativeLayout>

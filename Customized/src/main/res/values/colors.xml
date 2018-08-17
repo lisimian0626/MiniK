@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="tab_normal">#808561f7</color>
+    <color name="tab_normal_stroke">#808561f7</color>
+    <color name="tab_select">#8561f7</color>
+    <color name="tab_select_stroke">#8561f7</color>
+
+    <color name="top_tab_text_n">#fff</color>
+    <color name="top_tab_text_p">#fff</color>
+
+    <color name="keyboard_key_normal">@android:color/white</color>
+    <color name="keyboard_key_pressed">#908561f7</color>
+    <color name="keyboard_key_disable">#80ffffff</color>
+
+    <color name="keyboard_key_text_n">#333</color>
+    <color name="keyboard_key_text_p">@android:color/white</color>
+    <color name="keyboard_key_text_d">#40000000</color>
+    <color name="list_item_song_n">#905846a7</color>
+    <color name="list_item_song_p">#908561f7</color>
+    <color name="list_item_song_p_stroke">#908561f7</color>
+
+    <!--走马灯加亮-->
+    <color name="marquee">#FABF1F</color>
+
+    <color name="song_list_item_text">#fff</color>
+    <color name="song_selected">#7ed9ff</color>
+
+
+    <!--首页底部操作栏音量进度条颜色-->
+    <color name="voice_progress">#F4D573</color>
+    <!--音量底部操作栏进度条背景颜色-->
+    <color name="voice_progress_bg">#646164</color>
+
+    <!--首页底部操作栏播放进度时间文字颜色-->
+    <color name="main_playing_time">@android:color/white</color>
+    <!--首页底部操作栏正在播放歌曲的文字颜色-->
+    <color name="main_playing_song">@android:color/white</color>
+    <!--首页底部操作栏下一首歌曲的文字颜色-->
+    <color name="main_next_song">@android:color/white</color>
+
+    <!--首页上部操作栏按钮文章颜色(手机点歌、分享、呼叫服务、快速搜索、已点X首)-->
+    <color name="main_top_bar_btn_text_n">@android:color/white</color>
+    <!--首页上部操作栏按钮按下颜色(手机点歌、分享、呼叫服务、快速搜索、已点X首)-->
+    <color name="main_top_bar_btn_text_p">#8561f7</color>
+
+    <!--首页底部操作栏按钮颜色(切歌、原/伴唱、暂停/播放、重唱、幻影、调音、灯光、评分)-->-->
+    <color name="main_bottom_bar_btn_text_n">@android:color/white</color>
+    <!--首页底部操作栏按钮按下颜色(切歌、原/伴唱、暂停/播放、重唱、幻影、调音、灯光、评分)-->-->
+    <color name="main_bottom_bar_btn_text_p">#8561f7</color>
+
+
+    <color name="primary_color">#8561F7</color>
+    <color name="primary_color_h">#6E48E4</color>
+    <color name="pay_text_normal">#333</color>
+    <color name="pay_text_sub">#666</color>
+    <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="pay_meal_title">#C192FB</color>
+    <color name="dlg_buy_normal">#F35972</color>
+    <color name="dlg_buy_pressed">#E03E59</color>
+    <color name="dlg_inner">#F2F2F2</color>
+    <color name="dlg_back_normal">#B3B3B3</color>
+    <color name="dlg_back_pressed">#999</color>
+    <color name="dlg_countdown">#FF5959</color>
+    <color name="dlg_divider">#E5E5E5</color>
+    <color name="dlg_share_n">#47CB9F</color>
+    <color name="dlg_share_h">#3BBD8E</color>
+    <color name="voic_source">#D2D2D2</color>
+    <color name="voic_mic">#fe418c</color>
+    <color name="share_item">#F5F5F5</color>
+    <color name="meal_tip">#4CF0F0F0</color>
+    <color name="popup_countdown">#FFCC00</color>
+
+    <color name="show_detail_right_bg">#40000000</color>
+
+    <color name="web_bar_btn_n">#393a3f</color>
+    <color name="web_bar_btn_p">#303135</color>
+    <color name="renderColor">@android:color/white</color>
+
+</resources>

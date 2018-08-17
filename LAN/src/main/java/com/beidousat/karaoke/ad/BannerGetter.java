@@ -1,0 +1,41 @@
+package com.beidousat.karaoke.ad;
+
+import android.content.Context;
+
+import com.beidousat.libbns.ad.AdsRequestListener;
+import com.beidousat.libbns.model.Ad;
+import com.beidousat.libbns.net.request.HttpRequest;
+import com.beidousat.libbns.net.request.RequestMethod;
+import com.beidousat.libbns.util.BnsConfig;
+
+
+/**
+ * Created by J Wong on 2015/12/11 17:58.
+ */
+public class BannerGetter extends AdGetter {
+
+
+    public BannerGetter(Context context, AdsRequestListener listener) {
+        super(context, listener);
+    }
+
+    public void getBanner(String position) {
+        if (BnsConfig.AD_MODE) {
+            HttpRequest r = initRequest(RequestMethod.GET_BANNER);
+//            r.addParam("RoomCode", roomDetail.RoomCode);
+            r.addParam("ADPosition", position);
+            r.setConvert2Class(Ad.class);
+            r.doPost(0);
+        }
+    }
+
+
+    @Override
+    public void onSuccess(String method, Object object) {
+        if (RequestMethod.GET_BANNER.equals(method)) {
+            Ad ad = (Ad) object;
+            if (ad != null)
+                mAdsRequestListener.onAdsRequestSuccess(ad);
+        }
+    }
+}
