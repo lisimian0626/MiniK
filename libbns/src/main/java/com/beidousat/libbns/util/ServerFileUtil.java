@@ -73,7 +73,7 @@ public class ServerFileUtil {
             return "";
         }
         String f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_file() + filePath);
-        Log.e("test","getFileUrl:"+convertHttps2Http(f));
+//        Log.e("test","getFileUrl:"+convertHttps2Http(f));
         return convertHttps2Http(f);
     }
 

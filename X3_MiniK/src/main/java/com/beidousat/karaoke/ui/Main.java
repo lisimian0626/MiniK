@@ -569,7 +569,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         try {
             int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
             SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
-            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
+//            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -637,7 +637,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     play();
                     if (mPresentation != null) {
                         mPresentation.tipOperation(R.drawable.tv_play, R.string.play, true);
-                        mPresentation.showPauseAd(false, false);
+//                        mPresentation.showPauseAd(false, false);
                     }
                 }
                 break;
@@ -646,7 +646,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 pause();
                 if (mPresentation != null) {
                     mPresentation.tipOperation(R.drawable.tv_pause, R.string.pause, true);
-                    mPresentation.showPauseAd(true, mKaraokeController.getPlayerStatus().playingType == 2);
+//                    mPresentation.showPauseAd(true, mKaraokeController.getPlayerStatus().playingType == 2);
                 }
                 break;
 
@@ -1330,7 +1330,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
      * 切歌
      **/
     private void next() {
-        if(!TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
+        if(UpLoadDataUtil.getInstance().getmUploadSongData()!=null&&!TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
             SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn(), UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
             UpLoadDataUtil.getInstance().setmUploadSongData(null);
         }
@@ -1577,7 +1577,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 if (mPresentation != null)
 
                     mPresentation.setScore(score);
-                Log.e("test", "score:" + mPresentation.getScore());
+//                Log.e("test", "score:" + mPresentation.getScore());
             }
         });
     }
@@ -1612,7 +1612,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mAudioChannelFlag = 4;
         mKaraokeController.getPlayerStatus().playingType = 0;
         mPlayingSong = null;
-        Log.e("test", "playUrl:" + ServerFileUtil.getFileUrl(mAdVideo.ADContent) + "|AdVideo:" + mAdVideo.ADContent);
+//        Log.e("test", "playUrl:" + ServerFileUtil.getFileUrl(mAdVideo.ADContent) + "|AdVideo:" + mAdVideo.ADContent);
         playUrl(ServerFileUtil.getFileUrl(mAdVideo.ADContent), 0.5f);
     }
 

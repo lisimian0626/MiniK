@@ -367,7 +367,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         tipOperation(0, 0, false);
         mViewAdCorner.setVisibility(View.GONE);
 //        showLast5SecAd(false);
-        showPauseAd(false, false);
+//        showPauseAd(false, false);
 //        mIvAdLast.setVisibility(View.GONE);
         showScoreView(0);
     }

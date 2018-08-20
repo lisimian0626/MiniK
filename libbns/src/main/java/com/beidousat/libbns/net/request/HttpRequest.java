@@ -135,7 +135,7 @@ public class HttpRequest {
 
     private void doResolve(String response) {
         if (response != null) {
-            Logger.i(TAG, mMethod + " : " + response);
+            Logger.d(TAG, mMethod + " : " + response);
             BaseModel baseModel = convert2BaseModel(response);
             if (baseModel != null) {
                 if (baseModel.status == REQUEST_SUCCESS_CODE) {

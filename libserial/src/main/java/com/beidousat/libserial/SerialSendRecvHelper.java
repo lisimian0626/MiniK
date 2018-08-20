@@ -60,9 +60,10 @@ public class SerialSendRecvHelper {
 
     public void send(String code) {
         try {
-            Log.d("SerialSendRecvHelper", "send :" + code);
+//            Log.d("SerialSendRecvHelper", "send :" + code);
             mSerialHelper.sendHex(code);
         } catch (Exception ex) {
+            ex.printStackTrace();
             Log.e("SerialSendRecvHelper", ex.toString());
         }
     }

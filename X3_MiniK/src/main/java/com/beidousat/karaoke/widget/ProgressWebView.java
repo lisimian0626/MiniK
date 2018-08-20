@@ -97,7 +97,7 @@ public class ProgressWebView extends WebView {
     public void draw(Canvas canvas) {
         x = this.getScrollX();
         y = this.getScrollY();
-        Bitmap bitmap = Bitmap.createBitmap(x + vWidth, y + vHeight, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(x + vWidth, y + vHeight, Bitmap.Config.RGB_565);
         Canvas canvas2 = new Canvas(bitmap);
         super.draw(canvas2);
         drawLeftUp(canvas2);

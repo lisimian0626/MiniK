@@ -96,7 +96,6 @@ import com.beidousat.karaoke.util.TipsUtil;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.karaoke.util.UsbFileUtil;
 import com.beidousat.karaoke.widget.ChooseSongTipView;
-import com.beidousat.karaoke.widget.MarqueePlayer;
 import com.beidousat.karaoke.widget.MealInfoTextView;
 import com.beidousat.karaoke.widget.PauseTipView;
 import com.beidousat.karaoke.widget.UserInfoLayout;
@@ -156,7 +155,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private DisplayManager mDisplayManager;
     private AdBillHelper mAdBillHelper;
 
-    private MarqueePlayer mMarqueePlayer;
+//    private MarqueePlayer mMarqueePlayer;
     private String mCurPastAdPosition;
 
     private Song mPlayingSong;
