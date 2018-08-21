@@ -27,6 +27,7 @@ import com.czt.mp3recorder.BnsAudioRecorder;
 import com.czt.mp3recorder.IAudioRecordListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -101,7 +102,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         mMediaPlayer.setOnErrorListener(this);
     }
 
-    public void playUrl(String videoUrl, String recordFileName) {
+    public void playUrl(String videoUrl, String recordFileName) throws IOException {
         stop();
         initParameters();
         setIsRecord(recordFileName);
@@ -114,12 +115,11 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         open(videoUrl);
     }
 
-    private void open(String uri) {
+    private void open(String uri) throws IOException {
         if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
             uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
         }
         File file = DiskFileUtil.getDiskFileByUrl(uri);
-        try {
             if (file != null) {//存在本地文件
                 Logger.d(TAG, "open local file:" + file.getAbsolutePath());
 
@@ -150,9 +150,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 isPlaying = true;
                 getTrack(mMediaPlayer);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
     }
 
@@ -403,7 +401,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         startVolInit();
     }
 
-    public void replay() {
+    public void replay() throws IOException {
         String url = mFilePath;
         mFilePath = "";
         playUrl(url, mRecordFileName);

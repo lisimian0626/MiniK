@@ -55,13 +55,14 @@ public class DiskFileUtil {
             Logger.d(TAG, "getDiskFileByUrl path==" + path);
 
             File file = new File((BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + path);
-            RandomAccessFile raf = new RandomAccessFile((BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + path, "rw");
             Logger.d(TAG, "getDiskFileByUrl disk file==" + file.getAbsolutePath());
+
             if (file.exists()) {
                 return file;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
         return null;
     }

@@ -223,7 +223,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        switchLanguage("zh");
+//        switchLanguage("zh");
         setContentView(R.layout.act_main);
         mMainActivity = this;
         initView();
@@ -1389,13 +1389,26 @@ public class Main extends BaseActivity implements View.OnClickListener,
             handler.sendEmptyMessage(HandlerSystem.MSG_RESET);
             handler.sendEmptyMessageDelayed(HandlerSystem.MSG_UPDATE_TIME, 100);
         } catch (Exception ex) {
-            ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
+            ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + ex.toString());
+            final String path=song.SongFilePath;
+            next();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String diskPath = DiskFileUtil.getFileSavedPath(path);
+                    File file = new File(diskPath);
+                    if (file.exists() && file.isFile()) {
+                        file.delete();
+                        Logger.d(TAG,"执行删除路径:"+diskPath.toString());
+                    }
+                }
+            },2000);
         }
     }
 
 
-    private void playUrl(String url, float volPercent) {
+    private void playUrl(String url, float volPercent) throws IOException {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1613,7 +1626,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mKaraokeController.getPlayerStatus().playingType = 0;
         mPlayingSong = null;
 //        Log.e("test", "playUrl:" + ServerFileUtil.getFileUrl(mAdVideo.ADContent) + "|AdVideo:" + mAdVideo.ADContent);
-        playUrl(ServerFileUtil.getFileUrl(mAdVideo.ADContent), 0.5f);
+        try {
+            playUrl(ServerFileUtil.getFileUrl(mAdVideo.ADContent), 0.5f);
+        } catch (IOException e) {
+            ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
+            Logger.w(TAG, "playSong ex:" + e.toString());
+        }
     }
 
     private Runnable runShowScoreResult = new Runnable() {
@@ -1641,7 +1659,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
             public void run() {
                 mKaraokeController.getPlayerStatus().playingType = 5;
                 if (player != null) {
-                    player.playUrl(AdDefault.getScoreResultVideo(), null);
+                    try {
+                        player.playUrl(AdDefault.getScoreResultVideo(), null);
+                    } catch (IOException e) {
+                        ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+                        Logger.w(TAG, "playSong ex:" + e.toString());
+                    }
                 }
             }
         });
@@ -1839,7 +1862,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 playSong(song);
             } else {
-                player.replay();
+                try {
+                    player.replay();
+                } catch (IOException e) {
+                    ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+                    Logger.w(TAG, "playSong ex:" + e.toString());
+                }
             }
         }
     }

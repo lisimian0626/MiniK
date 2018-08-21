@@ -115,7 +115,6 @@ public class AdtSong extends RecyclerView.Adapter<AdtSong.ViewHolder> {
         holder.tvScoreTag.setBackgroundResource(tagImg);
 
         File file = com.beidousat.libbns.util.DiskFileUtil.getDiskFileByUrl(song.SongFilePath);
-//        Log.e("test","file:"+file.toString());
         holder.ivTop.setText(mContext.getString(file == null ? R.string.download : R.string.priority));
 
         String sort = mChooseSongs.getSongPriorities(song);
