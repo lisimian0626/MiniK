@@ -343,7 +343,7 @@ public class BoughtMeal extends Observable {
         } catch (Exception e) {
             Logger.d(TAG, e.toString());
         }
-        Log.d(TAG, "saveMealInfoToSharePreference");
+//        Log.d(TAG, "saveMealInfoToSharePreference");
     }
 
     public void clearMealInfoSharePreference() {

@@ -42,7 +42,7 @@ public class MealInfoTextView extends TextView implements Observer {
     public void update(Observable o, Object arg) {
         Meal meal = BoughtMeal.getInstance().getTheFirstMeal();
         if (meal != null && !BoughtMeal.getInstance().isMealExpire()) {
-            Logger.d(TAG, "meal 未过期");
+//            Logger.d(TAG, "meal 未过期");
             setSelected(true);
             switch (meal.getType()) {
                 case Meal.SONG:

@@ -14,6 +14,7 @@ import com.beidousat.libbns.model.Common;
 import com.beidousat.karaoke.widget.BannerPlayer;
 import com.beidousat.karaoke.widget.WidgetMaterial;
 import com.beidousat.libbns.amin.MoveAnimation;
+import com.beidousat.libbns.net.NetWorkUtils;
 import com.beidousat.libbns.util.FragmentUtil;
 
 
@@ -75,7 +76,7 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (mBannerPlayer != null)
+        if (NetWorkUtils.isNetworkAvailable(getContext())&&mBannerPlayer != null)
             if (hidden) {
                 //do when hidden
                 mBannerPlayer.stopPlayer();
@@ -88,6 +89,7 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
     @Override
     public void onStart() {
         super.onStart();
+        if (NetWorkUtils.isNetworkAvailable(getContext()))
         mBannerPlayer.startPlayer();
     }
 

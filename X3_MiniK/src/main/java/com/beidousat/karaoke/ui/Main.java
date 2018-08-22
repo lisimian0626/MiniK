@@ -230,8 +230,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
         init();
         EventBus.getDefault().register(this);
         hideSystemUI(true);
-
-        checkNetwork();
+        startMainPlayer();
+//        checkNetwork();
 //        new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo();
 //        newsongDao=LanApp.getInstance().getDaoSession().getNewsongDao();
 //        copyDatabaseFile(this);
@@ -297,7 +297,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     checkDeviceStore();
                     checkUsbKey();
                     //开启心跳服务
-                    startMainPlayer();
+
                     startService(new Intent(getApplicationContext(), LanService.class));
                     getKboxDetail();
                 } else {
@@ -364,7 +364,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     protected void checkNetwork() {
         showNetDialog(getString(R.string.checking_network), getString(R.string.checking_network_error));
-        NetChecker.getInstance(getApplicationContext()).setOnNetworkStatusListener(new NetChecker.OnNetworkStatusListener() {
+        NetChecker.getInstance(Main.mMainActivity).setOnNetworkStatusListener(new NetChecker.OnNetworkStatusListener() {
             @Override
             public void onNetworkStatus(boolean status) {
                 Logger.d(TAG, "checkNetwork onNetworkStatus:" + status);
@@ -1401,9 +1401,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if (file.exists() && file.isFile()) {
                         file.delete();
                         Logger.d(TAG,"执行删除路径:"+diskPath.toString());
+                        EventBusUtil.postSticky(EventBusId.id.CHOOSE_SONG_CHANGED, "");
                     }
                 }
             },2000);
+
         }
     }
 
@@ -1537,6 +1539,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onPlayerCompletion() {
+
         if (mKaraokeController.getPlayerStatus().playingType == 1) {//歌曲播完
             if (mKaraokeController.getPlayerStatus().scoreMode != 0 && mPlayingSong != null && "1".equals(mPlayingSong.IsGradeLib)) {//播放转场
                 if (mPresentation != null) {
@@ -1648,6 +1651,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
     };
 
     private void playScoreResult(final Song song, final int score) {
+        if(UpLoadDataUtil.getInstance().getmUploadSongData()!=null&&!TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
+            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn(), UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
+            UpLoadDataUtil.getInstance().setmUploadSongData(null);
+        }
         try {
             Logger.d(TAG, "mark score :" + score);
             ChooseSongs.getInstance(getApplicationContext()).getFirstSong().score = score;

@@ -52,7 +52,6 @@ public class DlgInitLoading extends BaseDialog implements OnClickListener {
                 mTvError.setVisibility(View.VISIBLE);
                 mTvMsg.setVisibility(View.GONE);
                 mProgress.setVisibility(View.GONE);
-
             }
         }, 10 * 1000);
     }
