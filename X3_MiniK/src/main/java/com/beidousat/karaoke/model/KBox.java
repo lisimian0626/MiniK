@@ -66,6 +66,17 @@ public class KBox {
     String ad_web;
     @SerializedName("autocephalous")
     String autocephalous;
+    @SerializedName("def_play")
+    String [] def_play;
+
+    public String[] getDef_play() {
+        return def_play;
+    }
+
+    public void setDef_play(String[] def_play) {
+        this.def_play = def_play;
+    }
+
     public String getKBoxSn() {
         return KBoxSn;
     }

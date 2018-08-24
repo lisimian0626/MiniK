@@ -86,6 +86,7 @@
             android:layout_toLeftOf="@+id/tv_buy"
             android:background="@drawable/main_top_bar_bg"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:paddingRight="8dp">
 
             <TextView

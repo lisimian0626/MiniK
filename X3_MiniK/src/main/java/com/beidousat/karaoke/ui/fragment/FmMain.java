@@ -89,7 +89,7 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
     @Override
     public void onStart() {
         super.onStart();
-        if (NetWorkUtils.isNetworkAvailable(getContext()))
+        if(NetWorkUtils.isNetworkAvailable(getContext()))
         mBannerPlayer.startPlayer();
     }
 

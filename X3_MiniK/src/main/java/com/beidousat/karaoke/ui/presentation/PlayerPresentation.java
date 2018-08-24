@@ -49,7 +49,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
     private SurfaceView surfaceView;
     private TextView mTvCenter;
-    private MarqueePlayer mMarqueePlayer;
+//    private MarqueePlayer mMarqueePlayer;
     private RecyclerImageView mIvAdCorner;
 
     public TextView mTvPasterTimer;
@@ -153,7 +153,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         ivImage = (RecyclerImageView) findViewById(R.id.iv_image);
         mIvAdPasue = (RecyclerImageView) findViewById(R.id.iv_ad_pause);
 //        mIvAdLast = (RecyclerImageView) findViewById(R.id.iv_ad_last);
-        mMarqueePlayer = (MarqueePlayer) findViewById(R.id.ads_marquee);
+//        mMarqueePlayer = (MarqueePlayer) findViewById(R.id.ads_marquee);
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
 //        mTvScore = (TextView) findViewById(R.id.tv_score);
 //        mTvScoreMode = (TextView) findViewById(R.id.tv_score_mode);
@@ -173,7 +173,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         mTvPasterTimer = (TextView) findViewById(R.id.tv_timer);
         EventBus.getDefault().register(this);
 
-        mMarqueePlayer.loadAds("Z2");
+//        mMarqueePlayer.loadAds("Z2");
         setSize();
     }
 
@@ -226,18 +226,18 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     @Override
     protected void onStop() {
         super.onStop();
-        mMarqueePlayer.stopPlayer();
+//        mMarqueePlayer.stopPlayer();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mTvCenter.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mMarqueePlayer.startPlayer();
-            }
-        }, 10 * 1000);
+//        mTvCenter.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mMarqueePlayer.startPlayer();
+//            }
+//        }, 10 * 1000);
     }
 
 //    public void onCurrentTimeChange(long time) {
@@ -309,7 +309,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     };
 
     public void playMarquee(String text, boolean isRepeat) {
-        mMarqueePlayer.playMsg(text);
+//        mMarqueePlayer.playMsg(text);
     }
 
     public void onEventMainThread(BusEvent event) {

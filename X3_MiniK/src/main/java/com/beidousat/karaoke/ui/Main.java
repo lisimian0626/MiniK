@@ -132,6 +132,7 @@ import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.KaraokeSdHelper;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.PreferenceUtil;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libbns.util.UsbFileUtil;
 import com.beidousat.score.KeyInfo;
@@ -223,7 +224,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        switchLanguage("zh");
+        switchLanguage("en");
         setContentView(R.layout.act_main);
         mMainActivity = this;
         initView();
@@ -231,7 +232,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         EventBus.getDefault().register(this);
         hideSystemUI(true);
         startMainPlayer();
-//        checkNetwork();
+        checkNetwork();
 //        new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo();
 //        newsongDao=LanApp.getInstance().getDaoSession().getNewsongDao();
 //        copyDatabaseFile(this);
@@ -627,6 +628,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
                 }
                 break;
+
             case EventBusId.id.PLAYER_STATUS_CHANGED:
                 PlayerStatus status = (PlayerStatus) event.data;
                 updatePlayerStatus(status);
@@ -770,6 +772,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 performDownloadFinish((DownloadBusEvent) event);
                 break;
             case EventBusId.Download.PROGRESS:
+                if (BoughtMeal.getInstance().getTheFirstMeal() == null || ChooseSongs.getInstance(this).getChooseSize() == 0)
+                    break;
                 performDownloadUpdate((DownloadBusEvent) event);
                 break;
 
@@ -1330,7 +1334,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
      * 切歌
      **/
     private void next() {
-        if(UpLoadDataUtil.getInstance().getmUploadSongData()!=null&&!TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
+        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
             SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn(), UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
             UpLoadDataUtil.getInstance().setmUploadSongData(null);
         }
@@ -1391,7 +1395,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         } catch (Exception ex) {
             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + ex.toString());
-            final String path=song.SongFilePath;
+            final String path = song.SongFilePath;
             next();
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -1400,11 +1404,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     File file = new File(diskPath);
                     if (file.exists() && file.isFile()) {
                         file.delete();
-                        Logger.d(TAG,"执行删除路径:"+diskPath.toString());
+                        Logger.d(TAG, "执行删除路径:" + diskPath.toString());
                         EventBusUtil.postSticky(EventBusId.id.CHOOSE_SONG_CHANGED, "");
                     }
                 }
-            },2000);
+            }, 2000);
 
         }
     }
@@ -1421,7 +1425,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         if (mPresentation != null)
             mPresentation.cleanScreen();
         if (player != null) {
-            player.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null);
+            player.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
         }
         mKaraokeController.getPlayerStatus().isPlaying = true;
         if (mPresentation != null)
@@ -1623,14 +1627,25 @@ public class Main extends BaseActivity implements View.OnClickListener,
         handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
         hideSurf();
         mAdVideo = new Ad();
-        mAdVideo.ADMovie = PublicSong.getAdVideo();
-        mAdVideo.ADContent = PublicSong.getAdVideo();
+        String str = PreferenceUtil.getString(this, "def_play");
+        if (TextUtils.isEmpty(str)||str.equals("[]")) {
+            mAdVideo.ADMovie = PublicSong.getAdVideo();
+            mAdVideo.ADContent = PublicSong.getAdVideo();
+        } else {
+            try {
+                String[] def_play = str.substring(1, str.length() - 1).split(",");
+                mAdVideo.ADMovie = def_play[PublicSong.getNum(5)].trim();
+                mAdVideo.ADContent = def_play[PublicSong.getNum(5)].trim();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         mAudioChannelFlag = 4;
         mKaraokeController.getPlayerStatus().playingType = 0;
         mPlayingSong = null;
-//        Log.e("test", "playUrl:" + ServerFileUtil.getFileUrl(mAdVideo.ADContent) + "|AdVideo:" + mAdVideo.ADContent);
+        Logger.d(TAG, "playUrl:" + ServerFileUtil.getFileUrl(mAdVideo.ADContent) + "|AdVideo:" + mAdVideo.ADContent);
         try {
-            playUrl(ServerFileUtil.getFileUrl(mAdVideo.ADContent), 0.5f);
+            playUrl(mAdVideo.ADContent, 0.5f);
         } catch (IOException e) {
             ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + e.toString());
@@ -1651,7 +1666,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     };
 
     private void playScoreResult(final Song song, final int score) {
-        if(UpLoadDataUtil.getInstance().getmUploadSongData()!=null&&!TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
+        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
             SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn(), UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
             UpLoadDataUtil.getInstance().setmUploadSongData(null);
         }
@@ -1667,7 +1682,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 mKaraokeController.getPlayerStatus().playingType = 5;
                 if (player != null) {
                     try {
-                        player.playUrl(AdDefault.getScoreResultVideo(), null);
+                        player.playUrl(AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
                     } catch (IOException e) {
                         ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
                         Logger.w(TAG, "playSong ex:" + e.toString());
@@ -2036,6 +2051,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     private void performDownloadFinish(DownloadBusEvent event) {
         Song song = MyDownloader.getInstance().getSong(event.url);
+        if (song == null) {
+            return;
+        }
         if (song.isPrior) {
             song.isPrior = false;
             ChooseSongs.getInstance(this).add2Top(song);

@@ -3,17 +3,19 @@ package com.beidousat.karaoke.player;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.SurfaceHolder;
+import android.util.Log;
 import android.view.SurfaceView;
 
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
-import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.util.DiskFileUtil;
+import com.beidousat.karaoke.util.MyDownloader;
+import com.beidousat.karaoke.util.ToastUtils;
+import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
+import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetWorkUtils;
-import com.beidousat.libbns.util.BnsConfig;
-import com.beidousat.libbns.util.DiskFileUtil;
-import com.beidousat.libbns.util.LogRecorder;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.score.KeyInfo;
@@ -80,7 +82,8 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     private MediaPlayer mMediaPlayer;
 
     private boolean isPlaying = false;
-
+    public static int PREVIEW=1;
+    public static final int NORMAL=2;
 
     public BnsPlayer(SurfaceView videoSurfaceView, SurfaceView minor, int width, int height) {
         mVideoSurfaceView = videoSurfaceView;
@@ -102,7 +105,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         mMediaPlayer.setOnErrorListener(this);
     }
 
-    public void playUrl(String videoUrl, String recordFileName) throws IOException {
+    public void playUrl(String videoUrl, String recordFileName,int playmode) throws IOException {
         stop();
         initParameters();
         setIsRecord(recordFileName);
@@ -112,17 +115,18 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         if (mMediaPlayer == null) {
             createMediaPlayer();
         }
-        open(videoUrl);
+        open(videoUrl,playmode);
     }
 
-    private void open(String uri) throws IOException {
+    private void open(String uri,int playmode) throws IOException {
         if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
             uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
         }
+        Log.e("test","file:"+DiskFileUtil.getDiskFileByUrl(uri));
         File file = DiskFileUtil.getDiskFileByUrl(uri);
             if (file != null) {//存在本地文件
                 Logger.d(TAG, "open local file:" + file.getAbsolutePath());
-
+//                file.delete();
                 mMediaPlayer.setDataSource(file.getAbsolutePath());
                 if (mMinor != null)
                     mMediaPlayer.setMinorDisplay(mMinor.getHolder());
@@ -136,19 +140,40 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 getTrack(mMediaPlayer);
 
             } else {//本地文件不存在
-                if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
-                    return;
-                }
-                Logger.d(TAG, "open net file:" + uri);
+                if(playmode==PREVIEW) {
+                    if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
+                        return;
+                    }
+                    Logger.d(TAG, "open net file:" + uri);
 
-                mMediaPlayer.setDataSource(uri);
-                if (mMinor != null)
-                    mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                mMediaPlayer.prepare();
-                mMediaPlayer.start();
-                isPlaying = true;
-                getTrack(mMediaPlayer);
+                    mMediaPlayer.setDataSource(uri);
+                    if (mMinor != null)
+                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                    mMediaPlayer.prepare();
+                    mMediaPlayer.start();
+                    isPlaying = true;
+                    getTrack(mMediaPlayer);
+                }else if(playmode==NORMAL){
+                    Log.e("test","文件不存在");
+                    if(!DiskFileUtil.isDiskExit()){
+                        return;
+                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
+                        }
+                    },10*1000);
+                    try {
+                        Log.e("test","download:"+ServerFileUtil.getFileUrl(uri));
+                        MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
+                                DiskFileUtil.getFileSavedPath(uri));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        Log.e("test","下载失败");
+                    }
+                }
             }
 
 
@@ -404,7 +429,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     public void replay() throws IOException {
         String url = mFilePath;
         mFilePath = "";
-        playUrl(url, mRecordFileName);
+        playUrl(url, mRecordFileName,BnsPlayer.NORMAL);
     }
 
 

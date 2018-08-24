@@ -165,7 +165,7 @@ public final class StorageUtil {
             return true;
         }
         Double value=b1.divide(b2,3,BigDecimal.ROUND_HALF_UP).doubleValue();
-        Log.e("test","剩余空间:" + availMB + "MB"+"总空间:"+BlockMB+"MB"+"剩余空间比重:"+value+"%");
+        Logger.d("test","剩余空间:" + availMB + "MB"+"总空间:"+BlockMB+"MB"+"剩余空间比重:"+value+"%");
         return value<0.100?false:true;
 //        return false;
 //        return getUsbDiskAvailableSpace() - AVAILABLE_SAPCE_BASELINE > 0;

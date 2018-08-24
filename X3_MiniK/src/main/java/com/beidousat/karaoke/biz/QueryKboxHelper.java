@@ -2,6 +2,7 @@ package com.beidousat.karaoke.biz;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.model.KBox;
@@ -15,9 +16,11 @@ import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.net.request.StoreHttpRequestListener;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.PreferenceUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -109,6 +112,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 Common.isSingle=false;
             }
 //            PrefData.setAutocephalous(mContext,kBox.getAutocephalous());
+            PreferenceUtil.setString(mContext,"def_play", Arrays.toString(kBox.getDef_play()));
             KBoxInfo.getInstance().setKBox(kBox);
 
         }else if(object != null && object instanceof KboxConfig) {

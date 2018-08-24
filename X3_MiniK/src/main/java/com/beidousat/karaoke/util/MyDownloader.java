@@ -199,7 +199,9 @@ public class MyDownloader {
         mSongErro.remove(url);
         mDownloadHelper.startDownload(url, savedPath);
     }
-
+    public void startDownload(String url, String savedPath) throws Exception {
+        mDownloadHelper.startDownload(url, savedPath);
+    }
 //    /**
 //     * 优先下载
 //     * @param url

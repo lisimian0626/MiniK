@@ -246,6 +246,7 @@ public class HttpRequest {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    Logger.d(TAG,  "onResponse body :" + response);
                     try {
                         ResponseBody body = response.body();
                         if (response.isSuccessful()) {

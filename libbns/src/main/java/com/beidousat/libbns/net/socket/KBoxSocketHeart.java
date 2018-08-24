@@ -68,7 +68,7 @@ public class KBoxSocketHeart implements BnsSocket.BnsSocketListener {
     private String mKBoxID;
 
     public void sendHeartPackage(String kBoxId, OnSetKBoxIDListener listener) {
-        Logger.d("KBoxSocketHeart", "sendHeartPackage mKBoxID===" + mKBoxID);
+        Logger.d("KBoxSocketHeart", "sendHeartPackage mKBoxID===" + mKBoxID+"    ||cupID:"+ DeviceUtil.getCupChipID());
         mKBoxID = kBoxId;
         handSendPackage = System.nanoTime() + "," + (mIsSinging ? PACKAGE_SINGING : PACKAGE_NO_SING) + "," + DeviceUtil.getCupChipID() + "," + mKBoxID;
         mOnSetKBoxIDListener = listener;
@@ -78,7 +78,7 @@ public class KBoxSocketHeart implements BnsSocket.BnsSocketListener {
     @Override
     public void onSocketReceive(String msg) {
         try {
-            Logger.d("KBoxSocketHeart", "onSocketReceive msg===" + msg);
+            Logger.d("KBoxSocketHeart", "onSocketReceive msg===" + msg+"||   cupID:"+ DeviceUtil.getCupChipID());
             String[] splits = msg.split(",");
 
             Logger.d("KBoxSocketHeart", msg + "---" + String.valueOf(splits[1].equals(M2)));
