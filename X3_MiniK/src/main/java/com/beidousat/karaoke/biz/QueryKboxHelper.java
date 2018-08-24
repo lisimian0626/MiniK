@@ -119,7 +119,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             KboxConfig kboxConfig=(KboxConfig) object;
             ServerConfig config = new ServerConfig();
             config.setAd_web(kboxConfig.getAd_web());
-            config.setKbox_ip(kboxConfig.getKbox_ip());
+//            config.setKbox_ip(kboxConfig.getKbox_ip());
             String kbox_url = kboxConfig.getStore_ip_port();
             String[] kbox_ipandport = kbox_url.split(":");
             if (kbox_ipandport != null) {
@@ -132,7 +132,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             config.setStore_web(KBoxInfo.STORE_WEB);
             config.setVod_server(kboxConfig.getVod_server());
             ServerConfigData.getInstance().setConfigData(config);
-            Logger.d(TAG,"kbox_ipandport:"+kboxConfig.getStore_ip_port()+"~~~~~~"+"kbox_url:"+kboxConfig.getStore_ip_port()+"~~~~~~~~~~~~"+"kbox_ip:"+kboxConfig.getKbox_ip());
+//            Logger.d(TAG,"kbox_ipandport:"+kboxConfig.getStore_ip_port()+"~~~~~~"+"kbox_url:"+kboxConfig.getStore_ip_port()+"~~~~~~~~~~~~"+"kbox_ip:"+kboxConfig.getKbox_ip());
         }else if(object != null && object instanceof ArrayList){
             List<PayMent> payMentList= (List<PayMent>) object;
             KBoxInfo.getInstance().setmPayMentlist(payMentList);

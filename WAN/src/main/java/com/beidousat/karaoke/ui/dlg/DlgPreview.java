@@ -70,7 +70,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BnsPlayer
                 try {
                     mMediaPlayer = new BNSPlayer(mSurfaceView,null);
                     String filePath = mSong.SongFilePath;
-                    mFileUrl = ServerFileUtil.getFileUrl(filePath).replace(" ", "%20");
+                    mFileUrl = ServerFileUtil.getPreviewUrl(filePath).replace(" ", "%20");
                     Logger.i(TAG, "play url:" + mFileUrl);
                     prepareBegin = System.currentTimeMillis();
                     mMediaPlayer.open(mFileUrl, DlgPreview.this, mFileUrl);

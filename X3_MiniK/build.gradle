@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao' // apply plugin
+def releaseTime() {
+    return new Date().format("yyyyMMddhhmm", TimeZone.getTimeZone("UTC"))
+}
 android {
     compileSdkVersion 24
     buildToolsVersion '25.0.0'
@@ -56,6 +59,16 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.relealse
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('apk')) {
+                // 输出apk名称为test_v1.0_2016-08-15_wandoujia.apk
+                def fileName = "X3_MiniK_${defaultConfig.versionName}_${releaseTime()}.apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
         }
     }
     lintOptions {

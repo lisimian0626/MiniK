@@ -72,11 +72,25 @@ public class ServerFileUtil {
         if (TextUtils.isEmpty(filePath)) {
             return "";
         }
-        String f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_file() + filePath);
+        String f;
+        if(ServerConfigData.getInstance().getServerConfig()==null){
+            f=filePath;
+        }else{
+            f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_file() + filePath);
+        }
+
 //        Log.e("test","getFileUrl:"+convertHttps2Http(f));
         return convertHttps2Http(f);
     }
-
+    public static String getPreviewUrl(String filePath){
+        if (TextUtils.isEmpty(filePath)) {
+            return "";
+        }
+        String f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_file() + filePath);
+        String toHttp = ServerConfigData.getInstance().getServerConfig().getVod_file().replace("https://","http://");
+        toHttp = toHttp.substring(0, toHttp.length() - 1) + ":2800/";
+        return f.replace(ServerConfigData.getInstance().getServerConfig().getVod_file(), toHttp);
+    }
 
     private static String getSdFile(String filePath) {
         if (TextUtils.isEmpty(filePath)) {
@@ -163,12 +177,12 @@ public class ServerFileUtil {
         if(ServerConfigData.getInstance().getServerConfig()==null){
             return "";
         }
-        String toHttp = ServerConfigData.getInstance().getServerConfig().getVod_file().replace("https://", "http://");
-        if(Common.isEn){
-            toHttp = toHttp.substring(0, toHttp.length() - 1);
-        }else{
-            toHttp = toHttp.substring(0, toHttp.length() - 1) + ":2800/";
-        }
+        String toHttp = ServerConfigData.getInstance().getServerConfig().getVod_file();
+//        if(Common.isEn){
+//            toHttp = toHttp.substring(0, toHttp.length() - 1);
+//        }else{
+//            toHttp = toHttp.substring(0, toHttp.length() - 1) + ":2800/";
+//        }
         return https.replace(ServerConfigData.getInstance().getServerConfig().getVod_file(), toHttp);
     }
 

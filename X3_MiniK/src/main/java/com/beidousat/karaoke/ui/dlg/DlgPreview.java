@@ -71,7 +71,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
                 try {
                     mMediaPlayer = new BnsPlayer(mSurfaceView, null, 0, 0);
                     String filePath = TextUtils.isEmpty(mSong.PreviewPath) ? mSong.SongFilePath : mSong.PreviewPath;
-                    mFileUrl = ServerFileUtil.getFileUrl(filePath);
+                    mFileUrl = ServerFileUtil.getPreviewUrl(filePath);
                     Logger.i(TAG, "play url:" + mFileUrl);
                     prepareBegin = System.currentTimeMillis();
                     mMediaPlayer.setBeidouPlayerListener(DlgPreview.this);

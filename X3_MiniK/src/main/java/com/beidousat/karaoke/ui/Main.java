@@ -219,12 +219,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private boolean surf_show = false;
     private float touch_x = 0;
     private float touch_y = 0;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        switchLanguage("en");
+//        switchLanguage("en");
         setContentView(R.layout.act_main);
         mMainActivity = this;
         initView();
@@ -298,7 +296,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     checkDeviceStore();
                     checkUsbKey();
                     //开启心跳服务
-
                     startService(new Intent(getApplicationContext(), LanService.class));
                     getKboxDetail();
                 } else {
@@ -337,7 +334,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         }
                         getBoughtMeal();
                         restoreUserInfo();
-
                     }
                 } else {
                     if (getApplicationContext() != null) {
@@ -772,9 +768,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 performDownloadFinish((DownloadBusEvent) event);
                 break;
             case EventBusId.Download.PROGRESS:
-                if (BoughtMeal.getInstance().getTheFirstMeal() == null || ChooseSongs.getInstance(this).getChooseSize() == 0)
-                    break;
-                performDownloadUpdate((DownloadBusEvent) event);
+                if(BoughtMeal.getInstance().getTheFirstMeal() == null)
+                    return;
+                    performDownloadUpdate((DownloadBusEvent) event);
                 break;
 
             case EventBusId.id.BACK_FRAGMENT:
@@ -1369,7 +1365,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //            orderSn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
 //        }
 //
-
         try {
             //重置暂停次数
             mPauseTipView.resetLeftTimes();
@@ -2592,7 +2587,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         observable.compose(compose(this.<BaseEntity<KboxConfig>>bindToLifecycle())).subscribe(new BaseObserver<KboxConfig>(this) {
             @Override
             protected void onHandleSuccess(KboxConfig kboxConfig) {
-                Log.e("test", kboxConfig.getKbox_ip());
+//                Log.e("test", kboxConfig.getKbox_ip());
 
             }
 

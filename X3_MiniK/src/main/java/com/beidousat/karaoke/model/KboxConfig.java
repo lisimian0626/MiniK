@@ -10,8 +10,8 @@ import java.io.Serializable;
  */
 
 public class KboxConfig implements Serializable {
-    @SerializedName("vod_thumbnail_server")
-    private String kbox_ip;
+//    @SerializedName("vod_thumbnail_server")
+//    private String kbox_ip;
     @SerializedName("ad_server")
     private String ad_web;
     @SerializedName("socket_server")
@@ -19,13 +19,13 @@ public class KboxConfig implements Serializable {
     @SerializedName("vod_http_server")
     private String  vod_server;
 
-    public String getKbox_ip() {
-        return kbox_ip;
-    }
-
-    public void setKbox_ip(String kbox_ip) {
-        this.kbox_ip = kbox_ip;
-    }
+//    public String getKbox_ip() {
+//        return kbox_ip;
+//    }
+//
+//    public void setKbox_ip(String kbox_ip) {
+//        this.kbox_ip = kbox_ip;
+//    }
 
     public String getAd_web() {
         return ad_web;

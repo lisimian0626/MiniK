@@ -53,7 +53,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
 //                mSerialHelper.close();
 //            }
             Logger.i(TAG, "open");
-            Toast.makeText(mContext,"open",Toast.LENGTH_SHORT);
+//            Toast.makeText(mContext,"open",Toast.LENGTH_SHORT);
             mSerialHelper.open(port,baudrate);
             mIsOpened = true;
             mSerialHelper.setOnSerialReceiveListener(this);
