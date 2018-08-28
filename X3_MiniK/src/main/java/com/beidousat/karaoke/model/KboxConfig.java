@@ -16,10 +16,9 @@ public class KboxConfig implements Serializable {
     private String ad_web;
     @SerializedName("socket_server")
     private String store_ip_port;
-    @SerializedName("vod_http_server")
+    @SerializedName("vod_server")
     private String  vod_server;
-
-//    public String getKbox_ip() {
+    //    public String getKbox_ip() {
 //        return kbox_ip;
 //    }
 //
