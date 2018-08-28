@@ -29,8 +29,6 @@ public class ServerConfig implements Serializable {
 
     private String vod_server;
 
-    private String vod_file;
-
     private String vod_url;
     public String getStore_web() {
         return store_web;
@@ -83,14 +81,8 @@ public class ServerConfig implements Serializable {
         this.vod_server = vod_server;
     }
 
-    public String getVod_file() {
-        if(Common.isEn){
-            return "http://" + getVod_server()+ "/";
-        }
-        return "https://" + getVod_server()+ "/";
-    }
 
     public String getVod_url() {
-        return getVod_file() + "?";
+        return getVod_server() + "?";
     }
 }

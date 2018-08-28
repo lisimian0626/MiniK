@@ -99,7 +99,7 @@ public class DiskFileUtil {
         if (file != null && file.exists()) {
             return Uri.fromFile(file);
         }
-        String url = ServerFileUtil.convertHttps2Http(fileName.startsWith("http://") || fileName.startsWith("https://") ? fileName : ServerConfigData.getInstance().getServerConfig().getVod_file() + "data/Img/SingerImg150/" + fileName);
+        String url = ServerFileUtil.convertHttps2Http(fileName.startsWith("http://") || fileName.startsWith("https://") ? fileName : ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/Img/SingerImg150/" + fileName);
         return Uri.parse(url);
     }
 
@@ -115,7 +115,7 @@ public class DiskFileUtil {
         if (file != null && file.exists()) {
             return Uri.fromFile(file);
         }
-        String url = ServerFileUtil.convertHttps2Http(fileName.startsWith("http://") || fileName.startsWith("https://") ? fileName : ServerConfigData.getInstance().getServerConfig().getVod_file() + "data/Img/SingerImg/" + fileName);
+        String url = ServerFileUtil.convertHttps2Http(fileName.startsWith("http://") || fileName.startsWith("https://") ? fileName : ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/Img/SingerImg/" + fileName);
         return Uri.parse(url);
     }
 

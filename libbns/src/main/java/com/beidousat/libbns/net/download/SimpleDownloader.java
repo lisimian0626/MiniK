@@ -92,7 +92,7 @@ public class SimpleDownloader {
 
         String fileUrl = url;
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            fileUrl = ServerConfigData.getInstance().getServerConfig().getVod_file() + url;
+            fileUrl = ServerConfigData.getInstance().getServerConfig().getVod_server() + url;
         }
         Logger.d(TAG, "download fileUrl:" + fileUrl);
         new AsyncDownloader(desFile, fileUrl, listener).execute();

@@ -22,7 +22,7 @@ public class ServerFileUtil {
         if (TextUtils.isEmpty(songFilePath)) {
             return null;
         }
-        String url = convertHttps2Http(ServerConfigData.getInstance().getServerConfig().getVod_file() + "data/grade/" + getFileName(songFilePath) + ".txt");
+        String url = convertHttps2Http(ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/grade/" + getFileName(songFilePath) + ".txt");
         Log.e("test","getScoreNoteUrl:"+url);
         return url;
     }
@@ -31,7 +31,7 @@ public class ServerFileUtil {
         if (TextUtils.isEmpty(songFilePath)) {
             return null;
         }
-        String url = convertHttps2Http(ServerConfigData.getInstance().getServerConfig().getVod_file() + "data/grade/" + getFileName(songFilePath) + ".sec.txt");
+        String url = convertHttps2Http(ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/grade/" + getFileName(songFilePath) + ".sec.txt");
         Log.e("test","getScoreNote2Url:"+url);
         return url;
     }
@@ -63,7 +63,7 @@ public class ServerFileUtil {
         if (TextUtils.isEmpty(filePath)) {
             return null;
         }
-        String url = convertHttps2Http(filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getVod_file() + filePath);
+        String url = convertHttps2Http(filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath);
         Log.e("test","getImageUrl:"+url);
         return Uri.parse(url);
     }
@@ -73,10 +73,10 @@ public class ServerFileUtil {
             return "";
         }
         String f;
-        if(ServerConfigData.getInstance().getServerConfig()==null){
+        if(ServerConfigData.getInstance().getServerConfig()==null||TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())){
             f=filePath;
         }else{
-            f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_file() + filePath);
+            f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath);
         }
 
 //        Log.e("test","getFileUrl:"+convertHttps2Http(f));
@@ -86,10 +86,8 @@ public class ServerFileUtil {
         if (TextUtils.isEmpty(filePath)) {
             return "";
         }
-        String f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_file() + filePath);
-        String toHttp = ServerConfigData.getInstance().getServerConfig().getVod_file().replace("https://","http://");
-        toHttp = toHttp.substring(0, toHttp.length() - 1) + ":2800/";
-        return f.replace(ServerConfigData.getInstance().getServerConfig().getVod_file(), toHttp);
+        String f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath);
+        return f;
     }
 
     private static String getSdFile(String filePath) {
@@ -177,13 +175,13 @@ public class ServerFileUtil {
         if(ServerConfigData.getInstance().getServerConfig()==null){
             return "";
         }
-        String toHttp = ServerConfigData.getInstance().getServerConfig().getVod_file();
+        String toHttp = ServerConfigData.getInstance().getServerConfig().getVod_server();
 //        if(Common.isEn){
 //            toHttp = toHttp.substring(0, toHttp.length() - 1);
 //        }else{
 //            toHttp = toHttp.substring(0, toHttp.length() - 1) + ":2800/";
 //        }
-        return https.replace(ServerConfigData.getInstance().getServerConfig().getVod_file(), toHttp);
+        return https.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), toHttp);
     }
 
 }
