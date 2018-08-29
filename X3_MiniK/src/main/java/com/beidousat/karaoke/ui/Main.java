@@ -885,6 +885,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 Meal meal = new Meal();
                 meal.setType(giftDetail.pay_type);
                 meal.setAmount(giftDetail.pay_count);
+                meal.setOrderSn(giftDetail.order_sn);
                 PayStatus payStatus = new PayStatus();
                 payStatus.setPayStatus(1);
                 payStatus.setPayTime((int) System.currentTimeMillis());
@@ -1331,7 +1332,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
      **/
     private void next() {
         if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
-            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn(), UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
+            String order_sn="";
+            if(BoughtMeal.getInstance().getTheLastPaystatus()!=null){
+                order_sn =BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
+            }
+            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
             UpLoadDataUtil.getInstance().setmUploadSongData(null);
         }
         if (mPresentation != null)
@@ -1662,7 +1667,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     private void playScoreResult(final Song song, final int score) {
         if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
-            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn(), UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
+            String order_sn="";
+            if(BoughtMeal.getInstance().getTheLastPaystatus()!=null){
+               order_sn =BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
+            }
+            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
             UpLoadDataUtil.getInstance().setmUploadSongData(null);
         }
         try {

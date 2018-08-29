@@ -117,6 +117,10 @@ public class Meal implements Serializable {
         return OrderSn;
     }
 
+    public void setOrderSn(String orderSn) {
+        OrderSn = orderSn;
+    }
+
     public String getUnit() {
         String unit=null;
         if(Common.isEn){
