@@ -35,8 +35,7 @@ public class ServerConfig implements Serializable {
     }
 
     public String getAd_web() {
-//        ad_web = "http://192.168.1.99/";
-//        return ad_web;
+
         return ad_web + "index.php/";
     }
 

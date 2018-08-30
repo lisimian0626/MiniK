@@ -1,68 +1,68 @@
 <resources>
     <string name="app_name">MiniKTV</string>
 
-    <string name="switch_song">Cut/Next</string>
+    <string name="switch_song">Skip</string>
     <string name="pause">Pause</string>
-    <string name="play">Play</string>
-    <string name="replay">Restart</string>
+    <string name="play">Toggle</string>
+    <string name="replay">Sing again</string>
     <string name="replay2">Repeat</string>
     <string name="original">Original</string>
     <string name="accompany">Accompaniment</string>
     <!--<string name="keep_original">保持原唱</string>-->
-    <string name="vol_mic">vol_mic</string>
-    <string name="vol_music">vol_music</string>
-    <string name="vol">vol</string>
-    <string name="tone">tone</string>
-    <string name="mute">mute</string>
-    <string name="mute2">cancle mute</string>
-    <string name="light">light</string>
-    <string name="atmo">atmo</string>
-    <string name="env">env</string>
-    <string name="service">service</string>
-    <string name="choosen">choosen</string>
-    <string name="minor">minor</string>
-    <string name="service_on">service_on</string>
-    <string name="service_cancel">service_cancel</string>
-    <string name="tune">tune</string>
-    <string name="air">air</string>
-    <string name="wind_speed">speed</string>
-    <string name="tempture">tempture</string>
+    <string name="vol_mic">Mic Volume</string>
+    <string name="vol_music">Music Volume</string>
+    <string name="vol">Volume</string>
+    <string name="tone">Tone</string>
+    <string name="mute">Mute</string>
+    <string name="mute2">Un-mute</string>
+    <string name="light">Light</string>	<!-- 未翻译 -->
+    <string name="atmo">atmo</string><!-- 未翻译 -->
+    <string name="env">env</string><!-- 未翻译 -->
+    <string name="service">service</string><!-- 未翻译 -->
+    <string name="choosen">choosen</string><!-- 未翻译 -->
+    <string name="minor">minor</string><!-- 未翻译 -->
+    <string name="service_on">service_on</string><!-- 未翻译 -->
+    <string name="service_cancel">service_cancel</string><!-- 未翻译 -->
+    <string name="tune">tune</string><!-- 未翻译 -->
+    <string name="air">air</string><!-- 未翻译 -->
+    <string name="wind_speed">speed</string><!-- 未翻译 -->
+    <string name="tempture">tempture</string><!-- 未翻译 -->
     <!--network-->
-    <string name="result_null">Empty</string>
-    <string name="request_fail">Request Failed：%1$s</string>
+    <string name="result_null">Null data</string>
+    <string name="request_fail">Request failure：%1$s</string>
     <string name="menu_bill">Bill</string>
-    <string name="handwriting">handwriting</string>
-    <string name="number">number</string>
+    <string name="handwriting">Handwritten</string>
+    <string name="number">Digit</string>
 
-    <string name="search_all">search</string>
-    <string name="choose_x">choosed<Data><![CDATA[ <b><font color="#f4d573">%d</font></b> ]]></Data>Song</string>
+    <string name="search_all">Search</string>
+    <string name="choose_x"><Data><![CDATA[ <b><font color="#f4d573">%d</font></b> ]]></Data>songs</string>
 
     <!--page category-->
-    <string name="ost">ost</string>
-    <string name="positive_energy">positive_energy</string>
-    <string name="net_song">net_song</string>
-    <string name="period">period</string>
-    <string name="dance">dance</string>
-    <string name="folk_song">folk_song</string>
+    <string name="ost">Soundtrack</string>
+    <string name="positive_energy">Positive energy</string>
+    <string name="net_song">Network songs</string>
+    <string name="period">Times</string>
+    <string name="dance">Dance music</string>
+    <string name="folk_song">Folk song</string>
 
-    <string name="all">all</string>
+    <string name="all">All</string>
 
-    <string name="playing">playing</string>
-    <string name="next_song">next</string>
-    <string name="priorities_x">%d Song</string>
+    <string name="playing">Be playing</string>
+    <string name="next_song">Next song</string>
+    <string name="priorities_x">The %d song</string>
 
-    <string name="playing_x">playing：%1$s</string>
-    <string name="next_x">next：%1$s</string>
-    <string name="current_x">current：%1$s</string>
+    <string name="playing_x">Be playing：%1$s</string>
+    <string name="next_x">Next song：%1$s</string>
+    <string name="current_x">Current: %1$s</string>
 
-    <string name="search_song">search song</string>
-    <string name="search_singer">search singer</string>
-    <string name="original_now">original</string>
+    <string name="search_song">Search songs</string>
+    <string name="search_singer">Search stars</string>
+    <string name="original_now">Original voice</string>
     <string name="acc_now">Accompaniment</string>
-    <string name="search_lives">search_lives</string>
-    <string name="search_topics">search_topics</string>
-    <string name="input_song_name">input_song_name</string>
-    <string name="input_singer">input_singer</string>
+    <string name="search_lives">Live search</string>
+    <string name="search_topics">Search subject</string>
+    <string name="input_song_name">Enter the name of the song</string>
+    <string name="input_singer">Enter the name of the star</string>
 
     <string name="release_time_x">上映时间：%1$s</string>
     <string name="director_x">导演：%1$s</string>
@@ -80,39 +80,39 @@
 
     <string name="living">正在直播</string>
 
-    <string name="shuffle">shuffle</string>
-    <string name="priority">priority</string>
-    <string name="delete">del</string>
-    <string name="preview">preview</string>
-    <string name="listen">listen</string>
-    <string name="download">download</string>
-    <string name="on">on</string>
-    <string name="off">off</string>
+    <string name="shuffle">Disrupt</string>
+    <string name="priority">Priority</string>
+    <string name="delete">Delete</string>
+    <string name="preview">Preview</string>
+    <string name="listen">Audition</string>
+    <string name="download">Download</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 
-    <string name="other">other</string>
+    <string name="other">Others</string>
 
-    <string name="prompt">prompt</string>
-    <string name="network_erro">No connection.</string>
-    <string name="device_auth_fail">Server busy, please try again later.</string>
-    <string name="try_again">retry</string>
-    <string name="play_error">play error</string>
+    <string name="prompt">Gentle hint</string>
+    <string name="network_erro">You are not connected to the network, please contact the server.</string>
+    <string name="device_auth_fail">Waiting for server authorization, please try again later.</string>
+    <string name="try_again">Retry</string>
+    <string name="play_error">Handler error</string>
 
-    <string name="pre_page">Previous</string>
-    <string name="next_page">Next</string>
+    <string name="pre_page">Page up</string>
+    <string name="next_page">Page down</string>
 
     <string name="preview_play">Preview</string>
 
-    <string name="ad_past_time">AD<Data><![CDATA[ <b><font color="#c93462">%d</font></b> ]]></Data>秒</string>
+    <string name="ad_past_time"><Data><![CDATA[ <b><font color="#c93462">%d</font></b> ]]></Data>S advertising</string>
 
     <string name="room_time_less">time less...</string>
-    <string name="room_time_over">time_over...</string>
+    <string name="room_time_over">time over...</string>
     <string name="room_not_open">No room yet. Please contact the Service.</string>
 
-    <string name="ad">AD</string>
+    <string name="ad">Advertising</string>
 
-    <string name="tone_default">tone_default</string>
-    <string name="tone_up">tone_up</string>
-    <string name="tone_down">tone_down</string>
+    <string name="tone_default">Original tone</string>
+    <string name="tone_up">Rising tone</string>
+    <string name="tone_down">Following tone</string>
 
     <string name="auto">auto</string>
     <string name="bright">明亮</string>
@@ -123,15 +123,15 @@
     <string name="light_on">开灯</string>
     <string name="light_off">关灯</string>
 
-    <string name="choose_empty_tip">The on-demand list is empty, please click</string>
+    <string name="choose_empty_tip">The VOD list is empty, please select songs</string>
 
-    <string name="choose_max">The number of songs has reached the limit</string>
+    <string name="choose_max">The number of songs has reached the upper limit</string>
 
     <string name="version_x">APK Version：%1$s</string>
     <string name="sys_version_x">System Version：%1$s</string>
 
-    <string name="rmb_x">¥%1$s</string>
-    <string name="total_x">小计：¥%1$s</string>
+    <string name="rmb_x">￥%1$s</string>
+    <string name="total_x">小计：￥%1$s</string>
 
     <string name="shopping_car">shopping car</string>
 
@@ -141,12 +141,12 @@
     <string name="tab_live">直播</string>
     <string name="tab_bill">账单</string>
 
-    <string name="close">close</string>
-    <string name="total">total</string>
-    <string name="pls_input_mng_pwd">Enter dpassword.</string>
-    <string name="wrong_pwd">Password Error</string>
-    <string name="mic">mic</string>
-    <string name="copyright">Copyright © 2015-2018 BNS. All Rights Reserved.</string>
+    <string name="close">Close</string>
+    <string name="total">Total</string>
+    <string name="pls_input_mng_pwd">Please input management password</string>
+    <string name="wrong_pwd">Password error</string>
+    <string name="mic">Microphone</string>
+    <string name="copyright">Copyright ? 2015-2018 BNS. All Rights Reserved.</string>
 
     <string name="gift_choose">赠品选择</string>
     <string name="package_detail">Package Details</string>
@@ -201,7 +201,7 @@
     <string name="pk_result_tie">打平啦^.^</string>
     <string name="pk_result_x">《%1$s》 斗歌结果：%2$s</string>
     <string name="pk_opponents_msg">对方放弃斗歌，我方取得胜利！</string>
-    <string name="open_tv_tip">请打开电视机</string>
+    <string name="open_tv_tip">Please turn on the TV</string>
     <string name="no_song_tip">Sorry, the song you are looking for is not yet available. You can register the missing song and we will make it up as soon as possible.</string>
     <string name="lack_song">lack_song</string>
     <string name="submit">submit</string>
@@ -282,132 +282,132 @@
     <string name="rule">Guide</string>
 
 
-    <string name="text_wx_scan">WeChat Scan</string>
-    <string name="text_pay">pay</string>
+    <string name="text_wx_scan">Scan QR code with Wechat</string>
+    <string name="text_pay">Pay</string>
     <string name="text_pay_scan">Scan</string>
     <string name="text_pay_tb_scan">Coin</string>
-    <string name="text_choose_pay">choose pay</string>
+    <string name="text_choose_pay">Choose the mode of payment</string>
     <string name="text_pay_zhifubao">Alipay</string>
     <string name="text_pay_weixin">WeChat</string>
     <string name="text_pay_toubi">Coin</string>
     <string name="text_pay_card">Card</string>
-    <string name="input_limit">Please enter the effective cardnumber</string>
-    <string name="paycard_fail">Your balance is not enough</string>
-    <string name="text_selected_pay_meal">selected：%1$d%2$s</string>
-    <string name="text_pay_prompt">Please use the WeChat to scan the left two dimension code for payment.</string>
-    <string name="text_pay_prompt_zhifubao">Please use Alipay to scan the left side of the code.</string>
+    <string name="input_limit">Please enter 16 characters of valid passwords</string>
+    <string name="paycard_fail">The gift coupons is insufficient</string>
+    <string name="text_selected_pay_meal">Package：%1$d%2$s</string>
+    <string name="text_pay_prompt">Scan the QR code on the left to pay.</string>
+    <string name="text_pay_prompt_zhifubao">Scan the QR code on the left to pay.</string>
     <string name="text_money_unit">￥</string>
-    <string name="text_back">back</string>
-    <string name="text_music_name">music</string>
-    <string name="text_singer">singer</string>
+    <string name="text_back">Back</string>
+    <string name="text_music_name">Music</string>
+    <string name="text_singer">Singer</string>
     <string name="text_audition">Tentative</string>
     <string name="text_share">Share</string>
-    <string name="text_finish_prompt">Your time for singing has come to an end！\nPlease choose to continue singing or sharing your work！</string>
-    <string name="text_goto_share">goto share</string>
-    <string name="goto_continue">continue</string>
-    <string name="creating_share_url">creating share url...</string>
-    <string name="music_vol_x">music vol：%s</string>
-    <string name="tone_x">tone：%d</string>
-    <string name="mic_x">mic：%s</string>
-    <string name="eff_x">reverberation：%s</string>
+    <string name="text_finish_prompt">Your singing has come to an end this time! \nPlease choose to continue or share your work!！</string>
+    <string name="text_goto_share">Share</string>
+    <string name="goto_continue">Continue</string>
+    <string name="creating_share_url">Creating shared links...</string>
+    <string name="music_vol_x">Music Volume:%s</string>
+    <string name="tone_x">Tone:%d</string>
+    <string name="mic_x">Microphone:%s</string>
+    <string name="eff_x">Reverberation:%s</string>
 
 
-    <string name="text_leave">leave</string>
-    <string name="text_renew">continue</string>
-    <string name="text_buy_time">Minutes</string>
-    <string name="text_buy_songs">Numbers</string>
-    <string name="uploading">uploading...</string>
-    <string name="wechat_scan_share">WeChat sweep, immediately share</string>
-    <string name="upload_fail">Network disable. Upload failed.</string>
-    <string name="upload_hard">uploading...</string>
+    <string name="text_leave">Leave</string>
+    <string name="text_renew">Continue</string>
+    <string name="text_buy_time">Pay by time</string>
+    <string name="text_buy_songs">Pay by songs</string>
+    <string name="uploading">Uploading...</string>
+    <string name="wechat_scan_share">Scan the QR code with Wechat, and share immediately</string>
+    <string name="upload_fail">The network is interrupted, upload failure.</string>
+    <string name="upload_hard">The song is attempting to upload...</string>
 
-    <string name="text_pause_residue_degree">Remaining number：%1$d times</string>
-    <string name="text_loading_title">loading</string>
-    <string name="text_pay_succed">Pay for success. Have a good time！</string>
-    <string name="text_cancel_order_title">cancel order</string>
-    <string name="text_cancel_order_msg">Cancel Order？\nPlease do not cancel the order if you have made payment！</string>
-    <string name="text_yes">yes</string>
-    <string name="text_no">no</string>
-    <string name="text_left_songs">left%1$d Song</string>
-    <string name="text_left_time">left%1$s</string>
+    <string name="text_pause_residue_degree">Left times：%1$d times</string>
+    <string name="text_loading_title">Loading</string>
+    <string name="text_pay_succed">Payment success! Wish you a pleasant singing!</string>
+    <string name="text_cancel_order_title">Cancel order</string>
+    <string name="text_cancel_order_msg">Cancel order or not? If you have already paid, please don’t cancel the order.</string>
+    <string name="text_yes">Yes</string>
+    <string name="text_no">No</string>
+    <string name="text_left_songs">Left songs %1$d Song</string>
+    <string name="text_left_time">Left time %1$s</string>
 
-    <string name="tip_pay">Please buy first</string>
-    <string name="tip_used_up">You are run out of packages</string>
-    <string name="tip_add_first_song">play this song？</string>
-    <string name="text_countdown_tip">Close soon：</string>
-    <string name="text_error_title">error tips</string>
-    <string name="download_prompt">It takes a few minutes to join the song,\nAdd a list of points after the background load is complete!</string>
-    <string name="download_background">Backstage loading</string>
-    <string name="text_download_list">Download list</string>
+    <string name="tip_pay">Pay first</string>
+    <string name="tip_used_up">The package you have purchased has been used up</string>
+    <string name="tip_add_first_song">Are you sure to play this song?</string>
+    <string name="text_countdown_tip">Time to close：</string>
+    <string name="text_error_title">Error</string>
+    <string name="download_prompt">It takes a few minutes to add this song, the song will be added to the list after the loading finished in the background.</string>
+    <string name="download_background">Loading in the background</string>
+    <string name="text_download_list">List download</string>
 
-    <string name="getting_config">Getting configuration file...</string>
-    <string name="checking_network">checking_network...</string>
-    <string name="init_system">system init...</string>
-    <string name="device_auth">Equipment authorization...</string>
-    <string name="getting_box_info">Retrieving KBox information...</string>
-    <string name="setting">setting</string>
+    <string name="getting_config">Obtaining profiles...</string>
+    <string name="checking_network">Detecting networks...</string>
+    <string name="init_system">System is initializing...</string>
+    <string name="device_auth">Device is authorizing...</string>
+    <string name="getting_box_info">Obtaining device information...</string>
+    <string name="setting">Settings</string>
     <string name="enter_store_success">Successful storage！</string>
     <string name="enter_store_fail">Failed to store：%1$s</string>
-    <string name="change_baudrate_tip">Modifying the baud rate requires restarting the application to take effec</string>
-    <string name="change_room_tip">Modifying the room number requires restarting the application to take effect</string>
+    <string name="change_baudrate_tip">Restart the application to take effect of the modified baud rate</string>
+    <string name="change_room_tip">Restart the application to take effect of the modified device number</string>
     <string name="reboot">reboot</string>
 
-    <string name="baudrate_format">baudrate should be a number</string>
-    <string name="reverb">Resounding</string>
-    <string name="setting_network">Setting</string>
-    <string name="setting_system">System Settings</string>
-    <string name="background_mng">Backstage management</string>
-    <string name="setting_room">Set Room</string>
-    <string name="charges_desc">Description of cost</string>
-    <string name="choose_song_tip">Please order your song within the time limit</string>
-    <string name="choose_song_tip_x">Please click the song within 10 minutes. The overtime will automatically deduct one song！</string>
-    <string name="known">Got it</string>
+    <string name="baudrate_format">Baud rate should be digit</string>
+    <string name="reverb">Reverberation</string>
+    <string name="setting_network">Settings</string>
+    <string name="setting_system">System settings</string>
+    <string name="background_mng">Background management</string>
+    <string name="setting_room">Device No.</string>
+    <string name="charges_desc">Tariff description</string>
+    <string name="choose_song_tip">Select a song within the limited time</string>
+    <string name="choose_song_tip_x">Select a song within 10 minutes, and it will deduct a song automatically if it is overtime.</string>
+    <string name="known">Understand</string>
 
-    <string name="text_cancel_order_coin">Cancel Order？\Cancellation will lose%1d coin！</string>
-    <string name="coin"> coin</string>
-    <!--<string name="price_changed">当前时段资费已发生变化</string>-->
-    <string name="price_changed">Resources have changed in the current period</string>
-    <string name="check_dsc">Check the fee instructions</string>
-    <string name="not_buy">Not purchase</string>
+    <string name="text_cancel_order_coin">Cancel the order or not? \nYou will lose %1d coins if cancel!</string>
+    <string name="coin">Coin</string>
+    <!--<string name="price_changed">查看资费说明</string>-->
+    <string name="price_changed">The current tariff has been changed.</string>
+    <string name="check_dsc">Check the tariff descriptions</string>
+    <string name="not_buy">No purchase</string>
     <string name="go_to_buy">Continue to purchase</string>
-    <string name="coin_error">Coin dispenser abnormal do not coin！</string>
-    <string name="services">services</string>
-    <string name="coupon">coupon</string>
-    <string name="coupon_detail">Coupon Details</string>
-    <string name="text_gift_fail">fail！</string>
+    <string name="coin_error">The coin collector is abnormal, please don’t coins in</string>
+    <string name="services">Customer service</string>
+    <string name="coupon">Coupon</string>
+    <string name="coupon_detail">Card/coupon details</string>
+    <string name="text_gift_fail">Error</string>
     <string name="coupon_text_click">Click to use</string>
-    <string name="text_setting_successed">Setup successful！</string>
-    <string name="language">language</string>
+    <string name="text_setting_successed">Set success!</string>
+    <string name="language">Language</string>
 
-    <string name="cfg_retry">try again</string>
-    <string name="room_et_input">Please enter your phone number</string>
-    <string name="checking_kbox_error"> check room number settings for errors</string>
-    <string name="checking_network_error">failed, please check network</string>
-    <string name="getting_config_error">failed, please try again</string>
-    <string name="room_select">Select Room</string>
-    <string name="room_input">Enter roomId</string>
-    <string name="roomcode_id">RoomID：Not Set</string>
-    <string name="roomcode_input">Please fill the room ID</string>
+    <string name="cfg_retry">Retry</string>
+    <string name="room_et_input">Please enter cell phone NO.</string>
+    <string name="checking_kbox_error">Failed to get device information,please check whether the device settings is right or not.</string>
+    <string name="checking_network_error">The internet connection failed, please check the internet</string>
+    <string name="getting_config_error">Failed to get configuration file. Please try again.</string>
+    <string name="room_select">Choose the device NO.</string>
+    <string name="room_input">Enter the device NO.</string>
+    <string name="roomcode_id">Device NO.: not set</string>
+    <string name="roomcode_input">Please fill in the device NO.</string>
 
-    <string name="password_before">enter original password</string>
-    <string name="password_new">set a new password</string>
-    <string name="password_confirm">confirm the password</string>
+    <string name="password_before">Please input the original password</string>
+    <string name="password_new">Please set up a new password</string>
+    <string name="password_confirm">Please confirm the password</string>
 
-    <string name="Porter_rate">Porter rate</string>
+    <string name="Porter_rate">Baud rate</string>
     <string name="Reset">Reset</string>
     <string name="MIC_UP">MIC+</string>
     <string name="MIC_DOWN">MIC-</string>
-    <string name="Resounding_up">Resounding+</string>
-    <string name="Resounding_down">Resounding-</string>
-    <string name="room_num_error">Wrong room number.</string>
-    <string name="hand_disk">Unconnected hard disk or damaged hard disk!</string>
-    <string name="no_pay_service">Unpaid service charge</string>
-    <string name="pay_for_service">Renewal</string>
-    <string name="pay_service_succed">Payment of service successful </string>
-    <string name="room_num_success">Room number setup successful！</string>
-    <string name="kbox_reset_psw">Reset password complete</string>
-    <string name="has_order">Already</string>
-    <string name="has_sing">Singing</string>
+    <string name="Resounding_up">Reverberation+</string>
+    <string name="Resounding_down">Reverberation-</string>
+    <string name="room_num_error">Service NO. is wrong</string>
+    <string name="hand_disk">Failure to connect the hard disk or hard disk has been damaged.</string>
+    <string name="no_pay_service">Service charge unpaid</string>
+    <string name="pay_for_service">Renew</string>
+    <string name="pay_service_succed">The service charge was paid successfully</string>
+    <string name="room_num_success">Service NO. is OK</string>
+    <string name="kbox_reset_psw">Complete to reset the device password</string>
+    <string name="has_order">Selected</string>
+    <string name="has_sing">Sang</string>
     //温度
     <string name="infrared_reset">Reset</string>
     <string name="twenty_one">21℃</string>
@@ -437,16 +437,18 @@
     <string name="infrared_study_fail">Learning failure</string>
 
     //heartbeat
-    <string name="room_not_exist">The room not exist</string>
-    <string name="room_closed">The room are closed</string>
-    <string name="unpaid_service" >Unpaid service charge</string>
-    <string name="device_error">Device error, not usable</string>
-    <string name="no_information">No information on the store</string>
-    <string name="store_closed">The store is closed</string>
-    <string name="insufficient_permissions">Insufficient permissions</string>
-    <string name="no_room_number">No room number</string>
-    <string name="room_number_error">Room number conflicting or occupied</string>
-    <string name="unknow_error">unknow_error</string>
-    <string name="room_succed">Room Settings Successful</string>
-    <string name="download_waiting">waiting...</string>
+    <string name="room_not_exist">Device information does not exist</string>
+    <string name="room_closed">Device has stopped wording</string>
+    <string name="unpaid_service" >Service charge of the device is unpaid</string>
+    <string name="device_error">Device error, unable to use</string>
+    <string name="no_information">System error, no business information found</string>
+    <string name="store_closed">The business has been closed</string>
+    <string name="insufficient_permissions">Error permission denied</string>
+    <string name="no_room_number">No device NO.</string>
+    <string name="room_number_error">Device NO. is conflict or occupied</string>
+    <string name="unknow_error">Unknown error</string>
+    <string name="room_succed">Service NO. is OK</string>
+    <string name="downloan_time_out">Network timeout</string>
+    <string name="download_fail">Download failed</string>
+    <string name="download_waiting">Waiting for download...</string>
 </resources>

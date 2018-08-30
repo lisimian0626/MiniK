@@ -123,7 +123,8 @@ public class HttpRequest {
                 builder.append("&").append(key).append("=").append(val);
             }
         }
-        String url = ServerConfigData.getInstance().getServerConfig().getVod_url() + builder.toString();
+
+        String url = ServerConfigData.getInstance().getServerConfig()==null?builder.toString():ServerConfigData.getInstance().getServerConfig().getVod_url()+builder.toString();
 //        Log.e("test","mDomainUrl:"+mDomainUrl);
 //        Log.e("test","BnsConfig:"+BnsConfig.DOMAIN_IP);
         return url;

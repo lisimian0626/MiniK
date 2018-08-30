@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.beidousat.karaoke.R;
+import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.ui.Main;
@@ -141,7 +142,7 @@ public class FmSetting extends BaseFragment implements View.OnClickListener {
                     intent = new Intent();
                     intent.setAction("android.intent.action.VIEW");
 //                Uri content_url = Uri.parse("http://test.beidousat.com/");
-                    Uri content_url = Uri.parse(ServerConfigData.getInstance().getServerConfig().getAd_web());
+                    Uri content_url = Uri.parse(KBoxInfo.STORE_WEB+"#login");
                     intent.setData(content_url);
                     startActivity(intent);
                     exitApp();
