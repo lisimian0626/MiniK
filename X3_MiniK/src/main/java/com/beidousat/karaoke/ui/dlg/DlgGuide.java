@@ -15,6 +15,7 @@ import com.beidousat.karaoke.ui.BaseActivity;
 import com.beidousat.libbns.ad.AdBillHelper;
 import com.beidousat.libbns.amin.MoveAnimation;
 import com.beidousat.libbns.model.Ad;
+import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libwidget.image.RecyclerImageView;
@@ -47,7 +48,7 @@ public class DlgGuide extends DialogFragment implements View.OnClickListener {
 //        mRivAd2.setVisibility(View.VISIBLE);
 //        mRivAd2.setOnClickListener(this);
 
-        Glide.with(this).load(R.drawable.bg_guide).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).override(1280, 720).into(mRivAd1);
+        Glide.with(this).load(Common.isEn?R.drawable.bg_guide_en:R.drawable.bg_guide).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).override(1280, 720).into(mRivAd1);
 //        mRivAd1.setImageResource(R.drawable.bg_guide);
 //        Glide.with(this).load(R.drawable.bg_guide).override(1280, 720).into(mRivAd2);
 //        mRivAd2.setBackgroundColor(Color.argb(179, 0, 0, 0));

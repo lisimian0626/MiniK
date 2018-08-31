@@ -94,7 +94,7 @@ public class FmTop extends BaseFragment implements AdtTopType.OnTopTypeSelectLis
         mAdtTopType.setOnTopTypeSelectListener(this);
         int[] resId;
         if(Common.isEn){
-            resId = new int[]{R.drawable.selector_top_total, R.drawable.selector_top_month, R.drawable.selector_top_day};
+            resId = new int[]{R.drawable.selector_top_total_en, R.drawable.selector_top_month_en, R.drawable.selector_top_day_en};
         }else{
             resId = new int[]{R.drawable.selector_top_total, R.drawable.selector_top_month, R.drawable.selector_top_day, R.drawable.selector_top_mandarin, R.drawable.selector_top_cantonese};
         }

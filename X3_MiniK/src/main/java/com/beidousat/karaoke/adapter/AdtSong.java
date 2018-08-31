@@ -17,6 +17,7 @@ import com.beidousat.karaoke.model.StarInfo;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.ui.fragment.FmSingerDetail;
 import com.beidousat.karaoke.util.DiskFileUtil;
+import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.Logger;
 
@@ -106,11 +107,11 @@ public class AdtSong extends RecyclerView.Adapter<AdtSong.ViewHolder> {
         holder.tvScoreTag.setVisibility(isScore || isHd ? View.VISIBLE : View.GONE);
         int tagImg = 0;
         if (isScore && isHd) {
-            tagImg = R.drawable.ic_song_list_hdscore_tag;
+            tagImg = Common.isEn?R.drawable.ic_song_list_hdscore_tag_en:R.drawable.ic_song_list_hdscore_tag;
         } else if (isScore && !isHd) {
-            tagImg = R.drawable.ic_song_list_score_tag;
+            tagImg = Common.isEn?R.drawable.ic_song_list_score_tag_en:R.drawable.ic_song_list_score_tag;
         } else if (isHd && !isScore) {
-            tagImg = R.drawable.ic_song_list_hd_tag;
+            tagImg = Common.isEn?R.drawable.ic_song_list_hd_tag_en:R.drawable.ic_song_list_hd_tag;
         }
         holder.tvScoreTag.setBackgroundResource(tagImg);
 

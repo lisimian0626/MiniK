@@ -222,7 +222,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        switchLanguage("en");
+        switchLanguage("en");
         setContentView(R.layout.act_main);
         mMainActivity = this;
         initView();
