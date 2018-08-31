@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.SystemProperties;
 import android.widget.Toast;
 
+import com.beidousat.libbns.model.Common;
+
 import java.io.File;
 
 /**
@@ -21,6 +23,7 @@ public class PackageUtil {
         try {
             int code = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0).versionCode;
+            Common.versioncode=code;
             return code;
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,7 +6,9 @@ import android.util.Log;
 import com.beidousat.libbns.R;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
+import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.KBoxStatus;
+import com.beidousat.libbns.model.VersionInfo;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.Logger;
 
@@ -70,7 +72,7 @@ public class KBoxSocketHeart implements BnsSocket.BnsSocketListener {
     public void sendHeartPackage(String kBoxId, OnSetKBoxIDListener listener) {
         Logger.d("KBoxSocketHeart", "sendHeartPackage mKBoxID===" + mKBoxID+"    ||cupID:"+ DeviceUtil.getCupChipID());
         mKBoxID = kBoxId;
-        handSendPackage = System.nanoTime() + "," + (mIsSinging ? PACKAGE_SINGING : PACKAGE_NO_SING) + "," + DeviceUtil.getCupChipID() + "," + mKBoxID;
+        handSendPackage = System.nanoTime() + "," + (mIsSinging ? PACKAGE_SINGING : PACKAGE_NO_SING) + "," + DeviceUtil.getCupChipID() + "," + mKBoxID+","+String.valueOf(Common.versioncode);
         mOnSetKBoxIDListener = listener;
         mBnsSocket.sendMsg(handSendPackage);
     }
@@ -80,42 +82,31 @@ public class KBoxSocketHeart implements BnsSocket.BnsSocketListener {
         try {
             Logger.d("KBoxSocketHeart", "onSocketReceive msg===" + msg+"||   cupID:"+ DeviceUtil.getCupChipID());
             String[] splits = msg.split(",");
-
             Logger.d("KBoxSocketHeart", msg + "---" + String.valueOf(splits[1].equals(M2)));
             if (splits[1].equals(M2)) {
                 EventBusUtil.postRequestMeal();
             }
-
             String status = splits[4];
             mKBoxStatus = Integer.valueOf(status);
-
             int code = 0;
             if (splits.length >= 6) {
                 String strCode = splits[5];
                 code = Integer.valueOf(strCode);
             }
-
-
             Logger.d("KBoxSocketHeart", "onSocketReceive status===" + status);
             KBoxStatus kBoxStatus = new KBoxStatus(mKBoxStatus, code,getErrMsg(code));
-
             EventBusUtil.postSticky(EventBusId.SOCKET.KBOX_STATUS, kBoxStatus);
-
             if (mOnSetKBoxIDListener != null && !TextUtils.isEmpty(msg) && !TextUtils.isEmpty(handSendPackage) && msg.startsWith(handSendPackage)) {
                 mOnSetKBoxIDListener.callback(kBoxStatus);
                 Logger.d("KBoxSocketHeart", "onSocketReceive callback===");
-
             } else {
                 Logger.d("KBoxSocketHeart", "onSocketReceive not callback===");
             }
-//
             mBnsSocket.setHeartRate(mKBoxStatus == 1 ? 30 * 1000 : 5 * 1000);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     public String getErrMsg(int errCode) {
         if (errCode == 3001) {

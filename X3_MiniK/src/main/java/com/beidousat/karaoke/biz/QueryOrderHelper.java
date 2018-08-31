@@ -21,6 +21,7 @@ import com.beidousat.libbns.net.request.StoreHttpRequestListener;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.PreferenceUtil;
 
 /**
  * author: Hanson
@@ -104,7 +105,7 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
                     order_sn=payStatus.getOrderSn();
                     boolean isMealExpire = BoughtMeal.getInstance().isMealExpire();
                     Logger.d("QueryOrderHelper", "onStoreSuccess PAY_SUCESS isMealExpire:" + isMealExpire);
-                    if(!Common.isSingle){
+                    if(!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)){
                         CommonDialog dialog = CommonDialog.getInstance();
                         dialog.setShowClose(true);
                         dialog.setContent(new FmPayResult());

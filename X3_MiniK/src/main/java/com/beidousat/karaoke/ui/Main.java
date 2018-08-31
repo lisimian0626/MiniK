@@ -325,7 +325,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             lable.setText(((KBox) object).getLabel());
                             lable.setVisibility(View.VISIBLE);
                         }
-                        if (Common.isSingle) {
+                        if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
@@ -733,7 +733,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 pay_sucessed(event);
                 break;
             case EventBusId.id.MEAL_EXPIRE:
-                if (!Common.isSingle) {
+                if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
                     CommonDialog commonDialog = CommonDialog.getInstance();
                     if (commonDialog.isAdded()) {
                         commonDialog.dismiss();
@@ -807,7 +807,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if (!mIsSetting && (mDlgPass == null || !mDlgPass.isShowing())
                             && (mDialogAuth == null || !mDialogAuth.isShowing())) {
                         if (kBoxStatus.code == 2003) {
-                            if (Common.isSingle) {
+                            if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
 //                                Log.e("test", "心跳检测没交服务费，清空套餐");
                                 BoughtMeal.getInstance().clearMealInfoSharePreference();
                                 BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
@@ -844,7 +844,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else {
                     PrefData.setAuth(Main.this, true);
                     PrefData.setLastTime(this.getApplicationContext(), System.currentTimeMillis());
-                    if (Common.isSingle) {
+                    if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
                         if (BoughtMeal.getInstance().isMealExpire()) {
 //                            Log.e("test", "心跳检测，初始化套餐");
                             Meal meal = new Meal();
@@ -944,7 +944,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         Logger.d(TAG, "EventBusId  id PAY_SUCCEED isExpire:" + isExpire);
         //查询用户信息
         Meal meal = BoughtMeal.getInstance().getTheLastMeal();
-        if (!Common.isSingle) {
+        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
             if (meal != null) {
                 mQureyHelper.queryUser().post();
                 if (isExpire) {//
@@ -1312,7 +1312,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mTvPlayerPause.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.selector_main_play, 0, 0);
         }
         mTvPlayerPause.setText(isPlaying ? R.string.pause : R.string.play);
-        if (!Common.isSingle) {
+        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
             startChooseSongTimer();
         }
     }
@@ -2100,7 +2100,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         long lasttime = PrefData.getLastTime(Main.this);
         long currenttime = System.currentTimeMillis();
 //        Log.e("test", "lasttime:" + lasttime / (60 * 1000) + "分钟" + "   " + "currenttime：" + currenttime / (60 * 1000) + "分钟");
-        if (!Common.isSingle && currenttime - lasttime > Common.timelimit) {
+        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false) && currenttime - lasttime > Common.timelimit) {
 //            Log.e("test", "关机超过5小时后，套餐清0");
             ChooseSongs.getInstance(getApplication()).cleanChoose();
             BoughtMeal.getInstance().clearMealInfo();
@@ -2212,7 +2212,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 hideTips();
                 if (suceed) {
                     if (obj != null && obj instanceof KBox) {
-                        if (Common.isSingle) {
+                        if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {

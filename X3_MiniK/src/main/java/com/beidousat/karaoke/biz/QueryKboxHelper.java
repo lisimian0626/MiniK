@@ -107,9 +107,9 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         if (object != null && object instanceof KBox) {
             KBox kBox = (KBox) object;
             if(kBox.getAutocephalous()!=null&&kBox.getAutocephalous().toString().equals("1")){
-                Common.isSingle=true;
+                PreferenceUtil.setBoolean(mContext,"isSingle", true);
             }else {
-                Common.isSingle=false;
+                PreferenceUtil.setBoolean(mContext,"isSingle", false);
             }
 //            PrefData.setAutocephalous(mContext,kBox.getAutocephalous());
             PreferenceUtil.setString(mContext,"def_play", Arrays.toString(kBox.getDef_play()));
