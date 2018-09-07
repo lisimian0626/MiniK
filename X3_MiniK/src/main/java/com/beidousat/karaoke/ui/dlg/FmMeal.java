@@ -125,7 +125,9 @@ public class FmMeal extends FmBaseDialog {
 
     @Override
     public void onStoreStart(String method) {
-        LoadingUtil.showLoadingDialog(Main.mMainActivity);
+        if(getActivity()==null)
+            return;
+        LoadingUtil.showLoadingDialog(getActivity());
         super.onStoreStart(method);
     }
 

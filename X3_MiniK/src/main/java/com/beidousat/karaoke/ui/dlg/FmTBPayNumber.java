@@ -130,7 +130,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
         mSelectedMeal = (Meal) getArguments().getSerializable(MEAL_TAG);
 
-        mQueryOrderHelper = new QueryOrderHelper(this);
+        mQueryOrderHelper = new QueryOrderHelper(getActivity(),this);
 
     }
 

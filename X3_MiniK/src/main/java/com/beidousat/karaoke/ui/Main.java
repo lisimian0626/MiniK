@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.hardware.display.DisplayManager;
 import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -98,7 +100,6 @@ import com.beidousat.karaoke.ui.fragment.FmShows;
 import com.beidousat.karaoke.ui.presentation.PlayerPresentation;
 import com.beidousat.karaoke.util.AnimatorUtils;
 import com.beidousat.karaoke.util.ChooseSongTimer;
-import com.beidousat.karaoke.util.DiskFileUtil;
 import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.karaoke.util.SystemBroadcastSender;
@@ -129,6 +130,7 @@ import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.socket.KBoxSocketHeart;
 import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DeviceUtil;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.KaraokeSdHelper;
 import com.beidousat.libbns.util.Logger;
@@ -205,7 +207,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     public QueryOrderHelper mQureyHelper;
 
-    public static FragmentActivity mMainActivity;
 
     private View mViewTop, mViewBottom;
 
@@ -222,16 +223,15 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        switchLanguage("en");
+//        switchLanguage("en");
         setContentView(R.layout.act_main);
-        mMainActivity = this;
         initView();
         init();
         EventBus.getDefault().register(this);
         hideSystemUI(true);
         startMainPlayer();
         checkNetwork();
-//        new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo();
+//        new QueryKboxHelper(Main.this, null, null).getBoxInfo();
 //        newsongDao=LanApp.getInstance().getDaoSession().getNewsongDao();
 //        copyDatabaseFile(this);
     }
@@ -277,7 +277,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     //读取kbox信息
     private void initAfterNetAvail() {
 //        获取miniK配置文件（服务器接口地址，心跳地址，VOD地址等）
-        new QueryKboxHelper(getApplicationContext(), null, new QueryKboxHelper.QueryKboxFeedback() {
+        new QueryKboxHelper(Main.this, null, new QueryKboxHelper.QueryKboxFeedback() {
             @Override
             public void onStart() {
                 PrefData.setAuth(Main.this, false);
@@ -296,7 +296,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     checkDeviceStore();
                     checkUsbKey();
                     //开启心跳服务
-                    startService(new Intent(getApplicationContext(), LanService.class));
+                    bindService();
+                    startService(new Intent(Main.this, LanService.class));
                     getKboxDetail();
                 } else {
                     PromptCfgDialog(getString(R.string.getting_config_error));
@@ -307,7 +308,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void getKboxDetail() {
-        new QueryKboxHelper(getApplicationContext(), null, new QueryKboxHelper.QueryKboxFeedback() {
+        new QueryKboxHelper(Main.this, null, new QueryKboxHelper.QueryKboxFeedback() {
             @Override
             public void onStart() {
                 showTips(getString(R.string.getting_box_info));
@@ -325,7 +326,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             lable.setText(((KBox) object).getLabel());
                             lable.setVisibility(View.VISIBLE);
                         }
-                        if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                        if (PreferenceUtil.getBoolean(Main.this,"isSingle", false)) {
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
@@ -336,15 +337,15 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         restoreUserInfo();
                     }
                 } else {
-                    if (getApplicationContext() != null) {
-                        ToastUtils.toast(getApplicationContext(), msg);
+                    if (Main.this != null) {
+                        ToastUtils.toast(Main.this, msg);
                     }
 
 
                 }
             }
 
-        }).getBoxInfo(PrefData.getRoomCode(this.getApplicationContext()));
+        }).getBoxInfo(PrefData.getRoomCode(Main.this));
     }
 
     private void showTips(String tips) {
@@ -361,7 +362,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     protected void checkNetwork() {
         showNetDialog(getString(R.string.checking_network), getString(R.string.checking_network_error));
-        NetChecker.getInstance(Main.mMainActivity).setOnNetworkStatusListener(new NetChecker.OnNetworkStatusListener() {
+        NetChecker.getInstance(Main.this).setOnNetworkStatusListener(new NetChecker.OnNetworkStatusListener() {
             @Override
             public void onNetworkStatus(boolean status) {
                 Logger.d(TAG, "checkNetwork onNetworkStatus:" + status);
@@ -399,7 +400,27 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mDlgInitLoading.setMessage(text);
         }
     }
+    private void bindService() {
+        Intent intent = new Intent(Main.this, LanService.class);
+        bindService(intent, conn, BIND_AUTO_CREATE);
+    }
 
+    private void unbindVodService() {
+        unbindService(conn);
+    }
+    private ServiceConnection conn = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Logger.d(TAG, "ServiceConnection onServiceConnected ComponentName:" + name);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Logger.d(TAG, "ServiceConnection ComponentName ComponentName:" + name);
+        }
+
+    };
 //    private void showCfgDialog(final String text, final String error) {
 //        if (mDlgInitLoading == null || !mDlgInitLoading.isShowing()) {
 //            mDlgInitLoading = new DlgInitLoading(this);
@@ -418,7 +439,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //    }
 
     private void PromptCfgDialog(final String error) {
-        PromptDialog promptDialog = new PromptDialog(Main.mMainActivity);
+        PromptDialog promptDialog = new PromptDialog(Main.this);
         promptDialog.setPositiveButton(getString(R.string.cfg_retry), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -503,13 +524,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         unregisterUsbReceiver();
-        stopService(new Intent(getApplicationContext(), LanService.class));
+        unbindVodService();
         BoughtMeal.getInstance().deleteObservers();
         PayUserInfo.getInstance().deleteObservers();
 //        mMarqueePlayer.stopPlayer();
         stopMainPlayer();
         EventBus.getDefault().unregister(this);
-        mMainActivity = null;
         System.exit(0);//直接结束程序
         super.onDestroy();
     }
@@ -555,23 +575,23 @@ public class Main extends BaseActivity implements View.OnClickListener,
         handler = new HandlerSystem();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mDisplayManager = (DisplayManager) getSystemService(DISPLAY_SERVICE);
-        mAdBillHelper = AdBillHelper.getInstance(getApplicationContext());
-        mQureyHelper = new QueryOrderHelper(this);
+        mAdBillHelper = AdBillHelper.getInstance(Main.this);
+        mQureyHelper = new QueryOrderHelper(this,this);
         mFragmentManager = getSupportFragmentManager();
         traFragment(new FragmentModel(new FmMain()), true);
-        mKaraokeController = ((LanApp) getApplicationContext()).mKaraokeController;
+        mKaraokeController = KaraokeController.getInstance(Main.this);
 //        initSystemVol();
         initMealInfo();
         registerUsbReceiver();
         try {
-            int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
-            SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
-//            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
+            int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(Main.this));
+            SerialController.getInstance(Main.this).open(Common.mPort, baudrate);
+//            SerialController.getInstance(Main.this).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        mTvChooseCount.setText(String.valueOf(ChooseSongs.getInstance(getApplicationContext()).getChooseSize()));
+        mTvChooseCount.setText(String.valueOf(ChooseSongs.getInstance(Main.this).getChooseSize()));
     }
 
     private void checkMic() {
@@ -733,7 +753,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 pay_sucessed(event);
                 break;
             case EventBusId.id.MEAL_EXPIRE:
-                if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                if (!PreferenceUtil.getBoolean(Main.this,"isSingle", false)) {
                     CommonDialog commonDialog = CommonDialog.getInstance();
                     if (commonDialog.isAdded()) {
                         commonDialog.dismiss();
@@ -750,9 +770,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 BoughtMeal.getInstance().clearMealInfo();
                 PayUserInfo.getInstance().removeAllUser();
                 //清空已点
-                ChooseSongs.getInstance(getApplicationContext()).cleanChoose();
+                ChooseSongs.getInstance(Main.this).cleanChoose();
                 //清空已已唱
-                ChooseSongs.getInstance(getApplicationContext()).cleanSung();
+                ChooseSongs.getInstance(Main.this).cleanSung();
                 //删除录音文件
                 AudioRecordFileUtil.deleteRecordFiles();
                 //切歌到广告
@@ -779,7 +799,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
             case EventBusId.id.REQUEST_MEAL:
                 KBoxInfo.getInstance().setKBox(null);
-                new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo(PrefData.getRoomCode(Main.this.getApplicationContext()));
+                new QueryKboxHelper(Main.this, null, null).getBoxInfo(PrefData.getRoomCode(Main.this));
                 break;
 
             case EventBusId.SOCKET.KBOX_STATUS_CHECKING:
@@ -807,12 +827,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if (!mIsSetting && (mDlgPass == null || !mDlgPass.isShowing())
                             && (mDialogAuth == null || !mDialogAuth.isShowing())) {
                         if (kBoxStatus.code == 2003) {
-                            if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                            if (PreferenceUtil.getBoolean(Main.this,"isSingle", false)) {
 //                                Log.e("test", "心跳检测没交服务费，清空套餐");
                                 BoughtMeal.getInstance().clearMealInfoSharePreference();
                                 BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                             }
-                            mDialogAuth = new PromptDialog(Main.mMainActivity);
+                            mDialogAuth = new PromptDialog(Main.this);
                             mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -824,7 +844,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             mDialogAuth.setMessage(tipsUtil.getErrMsg(kBoxStatus.code));
                             mDialogAuth.show();
                         } else if (kBoxStatus.code == 2001) {
-                            mDialogAuth = new PromptDialog(Main.mMainActivity);
+                            mDialogAuth = new PromptDialog(Main.this);
                             mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -836,15 +856,15 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             mDialogAuth.setMessage(tipsUtil.getErrMsg(kBoxStatus.code));
                             mDialogAuth.show();
                         } else {
-                            if (getApplicationContext() != null) {
-                                ToastUtils.toast(getApplicationContext(), tipsUtil.getErrMsg(kBoxStatus.code));
+                            if (Main.this != null) {
+                                ToastUtils.toast(Main.this, tipsUtil.getErrMsg(kBoxStatus.code));
                             }
                         }
                     }
                 } else {
                     PrefData.setAuth(Main.this, true);
-                    PrefData.setLastTime(this.getApplicationContext(), System.currentTimeMillis());
-                    if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                    PrefData.setLastTime(Main.this, System.currentTimeMillis());
+                    if (PreferenceUtil.getBoolean(Main.this,"isSingle", false)) {
                         if (BoughtMeal.getInstance().isMealExpire()) {
 //                            Log.e("test", "心跳检测，初始化套餐");
                             Meal meal = new Meal();
@@ -863,12 +883,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                     }
                     if (KBoxInfo.getInstance().getmPayMentlist() == null) {
-                        new QueryKboxHelper(getApplicationContext(), null, null).getPayment();
+                        new QueryKboxHelper(Main.this, null, null).getPayment();
                     }
                     if (CommonDialog.mInstance != null && CommonDialog.mInstance.getTag() != null && CommonDialog.mInstance.getTag().equals("pay_service")) {
                         CommonDialog.mInstance.dismiss();
-                        if (getApplicationContext() != null) {
-                            ToastUtils.toast(getApplicationContext(), getString(R.string.pay_service_succed));
+                        if (Main.this != null) {
+                            ToastUtils.toast(Main.this, getString(R.string.pay_service_succed));
                         }
                     }
                 }
@@ -921,15 +941,18 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     dialog.show(getSupportedFragmentManager(), "commonDialog");
                 }
                 break;
-            case EventBusId.Dialog.CHECKROOM:
+            case EventBusId.BUSINESS.CHECKROOM:
                 checkBoxRoom();
 //                restartHeat();
                 break;
-            case EventBusId.Dialog.PAYSERVICE:
+            case EventBusId.BUSINESS.PAYSERVICE:
                 showPayService();
                 break;
             case EventBusId.INFARAED.RECEIVE_CODE:
                 Logger.i(TAG, "OnSerialReceive Main:" + event.data + "");
+                break;
+            case EventBusId.BUSINESS.SHOWBUY:
+                showbuyDlg(null);
                 break;
         }
     }
@@ -944,7 +967,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         Logger.d(TAG, "EventBusId  id PAY_SUCCEED isExpire:" + isExpire);
         //查询用户信息
         Meal meal = BoughtMeal.getInstance().getTheLastMeal();
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+        if (!PreferenceUtil.getBoolean(Main.this,"isSingle", false)) {
             if (meal != null) {
                 mQureyHelper.queryUser().post();
                 if (isExpire) {//
@@ -1154,12 +1177,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void showbuyDlg(String card_code) {
-        if (!NetWorkUtils.isNetworkAvailable(getApplicationContext())) {
-            if (getApplicationContext() != null) {
-                ToastUtils.toast(getApplicationContext(), getApplicationContext().getString(R.string.checking_network_error));
+        if (!NetWorkUtils.isNetworkAvailable(Main.this)) {
+            if (Main.this != null) {
+                ToastUtils.toast(Main.this, Main.this.getString(R.string.checking_network_error));
             }
         } else {
-            if (PrefData.getLastAuth(getApplicationContext())) {
+            if (PrefData.getLastAuth(Main.this)) {
                 CommonDialog dialog = CommonDialog.getInstance();
                 dialog.setShowClose(true);
                 int pageType = BoughtMeal.getInstance().isMealExpire() ?
@@ -1171,11 +1194,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
             } else {
                 if (KBoxStatusInfo.getInstance().getKBoxStatus() != null) {
                     if (KBoxStatusInfo.getInstance().getKBoxStatus().code == 2003) {
-                        PromptDialog mPromptDialog = new PromptDialog(Main.mMainActivity);
+                        PromptDialog mPromptDialog = new PromptDialog(Main.this);
                         mPromptDialog.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                EventBusUtil.postPayService();
+                                EventBusUtil.postBusinessCode(EventBusId.BUSINESS.PAYSERVICE);
                             }
                         });
                         mPromptDialog.setClose(true);
@@ -1183,10 +1206,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         mPromptDialog.setMessage(KBoxStatusInfo.getInstance().getKBoxStatus().msg);
                         mPromptDialog.show();
                     } else {
-                        ToastUtils.toast(getApplicationContext(), KBoxStatusInfo.getInstance().getKBoxStatus().msg);
+                        ToastUtils.toast(Main.this, KBoxStatusInfo.getInstance().getKBoxStatus().msg);
                     }
                 } else {
-                    ToastUtils.toast(getApplicationContext(), getString(R.string.device_auth_fail));
+                    ToastUtils.toast(Main.this, getString(R.string.device_auth_fail));
                 }
             }
 
@@ -1289,9 +1312,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void updatePlayingText() {
-        List<Song> songs = ChooseSongs.getInstance(getApplicationContext()).getSongs();
+        List<Song> songs = ChooseSongs.getInstance(Main.this).getSongs();
         Song currentSong = null;
-        Song nextSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
+        Song nextSong = ChooseSongs.getInstance(Main.this).getSecSong();
         if (songs != null && songs.size() > 0) {
             Song song0 = songs.get(0);
             currentSong = song0;
@@ -1312,7 +1335,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mTvPlayerPause.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.selector_main_play, 0, 0);
         }
         mTvPlayerPause.setText(isPlaying ? R.string.pause : R.string.play);
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+        if (!PreferenceUtil.getBoolean(Main.this,"isSingle", false)) {
             startChooseSongTimer();
         }
     }
@@ -1342,10 +1365,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
         if (mPresentation != null)
             mPresentation.cleanScreen();
         mTvPlayerPause.removeCallbacks(runShowScoreResult);
-        ChooseSongs chooseSongs = ChooseSongs.getInstance(getApplicationContext());
+        ChooseSongs chooseSongs = ChooseSongs.getInstance(Main.this);
         if (chooseSongs.getChooseSize() > 0) {
-            ChooseSongs.getInstance(getApplicationContext()).add2Sungs(chooseSongs.getFirstSong());
-            ChooseSongs.getInstance(getApplicationContext()).remove(0);
+            ChooseSongs.getInstance(Main.this).add2Sungs(chooseSongs.getFirstSong());
+            ChooseSongs.getInstance(Main.this).remove(0);
         }
         if (BoughtMeal.getInstance().getTheFirstMeal() != null) {
             if (BoughtMeal.getInstance().isBuySong()) {
@@ -1381,7 +1404,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             playUrl(ServerFileUtil.getFileUrl(song.SongFilePath), vol);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
-                mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
+                mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(Main.this));
             }
             Logger.d(TAG, "playSong" + song.SongFilePath + "|ID:" + song.ID);
             UpLoadDataUtil.getInstance().getmUploadSongData().setPayTime(System.currentTimeMillis());
@@ -1393,7 +1416,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             handler.sendEmptyMessage(HandlerSystem.MSG_RESET);
             handler.sendEmptyMessageDelayed(HandlerSystem.MSG_UPDATE_TIME, 100);
         } catch (Exception ex) {
-            ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+            ToastUtils.toast(Main.this, getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + ex.toString());
             final String path = song.SongFilePath;
             next();
@@ -1485,7 +1508,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             player = null;
         }
         if (mPresentation != null) {
-            player = new BnsPlayer(mPresentation.getSurfaceView(), main_surf, mPresentation.getHdmiWidth(), mPresentation.getHdmiHeight());
+            player = new BnsPlayer(this,mPresentation.getSurfaceView(), main_surf, mPresentation.getHdmiWidth(), mPresentation.getHdmiHeight());
             player.setBeidouPlayerListener(this);
             player.setOnKeyInfoListener(this);
             player.setOnScoreListener(this);
@@ -1493,7 +1516,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mTvPlayerPause.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    ChooseSongs chooseSongs = ChooseSongs.getInstance(getApplicationContext());
+                    ChooseSongs chooseSongs = ChooseSongs.getInstance(Main.this);
                     if (chooseSongs.getChooseSize() > 0) {
                         playSong(chooseSongs.getFirstSong());
                     } else {
@@ -1513,9 +1536,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private final DisplayManager.DisplayListener mDisplayListener = new DisplayManager.DisplayListener() {
         public void onDisplayAdded(int displayId) {
             if (Common.isEn) {
-                Toast.makeText(getApplicationContext(), "HDMI Connected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Main.this, "HDMI Connected", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getApplicationContext(), "HDMI 已连接", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Main.this, "HDMI 已连接", Toast.LENGTH_SHORT).show();
             }
 
             stopMainPlayer();
@@ -1527,9 +1550,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
         public void onDisplayRemoved(int displayId) {
             if (Common.isEn) {
-                Toast.makeText(getApplicationContext(), "HDMI DisConnected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Main.this, "HDMI DisConnected", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getApplicationContext(), "HDMI 已断开", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Main.this, "HDMI 已断开", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -1647,7 +1670,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         try {
             playUrl(mAdVideo.ADContent, 0.5f);
         } catch (IOException e) {
-            ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
+            ToastUtils.toast(Main.this, getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + e.toString());
         }
     }
@@ -1676,7 +1699,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
         try {
             Logger.d(TAG, "mark score :" + score);
-            ChooseSongs.getInstance(getApplicationContext()).getFirstSong().score = score;
+            ChooseSongs.getInstance(Main.this).getFirstSong().score = score;
         } catch (Exception e) {
             Logger.d(TAG, "mark score ex:" + e.toString());
         }
@@ -1688,7 +1711,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     try {
                         player.playUrl(AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
                     } catch (IOException e) {
-                        ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+                        ToastUtils.toast(Main.this, getString(R.string.play_error));
                         Logger.w(TAG, "playSong ex:" + e.toString());
                     }
                 }
@@ -1705,7 +1728,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void requestResult(final Song song, final int score) {
-        HttpRequest request = new HttpRequest(getApplicationContext(), RequestMethod.GET_GRADE_RECORD);
+        HttpRequest request = new HttpRequest(Main.this, RequestMethod.GET_GRADE_RECORD);
         request.addParam("SongID", song.ID);
         request.addParam("Score", score + "");
         request.setHttpRequestListener(new HttpRequestListener() {
@@ -1752,7 +1775,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 if (progress > 0 && progress - mPasterBillProgress >= 5 * 1000 && (progress / 1000) % 5 == 0) {
                     mPasterBillProgress = progress;
                     if (mAdVideo != null && !TextUtils.isEmpty(mCurPastAdPosition))
-                        mAdBillHelper.billAd(mAdVideo, mCurPastAdPosition, PrefData.getRoomCode(getApplicationContext()));
+                        mAdBillHelper.billAd(mAdVideo, mCurPastAdPosition, PrefData.getRoomCode(Main.this));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1880,7 +1903,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
      */
     private void replay() {
         if (player != null) {
-            Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
+            Song song = ChooseSongs.getInstance(Main.this).getFirstSong();
             if (song != null) {
                 if (BoughtMeal.getInstance().isBuySong()) {
                     Logger.d(TAG, "next 2>>>>>>>");
@@ -1891,7 +1914,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 try {
                     player.replay();
                 } catch (IOException e) {
-                    ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+                    ToastUtils.toast(Main.this, getString(R.string.play_error));
                     Logger.w(TAG, "playSong ex:" + e.toString());
                 }
             }
@@ -1983,7 +2006,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void hideSystemUI(boolean hide) {
-        UIUtils.hideNavibar(getApplicationContext(), hide);
+        UIUtils.hideNavibar(Main.this, hide);
     }
 
     @Override
@@ -2100,7 +2123,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         long lasttime = PrefData.getLastTime(Main.this);
         long currenttime = System.currentTimeMillis();
 //        Log.e("test", "lasttime:" + lasttime / (60 * 1000) + "分钟" + "   " + "currenttime：" + currenttime / (60 * 1000) + "分钟");
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false) && currenttime - lasttime > Common.timelimit) {
+        if (!PreferenceUtil.getBoolean(Main.this,"isSingle", false) && currenttime - lasttime > Common.timelimit) {
 //            Log.e("test", "关机超过5小时后，套餐清0");
             ChooseSongs.getInstance(getApplication()).cleanChoose();
             BoughtMeal.getInstance().clearMealInfo();
@@ -2118,7 +2141,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private PromptDialog mDlgDiskNotExit;
 
     private boolean checkDisk() {
-        if (!DiskFileUtil.isDiskExit()) {
+        if (!DiskFileUtil.hasDiskStorage()) {
             if (mDlgDiskNotExit == null || !mDlgDiskNotExit.isShowing()) {
                 mDlgDiskNotExit = new PromptDialog(this);
                 mDlgDiskNotExit.setMessage(getResources().getString(R.string.hand_disk));
@@ -2138,7 +2161,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private PromptDialog mDlgSetBoxId;
 
     private boolean checkBoxId() {
-        if (TextUtils.isEmpty(PrefData.getRoomCode(getApplicationContext()))) {
+        if (TextUtils.isEmpty(PrefData.getRoomCode(Main.this))) {
             showRoomSet();
             return false;
         } else {
@@ -2201,7 +2224,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     private void checkBoxRoom() {
 
-        new QueryKboxHelper(getApplicationContext(), null, new QueryKboxHelper.QueryKboxFeedback() {
+        new QueryKboxHelper(Main.this, null, new QueryKboxHelper.QueryKboxFeedback() {
             @Override
             public void onStart() {
                 showTips(getString(R.string.getting_box_info));
@@ -2212,20 +2235,20 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 hideTips();
                 if (suceed) {
                     if (obj != null && obj instanceof KBox) {
-                        if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                        if (PreferenceUtil.getBoolean(Main.this,"isSingle", false)) {
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
                             ll_service.setVisibility(View.VISIBLE);
                             mTvBuy.setVisibility(View.VISIBLE);
                         }
-                        ToastUtils.toast(getApplicationContext(), msg);
+                        ToastUtils.toast(Main.this, msg);
                     }
                 } else {
-                    ToastUtils.toast(getApplicationContext(), msg);
+                    ToastUtils.toast(Main.this, msg);
                 }
             }
-        }).getBoxInfo(PrefData.getRoomCode(getApplicationContext()));
+        }).getBoxInfo(PrefData.getRoomCode(Main.this));
     }
 
     private void registerUsbReceiver() {
@@ -2336,7 +2359,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     public void tipBuyMessage(int resId) {
         try {
             if (mDlgTipBuy == null || !mDlgTipBuy.isShowing()) {
-                mDlgTipBuy = new PromptDialog(Main.mMainActivity);
+                mDlgTipBuy = new PromptDialog(Main.this);
                 mDlgTipBuy.setMessage(getString(resId));
                 mDlgTipBuy.setPositiveButton(getString(R.string.buy), new View.OnClickListener() {
                     @Override
@@ -2347,7 +2370,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                 FmPayMeal.TYPE_NORMAL : FmPayMeal.TYPE_NORMAL_RENEW;
                         dialog.setContent(FmPayMeal.createMealFragment(pageType, null));
                         if (!dialog.isAdded()) {
-                            dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
+                            dialog.show(getSupportFragmentManager(), "commonDialog");
                         }
                     }
                 });
@@ -2387,10 +2410,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 @Override
                 public void onDismiss() {
                     Meal boughtMeal = BoughtMeal.getInstance().getTheFirstMeal();
-                    if (boughtMeal != null && boughtMeal.getType() == Meal.SONG && BoughtMeal.getInstance().getLeftSongs() > 0 && ChooseSongs.getInstance(getApplicationContext()).getChooseSize() <= 0) {
+                    if (boughtMeal != null && boughtMeal.getType() == Meal.SONG && BoughtMeal.getInstance().getLeftSongs() > 0 && ChooseSongs.getInstance(Main.this).getChooseSize() <= 0) {
                         try {
                             if (mDlgChooseSong == null || !mDlgChooseSong.isShowing()) {
-                                mDlgChooseSong = new PromptDialog(Main.mMainActivity);
+                                mDlgChooseSong = new PromptDialog(Main.this);
                                 mDlgChooseSong.setMessage(getString(R.string.choose_song_tip_x));
                                 mDlgChooseSong.setPositiveButton(getString(R.string.known), null);
                                 mDlgChooseSong.setCanceledOnTouchOutside(false);
@@ -2420,7 +2443,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private void startChooseSongTimer() {
         Meal boughtMeal = BoughtMeal.getInstance().getTheFirstMeal();
         if (boughtMeal != null && boughtMeal.getType() == Meal.SONG && BoughtMeal.getInstance().getLeftSongs() > 0
-                && ChooseSongs.getInstance(getApplicationContext()).getChooseSize() <= 0) {
+                && ChooseSongs.getInstance(Main.this).getChooseSize() <= 0) {
             ChooseSongTimer.getInstance().setChooseSongTimerListener(new ChooseSongTimer.ChooseSongTimerListener() {
                 @Override
                 public void onChooseSongTimer(int count) {
@@ -2517,7 +2540,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void TouchScreen() {
-        ChooseSongs chooseSongs = ChooseSongs.getInstance(getApplicationContext());
+        ChooseSongs chooseSongs = ChooseSongs.getInstance(Main.this);
         hideSurf();
         if (BoughtMeal.getInstance().getTheFirstMeal() != null && chooseSongs.getChooseSize() > 0) {
             handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
@@ -2532,13 +2555,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
             if (System.currentTimeMillis() - PrefData.getLastTime(Main.this) > 10 * 60 * 60 * 1000) {
                 PrefData.setAuth(Main.this, false);
                 KBoxStatusInfo.getInstance().setKBoxStatus(null);
-                ToastUtils.toast(getApplicationContext(), getString(R.string.device_auth_fail));
+                ToastUtils.toast(Main.this, getString(R.string.device_auth_fail));
             }
         } else {
             if (System.currentTimeMillis() - PrefData.getLastTime(Main.this) > 10 * 60 * 1000) {
                 PrefData.setAuth(Main.this, false);
                 KBoxStatusInfo.getInstance().setKBoxStatus(null);
-                ToastUtils.toast(getApplicationContext(), getString(R.string.device_auth_fail));
+                ToastUtils.toast(Main.this, getString(R.string.device_auth_fail));
             }
         }
 
@@ -2571,7 +2594,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        ChooseSongs chooseSongs = ChooseSongs.getInstance(getApplicationContext());
+        ChooseSongs chooseSongs = ChooseSongs.getInstance(Main.this);
         if (!windowsfocus && chooseSongs.getChooseSize() > 0) {
             handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
             handler.sendEmptyMessage(HandlerSystem.MSG_RESET);

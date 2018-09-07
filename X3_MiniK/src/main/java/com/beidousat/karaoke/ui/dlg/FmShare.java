@@ -100,10 +100,10 @@ public class FmShare extends FmBaseDialog implements View.OnClickListener {
             case R.id.iv_share:
 //                DlgShare dlgShare = new DlgShare(Main.mMainActivity, song);
 //                dlgShare.show();
-                DialogHelper.showShareDialog(Main.mMainActivity, song);
+                DialogHelper.showShareDialog(getActivity(), song);
                 break;
             case R.id.iv_audition:
-                DlgAudioPlayer dlgAudioPlayer = new DlgAudioPlayer(Main.mMainActivity, song);
+                DlgAudioPlayer dlgAudioPlayer = new DlgAudioPlayer(getActivity(), song);
                 dlgAudioPlayer.show();
                 break;
         }

@@ -92,7 +92,7 @@ public class LanService extends Service {
             @Override
             public void onSystemUpdateStart() {
                 try {
-                    mDlgSystemUpdate = new DlgProgress(Main.mMainActivity);
+                    mDlgSystemUpdate = new DlgProgress(getApplicationContext());
                     mDlgSystemUpdate.setTitle("系统升级");
                     mDlgSystemUpdate.setTip("系统升级中，请勿关机...");
                     mDlgSystemUpdate.show();

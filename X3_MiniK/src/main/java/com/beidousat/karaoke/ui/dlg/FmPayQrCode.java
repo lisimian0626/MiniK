@@ -95,7 +95,7 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
         mSelectedMeal = (Meal) getArguments().getSerializable(MEAL_TAG);
         qr_code=getArguments().getString(QR_CODE);
         mType = getArguments().getString(TYPE_TAG);
-        mQueryOrderHelper = new QueryOrderHelper(this);
+        mQueryOrderHelper = new QueryOrderHelper(getActivity(),this);
     }
 
     @Override

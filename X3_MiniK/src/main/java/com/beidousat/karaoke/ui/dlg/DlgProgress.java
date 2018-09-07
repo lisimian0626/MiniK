@@ -2,6 +2,7 @@ package com.beidousat.karaoke.ui.dlg;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -20,7 +21,7 @@ public class DlgProgress extends BaseDialog {
     private TextView tvProgress;
     private ProgressBar mProgressBar;
 
-    public DlgProgress(Activity context) {
+    public DlgProgress(Context context) {
         super(context, R.style.MyDialog);
         init();
     }

@@ -19,7 +19,6 @@ import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.Songs;
 import com.beidousat.karaoke.model.StarInfo;
 import com.beidousat.karaoke.ui.dlg.DlgPreview;
-import com.beidousat.karaoke.util.DiskFileUtil;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.karaoke.widget.WidgetKeyboard;
 import com.beidousat.karaoke.widget.WidgetSongPager;
@@ -27,6 +26,7 @@ import com.beidousat.karaoke.widget.WidgetTopTabs;
 import com.beidousat.libbns.amin.MoveAnimation;
 import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.RequestMethod;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.bumptech.glide.Glide;
 

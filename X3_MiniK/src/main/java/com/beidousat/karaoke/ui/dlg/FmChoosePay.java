@@ -64,8 +64,7 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
     void initData() {
         mMeal = (Meal) getArguments().getSerializable(MEAL_TAG);
         mCardcode = getArguments().getString(MEAL_CARDCODE);
-        mQueryOrderHelper = new QueryOrderHelper(this);
-
+        mQueryOrderHelper = new QueryOrderHelper(getActivity().getApplicationContext(),this);
     }
 
     @Override
@@ -121,7 +120,9 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
     @Override
     public void onStart(String method) {
         super.onStart(method);
-        LoadingUtil.showLoadingDialog(Main.mMainActivity);
+        if(getActivity()==null)
+            return;
+        LoadingUtil.showLoadingDialog(getActivity().getApplicationContext());
     }
 
     @Override
@@ -157,7 +158,9 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
                         FmPayMeal.TYPE_NORMAL : FmPayMeal.TYPE_NORMAL_RENEW;
                 dialog.setContent(FmPayMeal.createMealFragment(pageType, mCardcode));
                 if (!dialog.isAdded()) {
-                    dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
+                    if (getActivity()==null)
+                        return;
+                    dialog.show(getActivity().getSupportFragmentManager(), "commonDialog");
                 }
                 break;
         }
@@ -230,7 +233,9 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
     @Override
     public void onStoreFailed(String url, String error) {
         LoadingUtil.closeLoadingDialog();
-        DialogFactory.showErrorDialog(Main.mMainActivity, error, new DialogInterface.OnClickListener() {
+        if(getActivity()==null)
+            return;
+        DialogFactory.showErrorDialog(getActivity().getApplicationContext(), error, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -242,7 +247,10 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
     @Override
     public void onStoreStart(String method) {
         super.onStart(method);
-        LoadingUtil.showLoadingDialog(Main.mMainActivity);
+        if(getActivity()==null){
+            return;
+        }
+        LoadingUtil.showLoadingDialog(getActivity().getApplicationContext());
     }
 
     private void showQrCode(PayResult payResult) {

@@ -101,7 +101,7 @@ public class ChooseSongs {
     }
 
     private boolean canAddSong() {
-        if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+        if (PreferenceUtil.getBoolean(mContext,"isSingle", false)) {
             if (PrefData.getLastAuth(mContext)) {
                 return true;
             } else {
@@ -124,7 +124,7 @@ public class ChooseSongs {
             }
         } else {
             if (PrefData.getLastAuth(mContext)) {
-                if (!com.beidousat.karaoke.util.DiskFileUtil.isDiskExit()) {
+                if (!DiskFileUtil.hasDiskStorage()) {
                     tipMessage(R.string.hand_disk);
                     return false;
                 }
@@ -166,9 +166,9 @@ public class ChooseSongs {
     public void tipMessage(int resId) {
         try {
             if (mPromptDialog == null || !mPromptDialog.isShowing()) {
-                mPromptDialog = new PromptDialog(Main.mMainActivity);
+                mPromptDialog = new PromptDialog(mContext);
             }
-            if(PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)){
+            if(PreferenceUtil.getBoolean(mContext,"isSingle", false)){
                      if(R.string.no_pay_service==resId){
                          mPromptDialog.setPositiveButton(mContext.getString(R.string.pay_for_service), new View.OnClickListener() {
                              @Override
@@ -192,14 +192,15 @@ public class ChooseSongs {
                         mPromptDialog.setPositiveButton(mContext.getString(R.string.buy), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                CommonDialog dialog = CommonDialog.getInstance();
-                                dialog.setShowClose(true);
-                                int pageType = BoughtMeal.getInstance().isMealExpire() ?
-                                        FmPayMeal.TYPE_NORMAL : FmPayMeal.TYPE_NORMAL_RENEW;
-                                dialog.setContent(FmPayMeal.createMealFragment(pageType,null));
-                                if (!dialog.isAdded()) {
-                                    dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
-                                }
+                                EventBusUtil.postBusinessCode(EventBusId.BUSINESS.SHOWBUY);
+//                                CommonDialog dialog = CommonDialog.getInstance();
+//                                dialog.setShowClose(true);
+//                                int pageType = BoughtMeal.getInstance().isMealExpire() ?
+//                                        FmPayMeal.TYPE_NORMAL : FmPayMeal.TYPE_NORMAL_RENEW;
+//                                dialog.setContent(FmPayMeal.createMealFragment(pageType,null));
+//                                if (!dialog.isAdded()) {
+//                                    dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
+//                                }
                             }
                         });
                     }
@@ -306,20 +307,21 @@ public class ChooseSongs {
 //        });
     }
     private void showPayService() {
-        CommonDialog dialog = CommonDialog.getInstance();
-        dialog.setContent(FmPaySevice.createPaySeviceFragment());
-        if (!dialog.isAdded()) {
-            dialog.show(Main.mMainActivity.getSupportFragmentManager(), "pay_service");
-        }
+          EventBusUtil.postBusinessCode(EventBusId.BUSINESS.PAYSERVICE);
+//        CommonDialog dialog = CommonDialog.getInstance();
+//        dialog.setContent(FmPaySevice.createPaySeviceFragment());
+//        if (!dialog.isAdded()) {
+//            dialog.show(Main.mMainActivity.getSupportFragmentManager(), "pay_service");
+//        }
     }
-    private void showRoomSet() {
-        CommonDialog dialog = CommonDialog.getInstance();
-        dialog.setShowClose(true);
-        dialog.setContent(FmRoomSet.createRoomSetFragment());
-        if (!dialog.isAdded()) {
-            dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
-        }
-    }
+//    private void showRoomSet() {
+//        CommonDialog dialog = CommonDialog.getInstance();
+//        dialog.setShowClose(true);
+//        dialog.setContent(FmRoomSet.createRoomSetFragment());
+//        if (!dialog.isAdded()) {
+//            dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
+//        }
+//    }
     public boolean addSong(final Song songInfo) {
         try {
             if (canAddSong()) {

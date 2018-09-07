@@ -201,7 +201,7 @@ public class FmSetting extends BaseFragment implements View.OnClickListener {
 
     private void showSetRoomCodeDialog() {
         if (mDialogSetRoomTip == null || !mDialogSetRoomTip.isShowing()) {
-            mDialogSetRoomTip = new PromptDialog(Main.mMainActivity);
+            mDialogSetRoomTip = new PromptDialog(getActivity());
             mDialogSetRoomTip.setMessage("未设置房间编号！请先设置房间编号。");
             mDialogSetRoomTip.show();
         }

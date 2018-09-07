@@ -1,5 +1,6 @@
 package com.beidousat.karaoke.player;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -8,14 +9,12 @@ import android.view.SurfaceView;
 
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
-import com.beidousat.karaoke.ui.Main;
-import com.beidousat.karaoke.util.DiskFileUtil;
 import com.beidousat.karaoke.util.MyDownloader;
-import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetWorkUtils;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.score.KeyInfo;
@@ -42,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener{
-
+    private Context mContext;
     private SurfaceView mVideoSurfaceView;
 
     private SurfaceView mMinor;
@@ -85,7 +84,8 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     public static int PREVIEW=1;
     public static final int NORMAL=2;
 
-    public BnsPlayer(SurfaceView videoSurfaceView, SurfaceView minor, int width, int height) {
+    public BnsPlayer(Context context,SurfaceView videoSurfaceView, SurfaceView minor, int width, int height) {
+        this.mContext=context;
         mVideoSurfaceView = videoSurfaceView;
         mMinor = minor;
         mWidth = width;
@@ -122,7 +122,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
             uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
         }
-        Log.e("test","file:"+DiskFileUtil.getDiskFileByUrl(uri));
+        Log.e("test","file:"+ DiskFileUtil.getDiskFileByUrl(uri));
         File file = DiskFileUtil.getDiskFileByUrl(uri);
             if (file != null) {//存在本地文件
                 Logger.d(TAG, "open local file:" + file.getAbsolutePath());
@@ -141,7 +141,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
 
             } else {//本地文件不存在
                 if(playmode==PREVIEW) {
-                    if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
+                    if (!NetWorkUtils.isNetworkAvailable(mContext)) {
                         return;
                     }
                     Logger.d(TAG, "open net file:" + uri);
@@ -156,7 +156,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     getTrack(mMediaPlayer);
                 }else if(playmode==NORMAL){
                     Log.e("test","文件不存在");
-                    if(!DiskFileUtil.isDiskExit()){
+                    if(!DiskFileUtil.hasDiskStorage()){
                         return;
                     }
                     new Handler().postDelayed(new Runnable() {

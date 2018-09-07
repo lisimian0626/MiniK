@@ -119,7 +119,7 @@ public class FmRoomSet extends FmBaseDialog implements OnDlgListener{
         fmDlgRoom.setOnDlgListener(this);
         FmDlgRoomCode fmDlgRoomCode = new FmDlgRoomCode();
         fmDlgRoomCode.setOnDlgListener(this);
-        mPagerTitles.addAll(Arrays.asList(Main.mMainActivity.getResources().getStringArray(R.array.room_set_tabs)));
+        mPagerTitles.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.room_set_tabs)));
         mFragments.add(fmDlgRoom);
         mFragments.add(fmDlgRoomCode);
 

@@ -116,7 +116,7 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
     void initData() {
         mSelectedMeal = (Meal) getArguments().getSerializable(MEAL_TAG);
         mType = getArguments().getString(TYPE_TAG);
-        mQueryOrderHelper = new QueryOrderHelper(this);
+        mQueryOrderHelper = new QueryOrderHelper(getActivity(),this);
     }
 
     @Override
@@ -415,7 +415,9 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
     }
     @Override
     public void onStoreStart(String method) {
-        LoadingUtil.showLoadingDialog(Main.mMainActivity);
+        if(getActivity()==null)
+            return;
+        LoadingUtil.showLoadingDialog(getActivity());
         super.onStoreStart(method);
     }
 

@@ -2,6 +2,7 @@ package com.beidousat.karaoke.ui.dlg;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -25,7 +26,7 @@ public class PromptDialog extends BaseDialog implements OnClickListener {
     private View.OnClickListener mPositiveListener;
 //    private Activity outerActivity;
 
-    public PromptDialog(Activity context) {
+    public PromptDialog(Context context) {
         super(context, R.style.MyDialog);
 //        outerActivity = (Activity) context;
         init();

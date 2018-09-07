@@ -32,9 +32,10 @@ public class WidgetSungPageList extends RecyclerView {
 
 
     private AdtSung mAdapter;
-
+    private Context mContext;
     public WidgetSungPageList(Context context) {
         super(context);
+        this.mContext=context;
         init();
     }
 
@@ -150,7 +151,7 @@ public class WidgetSungPageList extends RecyclerView {
                 public void onClick(View v) {
 //                    DlgShare dlgShare = new DlgShare(Main.mMainActivity, song);
 //                    dlgShare.show();
-                    DialogHelper.showShareDialog(Main.mMainActivity, song);
+                    DialogHelper.showShareDialog(mContext, song);
                 }
             });
 
@@ -158,7 +159,7 @@ public class WidgetSungPageList extends RecyclerView {
             holder.tvListen.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DlgAudioPlayer dlgAudioPlayer = new DlgAudioPlayer(Main.mMainActivity, song);
+                    DlgAudioPlayer dlgAudioPlayer = new DlgAudioPlayer(mContext, song);
                     dlgAudioPlayer.show();
                 }
             });

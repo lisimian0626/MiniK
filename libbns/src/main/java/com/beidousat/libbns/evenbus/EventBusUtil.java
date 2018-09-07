@@ -59,13 +59,10 @@ public class EventBusUtil {
     public static void postGiftFail(String msg){
         EventBus.getDefault().post(BusEvent.getEvent(EventBusId.id.GIFT_FAIL, msg));
     }
-    public static void postCheckRoom(String kbox_sn){
-        EventBus.getDefault().post(BusEvent.getEvent(EventBusId.Dialog.CHECKROOM,kbox_sn));
-    }
-    public static void postPayService(){
-        EventBus.getDefault().post(BusEvent.getEvent(EventBusId.Dialog.PAYSERVICE,""));
-    }
     public static void postInfraredCode(String code){
         EventBus.getDefault().post(BusEvent.getEvent(EventBusId.INFARAED.RECEIVE_CODE,code));
+    }
+    public static void postBusinessCode(Integer BusinessId){
+        EventBus.getDefault().post(BusEvent.getEvent(BusinessId,""));
     }
 }

@@ -110,7 +110,7 @@ public class FmPaySevice extends FmBaseDialog implements OnDlgListener{
         bundle_zhifubao.putString(FmPayment.PAYMENT_TYPE,"alipay");
         bundle_zhifubao.putString(FmPayment.PAYMENT_TIPS,"请使用支付宝扫码充值，充值成功后系统将于2分钟内扣费并开通服务");
         payment_zhifubao.setArguments(bundle_zhifubao);
-        mPagerTitles.addAll(Arrays.asList(Main.mMainActivity.getResources().getStringArray(R.array.payment_tabs)));
+        mPagerTitles.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.payment_tabs)));
         mFragments.add(payment_wechat);
         mFragments.add(payment_zhifubao);
 

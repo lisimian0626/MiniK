@@ -121,7 +121,7 @@ public class PackageUtil {
 
     public static int getSystemVersionCode() {
         try {
-            String version = SystemProperties.get(BnsConfig.is901() ? "ro.product.version" : "ro.sw.version");
+            String version = SystemProperties.get(DiskFileUtil.is901() ? "ro.product.version" : "ro.sw.version");
             Logger.i("PackageUtil", "SystemProperties version:" + version);
             if (version.contains("V")) {
                 version = version.replace("V", "");

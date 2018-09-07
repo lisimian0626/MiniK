@@ -215,9 +215,9 @@ public class FmPayMeal extends FmBaseDialog {
             }
         } else {
             if (Common.isEn) {
-                mPagerTitles.addAll(Arrays.asList(Main.mMainActivity.getResources().getStringArray(R.array.paymeal_tabs_en)));
+                mPagerTitles.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.paymeal_tabs_en)));
             } else {
-                mPagerTitles.addAll(Arrays.asList(Main.mMainActivity.getResources().getStringArray(R.array.paymeal_tabs)));
+                mPagerTitles.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.paymeal_tabs)));
             }
 
             mFragments.add(timeMeal);
@@ -243,7 +243,9 @@ public class FmPayMeal extends FmBaseDialog {
             @Override
             public void onStart() {
                 if (isAdded())
-                    LoadingUtil.showLoadingDialog(Main.mMainActivity);
+                    if(getActivity()==null)
+                        return;
+                    LoadingUtil.showLoadingDialog(getActivity());
             }
             @Override
             public void onFeedback(boolean suceed, String msg, Object object) {
@@ -272,7 +274,9 @@ public class FmPayMeal extends FmBaseDialog {
                 return;
             }
             if (dlgWebView == null || !dlgWebView.isShowing()) {
-                dlgWebView = new DlgWebView(Main.mMainActivity,
+                if(getActivity()==null)
+                    return;
+                dlgWebView = new DlgWebView(getActivity(),
                         ServerConfigData.getInstance().getServerConfig().getStore_web() + "package/?kbox_sn=" + PrefData.getRoomCode(getContext())
                 );
                 dlgWebView.show();

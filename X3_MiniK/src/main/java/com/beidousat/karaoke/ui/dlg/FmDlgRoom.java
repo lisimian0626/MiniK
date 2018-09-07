@@ -201,7 +201,7 @@ public class FmDlgRoom extends FmBaseDialog implements View.OnTouchListener, Vie
                               PrefData.setAuth(getContext().getApplicationContext(), false);
                               BoughtMeal.getInstance().clearMealInfo();
                               BoughtMeal.getInstance().clearMealInfoSharePreference();
-                              PrefData.setRoomCode(Main.mMainActivity,Kbox_sn);
+                              PrefData.setRoomCode(getActivity(),Kbox_sn);
                               if(onDlgListener!=null){
                                   onDlgListener.onDissmiss();
                               }

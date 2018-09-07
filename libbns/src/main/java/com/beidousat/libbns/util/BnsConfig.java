@@ -28,7 +28,7 @@ public class BnsConfig {
     /**
      * 是否开启LOG
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     /**
      * 普通倒计时(结束、续费)
@@ -46,10 +46,7 @@ public class BnsConfig {
     public static final int CHOOSE_SONG_TIME = 60 * 10;
 
 
-    public static boolean is901() {
-        String model = android.os.Build.MODEL;
-        return "rk3288_box".equalsIgnoreCase(model);
-    }
+
 
 }
 

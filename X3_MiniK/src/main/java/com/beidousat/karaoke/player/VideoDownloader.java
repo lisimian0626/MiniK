@@ -2,9 +2,9 @@ package com.beidousat.karaoke.player;
 
 import android.text.TextUtils;
 
-import com.beidousat.karaoke.util.DiskFileUtil;
 import com.beidousat.libbns.net.download.SimpleDownloadListener;
 import com.beidousat.libbns.net.download.SimpleDownloader;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 
@@ -36,7 +36,7 @@ public class VideoDownloader implements SimpleDownloadListener {
     }
 
     public void addDownloadUrl(String url) {
-        if (DiskFileUtil.isDiskExit()) {
+        if (DiskFileUtil.hasDiskStorage()) {
             mUrl.add(ServerFileUtil.getFileUrl(url));
             Logger.d(TAG, "addDownloadUrl ==" + url);
             startDownload();
@@ -44,7 +44,7 @@ public class VideoDownloader implements SimpleDownloadListener {
     }
 
     private void startDownload() {
-        if (DiskFileUtil.isDiskExit() && !mIsDownloading && mUrl.size() > 0) {
+        if (DiskFileUtil.hasDiskStorage() && !mIsDownloading && mUrl.size() > 0) {
             String url = mUrl.remove(0);
             String savePath;
             if (!TextUtils.isEmpty(url) && !TextUtils.isEmpty(savePath = DiskFileUtil.getDiskPathByHttpPath(url))) {

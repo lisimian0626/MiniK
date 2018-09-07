@@ -272,12 +272,13 @@ public class EventBusId {
 
     }
 
-    public static final class Dialog {
-        public static final int CHECKROOM= 30000;
-        public static final int PAYSERVICE= 30001;
-    }
-
     public static final class INFARAED {
         public static final int RECEIVE_CODE = 40000;
+    }
+
+    public static final class BUSINESS {
+        public static final int CHECKROOM= 30000;
+        public static final int PAYSERVICE= 30001;
+        public static final int SHOWBUY = 30002;
     }
 }

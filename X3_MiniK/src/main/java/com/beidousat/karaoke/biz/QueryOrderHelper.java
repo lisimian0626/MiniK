@@ -1,5 +1,6 @@
 package com.beidousat.karaoke.biz;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.beidousat.karaoke.data.BoughtMeal;
@@ -33,8 +34,10 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
     SupportQueryOrder mSupporter;
     Meal mMeal;
     String order_sn;
-    public QueryOrderHelper(SupportQueryOrder supporter) {
+    Context mContext;
+    public QueryOrderHelper(Context context,SupportQueryOrder supporter) {
         mSupporter = supporter;
+        this.mContext=context;
     }
 
     public StoreHttpRequest queryOrder(Meal meal) {
@@ -89,7 +92,7 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
         switch (method) {
             case RequestMethod.ORDER_CANCEL:
 //                LoadingUtil.showLoadingDialog(mSupporter.getSupportedContext());
-                LoadingUtil.showLoadingDialog(Main.mMainActivity);
+                LoadingUtil.showLoadingDialog(mContext);
                 break;
         }
     }
@@ -105,7 +108,7 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
                     order_sn=payStatus.getOrderSn();
                     boolean isMealExpire = BoughtMeal.getInstance().isMealExpire();
                     Logger.d("QueryOrderHelper", "onStoreSuccess PAY_SUCESS isMealExpire:" + isMealExpire);
-                    if(!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)){
+                    if(!PreferenceUtil.getBoolean(mContext,"isSingle", false)){
                         CommonDialog dialog = CommonDialog.getInstance();
                         dialog.setShowClose(true);
                         dialog.setContent(new FmPayResult());

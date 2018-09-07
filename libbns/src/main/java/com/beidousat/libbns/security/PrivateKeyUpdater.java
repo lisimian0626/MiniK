@@ -6,6 +6,7 @@ import android.util.Log;
 import com.beidousat.libbns.net.download.SimpleDownloadListener;
 import com.beidousat.libbns.net.download.SimpleDownloader;
 import com.beidousat.libbns.util.BnsConfig;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.KaraokeSdHelper;
 import com.beidousat.libbns.util.Logger;
 
@@ -24,7 +25,7 @@ public class PrivateKeyUpdater implements SimpleDownloadListener {
     }
 
     public void updateKey() {
-        File keyFile = BnsConfig.is901() ? KaraokeSdHelper.getSongSecurityKeyFileFor901() : KaraokeSdHelper.getSongSecurityKeyFile();
+        File keyFile = DiskFileUtil.is901() ? KaraokeSdHelper.getSongSecurityKeyFileFor901() : KaraokeSdHelper.getSongSecurityKeyFile();
         if (keyFile != null && keyFile.exists() && keyFile.length() == 32) {//不需要更新密钥
             Log.d("PrivateKeyUpdater", "updateKey keyFile key exist , not need to update !!");
             return;

@@ -28,9 +28,10 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
     private long prepareBegin;
     private Song mSong;
     private String mFileUrl;
-
+    private Context mContext;
     public DlgPreview(Context context, Song song) {
         super(context, R.style.MyDialog);
+        this.mContext=context;
         mSong = song;
         init();
     }
@@ -69,7 +70,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
             @Override
             public void run() {
                 try {
-                    mMediaPlayer = new BnsPlayer(mSurfaceView, null, 0, 0);
+                    mMediaPlayer = new BnsPlayer(mContext,mSurfaceView, null, 0, 0);
                     String filePath = TextUtils.isEmpty(mSong.PreviewPath) ? mSong.SongFilePath : mSong.PreviewPath;
                     mFileUrl = ServerFileUtil.getPreviewUrl(filePath);
                     Logger.i(TAG, "play url:" + mFileUrl);

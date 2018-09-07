@@ -21,13 +21,12 @@ public class DlgTune extends BaseDialog implements OnClickListener {
 
     private TextView mTvMusic, mTvTone, mTvMic, mTvEff;
     private OnTuneListener mOnTuneListener;
-
+    private Context mContext;
     public DlgTune(Context context) {
         super(context, R.style.MyDialog);
+        this.mContext=context;
         init();
-
         EventBus.getDefault().register(this);
-
     }
 
     public void setOnTuneListener(OnTuneListener listener) {
@@ -77,10 +76,10 @@ public class DlgTune extends BaseDialog implements OnClickListener {
         findViewById(R.id.iv_reverb_up).setOnClickListener(this);
         findViewById(R.id.iv_reverb_down).setOnClickListener(this);
         findViewById(R.id.iv_default).setOnClickListener(this);
-        if(!SerialController.getInstance(Main.mMainActivity).ismIsOpened()){
+        if(!SerialController.getInstance(mContext).ismIsOpened()){
             try {
-                int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(Main.mMainActivity));
-                SerialController.getInstance(Main.mMainActivity).open(Common.mPort, baudrate);
+                int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(mContext));
+                SerialController.getInstance(mContext).open(Common.mPort, baudrate);
             } catch (Exception e) {
                 e.printStackTrace();
             }
