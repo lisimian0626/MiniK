@@ -76,7 +76,7 @@ public class AdtSinger extends RecyclerView.Adapter<AdtSinger.ViewHolder> {
         } else {
             Uri starImg = DiskFileUtil.getSingerThumbnailImg(starInfo.Img);
             Glide.with(mContext).load(starImg).override(140, 140).centerCrop()
-                    .skipMemoryCache(true)
+//                    .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .placeholder(R.drawable.star_default)
                     .error(R.drawable.star_default).into(holder.ivCover);

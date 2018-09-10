@@ -220,7 +220,7 @@ public class ChooseSongs {
         if (DiskFileUtil.hasDiskStorage()) {
             try {
                 MyDownloader.getInstance().startDownload(
-                        ServerFileUtil.getFileUrl(songInfo.SongFilePath),
+                        ServerFileUtil.getFileUrl(songInfo.download_url),
                         DiskFileUtil.getFileSavedPath(songInfo.SongFilePath), songInfo);
             } catch (Exception e) {
 //                PromptDialog promptDialog = new PromptDialog(Main.mMainActivity);

@@ -33,6 +33,9 @@ public class Song extends SongSimple implements Serializable {
     @Expose
     public String PreviewPath;
 
+    @Expose
+    public String download_url;
+
     public int Hot;
 
     /***
