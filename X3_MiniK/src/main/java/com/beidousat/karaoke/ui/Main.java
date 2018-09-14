@@ -98,7 +98,6 @@ import com.beidousat.karaoke.ui.fragment.FmShows;
 import com.beidousat.karaoke.ui.presentation.PlayerPresentation;
 import com.beidousat.karaoke.util.AnimatorUtils;
 import com.beidousat.karaoke.util.ChooseSongTimer;
-import com.beidousat.karaoke.util.DiskFileUtil;
 import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.karaoke.util.SystemBroadcastSender;
@@ -129,6 +128,7 @@ import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.socket.KBoxSocketHeart;
 import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DeviceUtil;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.KaraokeSdHelper;
 import com.beidousat.libbns.util.Logger;
@@ -222,7 +222,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        switchLanguage("zh");
+        if(PreferenceUtil.getString(this,"language","zh").equals("en")){
+            switchLanguage("en");
+        }else{
+            switchLanguage("zh");
+        }
         setContentView(R.layout.act_main);
         mMainActivity = this;
         initView();
@@ -290,6 +294,24 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 //获取配置文件成功后检测外接硬盘，检测USB接入等
                 hideTips();
                 if (suceed) {
+                    KboxConfig kboxConfig= (KboxConfig) obj;
+                    String language=kboxConfig.getLanguage().toLowerCase();
+                    if(!TextUtils.isEmpty(language)&&(language.equals("zh")||language.equals("en"))){
+                        if(!language.equals(PreferenceUtil.getString(Main.this,"language","zh"))){
+                            PromptDialog promptDialog = new PromptDialog(Main.this);
+                            promptDialog.setMessage(R.string.change_room_tip);
+                            promptDialog.setPositiveButton(getString(R.string.reboot), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    exitApp();
+                                }
+                            });
+                            promptDialog.show();
+                        }
+                        PreferenceUtil.setString(Main.this,"language",kboxConfig.getLanguage());
+                    }
+
+
 //                    dismissInitLoading();
 //                    mMarqueePlayer.loadAds("Z1");
 //                    mMarqueePlayer.startPlayer();
@@ -303,7 +325,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //                    showCfgDialog(getString(R.string.getting_config), getString(R.string.getting_config_error));
                 }
             }
-        }).getConfig();
+        }).getConfig(DeviceUtil.getCupChipID());
     }
 
     private void getKboxDetail() {
@@ -2118,7 +2140,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private PromptDialog mDlgDiskNotExit;
 
     private boolean checkDisk() {
-        if (!DiskFileUtil.isDiskExit()) {
+        if (!DiskFileUtil.hasDiskStorage()) {
             if (mDlgDiskNotExit == null || !mDlgDiskNotExit.isShowing()) {
                 mDlgDiskNotExit = new PromptDialog(this);
                 mDlgDiskNotExit.setMessage(getResources().getString(R.string.hand_disk));

@@ -124,7 +124,7 @@ public class ChooseSongs {
             }
         } else {
             if (PrefData.getLastAuth(mContext)) {
-                if (!com.beidousat.karaoke.util.DiskFileUtil.isDiskExit()) {
+                if (!DiskFileUtil.hasDiskStorage()) {
                     tipMessage(R.string.hand_disk);
                     return false;
                 }

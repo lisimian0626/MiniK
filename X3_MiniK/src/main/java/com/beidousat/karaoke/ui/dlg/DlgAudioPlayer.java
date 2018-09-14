@@ -15,7 +15,7 @@ import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.StarInfo;
 import com.beidousat.karaoke.player.AudioPlayer;
 import com.beidousat.karaoke.player.KaraokeController;
-import com.beidousat.karaoke.util.DiskFileUtil;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.HttpRequestListener;
 import com.beidousat.libbns.net.request.RequestMethod;

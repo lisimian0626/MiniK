@@ -16,7 +16,7 @@ import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.StarInfo;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.ui.fragment.FmSingerDetail;
-import com.beidousat.karaoke.util.DiskFileUtil;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.Logger;

@@ -19,28 +19,32 @@ public class DiskFileUtil {
     private final static String TAG = "DiskFileUtil";
 
 
-    //硬盘根目录
-    private final static String USB_PATH = "/mnt/usb_storage/USB_DISK1/udisk1/";
+    //晨芯硬盘根目录
+    public final static String USB_PATH = "/mnt/usb_storage/USB_DISK1/udisk1/";
 
-    //YNH硬盘根目录
-    private final static String USB_PATH_901 = "/mnt/usb_storage/SATA/C/";
+    //音诺恒硬盘根目录
+    public final static String USB_PATH_901 = "/mnt/usb_storage/SATA/C/";
 
     //歌星大图目录
-    private final static String SINGER_IMG_DIR = USB_PATH + "data/Img/SingerImg/";
+    private final static String SINGER_IMG_DIR = (is901()?USB_PATH_901:USB_PATH) + "data/Img/SingerImg/";
 
-    private final static String SINGER_IMG_DIR_901 = USB_PATH_901 + "data/Img/SingerImg/";
-
-    //歌星缩略图目录
-    private final static String SINGER_THUNB_IMG_DIR = USB_PATH + "data/Img/SingerImg150/";
+//    private final static String SINGER_IMG_DIR_901 = USB_PATH_901 + "data/Img/SingerImg/";
 
     //歌星缩略图目录
-    private final static String SINGER_THUNB_IMG_DIR_901 = USB_PATH_901 + "data/Img/SingerImg150/";
+    private final static String SINGER_THUNB_IMG_DIR = (is901()?USB_PATH_901:USB_PATH) + "data/Img/SingerImg150/";
+
+//    //歌星缩略图目录
+//    private final static String SINGER_THUNB_IMG_DIR_901 = USB_PATH_901 + "data/Img/SingerImg150/";
 
     //评分文件
-    private final static String GRADE_DIR = USB_PATH + "data/grade/";
+    private final static String GRADE_DIR = (is901()?USB_PATH_901:USB_PATH) + "data/grade/";
 
-    private final static String GRADE_DIR_901 = USB_PATH_901 + "data/grade/";
+//    private final static String GRADE_DIR_901 = USB_PATH_901 + "data/grade/";
 
+    public static boolean is901() {
+        String model = android.os.Build.MODEL;
+        return "rk3288_box".equalsIgnoreCase(model);
+    }
     /**
      * 根据URL获取硬盘中文件
      *
@@ -54,7 +58,7 @@ public class DiskFileUtil {
             String path = url.substring(indexOf, url.length());
             Logger.d(TAG, "getDiskFileByUrl path==" + path);
 
-            File file = new File((BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + path);
+            File file = new File((DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH) + path);
             Logger.d(TAG, "getDiskFileByUrl disk file==" + file.getAbsolutePath());
 
             if (file.exists()) {
@@ -72,14 +76,14 @@ public class DiskFileUtil {
             return null;
         }
         String serverurl = null;
-        if (diskPath.contains(BnsConfig.is901() ? USB_PATH_901 : USB_PATH)) {
-            serverurl = diskPath.replace(BnsConfig.is901() ? USB_PATH_901 : USB_PATH, "");
+        if (diskPath.contains(DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH)) {
+            serverurl = diskPath.replace(DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH, "");
         }
         return serverurl;
     }
 
     public static boolean hasDiskStorage() {
-        File disk = new File(BnsConfig.is901() ? USB_PATH_901 : USB_PATH);
+        File disk = new File(DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH);
         return disk.exists();
     }
 
@@ -93,11 +97,11 @@ public class DiskFileUtil {
         if (TextUtils.isEmpty(path))
             return null;
 
-        return (BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + path;
+        return (DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH) + path;
     }
 
     public final static String getUsbDiskPath() {
-        return  BnsConfig.is901() ? USB_PATH_901 : USB_PATH;
+        return  DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH;
     }
 
     /**
@@ -108,7 +112,7 @@ public class DiskFileUtil {
         if (TextUtils.isEmpty(fileName)) {
             return null;
         }
-        File file = new File(BnsConfig.is901() ? SINGER_THUNB_IMG_DIR_901 : SINGER_THUNB_IMG_DIR, fileName);
+        File file = new File(SINGER_THUNB_IMG_DIR, fileName);
         if (file != null && file.exists()) {
             return Uri.fromFile(file);
         }
@@ -125,7 +129,7 @@ public class DiskFileUtil {
         if (TextUtils.isEmpty(fileName)) {
             return null;
         }
-        File file = new File(BnsConfig.is901() ? SINGER_IMG_DIR_901 : SINGER_IMG_DIR, fileName);
+        File file = new File(SINGER_IMG_DIR, fileName);
         if (file != null && file.exists()) {
             return Uri.fromFile(file);
         }
@@ -134,7 +138,7 @@ public class DiskFileUtil {
     }
 
     public static File getGradeDir() {
-        File file = new File(BnsConfig.is901() ? GRADE_DIR_901 : GRADE_DIR);
+        File file = new File(GRADE_DIR);
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -171,5 +175,24 @@ public class DiskFileUtil {
         }
         return null;
     }
-
+    /**
+     * 根据http url 转为硬盘文件路径
+     *
+     * @param httpPath
+     * @return
+     */
+    public static String getDiskPathByHttpPath(String httpPath) {
+        if (TextUtils.isEmpty(httpPath)) {
+            return "";
+        }
+        try {
+            int indexOf = httpPath.indexOf("data/");
+            String path = httpPath.substring(indexOf, httpPath.length());
+            Logger.d(TAG, "getDiskFileByUrl path==" + path);
+            return (USB_PATH + path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

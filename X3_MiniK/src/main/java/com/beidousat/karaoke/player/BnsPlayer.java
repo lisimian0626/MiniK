@@ -9,7 +9,7 @@ import android.view.SurfaceView;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
 import com.beidousat.karaoke.ui.Main;
-import com.beidousat.karaoke.util.DiskFileUtil;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.EventBusId;
@@ -156,7 +156,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     getTrack(mMediaPlayer);
                 }else if(playmode==NORMAL){
                     Log.e("test","文件不存在");
-                    if(!DiskFileUtil.isDiskExit()){
+                    if(!DiskFileUtil.hasDiskStorage()){
                         return;
                     }
                     new Handler().postDelayed(new Runnable() {
@@ -166,7 +166,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                         }
                     },10*1000);
                     try {
-                        Log.e("test","download:"+ServerFileUtil.getFileUrl(uri));
+//                        Log.e("test","download:"+ServerFileUtil.getFileUrl(uri));
                         MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
                                 DiskFileUtil.getFileSavedPath(uri));
                     }catch (Exception e){
@@ -384,16 +384,16 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
 
     public void onOriginal(int flag) {
         try {
-            if (flag == 0) {//单音轨原唱在左
-                setVolChannel(1);
-            } else if (flag == 1) {//单音轨原唱在右
-                setVolChannel(2);
-            } else if (flag == 2) {//双音轨第一轨原唱
-                mMediaPlayer.selectTrack(mTrackAudioIndex.get(0));
-            } else if (flag == 3) {//双音轨第一轨伴奏
-                if (haveMulTracks())
-                    mMediaPlayer.selectTrack(mTrackAudioIndex.get(1));
-            }
+                if (flag == 0) {//单音轨原唱在左
+                    setVolChannel(1);
+                } else if (flag == 1) {//单音轨原唱在右
+                    setVolChannel(2);
+                } else if (flag == 2) {//双音轨第一轨原唱
+                    mMediaPlayer.selectTrack(mTrackAudioIndex.get(0));
+                } else if (flag == 3) {//双音轨第一轨伴奏
+                    if (haveMulTracks())
+                        mMediaPlayer.selectTrack(mTrackAudioIndex.get(1));
+                }
         } catch (Exception e) {
             Logger.w(TAG, "onOriginal ex:" + e.toString());
         }

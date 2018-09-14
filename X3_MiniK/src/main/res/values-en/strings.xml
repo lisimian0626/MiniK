@@ -350,6 +350,7 @@
     <string name="enter_store_fail">Failed to store：%1$s</string>
     <string name="change_baudrate_tip">Restart the application to take effect of the modified baud rate</string>
     <string name="change_room_tip">Restart the application to take effect of the modified device number</string>
+    <string name="language_different">Language package setup successful need to restart the application to take effect</string>
     <string name="reboot">reboot</string>
 
     <string name="baudrate_format">Baud rate should be digit</string>

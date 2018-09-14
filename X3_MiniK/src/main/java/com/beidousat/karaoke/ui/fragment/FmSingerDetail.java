@@ -19,7 +19,7 @@ import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.Songs;
 import com.beidousat.karaoke.model.StarInfo;
 import com.beidousat.karaoke.ui.dlg.DlgPreview;
-import com.beidousat.karaoke.util.DiskFileUtil;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.karaoke.widget.WidgetKeyboard;
 import com.beidousat.karaoke.widget.WidgetSongPager;

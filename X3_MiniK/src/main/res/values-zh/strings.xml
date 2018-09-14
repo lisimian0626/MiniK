@@ -350,6 +350,7 @@
     <string name="enter_store_fail">入库失败：%1$s</string>
     <string name="change_baudrate_tip">修改波特率需重启应用才可生效</string>
     <string name="change_room_tip">修改房间号需重启应用才可生效</string>
+    <string name="language_different">语言包设置成功需重启应用才可生效</string>
     <string name="reboot">重启</string>
 
     <string name="baudrate_format">波特率应为数字</string>

@@ -27,6 +27,11 @@ public class HttpParamsUtils {
         params.put("static_code", static_code + "");
         return params;
     }
+    public static Map<String, String> initConfigParams(String device_sn) {
+        Map<String, String> params = new HashMap<>();
+        params.put("device_sn", device_sn);
+        return params;
+    }
     public static Map<String, String> initCreateOrderParams(int payType, int payCount, String payment, String deviceSn, String kboxSn, String card_code, int static_code) {
         Map<String, String> params = new HashMap<>();
         params.put("pay_type", payType + "");

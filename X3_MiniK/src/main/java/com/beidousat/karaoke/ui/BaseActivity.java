@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.util.Utils;
+import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.net.request.HttpRequestListener;
 import com.trello.rxlifecycle2.LifecycleTransformer;
@@ -164,5 +166,10 @@ public class BaseActivity extends RxAppCompatActivity implements OnScreenAdListe
 
         // 保存设置语言的类型
         PrefData.setLanguage(this,language);
+    }
+    protected void exitApp() {
+        EventBusUtil.postSticky(EventBusId.id.MAIN_PLAYER_STOP, null);
+        android.os.Process.killProcess(android.os.Process.myPid());//获取PID
+        System.exit(0);//直接结束程序
     }
 }

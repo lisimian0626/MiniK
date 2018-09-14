@@ -18,6 +18,16 @@ public class KboxConfig implements Serializable {
     private String store_ip_port;
     @SerializedName("vod_server")
     private String  vod_server;
+    @SerializedName("language")
+    private String language;
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
     //    public String getKbox_ip() {
 //        return kbox_ip;
 //    }
