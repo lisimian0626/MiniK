@@ -171,7 +171,7 @@ public class MyDownloader {
                     Logger.d(TAG,"执行删除路径:"+str.toString());
                 }
             }
-            if(!StorageUtil.isUsbDiskHasAvailableSpace(1)){
+            if(!StorageUtil.isUsbDiskHasAvailableSpace()){
                 new freeDiskSpaceTask().execute();
             }else{
                 return;

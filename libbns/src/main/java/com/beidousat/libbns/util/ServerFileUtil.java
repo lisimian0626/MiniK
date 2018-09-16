@@ -19,75 +19,61 @@ public class ServerFileUtil {
     private final static String TAG = ServerFileUtil.class.getSimpleName();
 
     public static String getScoreNoteUrl(String songFilePath) {
-        if (TextUtils.isEmpty(songFilePath)) {
-            return null;
+        String url=null;
+        if (!TextUtils.isEmpty(songFilePath)) {
+            if(ServerConfigData.getInstance().getServerConfig()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())) {
+                url = ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/grade/" + getFileName(songFilePath) + ".txt";
+            }
         }
-        String url = convertHttps2Http(ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/grade/" + getFileName(songFilePath) + ".txt");
-        Log.e("test","getScoreNoteUrl:"+url);
+        Logger.d(TAG,TAG+"   "+"getScoreNoteUrl:"+url);
         return url;
     }
 
     public static String getScoreNote2Url(String songFilePath) {
-        if (TextUtils.isEmpty(songFilePath)) {
-            return null;
+        String url=null;
+        if (!TextUtils.isEmpty(songFilePath)) {
+            if(ServerConfigData.getInstance().getServerConfig()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())) {
+                url = ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/grade/" + getFileName(songFilePath) + ".sec.txt";
+            }
         }
-        String url = convertHttps2Http(ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/grade/" + getFileName(songFilePath) + ".sec.txt");
-        Log.e("test","getScoreNote2Url:"+url);
+        Logger.d(TAG,TAG+"   "+"getScoreNote2Url:"+url);
         return url;
     }
 
 
-//    public static Uri getSingerImageUrl(String file) {
-//        if (TextUtils.isEmpty(file)) {
-//            return null;
-//        }
-//        String url = convertHttps2Http(file.startsWith("http://") || file.startsWith("https://") ? file : BnsConfig.DOMAIN_FILE + "data/Img/SingerImg/" + file);
-//        return Uri.parse(url);
-//    }
-//
-//
-//    private static Uri getSingerThumbnailUrl(String file) {
-//        if (TextUtils.isEmpty(file)) {
-//            return null;
-//        }
-//        File dir = KaraokeSdHelper.getSingerImgDir();
-//        File fileImage = new File(dir, file);
-//        if (fileImage.exists()) {
-//            return Uri.fromFile(fileImage);
-//        }
-//        String url = convertHttps2Http(file.startsWith("http://") || file.startsWith("https://") ? file : BnsConfig.DOMAIN_FILE + "data/Img/SingerImg150/" + file);
-//        return Uri.parse(url);
-//    }
 
     public static Uri getImageUrl(String filePath) {
-        if (TextUtils.isEmpty(filePath)) {
+        String url=null;
+        if (!TextUtils.isEmpty(filePath)) {
+            if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())) {
+                url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath;
+            }
+        }else{
             return null;
         }
-        String url = convertHttps2Http(filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath);
-        Log.e("test","getImageUrl:"+url);
+        Logger.d(TAG,TAG+"      "+"getImageUrl:"+url);
         return Uri.parse(url);
     }
 
     public static String getFileUrl(String filePath) {
-        if (TextUtils.isEmpty(filePath)) {
-            return "";
+        String url=null;
+        if (!TextUtils.isEmpty(filePath)) {
+            if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())) {
+                url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath;
+            }
         }
-        String f;
-        if(ServerConfigData.getInstance().getServerConfig()==null||TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())){
-            f=filePath;
-        }else{
-            f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath);
-        }
-
-//        Log.e("test","getFileUrl:"+convertHttps2Http(f));
-        return convertHttps2Http(f);
+        Logger.d(TAG,TAG+"      "+"getFileUrl:"+url);
+        return url;
     }
     public static String getPreviewUrl(String filePath){
-        if (TextUtils.isEmpty(filePath)) {
-            return "";
+        String url=null;
+        if (!TextUtils.isEmpty(filePath)) {
+            if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())) {
+                url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath;
+            }
         }
-        String f = (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("udp://")) ? filePath : (ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath);
-        return f;
+        Logger.d(TAG,TAG+"      "+"getPreviewUrl:"+url);
+        return url;
     }
 
     private static String getSdFile(String filePath) {
@@ -156,32 +142,6 @@ public class ServerFileUtil {
         int pos = url.lastIndexOf("/");
         if (pos < 0) return null;
         return url.substring(pos + 1);
-    }
-
-//    private static File getScoreNote(String songFilePath) {
-//        String noteFileName = ServerFileUtil.getFileName(songFilePath) + ".txt";
-//        File fileNote = new File(KaraokeSdHelper.getNote(), noteFileName);
-//        return fileNote;
-//    }
-//
-//    private static File getScoreNoteSec(String songFilePath) {
-//        String note2 = ServerFileUtil.getFileName(songFilePath) + ".sec.txt";
-//        File fileNote2 = new File(KaraokeSdHelper.getNote(), note2);
-//        return fileNote2;
-//    }
-
-
-    public static String convertHttps2Http(String https) {
-        if(ServerConfigData.getInstance().getServerConfig()==null){
-            return "";
-        }
-        String toHttp = ServerConfigData.getInstance().getServerConfig().getVod_server();
-//        if(Common.isEn){
-//            toHttp = toHttp.substring(0, toHttp.length() - 1);
-//        }else{
-//            toHttp = toHttp.substring(0, toHttp.length() - 1) + ":2800/";
-//        }
-        return https.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), toHttp);
     }
 
 }

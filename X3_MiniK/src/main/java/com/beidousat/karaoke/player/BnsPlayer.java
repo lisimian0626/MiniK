@@ -119,10 +119,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     }
 
     private void open(String uri,int playmode) throws IOException {
-        if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
-            uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
-        }
-        Log.e("test","file:"+DiskFileUtil.getDiskFileByUrl(uri));
+        Logger.d(TAG,"uri:"+DiskFileUtil.getDiskFileByUrl(uri));
         File file = DiskFileUtil.getDiskFileByUrl(uri);
             if (file != null) {//存在本地文件
                 Logger.d(TAG, "open local file:" + file.getAbsolutePath());

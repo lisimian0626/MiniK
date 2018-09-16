@@ -311,7 +311,7 @@ public class FileUploader {
             }
         }
         builder.addFormDataPart("FileName", mUploadFile.getName(), RequestBody.create(null, mUploadFile));
-        builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"another\";filename=\"another.dex\""), RequestBody.create(MediaType.parse("application/octet-stream"), mUploadFile));
+//        builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"another\";filename=\"another.dex\""), RequestBody.create(MediaType.parse("application/octet-stream"), mUploadFile));
         MultipartBody requestBody = builder.build();
         uploadFile(requestBody, url);
     }
@@ -336,7 +336,7 @@ public class FileUploader {
             }
         }
         builder.addFormDataPart("FileName", mUploadFile.getName(), RequestBody.create(null, mUploadFile));
-        builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"another\";filename=\"another.dex\""), RequestBody.create(MediaType.parse("application/octet-stream"), mUploadFile));
+//        builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"another\";filename=\"another.dex\""), RequestBody.create(MediaType.parse("application/octet-stream"), mUploadFile));
         MultipartBody requestBody = builder.build();
         uploadFile(requestBody, url);
     }

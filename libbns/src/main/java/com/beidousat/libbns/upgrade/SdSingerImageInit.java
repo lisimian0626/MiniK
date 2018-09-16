@@ -42,8 +42,8 @@ public class SdSingerImageInit implements SimpleDownloadListener {
 
     private void downloadZip() {
         SimpleDownloader simpleDownloader = new SimpleDownloader();
-        simpleDownloader.download(mZipFile, ServerFileUtil.convertHttps2Http(ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/Img/SingerImg150.zip"), this);
-        Log.d("test","downloadZip:"+ServerFileUtil.convertHttps2Http(ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/Img/SingerImg150.zip"));
+        simpleDownloader.download(mZipFile, ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/Img/SingerImg150.zip", this);
+        Log.d("test","downloadZip:"+ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/Img/SingerImg150.zip");
         if (mSingerImgInitListener != null) {
             mSingerImgInitListener.downloadStart();
         }

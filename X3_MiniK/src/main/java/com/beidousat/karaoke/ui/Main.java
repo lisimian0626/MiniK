@@ -303,6 +303,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             promptDialog.setPositiveButton(getString(R.string.reboot), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+                                    ChooseSongs.getInstance(Main.this).cleanChoose();
+                                    BoughtMeal.getInstance().clearMealInfo();
+                                    BoughtMeal.getInstance().clearMealInfoSharePreference();
                                     exitApp();
                                 }
                             });
@@ -1392,6 +1395,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //            orderSn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
 //        }
 //
+        if(mPresentation==null||player==null){
+            ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error2));
+            return;
+        }
         try {
             //重置暂停次数
             mPauseTipView.resetLeftTimes();
@@ -1406,8 +1413,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
             }
             Logger.d(TAG, "playSong" + song.SongFilePath + "|ID:" + song.ID);
-            UpLoadDataUtil.getInstance().getmUploadSongData().setPayTime(System.currentTimeMillis());
-            UpLoadDataUtil.getInstance().getmUploadSongData().setSongId(song.ID);
+            if (UpLoadDataUtil.getInstance().getmUploadSongData() != null) {
+                UpLoadDataUtil.getInstance().getmUploadSongData().setPayTime(System.currentTimeMillis());
+                UpLoadDataUtil.getInstance().getmUploadSongData().setSongId(song.ID);
+            }
             //减掉一首
 
             new increaseSongHotTask().execute(song.SongFilePath);
@@ -1417,20 +1426,20 @@ public class Main extends BaseActivity implements View.OnClickListener,
         } catch (Exception ex) {
             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + ex.toString());
-            final String path = song.SongFilePath;
+//            final String path = song.SongFilePath;
             next();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    String diskPath = DiskFileUtil.getFileSavedPath(path);
-                    File file = new File(diskPath);
-                    if (file.exists() && file.isFile()) {
-                        file.delete();
-                        Logger.d(TAG, "执行删除路径:" + diskPath.toString());
-                        EventBusUtil.postSticky(EventBusId.id.CHOOSE_SONG_CHANGED, "");
-                    }
-                }
-            }, 2000);
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    String diskPath = DiskFileUtil.getFileSavedPath(path);
+//                    File file = new File(diskPath);
+//                    if (file.exists() && file.isFile()) {
+//                        file.delete();
+//                        Logger.d(TAG, "执行删除路径:" + diskPath.toString());
+//                        EventBusUtil.postSticky(EventBusId.id.CHOOSE_SONG_CHANGED, "");
+//                    }
+//                }
+//            }, 2000);
 
         }
     }
@@ -2509,6 +2518,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     break;
                 case MSG_UPDATE_TIME:
                     // 计时器更新
+                    if(mPresentation==null){
+                        return;
+                    }
                     if (time > 10 && windowsfocus) {
                         showSurf();
                     } else {
