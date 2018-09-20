@@ -99,7 +99,7 @@
     <string name="play_error2">播放器初始化失败，请检查hdmi是否接上</string>
     <string name="pre_page">上一页</string>
     <string name="next_page">下一页</string>
-
+    <string name="switch_language">English</string>
     <string name="preview_play">预览播放</string>
 
     <string name="ad_past_time">广告<Data><![CDATA[ <b><font color="#c93462">%d</font></b> ]]></Data>秒</string>

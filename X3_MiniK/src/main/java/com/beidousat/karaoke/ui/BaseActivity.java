@@ -156,8 +156,10 @@ public class BaseActivity extends RxAppCompatActivity implements OnScreenAdListe
             config.locale = Locale.ENGLISH;
             Common.isEn=true;
         }
-        else
-        {
+//        else if(language.equals("en_zh")){
+//            C
+//        }
+        else {
             // 简体中文
             config.locale = Locale.SIMPLIFIED_CHINESE;
             Common.isEn=false;

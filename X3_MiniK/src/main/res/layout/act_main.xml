@@ -77,7 +77,20 @@
             android:onClick="onClick"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_material" />
-
+        <TextView
+            android:layout_margin="10dp"
+            android:id="@+id/tv_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/ll_service"
+            android:singleLine="true"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:text="@string/switch_language"
+            android:scrollHorizontally="true"
+            android:visibility="invisible"
+            />
         <LinearLayout
             android:id="@+id/ll_service"
             android:layout_width="wrap_content"

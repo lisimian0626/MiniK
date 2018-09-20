@@ -63,7 +63,7 @@
     <string name="search_topics">Search subject</string>
     <string name="input_song_name">Enter the name of the song</string>
     <string name="input_singer">Enter the name of the star</string>
-
+    <string name="switch_language">中文</string>
     <string name="release_time_x">上映时间：%1$s</string>
     <string name="director_x">导演：%1$s</string>
     <string name="duration_x">时长：%1$s</string>

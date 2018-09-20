@@ -164,7 +164,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private FragmentManager mFragmentManager;
     private Button mBtnBack;
     private TextView mTvChooseCount, mTvCurrentSong;
-    private TextView mTvPlayerPause, mTvPlayerOriAcc, mTvScore;
+    private TextView mTvPlayerPause, mTvPlayerOriAcc, mTvScore,mTvService,mTvSwitch;
     private LinearLayout ll_service;
     private UserInfoLayout mUserInfoLayout;
     private ToggleButton mTgScore;
@@ -222,10 +222,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(PreferenceUtil.getString(this,"language","zh").equals("en")){
+        if(PreferenceUtil.getString(this,"mode","zh").equals("en")){
             switchLanguage("en");
-        }else{
+        }else if(PreferenceUtil.getString(this,"mode","zh").equals("zh")){
             switchLanguage("zh");
+        }else if(PreferenceUtil.getString(this,"mode","zh").equals("en_zh")){
+            Common.isAuto=true;
         }
         setContentView(R.layout.act_main);
         mMainActivity = this;
@@ -235,6 +237,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         hideSystemUI(true);
         startMainPlayer();
         checkNetwork();
+
 //        new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo();
 //        newsongDao=LanApp.getInstance().getDaoSession().getNewsongDao();
 //        copyDatabaseFile(this);
@@ -296,10 +299,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 if (suceed) {
                     KboxConfig kboxConfig= (KboxConfig) obj;
                     String language=kboxConfig.getLanguage().toLowerCase();
-                    if(!TextUtils.isEmpty(language)&&(language.equals("zh")||language.equals("en"))){
-                        if(!language.equals(PreferenceUtil.getString(Main.this,"language","zh"))){
+                    if(!TextUtils.isEmpty(language)){
+                        if(!language.equals(PreferenceUtil.getString(Main.this,"mode","zh"))){
                             PromptDialog promptDialog = new PromptDialog(Main.this);
-                            promptDialog.setMessage(R.string.change_room_tip);
+                            promptDialog.setMessage(R.string.language_different);
                             promptDialog.setPositiveButton(getString(R.string.reboot), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -311,7 +314,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             });
                             promptDialog.show();
                         }
-                        PreferenceUtil.setString(Main.this,"language",kboxConfig.getLanguage());
+                        PreferenceUtil.setString(Main.this,"mode",kboxConfig.getLanguage());
                     }
 
 
@@ -549,6 +552,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mTvCurrentSong = (TextView) findViewById(R.id.tv_playing);
         mTvPlayerPause = (TextView) findViewById(R.id.tv_pause);
         mTvPlayerOriAcc = (TextView) findViewById(R.id.tv_acc);
+        mTvService=(TextView)findViewById(R.id.tv_service);
+        mTvSwitch=(TextView)findViewById(R.id.tv_switch);
+        mTvSwitch.setVisibility(Common.isAuto?View.VISIBLE:View.GONE);
+        mTvSwitch.setOnClickListener(this);
         mTgScore = (ToggleButton) findViewById(R.id.tg_score);
         mTgScore.setOnClickListener(this);
         mTvScore = (TextView) findViewById(R.id.tv_score);
@@ -567,6 +574,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         ImageView iv_logo = (ImageView) findViewById(R.id.iv_logo);
         iv_logo.setOnClickListener(this);
         iv_logo.setOnLongClickListener(this);
+        mTvService.setVisibility(Common.isAuto?View.GONE:View.VISIBLE);
         if (Common.isEn) {
             mTvBuy.setBackgroundResource(R.drawable.selector_main_buy_en);
             mBtnBack.setBackgroundResource(R.drawable.selector_main_back_en);
@@ -1142,35 +1150,33 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case R.id.tv_service:
-//                String cmd = "su -c reboot";
-//                try {
-//                    Runtime.getRuntime().exec(cmd);
-//                } catch (IOException e) {
-//                    // TODO Auto-generated catch block
-//                }
-//
                 DlgService dlgService = new DlgService(this);
                 dlgService.show();
-//                download();
-//                restartHeat();
-//                PrefData.setAuth(Main.this,false);
-//                KBoxStatusInfo.getInstance().setKBoxStatus(null);
                 break;
             case R.id.tv_coupon:
                 DlgCoupon dlgCoupon = new DlgCoupon(this);
 //                dlgCoupon.setOnDlgTouchListener(this);
                 dlgCoupon.show();
                 break;
-//            case R.id.btn_langague:
-//                if (PrefData.getLastLanguage(this).equals("zh")) {
-//                    switchLanguage("en");
-//                } else {
-//                    switchLanguage("zh");
-//                }
-//                finish();
-//                Intent it = new Intent(Main.this, Main.class);
-//                startActivity(it);
-//                break;
+            case R.id.tv_switch:
+                if (Common.isEn) {
+                    switchLanguage("zh");
+                } else {
+                    switchLanguage("en");
+                }
+                PromptDialog promptDialog = new PromptDialog(Main.this);
+                promptDialog.setMessage(R.string.language_different);
+                promptDialog.setPositiveButton(getString(R.string.reboot), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        ChooseSongs.getInstance(Main.this).cleanChoose();
+//                        BoughtMeal.getInstance().clearMealInfo();
+//                        BoughtMeal.getInstance().clearMealInfoSharePreference();
+                        exitApp();
+                    }
+                });
+                promptDialog.show();
+                break;
             case R.id.main_tv_infrared:
                 DlgAir dlgAir = new DlgAir(this);
                 dlgAir.show();
