@@ -129,6 +129,7 @@ import com.beidousat.libbns.net.socket.KBoxSocketHeart;
 import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.DiskFileUtil;
+import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.KaraokeSdHelper;
 import com.beidousat.libbns.util.Logger;
@@ -164,7 +165,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private FragmentManager mFragmentManager;
     private Button mBtnBack;
     private TextView mTvChooseCount, mTvCurrentSong;
-    private TextView mTvPlayerPause, mTvPlayerOriAcc, mTvScore,mTvService,mTvSwitch;
+    private TextView mTvPlayerPause, mTvPlayerOriAcc, mTvScore, mTvService, mTvSwitch;
     private LinearLayout ll_service;
     private UserInfoLayout mUserInfoLayout;
     private ToggleButton mTgScore;
@@ -219,22 +220,28 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private boolean surf_show = false;
     private float touch_x = 0;
     private float touch_y = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(PreferenceUtil.getString(this,"mode","zh").equals("en")){
+        if (PreferenceUtil.getString(this, "mode", "zh").equals("en")) {
             switchLanguage("en");
-        }else if(PreferenceUtil.getString(this,"mode","zh").equals("zh")){
+        } else if (PreferenceUtil.getString(this, "mode", "zh").equals("zh")) {
             switchLanguage("zh");
-        }else if(PreferenceUtil.getString(this,"mode","zh").equals("en_zh")){
-            Common.isAuto=true;
+        } else if (PreferenceUtil.getString(this, "mode", "zh").equals("en_zh")) {
+            Common.isAuto = true;
         }
         setContentView(R.layout.act_main);
         mMainActivity = this;
         initView();
         init();
         EventBus.getDefault().register(this);
-        hideSystemUI(true);
+        if(DiskFileUtil.is901()){
+            FileUtil.chmod777FileSu(KaraokeSdHelper.getSongSecurityKeyFileFor901());
+            hideSystemUI(false);
+        }else{
+            hideSystemUI(true);
+        }
         startMainPlayer();
         checkNetwork();
 
@@ -297,10 +304,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 //获取配置文件成功后检测外接硬盘，检测USB接入等
                 hideTips();
                 if (suceed) {
-                    KboxConfig kboxConfig= (KboxConfig) obj;
-                    String language=kboxConfig.getLanguage().toLowerCase();
-                    if(!TextUtils.isEmpty(language)){
-                        if(!language.equals(PreferenceUtil.getString(Main.this,"mode","zh"))){
+                    KboxConfig kboxConfig = (KboxConfig) obj;
+                    String language = kboxConfig.getLanguage().toLowerCase();
+                    if (!TextUtils.isEmpty(language)) {
+                        if (!language.equals(PreferenceUtil.getString(Main.this, "mode", "zh"))) {
                             PromptDialog promptDialog = new PromptDialog(Main.this);
                             promptDialog.setMessage(R.string.language_different);
                             promptDialog.setPositiveButton(getString(R.string.reboot), new View.OnClickListener() {
@@ -314,7 +321,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             });
                             promptDialog.show();
                         }
-                        PreferenceUtil.setString(Main.this,"mode",kboxConfig.getLanguage());
+                        PreferenceUtil.setString(Main.this, "mode", kboxConfig.getLanguage());
                     }
 
 
@@ -353,7 +360,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             lable.setText(((KBox) object).getLabel());
                             lable.setVisibility(View.VISIBLE);
                         }
-                        if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                        if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
@@ -552,9 +559,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mTvCurrentSong = (TextView) findViewById(R.id.tv_playing);
         mTvPlayerPause = (TextView) findViewById(R.id.tv_pause);
         mTvPlayerOriAcc = (TextView) findViewById(R.id.tv_acc);
-        mTvService=(TextView)findViewById(R.id.tv_service);
-        mTvSwitch=(TextView)findViewById(R.id.tv_switch);
-        mTvSwitch.setVisibility(Common.isAuto?View.VISIBLE:View.GONE);
+        mTvService = (TextView) findViewById(R.id.tv_service);
+        mTvSwitch = (TextView) findViewById(R.id.tv_switch);
+        mTvSwitch.setVisibility(Common.isAuto ? View.VISIBLE : View.GONE);
         mTvSwitch.setOnClickListener(this);
         mTgScore = (ToggleButton) findViewById(R.id.tg_score);
         mTgScore.setOnClickListener(this);
@@ -574,7 +581,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         ImageView iv_logo = (ImageView) findViewById(R.id.iv_logo);
         iv_logo.setOnClickListener(this);
         iv_logo.setOnLongClickListener(this);
-        mTvService.setVisibility(Common.isAuto?View.GONE:View.VISIBLE);
+        mTvService.setVisibility(Common.isAuto ? View.GONE : View.VISIBLE);
         if (Common.isEn) {
             mTvBuy.setBackgroundResource(R.drawable.selector_main_buy_en);
             mBtnBack.setBackgroundResource(R.drawable.selector_main_back_en);
@@ -766,7 +773,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 pay_sucessed(event);
                 break;
             case EventBusId.id.MEAL_EXPIRE:
-                if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
                     CommonDialog commonDialog = CommonDialog.getInstance();
                     if (commonDialog.isAdded()) {
                         commonDialog.dismiss();
@@ -801,9 +808,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 performDownloadFinish((DownloadBusEvent) event);
                 break;
             case EventBusId.Download.PROGRESS:
-                if(BoughtMeal.getInstance().getTheFirstMeal() == null)
-                    return;
-                    performDownloadUpdate((DownloadBusEvent) event);
+                performDownloadUpdate((DownloadBusEvent) event);
                 break;
 
             case EventBusId.id.BACK_FRAGMENT:
@@ -840,7 +845,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if (!mIsSetting && (mDlgPass == null || !mDlgPass.isShowing())
                             && (mDialogAuth == null || !mDialogAuth.isShowing())) {
                         if (kBoxStatus.code == 2003) {
-                            if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                            if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
 //                                Log.e("test", "心跳检测没交服务费，清空套餐");
                                 BoughtMeal.getInstance().clearMealInfoSharePreference();
                                 BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
@@ -877,7 +882,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else {
                     PrefData.setAuth(Main.this, true);
                     PrefData.setLastTime(this.getApplicationContext(), System.currentTimeMillis());
-                    if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
                         if (BoughtMeal.getInstance().isMealExpire()) {
 //                            Log.e("test", "心跳检测，初始化套餐");
                             Meal meal = new Meal();
@@ -977,7 +982,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         Logger.d(TAG, "EventBusId  id PAY_SUCCEED isExpire:" + isExpire);
         //查询用户信息
         Meal meal = BoughtMeal.getInstance().getTheLastMeal();
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
             if (meal != null) {
                 mQureyHelper.queryUser().post();
                 if (isExpire) {//
@@ -1343,7 +1348,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mTvPlayerPause.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.selector_main_play, 0, 0);
         }
         mTvPlayerPause.setText(isPlaying ? R.string.pause : R.string.play);
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
             startChooseSongTimer();
         }
     }
@@ -1363,9 +1368,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
      **/
     private void next() {
         if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
-            String order_sn="";
-            if(BoughtMeal.getInstance().getTheLastPaystatus()!=null){
-                order_sn =BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
+            String order_sn = "";
+            if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
+                order_sn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
             }
             SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
             UpLoadDataUtil.getInstance().setmUploadSongData(null);
@@ -1396,12 +1401,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
 
     private void playSong(Song song) {
+
 //        String orderSn = null;
 //        if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
 //            orderSn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
 //        }
 //
-        if(mPresentation==null||player==null){
+        if (mPresentation == null || player == null) {
             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error2));
             return;
         }
@@ -1665,7 +1671,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         hideSurf();
         mAdVideo = new Ad();
         String str = PreferenceUtil.getString(this, "def_play");
-        if (TextUtils.isEmpty(str)||str.equals("[]")) {
+        if (TextUtils.isEmpty(str) || str.equals("[]")) {
             mAdVideo.ADMovie = PublicSong.getAdVideo();
             mAdVideo.ADContent = PublicSong.getAdVideo();
         } else {
@@ -1704,9 +1710,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     private void playScoreResult(final Song song, final int score) {
         if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
-            String order_sn="";
-            if(BoughtMeal.getInstance().getTheLastPaystatus()!=null){
-               order_sn =BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
+            String order_sn = "";
+            if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
+                order_sn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
             }
             SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
             UpLoadDataUtil.getInstance().setmUploadSongData(null);
@@ -2137,7 +2143,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         long lasttime = PrefData.getLastTime(Main.this);
         long currenttime = System.currentTimeMillis();
 //        Log.e("test", "lasttime:" + lasttime / (60 * 1000) + "分钟" + "   " + "currenttime：" + currenttime / (60 * 1000) + "分钟");
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false) && currenttime - lasttime > Common.timelimit) {
+        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false) && currenttime - lasttime > Common.timelimit) {
 //            Log.e("test", "关机超过5小时后，套餐清0");
             ChooseSongs.getInstance(getApplication()).cleanChoose();
             BoughtMeal.getInstance().clearMealInfo();
@@ -2249,7 +2255,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 hideTips();
                 if (suceed) {
                     if (obj != null && obj instanceof KBox) {
-                        if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+                        if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
@@ -2524,7 +2530,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     break;
                 case MSG_UPDATE_TIME:
                     // 计时器更新
-                    if(mPresentation==null){
+                    if (mPresentation == null) {
                         return;
                     }
                     if (time > 10 && windowsfocus) {
