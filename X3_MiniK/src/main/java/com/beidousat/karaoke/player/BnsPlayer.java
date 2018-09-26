@@ -8,6 +8,8 @@ import android.view.SurfaceView;
 
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
+import com.beidousat.karaoke.player.local.LocalFileCache;
+import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.karaoke.util.MyDownloader;
@@ -123,19 +125,39 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         File file = DiskFileUtil.getDiskFileByUrl(uri);
             if (file != null) {//存在本地文件
                 Logger.d(TAG, "open local file:" + file.getAbsolutePath());
-//                file.delete();
-                mMediaPlayer.setDataSource(file.getAbsolutePath());
-                if (mMinor != null)
-                    mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                mMediaPlayer.prepare();
-                UploadSongData uploadSongData=new UploadSongData();
-                uploadSongData.setDuration(mMediaPlayer.getDuration());
-                UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
-                mMediaPlayer.start();
-                isPlaying = true;
-                getTrack(mMediaPlayer);
-
+                if(DiskFileUtil.is901()){
+                    LocalFileCache.getInstance().add(uri, uri);
+                    LocalFileProxy proxy = new LocalFileProxy();
+                    try {
+                        proxy.startDownload(uri);
+                        String playUrl = proxy.getLocalURL();
+                        mMediaPlayer.setDataSource(playUrl);
+                        if (mMinor != null)
+                            mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                        mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                        mMediaPlayer.prepare();
+                        UploadSongData uploadSongData=new UploadSongData();
+                        uploadSongData.setDuration(mMediaPlayer.getDuration());
+                        UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
+                        mMediaPlayer.start();
+                        isPlaying = true;
+                        getTrack(mMediaPlayer);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    mMediaPlayer.setDataSource(file.getAbsolutePath());
+                    if (mMinor != null)
+                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                    mMediaPlayer.prepare();
+                    UploadSongData uploadSongData=new UploadSongData();
+                    uploadSongData.setDuration(mMediaPlayer.getDuration());
+                    UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
+                    mMediaPlayer.start();
+                    isPlaying = true;
+                    getTrack(mMediaPlayer);
+                }
             } else {//本地文件不存在
                 if(playmode==PREVIEW) {
                     if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
