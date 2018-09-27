@@ -16,6 +16,7 @@ import com.beidousat.libbns.net.socket.KBoxSocketHeart;
 import com.beidousat.libbns.security.PrivateKeyUpdater;
 import com.beidousat.libbns.upgrade.AppUpgrader;
 import com.beidousat.libbns.upgrade.SystemUpgrader;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.czt.mp3recorder.AudioRecordFileUtil;
 
@@ -30,6 +31,7 @@ public class LanService extends Service {
 
     private DlgProgress mDlgSystemUpdate;
     private ScheduledExecutorService mScheduledExecutorService;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -40,7 +42,8 @@ public class LanService extends Service {
         checkSystemUpdate();
 
         AppUpgrader appUpgrader = new AppUpgrader(getApplicationContext());
-        appUpgrader.checkVersion(24);
+
+        appUpgrader.checkVersion(DiskFileUtil.is901() ? 18 : 24);
 
         AudioRecordFileUtil.deleteRecordFiles();
 //        startScreenTimer();
@@ -86,6 +89,7 @@ public class LanService extends Service {
             }
         }, 60, 60, TimeUnit.SECONDS);
     }
+
     private void checkSystemUpdate() {
         SystemUpgrader systemUpgrader = new SystemUpgrader(getApplicationContext());
         systemUpgrader.setOnSystemUpdateListener(new SystemUpgrader.OnSystemUpdateListener() {
@@ -138,8 +142,9 @@ public class LanService extends Service {
 
             }
         });
-        systemUpgrader.checkVersion(23);
+        systemUpgrader.checkVersion(DiskFileUtil.is901() ? 19 : 23);
     }
+
     private void startScreenTimer() {
         if (mScheduledExecutorService != null && !mScheduledExecutorService.isShutdown())
             return;

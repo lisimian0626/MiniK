@@ -1,10 +1,10 @@
 package com.beidousat.karaoke.player.local;
 
 
+
 import com.beidousat.karaoke.player.proxy.Config;
 import com.beidousat.karaoke.player.proxy.Decoder;
 import com.beidousat.karaoke.player.proxy.IDownState;
-import com.beidousat.karaoke.player.proxy.IDownState.DownState;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 
@@ -105,7 +105,7 @@ public class FileHeadLoadThread extends Thread {
             File file = DiskFileUtil.getDiskFileByUrl(mUrl);
             if (file == null || !file.exists()) {
                 Logger.d(TAG, "本地文件不存在");
-                state.onDown(mUrl, 0, DownState.ERROREXIT, null, 0);
+                state.onDown(mUrl, 0, IDownState.DownState.ERROREXIT, null, 0);
                 return;
             }
             Logger.d(TAG, "本地文件：" + file.getAbsolutePath());
@@ -138,14 +138,14 @@ public class FileHeadLoadThread extends Thread {
                 }
                 byte[] dec = Decoder.getinstance().decoder(bs, len);
                 mDownloadSize += dec.length;
-                state.onDown(mUrl, mDownloadSize, DownState.DOWNING, dec, dec.length);
+                state.onDown(mUrl, mDownloadSize, IDownState.DownState.DOWNING, dec, dec.length);
                 Logger.d(TAG, "读取文件 mDownloadSize： " + mDownloadSize);
 
             }
-            state.onDown(mUrl, (int) mDownloadSize, DownState.SUCCESS, null, 0);
+            state.onDown(mUrl, (int) mDownloadSize, IDownState.DownState.SUCCESS, null, 0);
         } catch (Exception e) {
             Logger.d(TAG, "读取文件 Exception： " + e.getMessage());
-            state.onDown(mUrl, (int) mDownloadSize, DownState.ERROR, null, 0);
+            state.onDown(mUrl, (int) mDownloadSize, IDownState.DownState.ERROR, null, 0);
             mError = true;
             e.printStackTrace();
         } finally {
