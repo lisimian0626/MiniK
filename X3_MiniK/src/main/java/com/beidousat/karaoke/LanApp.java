@@ -43,7 +43,7 @@ public class LanApp extends Application {
 //        Beta.storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);//设置sd卡的Download为更新资源存储目录
 //        Beta.canShowUpgradeActs.add(Main.class);//添加可显示弹窗的Activity,例如，只允许在MainActivity上显示更新弹窗，其他activity上不显示弹窗; 如果不设置默认所有activity都可以显示弹窗。
 //        Beta.autoDownloadOnWifi = true;//设置Wifi下自动下载,默认false
-        if(DiskFileUtil.is901()){
+        if(!DiskFileUtil.is901()){
             CrashReport.initCrashReport(getApplicationContext(), "6e63a3d9f1", false);
         }else{
             CrashReport.initCrashReport(getApplicationContext(), "0d38972028", false);

@@ -125,10 +125,10 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         File file = DiskFileUtil.getDiskFileByUrl(uri);
             if (file != null) {//存在本地文件
                 Logger.d(TAG, "open local file:" + file.getAbsolutePath());
-                if(DiskFileUtil.is901()){
-                    LocalFileCache.getInstance().add(uri, uri);
-                    LocalFileProxy proxy = new LocalFileProxy();
+                if(!DiskFileUtil.is901()){
                     try {
+                        LocalFileCache.getInstance().add(uri, uri);
+                        LocalFileProxy proxy = new LocalFileProxy();
                         proxy.startDownload(uri);
                         String playUrl = proxy.getLocalURL();
                         mMediaPlayer.setDataSource(playUrl);
@@ -378,8 +378,15 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
      * @param channel
      */
     private void setVolChannel(int channel) {
-        if (mMediaPlayer != null)
-            mMediaPlayer.setAudioChannel(channel);
+        if(!DiskFileUtil.is901()){
+                if (mMediaPlayer != null) {
+                    mMediaPlayer.setParameter(1102, channel);
+                }
+        }else{
+            if (mMediaPlayer != null)
+                mMediaPlayer.setAudioChannel(channel);
+        }
+
     }
 
     public void onAccom(int flag) {

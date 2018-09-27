@@ -43,7 +43,7 @@ public class LanService extends Service {
 
         AppUpgrader appUpgrader = new AppUpgrader(getApplicationContext());
 
-        appUpgrader.checkVersion(DiskFileUtil.is901() ? 18 : 24);
+        appUpgrader.checkVersion(!DiskFileUtil.is901() ? 18 : 24);
 
         AudioRecordFileUtil.deleteRecordFiles();
 //        startScreenTimer();
@@ -142,7 +142,7 @@ public class LanService extends Service {
 
             }
         });
-        systemUpgrader.checkVersion(DiskFileUtil.is901() ? 19 : 23);
+        systemUpgrader.checkVersion(!DiskFileUtil.is901() ? 19 : 23);
     }
 
     private void startScreenTimer() {

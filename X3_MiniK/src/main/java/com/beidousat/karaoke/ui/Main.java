@@ -236,9 +236,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
         initView();
         init();
         EventBus.getDefault().register(this);
-        if(DiskFileUtil.is901()){
+        if(!DiskFileUtil.is901()){
             FileUtil.chmod777FileSu(KaraokeSdHelper.getSongSecurityKeyFileFor901());
-            hideSystemUI(true);
+            hideSystemUI(false);
         }else{
             hideSystemUI(true);
         }
