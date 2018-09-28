@@ -68,6 +68,7 @@ import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.player.KaraokeController;
+import com.beidousat.karaoke.player.chenxin.OriginPlayer;
 import com.beidousat.karaoke.ui.dlg.CommonDialog;
 import com.beidousat.karaoke.ui.dlg.DeviceStore;
 import com.beidousat.karaoke.ui.dlg.DlgAdScreen;
@@ -193,6 +194,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private final SparseArray<PlayerPresentation> mActivePresentations = new SparseArray<PlayerPresentation>();
     private PlayerPresentation mPresentation;
     private BnsPlayer player;
+    private OriginPlayer player_cx;
     private float mVolPercent;
 
     private View mControlBar;
@@ -236,10 +238,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
         initView();
         init();
         EventBus.getDefault().register(this);
-        if(!DiskFileUtil.is901()){
+        if (!DiskFileUtil.is901()) {
             FileUtil.chmod777FileSu(KaraokeSdHelper.getSongSecurityKeyFileFor901());
             hideSystemUI(false);
-        }else{
+        } else {
             hideSystemUI(true);
         }
         startMainPlayer();
@@ -656,7 +658,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 updatePlayingText();
                 break;
             case EventBusId.id.PLAYER_NEXT:
-                if (player != null) {
+                if (player != null || player_cx != null) {
                     mKaraokeController.getPlayerStatus().isMute = false;
                     closePauseTipView();
                     next();
@@ -664,14 +666,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
                 }
                 break;
-
             case EventBusId.id.PLAYER_STATUS_CHANGED:
                 PlayerStatus status = (PlayerStatus) event.data;
                 updatePlayerStatus(status);
                 break;
 
             case EventBusId.id.PLAYER_PLAY:
-                if (player != null) {
+                if (player != null || player_cx != null) {
                     play();
                     if (mPresentation != null) {
                         mPresentation.tipOperation(R.drawable.tv_play, R.string.play, true);
@@ -1407,7 +1408,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //            orderSn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
 //        }
 //
-        if (mPresentation == null || player == null) {
+        if (mPresentation == null) {
             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error2));
             return;
         }
@@ -1462,13 +1463,23 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mVolPercent = volPercent;
         if (mPresentation != null)
             mPresentation.mAdCorner = null;
-        if (player == null)
-            return;
-//        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
         if (mPresentation != null)
             mPresentation.cleanScreen();
-        if (player != null) {
-            player.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
+        if (DiskFileUtil.is901()) {
+            if (player == null)
+                return;
+//        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
+            if (player != null) {
+                player.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
+            }
+        } else {
+            if (player_cx == null)
+                return;
+//        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
+            if (player_cx != null) {
+                Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
+                player_cx.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, secSong.SongFilePath);
+            }
         }
         mKaraokeController.getPlayerStatus().isPlaying = true;
         if (mPresentation != null)
@@ -1503,11 +1514,22 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mPresentation.dismiss();
             mPresentation = null;
         }
-        if (player != null) {
-            player.stop();
-            player = null;
-        }
+        stopPlay();
         mActivePresentations.clear();
+    }
+
+    private void stopPlay() {
+        if (DiskFileUtil.is901()) {
+            if (player != null) {
+                player.stop();
+                player = null;
+            }
+        } else {
+            if (player_cx != null) {
+                player_cx.stop();
+                player_cx = null;
+            }
+        }
     }
 
     private void showPresentation(Display display) {
@@ -1523,15 +1545,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void initPlayer() {
-        if (player != null) {
-            player.stop();
-            player = null;
-        }
+        stopPlay();
         if (mPresentation != null) {
-            player = new BnsPlayer(mPresentation.getSurfaceView(), main_surf, mPresentation.getHdmiWidth(), mPresentation.getHdmiHeight());
-            player.setBeidouPlayerListener(this);
-            player.setOnKeyInfoListener(this);
-            player.setOnScoreListener(this);
+            if (DiskFileUtil.is901()) {
+                player = new BnsPlayer(mPresentation.getSurfaceView(), main_surf, mPresentation.getHdmiWidth(), mPresentation.getHdmiHeight());
+                player.setBeidouPlayerListener(this);
+                player.setOnKeyInfoListener(this);
+                player.setOnScoreListener(this);
+            } else {
+                player_cx = new OriginPlayer(mPresentation.getSurfaceView(), main_surf, this, mPresentation.getHdmiWidth(), mPresentation.getHdmiHeight());
+                player_cx.setOnKeyInfoListener(this);
+                player_cx.setOnScoreListener(this);
+            }
+
             Logger.i(TAG, "initPlayer");
             mTvPlayerPause.postDelayed(new Runnable() {
                 @Override
@@ -1727,12 +1753,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
             @Override
             public void run() {
                 mKaraokeController.getPlayerStatus().playingType = 5;
-                if (player != null) {
-                    try {
-                        player.playUrl(AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
-                    } catch (IOException e) {
-                        ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
-                        Logger.w(TAG, "playSong ex:" + e.toString());
+                if (DiskFileUtil.is901()) {
+                    if (player != null) {
+                        try {
+                            player.playUrl(AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
+                        } catch (IOException e) {
+                            ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+                            Logger.w(TAG, "playSong ex:" + e.toString());
+                        }
+                    }
+                } else {
+                    if (player_cx != null) {
+                        Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
+                        player_cx.playUrl(AdDefault.getScoreResultVideo(), null, secSong == null ? AdDefault.getScoreResultVideo() : secSong.SongFilePath);
                     }
                 }
             }
@@ -1804,41 +1837,73 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void initCurrentMode() {
-        if (player != null && player.getCurrentPosition() < 5 * 1000) {
-            mTvPlayerPause.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    boolean originOn = mKaraokeController.getPlayerStatus().originOn;
-                    if (originOn) {
-                        onOriginal(false);
-                    } else {
-                        onAccom(false);
+        if(DiskFileUtil.is901()){
+            if (player != null && player.getCurrentPosition() < 5 * 1000) {
+                mTvPlayerPause.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean originOn = mKaraokeController.getPlayerStatus().originOn;
+                        if (originOn) {
+                            onOriginal(false);
+                        } else {
+                            onAccom(false);
+                        }
                     }
-                }
-            }, 1000);
-            initVol();
+                }, 1000);
+                initVol();
+            }
+        }else{
+            if (player_cx != null && player_cx.getCurrentPosition() < 5 * 1000) {
+                mTvPlayerPause.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean originOn = mKaraokeController.getPlayerStatus().originOn;
+                        if (originOn) {
+                            onOriginal(false);
+                        } else {
+                            onAccom(false);
+                        }
+                    }
+                }, 1000);
+                initVol();
+            }
         }
     }
 
     private void onOriginal(boolean showOnScreen) {
-        if (player != null)
-            player.onOriginal(mAudioChannelFlag);
+        if(DiskFileUtil.is901()){
+            if (player != null)
+                player.onOriginal(mAudioChannelFlag);
+        }else{
+            if (player_cx != null)
+                player_cx.onOriginal(mAudioChannelFlag);
+        }
         if (showOnScreen)
             if (mPresentation != null)
                 mPresentation.tipOperation(R.drawable.tv_original_on, R.string.original, true);
     }
 
     private void onAccom(boolean showOnScreen) {
-        if (player != null)
-            player.onAccom(mAudioChannelFlag);
+        if(DiskFileUtil.is901()){
+            if (player != null)
+                player.onAccom(mAudioChannelFlag);
+        }else{
+            if (player_cx != null)
+                player_cx.onAccom(mAudioChannelFlag);
+        }
         if (showOnScreen)
             if (mPresentation != null)
                 mPresentation.tipOperation(R.drawable.tv_original_off, R.string.accompany, true);
     }
 
     private void initVol() {
-        if (player != null)
-            player.setVol(mVolPercent);
+        if(DiskFileUtil.is901()){
+            if (player != null)
+                player.setVol(mVolPercent);
+        }else{
+            if (player_cx != null)
+                player_cx.setVol(mVolPercent);
+        }
     }
 
 
@@ -1846,13 +1911,23 @@ public class Main extends BaseActivity implements View.OnClickListener,
         int mode = mKaraokeController.getPlayerStatus().scoreMode;
         if (mPresentation != null) {
             if (mPlayingSong != null && "1".equals(mPlayingSong.IsGradeLib)) {
-                if (player != null)
-                    player.setScoreOn(mode);
+                if(DiskFileUtil.is901()){
+                    if (player != null)
+                        player.setScoreOn(mode);
+                }else{
+                    if (player_cx != null)
+                        player_cx.setScoreOn(mode);
+                }
                 mPresentation.showScoreView(mode);
             } else {
                 mPresentation.showScoreView(0);
-                if (player != null)
-                    player.setScoreOn(0);
+                if(DiskFileUtil.is901()){
+                    if (player != null)
+                        player.setScoreOn(0);
+                }else{
+                    if (player_cx != null)
+                        player_cx.setScoreOn(0);
+                }
             }
         }
 
@@ -1889,31 +1964,62 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void volOn() {
-        if (player != null)
-            player.volOn();
-    }
-
-    private void volOff() {
-        if (player != null)
-            player.volOff();
-    }
-
-    private void play() {
-        if (player != null) {
-            player.play();
-            mKaraokeController.getPlayerStatus().isPlaying = true;
-            if (mPresentation != null) {
-                mPresentation.tipOperation(0, 0, true);
-            }
+        if(DiskFileUtil.is901()){
+            if (player != null)
+                player.volOn();
+        }else{
+            if (player_cx != null)
+                player_cx.volOn();
         }
     }
 
+    private void volOff() {
+        if(DiskFileUtil.is901()){
+            if (player != null)
+                player.volOff();
+        }else{
+            if (player_cx != null)
+                player_cx.volOff();
+        }
+    }
+
+    private void play() {
+        if(DiskFileUtil.is901()){
+            if (player != null) {
+                player.play();
+                mKaraokeController.getPlayerStatus().isPlaying = true;
+                if (mPresentation != null) {
+                    mPresentation.tipOperation(0, 0, true);
+                }
+            }
+        }else{
+            if (player_cx != null) {
+                player_cx.play();
+                mKaraokeController.getPlayerStatus().isPlaying = true;
+                if (mPresentation != null) {
+                    mPresentation.tipOperation(0, 0, true);
+                }
+            }
+        }
+
+    }
+
     private void pause() {
-        if (player != null) {
-            player.pause();
-            mKaraokeController.getPlayerStatus().isPlaying = false;
-            if (mPresentation != null) {
-                mPresentation.tipOperation(R.drawable.main_bottom_bar_pause_p, R.string.pause, false);
+        if(DiskFileUtil.is901()){
+            if (player != null) {
+                player.pause();
+                mKaraokeController.getPlayerStatus().isPlaying = false;
+                if (mPresentation != null) {
+                    mPresentation.tipOperation(R.drawable.main_bottom_bar_pause_p, R.string.pause, false);
+                }
+            }
+        }else{
+            if (player_cx != null) {
+                player_cx.pause();
+                mKaraokeController.getPlayerStatus().isPlaying = false;
+                if (mPresentation != null) {
+                    mPresentation.tipOperation(R.drawable.main_bottom_bar_pause_p, R.string.pause, false);
+                }
             }
         }
     }
@@ -1922,28 +2028,50 @@ public class Main extends BaseActivity implements View.OnClickListener,
      * 重播
      */
     private void replay() {
-        if (player != null) {
-            Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
-            if (song != null) {
-                if (BoughtMeal.getInstance().isBuySong()) {
-                    Logger.d(TAG, "next 2>>>>>>>");
-                    BoughtMeal.getInstance().checkLeftSong();
+        if(DiskFileUtil.is901()){
+            if (player != null) {
+                Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
+                if (song != null) {
+                    if (BoughtMeal.getInstance().isBuySong()) {
+                        Logger.d(TAG, "next 2>>>>>>>");
+                        BoughtMeal.getInstance().checkLeftSong();
+                    }
+                    playSong(song);
+                } else {
+                    try {
+                        player.replay();
+                    } catch (IOException e) {
+                        ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+                        Logger.w(TAG, "playSong ex:" + e.toString());
+                    }
                 }
-                playSong(song);
-            } else {
-                try {
-                    player.replay();
-                } catch (IOException e) {
-                    ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
-                    Logger.w(TAG, "playSong ex:" + e.toString());
+            }
+        }else{
+            if (player_cx != null) {
+                Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
+                if (song != null) {
+                    if (BoughtMeal.getInstance().isBuySong()) {
+                        Logger.d(TAG, "next 2>>>>>>>");
+                        BoughtMeal.getInstance().checkLeftSong();
+                    }
+                    playSong(song);
+                } else {
+                    player_cx.replay();
                 }
             }
         }
+
     }
 
     private void setTone(int tone) {
-        if (player != null) {
-            player.setTone(tone);
+        if(DiskFileUtil.is901()){
+            if (player != null) {
+                player.setTone(tone);
+            }
+        }else{
+            if (player_cx != null) {
+                player_cx.setTone(tone);
+            }
         }
     }
 
