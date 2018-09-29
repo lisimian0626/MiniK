@@ -1478,7 +1478,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player_cx != null) {
                 Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                player_cx.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, secSong.SongFilePath);
+                player_cx.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, secSong == null ? url : secSong.SongFilePath);
             }
         }
         mKaraokeController.getPlayerStatus().isPlaying = true;
@@ -2661,7 +2661,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if (mPresentation == null) {
                         return;
                     }
-                    if (time > 10 && windowsfocus) {
+                    if (time > 10 && windowsfocus&&DiskFileUtil.is901()) {
                         showSurf();
                     } else {
                         time++;

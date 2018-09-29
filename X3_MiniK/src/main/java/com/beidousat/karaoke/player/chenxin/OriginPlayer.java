@@ -189,9 +189,11 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Bn
                 ex.printStackTrace();
             }
         }
-        final String filepath = ServerFileUtil.getFileUrl(path).replace(ServerConfigData.getInstance().getServerConfig().getVod_server(),ServerConfigData.getInstance().getServerConfig()+"%20");
-        final String nextPath = ServerFileUtil.getFileUrl(path).replace(ServerConfigData.getInstance().getServerConfig().getVod_server(),ServerConfigData.getInstance().getServerConfig()+"%20");
+        final String filepath = ServerFileUtil.getFileUrl(path).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
+        final String nextPath = ServerFileUtil.getFileUrl(path).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
 
+//        final String filepath = ServerFileUtil.getFileUrl(path);
+//        final String nextPath = ServerFileUtil.getFileUrl(path);
         Logger.d(TAG, "filepath:" + filepath + "  nextPath:" + nextPath);
         mThreadPlayer = new Thread(new Runnable() {
             public void run() {
