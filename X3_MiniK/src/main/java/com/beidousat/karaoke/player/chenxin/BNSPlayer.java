@@ -1,21 +1,31 @@
 package com.beidousat.karaoke.player.chenxin;
 
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.SurfaceView;
 
+import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.VideoDownloader;
 import com.beidousat.karaoke.player.local.LocalFileCache;
 import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.player.online.CacheFile;
 import com.beidousat.karaoke.player.online.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.util.MyDownloader;
+import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetWorkUtils;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.ServerFileUtil;
 
 import java.io.File;
+
+import static com.beidousat.karaoke.player.BnsPlayer.NORMAL;
+import static com.beidousat.karaoke.player.BnsPlayer.PREVIEW;
 
 /**
  * Created by J Wong on 2017/5/3.
@@ -25,7 +35,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
 
 
     private MPlayer mPlayer;
-    private BnsPlayerListener mBnsPlayerListener;
+    private BeidouPlayerListener mBnsPlayerListener;
 
     public BNSPlayer(SurfaceView surfaceView,SurfaceView minor) {
         mPlayer = new MPlayer();
@@ -34,13 +44,13 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         mPlayer.setMinorDisplay(minor.getHolder());
     }
 
-    public void open(String uri, BnsPlayerListener listener, String nextUri) {
+    public void open(String uri, String nextUri, int playmode) {
         if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
             uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
             nextUri = nextUri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
         }
 
-        this.mBnsPlayerListener = listener;
+//        this.mBnsPlayerListener = listener;
         File file = DiskFileUtil.getDiskFileByUrl(uri);
        // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
         //    file = DiskFileUtil.getSdcardFileByUrl(uri);
@@ -54,18 +64,36 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 proxy.startDownload(uri);
                 playUrl = proxy.getLocalURL();
             } else {//本地文件不存在
-
                 if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                     return;
                 }
-                Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
-
-                CacheFile.getInstance().add(uri, nextUri);
-                //下载到硬盘
-                VideoDownloader.getInstance().addDownloadUrl(uri);
-                HttpGetProxy proxy = new HttpGetProxy();
-                proxy.startDownload(uri);
-                playUrl = proxy.getLocalURL();
+                if (playmode == PREVIEW) {
+                    Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
+//                    CacheFile.getInstance().add(uri, nextUri);
+                    HttpGetProxy proxy = new HttpGetProxy();
+                    proxy.startDownload(uri);
+                    playUrl = proxy.getLocalURL();
+                }else if(playmode==NORMAL){
+                    Log.e("test", "文件不存在");
+                    if (!DiskFileUtil.hasDiskStorage()) {
+                        return;
+                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
+                        }
+                    }, 10 * 1000);
+                    try {
+//                    VideoDownloader.getInstance().addDownloadUrl(uri);
+//                        Log.e("test","download:"+ServerFileUtil.getFileUrl(uri));
+                        MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
+                                DiskFileUtil.getFileSavedPath(uri));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("test", "下载失败");
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,7 +124,9 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
             ex.printStackTrace();
         }
     }
-
+    public void setBeidouPlayerListener(BeidouPlayerListener listener) {
+        mBnsPlayerListener = listener;
+    }
 
     public boolean isPlaying() {
         try {

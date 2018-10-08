@@ -15,6 +15,8 @@ import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
+import com.beidousat.karaoke.player.chenxin.BNSPlayer;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 
@@ -22,6 +24,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
 
     private final String TAG = DlgPreview.class.getSimpleName();
     private BnsPlayer mMediaPlayer;
+    private BNSPlayer mMediaPlayer_cx;
     private SurfaceView mSurfaceView;
     private ImageView mIvClose;
     private TextView mTvName, mTvTime;
@@ -68,17 +71,28 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                try {
-                    mMediaPlayer = new BnsPlayer(mSurfaceView, null, 0, 0);
+                if(DiskFileUtil.is901()){
+                    try {
+                        mMediaPlayer = new BnsPlayer(mSurfaceView, null, 0, 0);
+                        String filePath = TextUtils.isEmpty(mSong.download_url) ? mSong.SongFilePath : mSong.download_url;
+                        mFileUrl = ServerFileUtil.getPreviewUrl(filePath);
+                        Logger.i(TAG, "play url:" + mFileUrl);
+                        prepareBegin = System.currentTimeMillis();
+                        mMediaPlayer.setBeidouPlayerListener(DlgPreview.this);
+                        mMediaPlayer.playUrl(mFileUrl, null,BnsPlayer.PREVIEW);
+                    } catch (Exception e) {
+                        Logger.e(TAG, "Exception:" + e.toString());
+                    }
+                }else{
+                    mMediaPlayer_cx=new BNSPlayer(mSurfaceView, null);
                     String filePath = TextUtils.isEmpty(mSong.download_url) ? mSong.SongFilePath : mSong.download_url;
                     mFileUrl = ServerFileUtil.getPreviewUrl(filePath);
                     Logger.i(TAG, "play url:" + mFileUrl);
                     prepareBegin = System.currentTimeMillis();
-                    mMediaPlayer.setBeidouPlayerListener(DlgPreview.this);
-                    mMediaPlayer.playUrl(mFileUrl, null,BnsPlayer.PREVIEW);
-                } catch (Exception e) {
-                    Logger.e(TAG, "Exception:" + e.toString());
+                    mMediaPlayer_cx.setBeidouPlayerListener(DlgPreview.this);
+                    mMediaPlayer_cx.open(mFileUrl, null,BnsPlayer.PREVIEW);
                 }
+
             }
         };
         mSurfaceView.post(runnable);

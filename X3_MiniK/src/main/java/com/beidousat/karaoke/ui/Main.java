@@ -1020,8 +1020,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 updateOriAccStatus(mKaraokeController.getPlayerStatus());
                 break;
             case R.id.tv_pause:
-                if (mPauseTipView.canPause()) {
+                if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
                     mKaraokeController.playPause();
+                }else{
+                    if (mPauseTipView.canPause()) {
+                        mKaraokeController.playPause();
+                    }
                 }
                 break;
             case R.id.tv_replay:

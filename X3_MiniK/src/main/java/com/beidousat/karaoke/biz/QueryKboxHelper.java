@@ -107,7 +107,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         Logger.d("QueryKboxHelper", "onSuccess :" + object);
         if (object != null && object instanceof KBox) {
             KBox kBox = (KBox) object;
-            if(kBox.getAutocephalous()!=null&&kBox.getAutocephalous().toString().equals("1")){
+            if(kBox.getAutocephalous()!=null&& kBox.getAutocephalous().equals("1")){
                 PreferenceUtil.setBoolean(mContext,"isSingle", true);
             }else {
                 PreferenceUtil.setBoolean(mContext,"isSingle", false);

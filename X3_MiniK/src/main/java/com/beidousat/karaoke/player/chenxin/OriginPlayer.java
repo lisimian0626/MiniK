@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.SurfaceView;
 
 import com.beidousat.karaoke.player.BeidouPlayerListener;
+import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
@@ -30,7 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, BnsPlayerListener {
+public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, BeidouPlayerListener {
 
     private final static String TAG = OriginPlayer.class.getSimpleName();
 
@@ -198,7 +199,8 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Bn
         mThreadPlayer = new Thread(new Runnable() {
             public void run() {
 //                mMediaPlayer.close();
-                mMediaPlayer.open(filepath, OriginPlayer.this, nextPath);
+                mMediaPlayer.open(filepath, nextPath, BnsPlayer.NORMAL);
+                mMediaPlayer.setBeidouPlayerListener(OriginPlayer.this);
                 mThreadPlayer = null;
             }
         });
@@ -565,6 +567,11 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Bn
         startTimer();
         handlerRecord.removeCallbacks(runnableRecord);
         handlerRecord.postDelayed(runnableRecord, 1000);
+    }
+
+    @Override
+    public void onPlayerProgress(long progress, long duration) {
+
     }
 
 
