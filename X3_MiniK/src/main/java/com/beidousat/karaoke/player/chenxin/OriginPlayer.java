@@ -190,17 +190,16 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
                 ex.printStackTrace();
             }
         }
-        final String filepath = ServerFileUtil.getFileUrl(path).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
-        final String nextPath = ServerFileUtil.getFileUrl(next).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
+//        final String filepath = ServerFileUtil.getFileUrl(path).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
+//        final String nextPath = ServerFileUtil.getFileUrl(next).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
 
-//        final String filepath = ServerFileUtil.getFileUrl(path);
-//        final String nextPath = ServerFileUtil.getFileUrl(path);
+        final String filepath = ServerFileUtil.getFileUrl(path);
+        final String nextPath = ServerFileUtil.getFileUrl(path);
         Logger.d(TAG, "filepath:" + filepath + "  nextPath:" + nextPath);
         mThreadPlayer = new Thread(new Runnable() {
             public void run() {
 //                mMediaPlayer.close();
                 mMediaPlayer.open(filepath, nextPath, BnsPlayer.NORMAL,OriginPlayer.this);
-                mMediaPlayer.setBeidouPlayerListener(OriginPlayer.this);
                 mThreadPlayer = null;
             }
         });

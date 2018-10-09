@@ -16,6 +16,7 @@ import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.player.chenxin.BNSPlayer;
+import com.beidousat.karaoke.player.chenxin.OriginPlayer;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
@@ -31,6 +32,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
     private long prepareBegin;
     private Song mSong;
     private String mFileUrl;
+    private Thread mThreadPlayer = null;
 
     public DlgPreview(Context context, Song song) {
         super(context, R.style.MyDialog);
@@ -71,7 +73,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if(DiskFileUtil.is901()){
+                if (DiskFileUtil.is901()) {
                     try {
                         mMediaPlayer = new BnsPlayer(mSurfaceView, null, 0, 0);
                         String filePath = TextUtils.isEmpty(mSong.download_url) ? mSong.SongFilePath : mSong.download_url;
@@ -79,18 +81,23 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
                         Logger.i(TAG, "play url:" + mFileUrl);
                         prepareBegin = System.currentTimeMillis();
                         mMediaPlayer.setBeidouPlayerListener(DlgPreview.this);
-                        mMediaPlayer.playUrl(mFileUrl, null,BnsPlayer.PREVIEW);
+                        mMediaPlayer.playUrl(mFileUrl, null, BnsPlayer.PREVIEW);
                     } catch (Exception e) {
                         Logger.e(TAG, "Exception:" + e.toString());
                     }
-                }else{
-                    mMediaPlayer_cx=new BNSPlayer(mSurfaceView, null);
+                } else {
+                    mMediaPlayer_cx = new BNSPlayer(mSurfaceView, null);
                     String filePath = TextUtils.isEmpty(mSong.download_url) ? mSong.SongFilePath : mSong.download_url;
                     mFileUrl = ServerFileUtil.getPreviewUrl(filePath);
                     Logger.i(TAG, "play url:" + mFileUrl);
                     prepareBegin = System.currentTimeMillis();
-                    mMediaPlayer_cx.setBeidouPlayerListener(DlgPreview.this);
-                    mMediaPlayer_cx.open(mFileUrl, mFileUrl,BnsPlayer.PREVIEW,DlgPreview.this);
+                    mThreadPlayer = new Thread(new Runnable() {
+                        public void run() {
+                            mMediaPlayer_cx.open(mFileUrl, mFileUrl, BnsPlayer.PREVIEW, DlgPreview.this);
+                            mThreadPlayer = null;
+                        }
+                    });
+                    mThreadPlayer.start();
                 }
 
             }
