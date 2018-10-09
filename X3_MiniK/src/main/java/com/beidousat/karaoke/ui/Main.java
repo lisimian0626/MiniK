@@ -1020,13 +1020,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 updateOriAccStatus(mKaraokeController.getPlayerStatus());
                 break;
             case R.id.tv_pause:
-                if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-                    mKaraokeController.playPause();
-                }else{
                     if (mPauseTipView.canPause()) {
                         mKaraokeController.playPause();
                     }
-                }
                 break;
             case R.id.tv_replay:
                 mKaraokeController.replay();
@@ -2086,7 +2082,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
             closePauseTipView();
         } else {
             mTvPlayerPause.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.selector_main_play, 0, 0);
-            popPauseTipView();
+            //单机版不限制暂停次数
+            if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                popPauseTipView();
+            }
         }
         mTvPlayerPause.setText(isPlaying ? R.string.pause : R.string.play);
         updateOriAccStatus(playerStatus);

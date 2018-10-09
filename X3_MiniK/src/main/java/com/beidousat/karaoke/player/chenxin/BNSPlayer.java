@@ -44,13 +44,13 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         mPlayer.setMinorDisplay(minor.getHolder());
     }
 
-    public void open(String uri, String nextUri, int playmode) {
+    public void open(String uri, String nextUri, int playmode,BeidouPlayerListener listener) {
         if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
             uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
             nextUri = nextUri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
         }
 
-//        this.mBnsPlayerListener = listener;
+        this.mBnsPlayerListener = listener;
         File file = DiskFileUtil.getDiskFileByUrl(uri);
        // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
         //    file = DiskFileUtil.getSdcardFileByUrl(uri);
@@ -69,7 +69,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 }
                 if (playmode == PREVIEW) {
                     Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
-//                    CacheFile.getInstance().add(uri, nextUri);
+                    CacheFile.getInstance().add(uri, nextUri);
                     HttpGetProxy proxy = new HttpGetProxy();
                     proxy.startDownload(uri);
                     playUrl = proxy.getLocalURL();
@@ -123,9 +123,6 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-    public void setBeidouPlayerListener(BeidouPlayerListener listener) {
-        mBnsPlayerListener = listener;
     }
 
     public boolean isPlaying() {
