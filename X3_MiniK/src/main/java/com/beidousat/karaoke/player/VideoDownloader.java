@@ -47,7 +47,7 @@ public class VideoDownloader implements SimpleDownloadListener {
         if (DiskFileUtil.hasDiskStorage() && !mIsDownloading && mUrl.size() > 0) {
             String url = mUrl.remove(0);
             String savePath;
-            if (!TextUtils.isEmpty(url) && !TextUtils.isEmpty(savePath = DiskFileUtil.getDiskPathByHttpPath(url))) {
+            if (!TextUtils.isEmpty(url) && !TextUtils.isEmpty(savePath = DiskFileUtil.getFileSavedPath(url))) {
                 mIsDownloading = true;
                 Logger.d(TAG, "startDownload url ==" + url + " savePath==" + savePath);
                 mSimpleDownloader.download(new File(savePath), url, this);

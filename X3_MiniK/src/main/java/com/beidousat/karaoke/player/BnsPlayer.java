@@ -6,18 +6,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
-import com.beidousat.karaoke.player.local.LocalFileCache;
-import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.ui.Main;
-import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.karaoke.util.MyDownloader;
-import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetWorkUtils;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.score.KeyInfo;
@@ -86,7 +83,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     private boolean isPlaying = false;
     public static int PREVIEW = 1;
     public static final int NORMAL = 2;
-
+    private int random=0;
     public BnsPlayer(SurfaceView videoSurfaceView, SurfaceView minor, int width, int height) {
         mVideoSurfaceView = videoSurfaceView;
         mMinor = minor;
@@ -105,6 +102,14 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
+    }
+
+    public int getRandom() {
+        return random;
+    }
+
+    public void setRandom(int random) {
+        this.random = random;
     }
 
     public void playUrl(String videoUrl, String recordFileName, int playmode) throws IOException {
@@ -165,8 +170,12 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 try {
 //                    VideoDownloader.getInstance().addDownloadUrl(uri);
 //                        Log.e("test","download:"+ServerFileUtil.getFileUrl(uri));
+                    Song song=new Song();
+                    song.SimpName="公播歌曲"+random;
+                    song.download_url=ServerFileUtil.getFileUrl(uri);
+                    song.SongFilePath=DiskFileUtil.getDiskPathByHttpPath(uri);
                     MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
-                            DiskFileUtil.getFileSavedPath(uri));
+                            DiskFileUtil.getFileSavedPath(uri),song);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e("test", "下载失败");

@@ -1504,7 +1504,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mKaraokeController.getPlayerStatus().playingType = 1;
             float vol = song.Volume > 0 ? ((float) song.Volume / 100) : 0.8f;
 //            Logger.d(TAG, "playSong" + song.SongFilePath+"|ID:"+mPlayingSong.ID);
-            playUrl(ServerFileUtil.getFileUrl(song.SongFilePath), vol);
+            playUrl(ServerFileUtil.getFileUrl(song.SongFilePath), vol,0);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
@@ -1542,7 +1542,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
 
-    private void playUrl(String url, float volPercent) throws IOException {
+    private void playUrl(String url, float volPercent,int random) throws IOException {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1555,6 +1555,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player != null) {
                 player.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
+                player.setRandom(random);
             }
         } else {
             if (player_cx == null)
@@ -1777,6 +1778,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     private void playVideoAdRandom() {
         Logger.d(TAG, "playAD");
+        int random=0;
         handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
         hideSurf();
         mAdVideo = new Ad();
@@ -1787,8 +1789,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
         } else {
             try {
                 String[] def_play = str.substring(1, str.length() - 1).split(",");
-                mAdVideo.ADMovie = def_play[PublicSong.getNum(5)].trim();
-                mAdVideo.ADContent = def_play[PublicSong.getNum(5)].trim();
+                random=PublicSong.getNum(5);
+                mAdVideo.ADMovie = def_play[random].trim();
+                mAdVideo.ADContent = def_play[random].trim();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1798,7 +1801,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mPlayingSong = null;
         Logger.d(TAG, "playUrl:" + ServerFileUtil.getFileUrl(mAdVideo.ADContent) + "|AdVideo:" + mAdVideo.ADContent);
         try {
-            playUrl(mAdVideo.ADContent, 0.5f);
+            playUrl(mAdVideo.ADContent, 0.5f,random);
         } catch (IOException e) {
             ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + e.toString());

@@ -65,7 +65,7 @@ public class DiskFileUtil {
         }
         return null;
     }
-
+      //获取文件相对路径
     public static String convertDiskpathToServerPath(String diskPath) {
         if (TextUtils.isEmpty(diskPath)) {
             return null;
@@ -91,8 +91,15 @@ public class DiskFileUtil {
     public static String getFileSavedPath(String path) {
         if (TextUtils.isEmpty(path))
             return null;
-        int indexOf = path.indexOf("data/");
-        String url = path.substring(indexOf, path.length());
+        String url="";
+        try {
+            int indexOf = path.indexOf("data/");
+            url = path.substring(indexOf, path.length());
+        }catch (Exception e){
+            e.printStackTrace();
+            url="";
+        }
+
         return (DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH) + url;
     }
 
@@ -190,7 +197,7 @@ public class DiskFileUtil {
             int indexOf = httpPath.indexOf("data/");
             String path = httpPath.substring(indexOf, httpPath.length());
             Logger.d(TAG, TAG+"   "+"getDiskPathByHttpPath path==" + path);
-            return (USB_PATH + path);
+            return path;
         } catch (Exception e) {
             e.printStackTrace();
         }

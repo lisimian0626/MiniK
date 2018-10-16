@@ -82,7 +82,6 @@ public class MyDownloader {
             EventBusUtil.postDownloadProgress(task.getUrl(), task.getPath(), 100);
             EventBusUtil.postDownloadFinish(task.getUrl(), task.getPath());
 
-
             startNextDownload(task.getUrl());
 
             //将下载的文件记录保存到数据库
@@ -199,9 +198,7 @@ public class MyDownloader {
         mSongErro.remove(url);
         mDownloadHelper.startDownload(url, savedPath);
     }
-    public void startDownload(String url, String savedPath) throws Exception {
-        mDownloadHelper.startDownload(url, savedPath);
-    }
+
 //    /**
 //     * 优先下载
 //     * @param url

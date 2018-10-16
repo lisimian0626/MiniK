@@ -3,9 +3,10 @@ package com.beidousat.libbns.security;
 
 import android.util.Log;
 
-import com.beidousat.libbns.net.download.SimpleDownloadListener;
-import com.beidousat.libbns.net.download.SimpleDownloader;
-import com.beidousat.libbns.util.BnsConfig;
+
+import com.beidousat.libbns.net.download.FileDownloadListener;
+import com.beidousat.libbns.net.download.FileDownloader;
+import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.KaraokeSdHelper;
 import com.beidousat.libbns.util.Logger;
 
@@ -14,7 +15,7 @@ import java.io.File;
 /**
  * Created by J Wong on 2015/12/15 10:30.
  */
-public class PrivateKeyUpdater implements SimpleDownloadListener {
+public class PrivateKeyUpdater implements FileDownloadListener {
 
     private int mDownloadRetryTimes;
 
@@ -23,30 +24,33 @@ public class PrivateKeyUpdater implements SimpleDownloadListener {
     public PrivateKeyUpdater() {
     }
 
+
     public void updateKey() {
-        File keyFile = BnsConfig.is901() ? KaraokeSdHelper.getSongSecurityKeyFileFor901() : KaraokeSdHelper.getSongSecurityKeyFile();
+        File keyFile = KaraokeSdHelper.getSongSecurityKeyFile();
         if (keyFile != null && keyFile.exists() && keyFile.length() == 32) {//不需要更新密钥
             Log.d("PrivateKeyUpdater", "updateKey keyFile key exist , not need to update !!");
             return;
         }
-        SimpleDownloader simpleDownloader = new SimpleDownloader();
-//        File keyFile = KaraokeSdHelper.getSongSecurityKeyFile();
-        simpleDownloader.download(keyFile, KEY_URL, this);
-
-//        File keyFile = is901? KaraokeSdHelper.getSongSecurityKeyFileFor901() : KaraokeSdHelper.getSongSecurityKeyFile();
-//        if (keyFile != null && keyFile.exists() && keyFile.length() == 32) {//不需要更新密钥
-//            Log.d("PrivateKeyUpdater", "updateKey keyFile key exist , not need to update !!");
-//            return;
-//        }
-//        Log.d("PrivateKeyUpdater", "updateKey keyFile !!");
-//
-//        updateKey(keyFile);
+        Log.d("PrivateKeyUpdater", "updateKey keyFile !!");
+        updateKey(keyFile);
     }
 
+    private void updateKey(File file) {
+        FileDownloader fileDownloader = new FileDownloader();
+        fileDownloader.download(file, KEY_URL, this);
+    }
 
     @Override
     public void onDownloadCompletion(File file, String url, long fileSize) {
         Logger.d("PrivateKeyUpdater", "Update private key success !");
+        /**
+         *打开密钥权限
+         */
+        try {
+            FileUtil.chmod777File(KaraokeSdHelper.getSongSecurityKeyFile());
+        } catch (Exception e) {
+            Log.e("PrivateKeyUpdater", "chmod key file exception ");
+        }
     }
 
     @Override

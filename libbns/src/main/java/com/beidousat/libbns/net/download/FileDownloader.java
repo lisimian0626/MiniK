@@ -33,6 +33,7 @@ public class FileDownloader {
         }
 
         String fileUrl = url;
+
         Logger.d(getClass().getSimpleName(), "download url:" + fileUrl);
 
 //        mDesFile = desFile;

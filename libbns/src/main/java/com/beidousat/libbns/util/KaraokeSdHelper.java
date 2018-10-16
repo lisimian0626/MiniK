@@ -1,8 +1,6 @@
 package com.beidousat.libbns.util;
 
-import android.content.Context;
 import android.os.Environment;
-import android.text.format.Formatter;
 
 import java.io.File;
 
@@ -23,9 +21,6 @@ public class KaraokeSdHelper {
 
     private final static String OTA = ROOT + "OTA/";
     private final static String SKIN = ROOT + "Skin/";
-
-    private final static String DOOR_MINI = ROOT + "DoorAd/";
-
 
     public static boolean existSDCard() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -85,33 +80,83 @@ public class KaraokeSdHelper {
         return Environment.getExternalStorageDirectory();
     }
 
-
-    public static File getSongSecurityKeyFile() {
-//        /mnt/private/SongSecurity.key
-//        if (!existSDCard())
-//            return null;
-        String privateDir = "/data/private/";
-        File file = new File(privateDir);
-        if (!file.exists()) {
-            boolean ret = file.mkdirs();
-            Logger.i("KaraokeSdHelper", "privateDir create:" + ret);
-        } else {
-            Logger.i("KaraokeSdHelper", "privateDir exist");
-        }
-        File file1 = new File(file, "SongSecurity.key");
+//    public static File getSongSecurityKeyFile() {
+////        /mnt/private/SongSecurity.key
+////        if (!existSDCard())
+////            return null;
+//        String privateDir = "/data/private/";
+//        File file = new File(privateDir);
+//        if (!file.exists()) {
+//            boolean ret = file.mkdirs();
+//            Logger.i("KaraokeSdHelper", "privateDir create:" + ret);
+//        } else {
+//            Logger.i("KaraokeSdHelper", "privateDir exist");
+//        }
+//        File file1 = new File(file, "SongSecurity.key");
 //        try {
 //            file1.createNewFile();
 //            file1.setExecutable(true);//设置可执行权限
 //            file1.setReadable(true);//设置可读权限
 //            file1.setWritable(true);//设置可写权限
-//            Process p = Runtime.getRuntime().exec("chmod 666 " + file1);
+//            Process p = Runtime.getRuntime().exec("chmod 777 " + file1.getAbsolutePath());
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
 //        }
-        return file1;
+//        return file1;
+//    }
+
+    public static File getSongSecurityKeyFile() {
+        if (BnsConfig.is901()) {
+            return getSongSecurityKeyFileFor901();
+        } else {
+//            String privateDir = "/mnt/private/SongSecurity.key";//H8方案
+            String privateDir = "/data/private/";
+            File file = new File(privateDir);
+            if (!file.exists()) {
+                boolean ret = file.mkdirs();
+                Logger.i("KaraokeSdHelper", "privateDir create:" + ret);
+            } else {
+                Logger.i("KaraokeSdHelper", "privateDir exist");
+            }
+            File file1 = new File(file,"SongSecurity.key");
+            try {
+                file1.createNewFile();
+                file1.setExecutable(true);//设置可执行权限
+                file1.setReadable(true);//设置可读权限
+                file1.setWritable(true);//设置可写权限
+                String cmd = "chmod 777 " + file1.getAbsolutePath();
+                Logger.i("KaraokeSdHelper", "run exec cmd:" + cmd);
+                Process p = Runtime.getRuntime().exec(cmd);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return file1;
+        }
+
+//        String privateDir = "/data/";
+//        File file = new File(privateDir);
+//        if (!file.exists()) {
+//            boolean ret = file.mkdirs();
+//            Logger.i("KaraokeSdHelper", "privateDir create:" + ret);
+//        } else {
+//            Logger.i("KaraokeSdHelper", "privateDir exist");
+//        }
+//        File file1 = new File(file, "bd.key");
+//        try {
+//            file1.createNewFile();
+//            file1.setExecutable(true);//设置可执行权限
+//            file1.setReadable(true);//设置可读权限
+//            file1.setWritable(true);//设置可写权限
+//            FileUtil.chmod777File(file1);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return file1;
+
     }
 
-    public static File getSongSecurityKeyFileFor901() {
+
+    private static File getSongSecurityKeyFileFor901() {
         String privateDir = "/data/";
         File file = new File(privateDir);
         if (!file.exists()) {
@@ -126,7 +171,7 @@ public class KaraokeSdHelper {
             file1.setExecutable(true);//设置可执行权限
             file1.setReadable(true);//设置可读权限
             file1.setWritable(true);//设置可写权限
-            FileUtil.chmod777FileSu(file1);
+            FileUtil.chmod777File(file1);
         } catch (Exception ex) {
             Logger.e("KaraokeSdHelper", "su -c chmod 777 SongSecurityKey Exception");
             ex.printStackTrace();
@@ -134,7 +179,8 @@ public class KaraokeSdHelper {
         return file1;
     }
 
-    private static final File getNote() {
+
+    public static final File getNote() {
         if (!existSDCard())
             return null;
         String crash = Environment.getExternalStorageDirectory() + NOTE;
@@ -200,27 +246,5 @@ public class KaraokeSdHelper {
             file.mkdirs();
 
         return file;
-    }
-
-
-    public static File getAdDoorMiniDir() {
-        if (!existSDCard())
-            return null;
-        String door = Environment.getExternalStorageDirectory() + DOOR_MINI;
-        File file = new File(door);
-        if (!file.exists())
-            file.mkdirs();
-        return file;
-    }
-
-
-    public static long getSdUsableSpace(Context context) {
-        File sdcard_filedir = Environment.getExternalStorageDirectory();//得到sdcard的目录作为一个文件对象
-        long usableSpace = sdcard_filedir.getUsableSpace();//获取文件目录对象剩余空间
-        long totalSpace = sdcard_filedir.getTotalSpace();
-        //将一个long类型的文件大小格式化成用户可以看懂的M，G字符串
-        String usableSpace_str = Formatter.formatFileSize(context, usableSpace);
-        String totalSpace_str = Formatter.formatFileSize(context, totalSpace);
-        return usableSpace;
     }
 }
