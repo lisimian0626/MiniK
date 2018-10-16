@@ -23,7 +23,10 @@ public class EventBusId {
          */
         public static final int PLAYER_NEXT = 1;
 
-
+        /***
+         * 切歌
+         */
+        public static final int PLAYER_NEXT_DELAY = 4;
         /**
          * 重唱
          */

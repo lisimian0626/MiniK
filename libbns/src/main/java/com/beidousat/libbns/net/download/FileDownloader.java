@@ -33,9 +33,6 @@ public class FileDownloader {
         }
 
         String fileUrl = url;
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            fileUrl = OkConfig.getFilePath() + url;
-        }
         Logger.d(getClass().getSimpleName(), "download url:" + fileUrl);
 
 //        mDesFile = desFile;

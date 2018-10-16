@@ -118,8 +118,8 @@ dependencies {
     compile 'com.tencent.tinker:tinker-android-lib:1.9.6'
     compile 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
 //    compile 'com.tencent.bugly:nativecrashreport:latest.release'
-// 依赖插件脚本
-    apply from: 'tinker-support.gradle'
+//// 依赖插件脚本
+//    apply from: 'tinker-support.gradle'
 
 }
 

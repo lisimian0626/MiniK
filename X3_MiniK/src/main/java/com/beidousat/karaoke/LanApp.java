@@ -104,7 +104,7 @@ protected void attachBaseContext(Context base) {
     MultiDex.install(base);
 
 
-    // 安装tinker
-    Beta.installTinker();
+//    // 安装tinker
+//    Beta.installTinker();
 }
 }

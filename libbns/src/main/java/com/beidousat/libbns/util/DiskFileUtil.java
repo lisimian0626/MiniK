@@ -91,8 +91,9 @@ public class DiskFileUtil {
     public static String getFileSavedPath(String path) {
         if (TextUtils.isEmpty(path))
             return null;
-
-        return (DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH) + path;
+        int indexOf = path.indexOf("data/");
+        String url = path.substring(indexOf, path.length());
+        return (DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH) + url;
     }
 
     public final static String getUsbDiskPath() {

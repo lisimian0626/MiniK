@@ -99,6 +99,7 @@ import com.beidousat.karaoke.ui.fragment.FmShows;
 import com.beidousat.karaoke.ui.presentation.PlayerPresentation;
 import com.beidousat.karaoke.util.AnimatorUtils;
 import com.beidousat.karaoke.util.ChooseSongTimer;
+import com.beidousat.karaoke.util.DownloadQueueHelper;
 import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.karaoke.util.SystemBroadcastSender;
@@ -121,6 +122,7 @@ import com.beidousat.libbns.model.KBoxStatus;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetChecker;
 import com.beidousat.libbns.net.NetWorkUtils;
+import com.beidousat.libbns.net.download.FileDownloadListener;
 import com.beidousat.libbns.net.download.SimpleDownloadListener;
 import com.beidousat.libbns.net.download.SimpleDownloader;
 import com.beidousat.libbns.net.request.HttpRequest;
@@ -142,6 +144,9 @@ import com.beidousat.score.NoteInfo;
 import com.beidousat.score.OnKeyInfoListener;
 import com.beidousat.score.OnScoreListener;
 import com.czt.mp3recorder.AudioRecordFileUtil;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloader;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -246,7 +251,16 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
         startMainPlayer();
         checkNetwork();
-
+//        File file=new File("/mnt/usb_storage/USB_DISK1/udisk1/data/song/qg/c1e2628a-d7f7-47f8-93b5-4b8561d0e773.mp4");
+//        if(file.exists()){
+//            file.delete();
+//            Log.e(TAG,"delete:"+file.getAbsolutePath());
+//        }
+//        File file1=new File("/mnt/usb_storage/USB_DISK1/udisk1/data/song/qg/c091f856-ecfc-4641-981c-d2762ce5a92d.mp4");
+//        if(file1.exists()){
+//            file1.delete();
+//            Log.e(TAG,"delete:"+file1.getAbsolutePath());
+//        }
 //        new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo();
 //        newsongDao=LanApp.getInstance().getDaoSession().getNewsongDao();
 //        copyDatabaseFile(this);
@@ -373,6 +387,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         restoreUserInfo();
                     }
                 } else {
+                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                        BoughtMeal.getInstance().clearMealInfoSharePreference();
+                        BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
+                    }
                     if (getApplicationContext() != null) {
                         ToastUtils.toast(getApplicationContext(), msg);
                     }
@@ -666,6 +684,67 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
                 }
                 break;
+            case EventBusId.id.PLAYER_NEXT_DELAY:
+                String downpath = event.data.toString();
+                Log.d(TAG,"download:"+ServerFileUtil.getFileUrl(downpath)+"   "+"savepath:"+DiskFileUtil.getFileSavedPath(downpath));
+//                FileDownloader fileDownloader=new FileDownloader();
+//                fileDownloader.download(new File(DiskFileUtil.getFileSavedPath(downpath)), ServerFileUtil.getFileUrl(downpath), new FileDownloadListener() {
+//                    @Override
+//                    public void onDownloadCompletion(File file, String url, long size) {
+//                        Log.d(TAG,"download Commplete:"+"   size:"+size);
+//                    }
+//
+//                    @Override
+//                    public void onDownloadFail(String url) {
+//                        Log.d(TAG,"download Fail:");
+//                    }
+//
+//                    @Override
+//                    public void onUpdateProgress(File mDesFile, long progress, long total) {
+//                        Log.d(TAG,"download:"+(int) ((float) progress / total * 100));
+//                    }
+//                });
+                List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downpath))
+                        .setPath(DiskFileUtil.getFileSavedPath(downpath));
+                mTaskList.add(task);
+                DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
+                final String finalUri = downpath;
+                DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete(BaseDownloadTask task) {
+                        Log.d(TAG,"download Commplete:"+ServerFileUtil.getFileUrl(finalUri));
+                    }
+
+                    @Override
+                    public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
+                        Log.d(TAG,"download Error:"+ServerFileUtil.getFileUrl(finalUri));
+                    }
+
+                    @Override
+                    public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        Log.d(TAG,"download:"+(int) ((float) soFarBytes / totalBytes * 100));
+                    }
+
+                    @Override
+                    public void onDownloadTaskOver() {
+
+                    }
+                });
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (player != null || player_cx != null) {
+                            mKaraokeController.getPlayerStatus().isMute = false;
+                            closePauseTipView();
+                            next();
+                            if (mPresentation != null)
+                                mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+                        }
+                    }
+                },10*1000);
+
+                break;
             case EventBusId.id.PLAYER_STATUS_CHANGED:
                 PlayerStatus status = (PlayerStatus) event.data;
                 updatePlayerStatus(status);
@@ -874,7 +953,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             mDialogAuth.setClose(true);
                             mDialogAuth.setMessage(tipsUtil.getErrMsg(kBoxStatus.code));
                             mDialogAuth.show();
-                        } else {
+                        } else if(kBoxStatus.code == 00301){
+                            if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                                BoughtMeal.getInstance().clearMealInfoSharePreference();
+                                BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
+                            }
+                        }else {
                             if (getApplicationContext() != null) {
                                 ToastUtils.toast(getApplicationContext(), tipsUtil.getErrMsg(kBoxStatus.code));
                             }

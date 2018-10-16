@@ -13,6 +13,7 @@ import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.player.online.CacheFile;
 import com.beidousat.karaoke.player.online.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.util.DownloadQueueHelper;
 import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
@@ -21,8 +22,12 @@ import com.beidousat.libbns.net.NetWorkUtils;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloader;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.beidousat.karaoke.player.BnsPlayer.NORMAL;
 import static com.beidousat.karaoke.player.BnsPlayer.PREVIEW;
@@ -33,7 +38,7 @@ import static com.beidousat.karaoke.player.BnsPlayer.PREVIEW;
 
 public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
 
-
+    private String TAG="BNSPlayer";
     private MPlayer mPlayer;
     private BeidouPlayerListener mBnsPlayerListener;
 
@@ -78,17 +83,11 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                     if (!DiskFileUtil.hasDiskStorage()) {
                         return;
                     }
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
-                        }
-                    }, 10 * 1000);
                     try {
-//                    VideoDownloader.getInstance().addDownloadUrl(uri);
-//                        Log.e("test","download:"+ServerFileUtil.getFileUrl(uri));
-                        MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
-                                DiskFileUtil.getFileSavedPath(uri));
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, uri);
+//                        MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
+//                                DiskFileUtil.getFileSavedPath(uri));
+
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e("test", "下载失败");
