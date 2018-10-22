@@ -14,6 +14,7 @@ import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.net.NetWorkUtils;
+import com.beidousat.libbns.net.download.FileDownloader;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
@@ -158,15 +159,19 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 getTrack(mMediaPlayer);
             } else if (playmode == NORMAL) {
                 Log.e("test", "文件不存在");
-                if (!DiskFileUtil.hasDiskStorage()) {
-                    return;
-                }
+
+//                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, uri);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
                     }
                 }, 10 * 1000);
+
+                if (!DiskFileUtil.hasDiskStorage()) {
+                    return;
+                }
                 try {
 //                    VideoDownloader.getInstance().addDownloadUrl(uri);
 //                        Log.e("test","download:"+ServerFileUtil.getFileUrl(uri));
@@ -174,6 +179,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     song.SimpName="公播歌曲"+random;
                     song.download_url=ServerFileUtil.getFileUrl(uri);
                     song.SongFilePath=DiskFileUtil.getDiskPathByHttpPath(uri);
+                    song.setAD(true);
                     MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
                             DiskFileUtil.getFileSavedPath(uri),song);
                 } catch (Exception e) {

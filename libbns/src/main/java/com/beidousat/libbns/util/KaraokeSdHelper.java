@@ -156,7 +156,7 @@ public class KaraokeSdHelper {
     }
 
 
-    private static File getSongSecurityKeyFileFor901() {
+    public static File getSongSecurityKeyFileFor901() {
         String privateDir = "/data/";
         File file = new File(privateDir);
         if (!file.exists()) {

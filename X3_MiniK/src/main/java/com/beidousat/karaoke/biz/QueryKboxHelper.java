@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.beidousat.karaoke.data.KBoxInfo;
+import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.KBox;
 import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.PayMent;
@@ -14,11 +15,13 @@ import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.net.request.StoreHttpRequestListener;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.PreferenceUtil;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,17 +39,17 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
     private String mCard_code;
     private static QueryKboxHelper mQueryKboxHelper;
 
-    public static QueryKboxHelper getInstance(Context context,String card_code,QueryKboxFeedback cb) {
+    public static QueryKboxHelper getInstance(Context context, String card_code, QueryKboxFeedback cb) {
         if (mQueryKboxHelper == null) {
-            mQueryKboxHelper = new QueryKboxHelper(context,card_code,cb);
+            mQueryKboxHelper = new QueryKboxHelper(context, card_code, cb);
         }
         return mQueryKboxHelper;
     }
 
-    public QueryKboxHelper(Context context,String card_code, QueryKboxFeedback cb) {
+    public QueryKboxHelper(Context context, String card_code, QueryKboxFeedback cb) {
         this.mContext = context;
         this.mQueryKboxFeedback = cb;
-        this.mCard_code=card_code;
+        this.mCard_code = card_code;
     }
 
     public void getBoxInfo(String kbox_sn) {
@@ -55,30 +58,34 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 //        request.setHttpRequestListener(this);
 //        request.setConvert2Class(KBox.class);
 //        request.doPost(0);
-        if(ServerConfigData.getInstance().getServerConfig()==null){
+        if (ServerConfigData.getInstance().getServerConfig() == null) {
             return;
         }
         StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.STORE_KBOX);
-        storeHttpRequest.addParam(HttpParamsUtils.initKBoxParams(kbox_sn,mCard_code));
+        storeHttpRequest.addParam(HttpParamsUtils.initKBoxParams(kbox_sn, mCard_code));
         storeHttpRequest.setStoreHttpRequestListener(this);
         storeHttpRequest.setConvert2Class(KBox.class);
         storeHttpRequest.post();
 
 
     }
-   public void getPayment(){
-       StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_PAYMENT);
-       storeHttpRequest.setStoreHttpRequestListener(this);
-       storeHttpRequest.setConvert2Token(new TypeToken<List<PayMent>>(){});
-       storeHttpRequest.post();
-   }
-    public void getConfig(String device_sn){
+
+    public void getPayment() {
+        StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_PAYMENT);
+        storeHttpRequest.setStoreHttpRequestListener(this);
+        storeHttpRequest.setConvert2Token(new TypeToken<List<PayMent>>() {
+        });
+        storeHttpRequest.post();
+    }
+
+    public void getConfig(String device_sn) {
         StoreHttpRequest storeHttpRequest = new StoreHttpRequest(KBoxInfo.STORE_WEB, RequestMethod.GET_SERVER_CFG);
         storeHttpRequest.addParam(HttpParamsUtils.initConfigParams(device_sn));
         storeHttpRequest.setStoreHttpRequestListener(this);
         storeHttpRequest.setConvert2Class(KboxConfig.class);
         storeHttpRequest.post();
     }
+
     @Override
     public void onStoreStart(String method) {
         if (mQueryKboxFeedback != null) {
@@ -89,7 +96,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
     @Override
     public void onStoreFailed(String method, String error) {
         if (mQueryKboxFeedback != null) {
-            mQueryKboxFeedback.onFeedback(false, error,null);
+            mQueryKboxFeedback.onFeedback(false, error, null);
         }
 //        if(!error.equals("K-box信息不存在！")){
 //            handler.postDelayed(new Runnable() {
@@ -107,43 +114,55 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         Logger.d("QueryKboxHelper", "onSuccess :" + object);
         if (object != null && object instanceof KBox) {
             KBox kBox = (KBox) object;
-            if(kBox.getAutocephalous()!=null&& kBox.getAutocephalous().equals("1")){
-                PreferenceUtil.setBoolean(mContext,"isSingle", true);
-            }else {
-                PreferenceUtil.setBoolean(mContext,"isSingle", false);
-            }
-//            PrefData.setAutocephalous(mContext,kBox.getAutocephalous());
-            PreferenceUtil.setString(mContext,"def_play", Arrays.toString(kBox.getDef_play()));
-            KBoxInfo.getInstance().setKBox(kBox);
-
-        }else if(object != null && object instanceof KboxConfig) {
-            KboxConfig kboxConfig=(KboxConfig) object;
-            ServerConfig config = new ServerConfig();
-            config.setAd_web(kboxConfig.getAd_web());
-//            config.setKbox_ip(kboxConfig.getKbox_ip());
-            String kbox_url = kboxConfig.getStore_ip_port();
-            String[] kbox_ipandport = kbox_url.split(":");
-            if (kbox_ipandport != null) {
-                config.setStore_ip(kbox_ipandport[0]);
-                config.setStore_port(Integer.parseInt(kbox_ipandport[1]));
+            if (kBox.getAutocephalous() != null && kBox.getAutocephalous().equals("1")) {
+                PreferenceUtil.setBoolean(mContext, "isSingle", true);
             } else {
-                config.setStore_ip(kbox_url);
-                config.setStore_port(1260);
+                PreferenceUtil.setBoolean(mContext, "isSingle", false);
             }
-            config.setStore_web(KBoxInfo.STORE_WEB);
-            config.setVod_server(kboxConfig.getVod_server());
-            ServerConfigData.getInstance().setConfigData(config);
+            PrefData.setAutocephalous(mContext,kBox.getAutocephalous());
+            PreferenceUtil.setString(mContext, "def_play", Arrays.toString(kBox.getDef_play()));
+//            if (kBox.getDef_play() != null && kBox.getDef_play().length > 0) {
+//                for (int i = 0; i < kBox.getDef_play().length; i++) {
+//                    if (DiskFileUtil.getDiskFileByUrl(kBox.getDef_play()[i]) != null) {
+//                        File file = new File(DiskFileUtil.getDiskFileByUrl(kBox.getDef_play()[i]).getAbsolutePath());
+//                        if (file.exists()) {
+//                            file.delete();
+//                            Log.e(TAG, "delete:" + file.getAbsolutePath());
+//                        }
+////        }
+//                    }
+//                }
+//            }
+                KBoxInfo.getInstance().setKBox(kBox);
+
+            } else if (object != null && object instanceof KboxConfig) {
+                KboxConfig kboxConfig = (KboxConfig) object;
+                ServerConfig config = new ServerConfig();
+                config.setAd_web(kboxConfig.getAd_web());
+//            config.setKbox_ip(kboxConfig.getKbox_ip());
+                String kbox_url = kboxConfig.getStore_ip_port();
+                String[] kbox_ipandport = kbox_url.split(":");
+                if (kbox_ipandport != null) {
+                    config.setStore_ip(kbox_ipandport[0]);
+                    config.setStore_port(Integer.parseInt(kbox_ipandport[1]));
+                } else {
+                    config.setStore_ip(kbox_url);
+                    config.setStore_port(1260);
+                }
+                config.setStore_web(KBoxInfo.STORE_WEB);
+                config.setVod_server(kboxConfig.getVod_server());
+                ServerConfigData.getInstance().setConfigData(config);
 
 //            Logger.d(TAG,"kbox_ipandport:"+kboxConfig.getStore_ip_port()+"~~~~~~"+"kbox_url:"+kboxConfig.getStore_ip_port()+"~~~~~~~~~~~~"+"kbox_ip:"+kboxConfig.getKbox_ip());
-        }else if(object != null && object instanceof ArrayList){
-            List<PayMent> payMentList= (List<PayMent>) object;
-            KBoxInfo.getInstance().setmPayMentlist(payMentList);
-            Logger.d(TAG, "url :" + payMentList.get(0).getLogo_url());
+            } else if (object != null && object instanceof ArrayList) {
+                List<PayMent> payMentList = (List<PayMent>) object;
+                KBoxInfo.getInstance().setmPayMentlist(payMentList);
+                Logger.d(TAG, "url :" + payMentList.get(0).getLogo_url());
+            }
+            if (mQueryKboxFeedback != null) {
+                mQueryKboxFeedback.onFeedback(true, null, object);
+            }
         }
-        if (mQueryKboxFeedback != null) {
-            mQueryKboxFeedback.onFeedback(true, null,object);
-        }
-    }
 
 //    @Override
 //    public void onStart(String method) {
@@ -152,7 +171,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 //        }
 //    }
 
-    private Handler handler = new Handler();
+        private Handler handler = new Handler();
 
 //    public void loadKBoxInfo(Context context, final QueryKboxFeedback cb) {
 //        SSLHttpRequest request = new SSLHttpRequest(context, RequestMethod.GET_KBOX);
@@ -188,9 +207,9 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 //        request.doPost(0);
 //    }
 
-    public interface QueryKboxFeedback {
-        void onStart();
+        public interface QueryKboxFeedback {
+            void onStart();
 
-        void onFeedback(boolean suceed, String msg,Object obj);
+            void onFeedback(boolean suceed, String msg, Object obj);
+        }
     }
-}

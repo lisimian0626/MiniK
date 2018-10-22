@@ -251,15 +251,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
         startMainPlayer();
         checkNetwork();
-//        File file=new File("/mnt/usb_storage/USB_DISK1/udisk1/data/song/qg/c1e2628a-d7f7-47f8-93b5-4b8561d0e773.mp4");
-//        if(file.exists()){
-//            file.delete();
-//            Log.e(TAG,"delete:"+file.getAbsolutePath());
+//        if(DiskFileUtil.getDiskFileByUrl("data/song/kx/fengxian/44d3d201-922d-46d4-86ba-7a56bf031661.mp4")!=null) {
+//            File file = new File(DiskFileUtil.getDiskFileByUrl("data/song/kx/fengxian/44d3d201-922d-46d4-86ba-7a56bf031661.mp4").getAbsolutePath());
+//            if (file.exists()) {
+//                file.delete();
+//                Log.e(TAG, "delete:" + file.getAbsolutePath());
+//            }
 //        }
-//        File file1=new File("/mnt/usb_storage/USB_DISK1/udisk1/data/song/qg/c091f856-ecfc-4641-981c-d2762ce5a92d.mp4");
-//        if(file1.exists()){
-//            file1.delete();
-//            Log.e(TAG,"delete:"+file1.getAbsolutePath());
+//        if(DiskFileUtil.getDiskFileByUrl("data/song/qg/c091f856-ecfc-4641-981c-d2762ce5a92d.mp4")!=null) {
+//            File file1 = new File(DiskFileUtil.getDiskFileByUrl("data/song/qg/c091f856-ecfc-4641-981c-d2762ce5a92d.mp4").getAbsolutePath());
+//            if (file1.exists()) {
+//                file1.delete();
+//                Log.e(TAG, "delete:" + file1.getAbsolutePath());
+//            }
 //        }
 //        new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo();
 //        newsongDao=LanApp.getInstance().getDaoSession().getNewsongDao();
@@ -687,23 +691,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.id.PLAYER_NEXT_DELAY:
                 String downpath = event.data.toString();
                 Log.d(TAG,"download:"+ServerFileUtil.getFileUrl(downpath)+"   "+"savepath:"+DiskFileUtil.getFileSavedPath(downpath));
-//                FileDownloader fileDownloader=new FileDownloader();
-//                fileDownloader.download(new File(DiskFileUtil.getFileSavedPath(downpath)), ServerFileUtil.getFileUrl(downpath), new FileDownloadListener() {
-//                    @Override
-//                    public void onDownloadCompletion(File file, String url, long size) {
-//                        Log.d(TAG,"download Commplete:"+"   size:"+size);
-//                    }
-//
-//                    @Override
-//                    public void onDownloadFail(String url) {
-//                        Log.d(TAG,"download Fail:");
-//                    }
-//
-//                    @Override
-//                    public void onUpdateProgress(File mDesFile, long progress, long total) {
-//                        Log.d(TAG,"download:"+(int) ((float) progress / total * 100));
-//                    }
-//                });
                 List<BaseDownloadTask> mTaskList = new ArrayList<>();
                 BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downpath))
                         .setPath(DiskFileUtil.getFileSavedPath(downpath));
@@ -2319,13 +2306,14 @@ public class Main extends BaseActivity implements View.OnClickListener,
         if (song == null) {
             return;
         }
-        if (song.isPrior) {
-            song.isPrior = false;
-            ChooseSongs.getInstance(this).add2Top(song);
-        } else {
-            ChooseSongs.getInstance(this).addSong(song);
+        if (!song.isAD()) {
+            if (song.isPrior) {
+                song.isPrior = false;
+                ChooseSongs.getInstance(this).add2Top(song);
+            } else {
+                ChooseSongs.getInstance(this).addSong(song);
+            }
         }
-
         if (MyDownloader.getInstance().isFinishAllTask()) {
             mTvProgress.setVisibility(View.INVISIBLE);
         } else {

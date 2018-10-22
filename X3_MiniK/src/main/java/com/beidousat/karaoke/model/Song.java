@@ -51,6 +51,16 @@ public class Song extends SongSimple implements Serializable {
 
     public String downloadErro;
 
+    private boolean isAD;
+
+    public boolean isAD() {
+        return isAD;
+    }
+
+    public void setAD(boolean AD) {
+        isAD = AD;
+    }
+
     @Override
     public String toString() {
         return toJson();
