@@ -62,7 +62,7 @@ public class ServerFileUtil {
                 url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath;
             }
         }
-        Logger.d(TAG,TAG+"      "+"getFileUrl:"+url);
+        Logger.d(TAG,"getFileUrl:"+url);
         return url;
     }
     public static String getPreviewUrl(String filePath){

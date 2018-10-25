@@ -133,6 +133,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 //                    }
 //                }
 //            }
+
                 KBoxInfo.getInstance().setKBox(kBox);
 
             } else if (object != null && object instanceof KboxConfig) {

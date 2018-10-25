@@ -251,20 +251,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
         startMainPlayer();
         checkNetwork();
-//        if(DiskFileUtil.getDiskFileByUrl("data/song/kx/fengxian/44d3d201-922d-46d4-86ba-7a56bf031661.mp4")!=null) {
-//            File file = new File(DiskFileUtil.getDiskFileByUrl("data/song/kx/fengxian/44d3d201-922d-46d4-86ba-7a56bf031661.mp4").getAbsolutePath());
-//            if (file.exists()) {
-//                file.delete();
-//                Log.e(TAG, "delete:" + file.getAbsolutePath());
-//            }
-//        }
-//        if(DiskFileUtil.getDiskFileByUrl("data/song/qg/c091f856-ecfc-4641-981c-d2762ce5a92d.mp4")!=null) {
-//            File file1 = new File(DiskFileUtil.getDiskFileByUrl("data/song/qg/c091f856-ecfc-4641-981c-d2762ce5a92d.mp4").getAbsolutePath());
-//            if (file1.exists()) {
-//                file1.delete();
-//                Log.e(TAG, "delete:" + file1.getAbsolutePath());
-//            }
-//        }
 //        new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo();
 //        newsongDao=LanApp.getInstance().getDaoSession().getNewsongDao();
 //        copyDatabaseFile(this);
