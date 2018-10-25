@@ -139,7 +139,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
             UploadSongData uploadSongData = new UploadSongData();
             uploadSongData.setDuration(mMediaPlayer.getDuration());
             UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
-            mMediaPlayer.start();
+//            mMediaPlayer.start();
             isPlaying = true;
             getTrack(mMediaPlayer);
         } else {//本地文件不存在
@@ -154,7 +154,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     mMediaPlayer.setMinorDisplay(mMinor.getHolder());
                 mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
                 mMediaPlayer.prepare();
-                mMediaPlayer.start();
+//                mMediaPlayer.start();
                 isPlaying = true;
                 getTrack(mMediaPlayer);
             } else if (playmode == NORMAL) {
@@ -271,6 +271,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     @Override
     public void onPrepared(MediaPlayer mp) {
         Logger.w(TAG, "onPrepared  =========================>");
+        mp.start();
         try {
             if (mBeidouPlayerListener != null)
                 mBeidouPlayerListener.onPlayerPrepared();

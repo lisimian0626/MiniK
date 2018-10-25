@@ -1439,14 +1439,14 @@ public class Main extends BaseActivity implements View.OnClickListener,
      * 切歌
      **/
     private void next() {
-        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
-            String order_sn = "";
-            if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
-                order_sn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
-            }
-            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
-            UpLoadDataUtil.getInstance().setmUploadSongData(null);
-        }
+//        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
+//            String order_sn = "";
+//            if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
+//                order_sn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
+//            }
+//            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
+//            UpLoadDataUtil.getInstance().setmUploadSongData(null);
+//        }
         if (mPresentation != null)
             mPresentation.cleanScreen();
         mTvPlayerPause.removeCallbacks(runShowScoreResult);
@@ -1684,7 +1684,14 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onPlayerCompletion() {
-
+        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
+            String order_sn = "";
+            if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
+                order_sn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
+            }
+            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
+            UpLoadDataUtil.getInstance().setmUploadSongData(null);
+        }
         if (mKaraokeController.getPlayerStatus().playingType == 1) {//歌曲播完
             if (mKaraokeController.getPlayerStatus().scoreMode != 0 && mPlayingSong != null && "1".equals(mPlayingSong.IsGradeLib)) {//播放转场
                 if (mPresentation != null) {
@@ -1809,14 +1816,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     };
 
     private void playScoreResult(final Song song, final int score) {
-        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
-            String order_sn = "";
-            if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
-                order_sn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
-            }
-            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
-            UpLoadDataUtil.getInstance().setmUploadSongData(null);
-        }
+
         try {
             Logger.d(TAG, "mark score :" + score);
             ChooseSongs.getInstance(getApplicationContext()).getFirstSong().score = score;
