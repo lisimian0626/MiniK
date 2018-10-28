@@ -16,6 +16,7 @@ import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.DownloadBusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 
 import java.util.List;
@@ -77,6 +78,7 @@ public class FmDownloader extends FmBaseDialog {
         switch (event.id) {
             case EventBusId.Download.PROGRESS:
                 de = (DownloadBusEvent) event;
+                Logger.d(getClass().getName(),"songFilePath:"+de.url+"     "+"percent:"+de.percent);
                 for (DownloadProgress item : mSongs) {
                     if (!TextUtils.isEmpty(item.song.SongFilePath)&&!TextUtils.isEmpty(de.url)&&ServerFileUtil.getFileUrl(item.song.SongFilePath).equals(de.url)) {
                         item.percent = (int) de.percent;

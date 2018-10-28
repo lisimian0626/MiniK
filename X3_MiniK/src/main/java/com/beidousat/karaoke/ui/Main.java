@@ -171,7 +171,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private FragmentManager mFragmentManager;
     private Button mBtnBack;
     private TextView mTvChooseCount, mTvCurrentSong;
-    private TextView mTvPlayerPause, mTvPlayerOriAcc, mTvScore, mTvService, mTvSwitch;
+    private TextView mTvPlayerPause, mTvPlayerOriAcc, mTvScore, mTvService, mTvSwitch,mTvShare;
     private LinearLayout ll_service;
     private UserInfoLayout mUserInfoLayout;
     private ToggleButton mTgScore;
@@ -378,6 +378,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     }
                 } else {
                     if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                        ChooseSongs.getInstance(Main.this).cleanChoose();
                         BoughtMeal.getInstance().clearMealInfoSharePreference();
                         BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                     }
@@ -578,6 +579,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mTvScore = (TextView) findViewById(R.id.tv_score);
         mTvScore.setOnClickListener(this);
         mTvScore.setSelected(true);
+        mTvShare=(TextView) findViewById(R.id.tv_share);
+        mTvShare.setVisibility( PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)?View.GONE:View.VISIBLE);
         lable = (TextView) findViewById(R.id.main_lable);
 //        mMarqueePlayer = (MarqueePlayer) findViewById(R.id.ads_marquee);
         mControlBar = findViewById(R.id.control_bar);
@@ -661,9 +664,14 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 playSong(songInfo);
                 break;
             case EventBusId.id.CHOOSE_SONG_CHANGED:
-                int count = Integer.valueOf(event.data.toString());
-                mTvChooseCount.setText(String.valueOf(count));
-                updatePlayingText();
+                try{
+                    int count = Integer.valueOf(event.data.toString());
+                    mTvChooseCount.setText(String.valueOf(count));
+                    updatePlayingText();
+                }catch (NumberFormatException e){
+
+                }
+
                 break;
             case EventBusId.id.PLAYER_NEXT:
                 if (player != null || player_cx != null) {
@@ -767,6 +775,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 setTone(Integer.valueOf(event.data.toString()));
                 if (mPresentation != null)
                     mPresentation.tipOperation(R.drawable.tv_tone_default, R.string.tone_default, true);
+                break;
+            case EventBusId.id.TONE_MUTE:
+                if (mPresentation != null)
+                    mPresentation.showMusicVol();
                 break;
             case EventBusId.id.TONE_UP:
                 setTone(Integer.valueOf(event.data.toString()));
@@ -900,6 +912,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         if (kBoxStatus.code == 2003) {
                             if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
 //                                Log.e("test", "心跳检测没交服务费，清空套餐");
+                                ChooseSongs.getInstance(Main.this).cleanChoose();
                                 BoughtMeal.getInstance().clearMealInfoSharePreference();
                                 BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                             }
@@ -928,6 +941,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             mDialogAuth.show();
                         } else if(kBoxStatus.code == 00301){
                             if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                                PromptDialog promptDialog = new PromptDialog(this);
+                                promptDialog.setMessage(getResources().getString(R.string.hand_disk));
+                                promptDialog.show();
+                                ChooseSongs.getInstance(Main.this).cleanChoose();
                                 BoughtMeal.getInstance().clearMealInfoSharePreference();
                                 BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                             }
@@ -1142,6 +1159,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     @Override
                     public void onMusicUp() {
                         mKaraokeController.musicVolUp();
+                        dlgTune.setCurrentMusicVol(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+                    }
+
+                    @Override
+                    public void onMute() {
+                        mKaraokeController.mute();
                         dlgTune.setCurrentMusicVol(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
                     }
 
@@ -1496,20 +1519,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
         } catch (Exception ex) {
             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + ex.toString());
-//            final String path = song.SongFilePath;
-            next();
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    String diskPath = DiskFileUtil.getFileSavedPath(path);
-//                    File file = new File(diskPath);
-//                    if (file.exists() && file.isFile()) {
-//                        file.delete();
-//                        Logger.d(TAG, "执行删除路径:" + diskPath.toString());
-//                        EventBusUtil.postSticky(EventBusId.id.CHOOSE_SONG_CHANGED, "");
-//                    }
-//                }
-//            }, 2000);
+            final String path = song.SongFilePath;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String diskPath = DiskFileUtil.getFileSavedPath(path);
+                    File file = new File(diskPath);
+                    if (file.exists() && file.isFile()) {
+                        file.delete();
+                        Logger.d(TAG, "执行删除路径:" + diskPath.toString());
+                    }
+                    next();
+                }
+            }, 2000);
 
         }
     }

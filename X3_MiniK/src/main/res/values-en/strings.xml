@@ -402,6 +402,7 @@
     <string name="Resounding_down">Reverberation-</string>
     <string name="room_num_error">Service NO. is wrong</string>
     <string name="hand_disk">Failure to connect the hard disk or hard disk has been damaged.</string>
+    <string name="auth_fail">Termination of authorization</string>
     <string name="no_pay_service">Service charge unpaid</string>
     <string name="pay_for_service">Renew</string>
     <string name="pay_service_succed">The service charge was paid successfully</string>

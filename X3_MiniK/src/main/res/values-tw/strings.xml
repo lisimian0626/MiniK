@@ -415,6 +415,7 @@
     <string name="room_num_success">房間號設置成功！</string>
     <string name="room_num_error">房間號有誤</string>
     <string name="hand_disk">未連接硬盤或硬盤已損壞！</string>
+    <string name="auth_fail">授权終止</string>
     <string name="kbox_reset_psw">重置機頂盒密碼完成</string>
     <string name="has_order">已點</string>
     <string name="has_sing">已唱</string>

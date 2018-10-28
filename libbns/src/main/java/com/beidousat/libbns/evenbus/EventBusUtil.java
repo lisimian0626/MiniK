@@ -37,11 +37,11 @@ public class EventBusUtil {
     }
 
     public static void postDownloadFinish(String url, String path) {
-        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.FINISH, url, path, 100));
+        EventBus.getDefault().postSticky(DownloadBusEvent.getEvent(EventBusId.Download.FINISH, url, path, 100));
     }
 
     public static void postDownloadProgress(String url, String path, float percent) {
-        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.PROGRESS, url, path, percent));
+        EventBus.getDefault().postSticky(DownloadBusEvent.getEvent(EventBusId.Download.PROGRESS, url, path, percent));
     }
 
     public static void postDownloadSpaceNotEnough(String url, String path) {

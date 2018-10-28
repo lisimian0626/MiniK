@@ -107,6 +107,7 @@ public class EventBusId {
 
         public static final int PLAYER_PLAY_MOVIE = 30;
 
+        public static final int TONE_MUTE=35;
 
         public static final int TONE_DEFAULT = 36;
 

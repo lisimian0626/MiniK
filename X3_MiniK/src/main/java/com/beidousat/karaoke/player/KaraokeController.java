@@ -196,7 +196,17 @@ public class KaraokeController {
         return mPlayerStatus.volMusic;
     }
 
+    public void mute(){
+        //音量控制,初始化定义
+        AudioManager mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        int current = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        if(current!=0){
+             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+            EventBusUtil.postSticky(EventBusId.id.TONE_MUTE, "");
+            mPlayerStatus.volMusic = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        }
 
+    }
     /**
      * @return
      */

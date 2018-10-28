@@ -77,6 +77,7 @@ public class DlgTune extends BaseDialog implements OnClickListener {
         findViewById(R.id.iv_reverb_up).setOnClickListener(this);
         findViewById(R.id.iv_reverb_down).setOnClickListener(this);
         findViewById(R.id.iv_default).setOnClickListener(this);
+        findViewById(R.id.iv_mute).setOnClickListener(this);
         if(!SerialController.getInstance(Main.mMainActivity).ismIsOpened()){
             try {
                 int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(Main.mMainActivity));
@@ -124,6 +125,10 @@ public class DlgTune extends BaseDialog implements OnClickListener {
                 if (mOnTuneListener != null)
                     mOnTuneListener.onReset();
                 break;
+            case R.id.iv_mute:
+                if (mOnTuneListener != null)
+                    mOnTuneListener.onMute();
+                break;
             case R.id.iv_reverb_down:
                 if (mOnTuneListener != null)
                     mOnTuneListener.onReverbDown();
@@ -162,6 +167,8 @@ public class DlgTune extends BaseDialog implements OnClickListener {
         void onMusicDown();
 
         void onMusicUp();
+
+        void onMute();
 
         void onToneDown();
 
