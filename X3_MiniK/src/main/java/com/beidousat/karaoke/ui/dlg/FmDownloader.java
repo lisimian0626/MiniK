@@ -33,11 +33,19 @@ public class FmDownloader extends FmBaseDialog {
     RecyclerView mRecyclerView;
     DownloaderAdapter mAdapter;
     List<DownloadProgress> mSongs;
+    private String Tag="FmDownloader";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fm_downloader, container, false);
+        EventBus.getDefault().register(this);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -63,14 +71,20 @@ public class FmDownloader extends FmBaseDialog {
     public void onResume() {
         super.onResume();
 
-        EventBus.getDefault().register(this);
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
+
+    }
+
+    @Override
+    public void onDestroy() {
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     public void onEventMainThread(BusEvent event) {
@@ -78,9 +92,9 @@ public class FmDownloader extends FmBaseDialog {
         switch (event.id) {
             case EventBusId.Download.PROGRESS:
                 de = (DownloadBusEvent) event;
-                Logger.d(getClass().getName(),"songFilePath:"+de.url+"     "+"percent:"+de.percent);
+                Logger.d(Tag,"songFilePath:"+de.url+"     "+"percent:"+de.percent);
                 for (DownloadProgress item : mSongs) {
-                    if (!TextUtils.isEmpty(item.song.SongFilePath)&&!TextUtils.isEmpty(de.url)&&ServerFileUtil.getFileUrl(item.song.SongFilePath).equals(de.url)) {
+                    if (!TextUtils.isEmpty(item.song.download_url)&&!TextUtils.isEmpty(de.url)&&ServerFileUtil.getFileUrl(item.song.download_url).equals(de.url)) {
                         item.percent = (int) de.percent;
                         break;
                     }

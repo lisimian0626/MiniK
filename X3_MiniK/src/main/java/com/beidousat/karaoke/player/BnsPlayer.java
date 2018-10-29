@@ -113,7 +113,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         this.random = random;
     }
 
-    public void playUrl(String videoUrl, String recordFileName, int playmode) throws IOException {
+    public void playUrl(String videoUrl,String savePath,String recordFileName, int playmode) throws IOException {
         stop();
         initParameters();
         setIsRecord(recordFileName);
@@ -123,12 +123,12 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         if (mMediaPlayer == null) {
             createMediaPlayer();
         }
-        open(videoUrl, playmode);
+        open(videoUrl,savePath,playmode);
     }
 
-    private void open(String uri, int playmode) throws IOException {
-        Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(uri));
-        File file = DiskFileUtil.getDiskFileByUrl(uri);
+    private void open(String uri,String savePath, int playmode) throws IOException {
+        Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
+        File file = DiskFileUtil.getDiskFileByUrl(savePath);
         if (file != null) {//存在本地文件
             Logger.d(TAG, "open local file:" + file.getAbsolutePath());
             mMediaPlayer.setDataSource(file.getAbsolutePath());
@@ -178,10 +178,10 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     Song song=new Song();
                     song.SimpName="公播歌曲"+random;
                     song.download_url=ServerFileUtil.getFileUrl(uri);
-                    song.SongFilePath=DiskFileUtil.getDiskPathByHttpPath(uri);
+                    song.SongFilePath=DiskFileUtil.getDiskPathByHttpPath(savePath);
                     song.setAD(true);
                     MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
-                            DiskFileUtil.getFileSavedPath(uri),song);
+                            DiskFileUtil.getFileSavedPath(savePath),song);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e("test", "下载失败");
@@ -443,7 +443,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     public void replay() throws IOException {
         String url = mFilePath;
         mFilePath = "";
-        playUrl(url, mRecordFileName, BnsPlayer.NORMAL);
+        playUrl(url,url, mRecordFileName, BnsPlayer.NORMAL);
     }
 
 

@@ -579,8 +579,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mTvScore = (TextView) findViewById(R.id.tv_score);
         mTvScore.setOnClickListener(this);
         mTvScore.setSelected(true);
-        mTvShare=(TextView) findViewById(R.id.tv_share);
-        mTvShare.setVisibility( PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)?View.GONE:View.VISIBLE);
+//        mTvShare=(TextView) findViewById(R.id.tv_share);
+//        mTvShare.setVisibility( PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)?View.GONE:View.VISIBLE);
         lable = (TextView) findViewById(R.id.main_lable);
 //        mMarqueePlayer = (MarqueePlayer) findViewById(R.id.ads_marquee);
         mControlBar = findViewById(R.id.control_bar);
@@ -1500,7 +1500,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mKaraokeController.getPlayerStatus().playingType = 1;
             float vol = song.Volume > 0 ? ((float) song.Volume / 100) : 0.8f;
 //            Logger.d(TAG, "playSong" + song.SongFilePath+"|ID:"+mPlayingSong.ID);
-            playUrl(ServerFileUtil.getFileUrl(song.SongFilePath), vol,0);
+            playUrl(ServerFileUtil.getFileUrl(song.download_url),DiskFileUtil.getFileSavedPath(song.SongFilePath), vol,0);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
@@ -1537,7 +1537,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
 
-    private void playUrl(String url, float volPercent,int random) throws IOException {
+    private void playUrl(String url, String savePath,float volPercent,int random) throws IOException {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1549,7 +1549,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 return;
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player != null) {
-                player.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
+                player.playUrl(url, savePath,mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
                 player.setRandom(random);
             }
         } else {
@@ -1803,7 +1803,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mPlayingSong = null;
         Logger.d(TAG, "playUrl:" + ServerFileUtil.getFileUrl(mAdVideo.ADContent) + "|AdVideo:" + mAdVideo.ADContent);
         try {
-            playUrl(mAdVideo.ADContent, 0.5f,random);
+            playUrl(mAdVideo.ADContent, mAdVideo.ADContent,0.5f,random);
         } catch (IOException e) {
             ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + e.toString());
@@ -1838,7 +1838,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 if (DiskFileUtil.is901()) {
                     if (player != null) {
                         try {
-                            player.playUrl(AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
+                            player.playUrl(AdDefault.getScoreResultVideo(),AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
                         } catch (IOException e) {
                             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
                             Logger.w(TAG, "playSong ex:" + e.toString());

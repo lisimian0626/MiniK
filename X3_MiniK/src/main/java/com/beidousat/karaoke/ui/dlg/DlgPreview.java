@@ -81,7 +81,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
                         Logger.i(TAG, "play url:" + mFileUrl);
                         prepareBegin = System.currentTimeMillis();
                         mMediaPlayer.setBeidouPlayerListener(DlgPreview.this);
-                        mMediaPlayer.playUrl(mFileUrl, null, BnsPlayer.PREVIEW);
+                        mMediaPlayer.playUrl(mFileUrl,mSong.SongFilePath, null, BnsPlayer.PREVIEW);
                     } catch (Exception e) {
                         Logger.e(TAG, "Exception:" + e.toString());
                     }
