@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.VideoDownloader;
 import com.beidousat.karaoke.player.local.LocalFileCache;
@@ -49,49 +50,36 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         mPlayer.setMinorDisplay(minor.getHolder());
     }
 
-    public void open(String uri, String nextUri, int playmode,BeidouPlayerListener listener) {
-        if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
-            uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
-            nextUri = nextUri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
-        }
-
+    public void open(Song curSong, Song nextSong, int playmode, BeidouPlayerListener listener) {
         this.mBnsPlayerListener = listener;
-        File file = DiskFileUtil.getDiskFileByUrl(uri);
-       // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
-        //    file = DiskFileUtil.getSdcardFileByUrl(uri);
-      //  }
+        File file = DiskFileUtil.getDiskFileByUrl(curSong.SongFilePath);
+        String curSongpath = ServerFileUtil.getFileUrl(curSong.download_url);
+        String nextSongPath = ServerFileUtil.getFileUrl(nextSong.download_url);
+        Logger.d("BNSPlayer", "savaPath:" + file.getAbsolutePath()+"   curSongpath:"+curSongpath+"    nextSongPath:"+nextSongPath);
         String playUrl = null;
         try {
             if (file != null) {//存在本地文件
                 Logger.d("BNSPlayer", "open 本地视频 ：" + file.getAbsolutePath());
-                LocalFileCache.getInstance().add(uri, nextUri);
+                LocalFileCache.getInstance().add(curSongpath, nextSongPath);
                 LocalFileProxy proxy = new LocalFileProxy();
-                proxy.startDownload(uri);
+                proxy.startDownload(curSong.download_url);
                 playUrl = proxy.getLocalURL();
             } else {//本地文件不存在
                 if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                     return;
                 }
                 if (playmode == PREVIEW) {
-                    Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
-                    CacheFile.getInstance().add(uri, nextUri);
+                    Logger.d("BNSPlayer", "open 网络视频 ：" + curSongpath);
+                    CacheFile.getInstance().add(curSong.download_url, nextSong.download_url);
                     HttpGetProxy proxy = new HttpGetProxy();
-                    proxy.startDownload(uri);
+                    proxy.startDownload(curSong.download_url);
                     playUrl = proxy.getLocalURL();
                 }else if(playmode==NORMAL){
-                    Log.e("test", "文件不存在");
+                    Logger.d("BNSPlayer", "open 网络视频 ：" + curSongpath);
                     if (!DiskFileUtil.hasDiskStorage()) {
                         return;
                     }
-                    try {
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, uri);
-//                        MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
-//                                DiskFileUtil.getFileSavedPath(uri));
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("test", "下载失败");
-                    }
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, curSong.download_url);
                 }
             }
         } catch (Exception e) {
