@@ -25,7 +25,7 @@ public class ScoreNoteDownloader implements SimpleDownloadListener {
                 if (!TextUtils.isEmpty(songPath)) {
 
                     String noteFileName2 = ServerFileUtil.getFileName(songPath) + ".sec.txt";
-                    String note2FileUrl = ServerFileUtil.getScoreNote2Url(songPath);
+                    String note2FileUrl = ServerFileUtil.getScoreNote2Url(song.download_url);
 
                     File file2 = new File(DiskFileUtil.getGradeDir(), noteFileName2);
 
@@ -37,7 +37,7 @@ public class ScoreNoteDownloader implements SimpleDownloadListener {
                     }
 
                     String noteFileName = ServerFileUtil.getFileName(songPath) + ".txt";
-                    String noteFileUrl = ServerFileUtil.getScoreNoteUrl(songPath);
+                    String noteFileUrl = ServerFileUtil.getScoreNoteUrl(song.download_url);
                     File file = new File(DiskFileUtil.getGradeDir(), noteFileName);
                     Logger.d("ScoreNoteDownloader", "downloadNote noteFileName:" + noteFileName
                             + "  noteFileUrl:" + noteFileUrl + "  file path  " + file.getAbsolutePath());
