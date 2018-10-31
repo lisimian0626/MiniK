@@ -178,3 +178,6 @@ public static java.lang.String TABLENAME;
 -keep interface com.google.android.flexbox.** { *; }
 
 -keep class com.hoho.android.usbserial.driver.** { *; }
+-keep class com.alibaba.sdk.android.oss.** { *; }
+-dontwarn okio.**
+-dontwarn org.apache.commons.codec.binary.**
