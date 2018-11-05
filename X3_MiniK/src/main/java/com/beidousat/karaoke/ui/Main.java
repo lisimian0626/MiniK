@@ -1502,7 +1502,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mKaraokeController.getPlayerStatus().playingType = 1;
             float vol = song.Volume > 0 ? ((float) song.Volume / 100) : 0.8f;
 //            Logger.d(TAG, "playSong" + song.SongFilePath+"|ID:"+mPlayingSong.ID);
-            playUrl(ServerFileUtil.getFileUrl(song.download_url),DiskFileUtil.getFileSavedPath(song.SongFilePath), vol,0);
+            playUrl(song, vol);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
@@ -1539,7 +1539,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
 
-    private void playUrl(String url, String savePath,float volPercent,int random) throws IOException {
+    private void playUrl(Song song,float volPercent) throws IOException {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1551,8 +1551,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 return;
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player != null) {
-                player.playUrl(url, savePath,mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
-                player.setRandom(random);
+                player.playUrl(ServerFileUtil.getFileUrl(song.download_url), DiskFileUtil.getFileSavedPath(song.SongFilePath),mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
             }
         } else {
             if (player_cx == null)
@@ -1560,7 +1559,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player_cx != null) {
                 Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                player_cx.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, secSong == null ? url : secSong.SongFilePath);
+                player_cx.playUrl(song, secSong,BnsPlayer.NORMAL);
             }
         }
         mKaraokeController.getPlayerStatus().isPlaying = true;
