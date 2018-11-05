@@ -69,6 +69,7 @@ import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.player.KaraokeController;
 import com.beidousat.karaoke.player.chenxin.OriginPlayer;
+import com.beidousat.karaoke.service.octo.OctopusService;
 import com.beidousat.karaoke.ui.dlg.CommonDialog;
 import com.beidousat.karaoke.ui.dlg.DeviceStore;
 import com.beidousat.karaoke.ui.dlg.DlgAdScreen;
@@ -338,6 +339,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     checkUsbKey();
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
+                    startService(new Intent(getApplicationContext(), OctopusService.class));
                     getKboxDetail();
                 } else {
                     PromptCfgDialog(getString(R.string.getting_config_error));

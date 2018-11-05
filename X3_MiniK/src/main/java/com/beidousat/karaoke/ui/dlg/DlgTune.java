@@ -14,6 +14,7 @@ import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.model.Common;
+import com.beidousat.libwidget.image.RecyclerImageView;
 
 import de.greenrobot.event.EventBus;
 
@@ -21,7 +22,7 @@ public class DlgTune extends BaseDialog implements OnClickListener {
 
     private TextView mTvMusic, mTvTone, mTvMic, mTvEff;
     private OnTuneListener mOnTuneListener;
-
+    private RecyclerImageView ry_default,ry_mute;
     public DlgTune(Context context) {
         super(context, R.style.MyDialog);
         init();
@@ -66,7 +67,15 @@ public class DlgTune extends BaseDialog implements OnClickListener {
         mTvTone = (TextView) findViewById(R.id.tv_tone);
         mTvMic = (TextView) findViewById(R.id.tv_mic);
         mTvEff = (TextView) findViewById(R.id.tv_reverb);
-
+        ry_default=(RecyclerImageView)findViewById(R.id.iv_default);
+        ry_mute=(RecyclerImageView)findViewById(R.id.iv_mute);
+        if(Common.isEn){
+            ry_default.setImageResource(R.drawable.selector_dlg_tune_default_en);
+            ry_mute.setImageResource(R.drawable.selector_dlg_tune_mute_en);
+        }else{
+            ry_default.setImageResource(R.drawable.selector_dlg_tune_default);
+            ry_mute.setImageResource(R.drawable.selector_dlg_tune_mute);
+        }
         findViewById(R.id.iv_close).setOnClickListener(this);
         findViewById(R.id.iv_mic_down).setOnClickListener(this);
         findViewById(R.id.iv_mic_up).setOnClickListener(this);

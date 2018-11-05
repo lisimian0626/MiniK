@@ -1,1 +1,1 @@
-include ':app', ':liblame', ':libscore', ':libserial', ':libwidget', ':libbns', ':usbSerialForAndroid',  ':X3_MiniK'
+include ':app', ':liblame', ':libscore', ':libserial', ':libwidget', ':libbns', ':usbSerialForAndroid',  ':X3_MiniK','WAN'
