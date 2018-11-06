@@ -166,6 +166,7 @@ class ReadUart
         catch (IOException e)
         {
             Log.d (TAG, e.getMessage ());
+
         }
         return -9;
     }

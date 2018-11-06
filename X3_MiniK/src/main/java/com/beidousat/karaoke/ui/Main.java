@@ -1238,8 +1238,17 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case R.id.tv_service:
-                DlgService dlgService = new DlgService(this);
-                dlgService.show();
+                byte[] cmd = new byte[6];
+                cmd[0] = (byte) 0x02;
+                cmd[1] = (byte) 0x01;
+                cmd[2] = (byte) 0x00;
+                cmd[3] = (byte) 0x00;
+                cmd[4] = (byte) 0x00;
+                cmd[5] = (byte) 0x03;
+                SerialController.getInstance(this).sendbyte(cmd);
+//                Toast.makeText(this, "发送：" + cmd.toString(), Toast.LENGTH_LONG).show();
+//                DlgService dlgService = new DlgService(this);
+//                dlgService.show();
                 break;
             case R.id.tv_coupon:
                 DlgCoupon dlgCoupon = new DlgCoupon(this);
@@ -1502,7 +1511,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mKaraokeController.getPlayerStatus().playingType = 1;
             float vol = song.Volume > 0 ? ((float) song.Volume / 100) : 0.8f;
 //            Logger.d(TAG, "playSong" + song.SongFilePath+"|ID:"+mPlayingSong.ID);
-            playUrl(song, vol);
+            playUrl(ServerFileUtil.getFileUrl(song.download_url),DiskFileUtil.getFileSavedPath(song.SongFilePath), vol,0);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
@@ -1539,7 +1548,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
 
-    private void playUrl(Song song,float volPercent) throws IOException {
+    private void playUrl(String url, String savePath,float volPercent,int random) throws IOException {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1551,7 +1560,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 return;
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player != null) {
-                player.playUrl(ServerFileUtil.getFileUrl(song.download_url), DiskFileUtil.getFileSavedPath(song.SongFilePath),mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
+                player.playUrl(url, savePath,mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
+                player.setRandom(random);
             }
         } else {
             if (player_cx == null)
@@ -1559,7 +1569,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player_cx != null) {
                 Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                player_cx.playUrl(song, secSong,BnsPlayer.NORMAL);
+                player_cx.playUrl(url, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, secSong == null ? url : secSong.SongFilePath);
             }
         }
         mKaraokeController.getPlayerStatus().isPlaying = true;

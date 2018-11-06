@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
-import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.VideoDownloader;
 import com.beidousat.karaoke.player.local.LocalFileCache;
@@ -47,39 +46,52 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         mPlayer = new MPlayer();
         mPlayer.init(surfaceView);
         if(minor!=null)
-        mPlayer.setMinorDisplay(minor.getHolder());
+            mPlayer.setMinorDisplay(minor.getHolder());
     }
 
-    public void open(Song curSong, Song nextSong, int playmode, BeidouPlayerListener listener) {
+    public void open(String uri, String nextUri, int playmode,BeidouPlayerListener listener) {
+        if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
+            uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
+            nextUri = nextUri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
+        }
+
         this.mBnsPlayerListener = listener;
-        File file = DiskFileUtil.getDiskFileByUrl(curSong.SongFilePath);
-        String curSongpath = ServerFileUtil.getFileUrl(curSong.download_url);
-        String nextSongPath = ServerFileUtil.getFileUrl(nextSong.download_url);
-        Logger.d("BNSPlayer", "savaPath:" + file.getAbsolutePath()+"   curSongpath:"+curSongpath+"    nextSongPath:"+nextSongPath);
+        File file = DiskFileUtil.getDiskFileByUrl(uri);
+        // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
+        //    file = DiskFileUtil.getSdcardFileByUrl(uri);
+        //  }
         String playUrl = null;
         try {
             if (file != null) {//存在本地文件
                 Logger.d("BNSPlayer", "open 本地视频 ：" + file.getAbsolutePath());
-                LocalFileCache.getInstance().add(curSongpath, nextSongPath);
+                LocalFileCache.getInstance().add(uri, nextUri);
                 LocalFileProxy proxy = new LocalFileProxy();
-                proxy.startDownload(curSong.download_url);
+                proxy.startDownload(uri);
                 playUrl = proxy.getLocalURL();
             } else {//本地文件不存在
                 if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                     return;
                 }
                 if (playmode == PREVIEW) {
-                    Logger.d("BNSPlayer", "open 网络视频 ：" + curSongpath);
-                    CacheFile.getInstance().add(curSong.download_url, nextSong.download_url);
+                    Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
+                    CacheFile.getInstance().add(uri, nextUri);
                     HttpGetProxy proxy = new HttpGetProxy();
-                    proxy.startDownload(curSong.download_url);
+                    proxy.startDownload(uri);
                     playUrl = proxy.getLocalURL();
                 }else if(playmode==NORMAL){
-                    Logger.d("BNSPlayer", "open 网络视频 ：" + curSongpath);
+                    Log.e("test", "文件不存在");
                     if (!DiskFileUtil.hasDiskStorage()) {
                         return;
                     }
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, curSong.download_url);
+                    try {
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, uri);
+//                        MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
+//                                DiskFileUtil.getFileSavedPath(uri));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("test", "下载失败");
+                    }
                 }
             }
         } catch (Exception e) {

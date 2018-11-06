@@ -32,8 +32,8 @@ public class OctopusService extends Service implements Runnable{
         Log.d(TAG, "leow service on create");
     }
 
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStart....");
 
         {
@@ -46,6 +46,7 @@ public class OctopusService extends Service implements Runnable{
             mThread = new Thread(this);
             mThread.start();
         }
+        return START_STICKY;
     }
 
     public IBinder onBind(Intent intent){
@@ -70,8 +71,9 @@ public class OctopusService extends Service implements Runnable{
         while(mFinished)
         {	try{
             //查询状态
+            Log.d(TAG, "run...."+"status:"+mReadUart.pollStatus());
             if(mReadUart.pollStatus() > 0){
-                Log.d(TAG, "run....");
+                Log.d(TAG, "poll....");
                 Thread.sleep(200);
                 //
                 // 其他命令下发

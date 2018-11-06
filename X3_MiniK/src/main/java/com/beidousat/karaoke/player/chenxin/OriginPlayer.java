@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 
-import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.libbns.model.ServerConfigData;
@@ -40,15 +39,17 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
     private BeidouPlayerListener mBeidouPlayerListener;
     private SurfaceView mSurfaceView;
     private SurfaceView mSurface_minor;
-
+    private String mFilePath;
+    private String mNextPath;
 
     private boolean isPlayerReset;
 
     private final static long INTERVAL_PROGRESS = 1000;
 
     private float mCurrentVol = 0.5F;
-    private Song curSong,nextSong;
+
     private int mScoreMode = 0;
+    private String mRecordFileName;
     private OnKeyInfoListener mOnKeyInfoListener;
     private OnScoreListener mOnScoreListener;
 
@@ -156,24 +157,30 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
         }
     }
 
-    public void playUrl(Song curSong,Song nextSong,int playMode) {
-        Logger.d(TAG, "record file name:" + curSong.RecordFile + "   videoUrl:" + curSong.download_url);
-        this.curSong=curSong;
-        this.nextSong=nextSong;
+    public void playUrl(String videoUrl, String recordFileName, String next) {
+        Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl);
+        setIsRecord(recordFileName);
+        runPlayThread(videoUrl, recordFileName, next);
+    }
+
+    private void playUri(String uri, String recordFileName, String next) {
         BnsAudioRecorder.getInstance().release();
         initParameters();
+        setIsRecord(recordFileName);
+        mFilePath = uri;
+        mNextPath = next;
         try {
+            Logger.i(TAG, "play url :" + mFilePath);
             if (mMediaPlayer == null)
                 initPlayer();
-            openHttp(curSong,nextSong);
+            openHttp(ServerFileUtil.getFileUrl(uri), ServerFileUtil.getFileUrl(next));
         } catch (Exception e) {
             Logger.w(TAG, "Exception :" + e.toString());
         }
     }
 
 
-
-    private void openHttp(final Song curSong, final Song nextSong) {
+    private void openHttp(String path, final String next) {
 
         if (null != mThreadPlayer) {
             try {
@@ -183,10 +190,16 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
                 ex.printStackTrace();
             }
         }
+//        final String filepath = ServerFileUtil.getFileUrl(path).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
+//        final String nextPath = ServerFileUtil.getFileUrl(next).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
+
+        final String filepath = ServerFileUtil.getFileUrl(path);
+        final String nextPath = ServerFileUtil.getFileUrl(path);
+        Logger.d(TAG, "filepath:" + filepath + "  nextPath:" + nextPath);
         mThreadPlayer = new Thread(new Runnable() {
             public void run() {
 //                mMediaPlayer.close();
-                mMediaPlayer.open(curSong, nextSong, BnsPlayer.NORMAL,OriginPlayer.this);
+                mMediaPlayer.open(filepath, nextPath, BnsPlayer.NORMAL,OriginPlayer.this);
                 mThreadPlayer = null;
             }
         });
@@ -195,7 +208,9 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
 
 
     private void runPlayThread(String videoUrl, String recordFileName, String next) {
-
+        String fileUrl = ServerFileUtil.getFileUrl(videoUrl);
+        Logger.d(TAG, "runPlayThread videoUrl:" + videoUrl);
+        playUri(fileUrl, recordFileName, ServerFileUtil.getFileUrl(next));
     }
 
 
@@ -221,7 +236,9 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
     }
 
     public void replay() {
-        playUrl(curSong,nextSong);
+        String url = mFilePath;
+        mFilePath = "";
+        playUrl(url, mRecordFileName, mNextPath);
     }
 
     public void seekTo(int seek) {
@@ -426,13 +443,13 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
         if (mScoreLineInfos != null)
             mScoreLineInfos.clear();
 
-        File fileNote2 = DiskFileUtil.getScoreNoteSec(curSong.download_url);
+        File fileNote2 = DiskFileUtil.getScoreNoteSec(mFilePath);
 
 
         if (fileNote2 != null && fileNote2.exists())
             mScoreLineInfos = ScoreFileUtil.readNote2File(fileNote2.getAbsolutePath());
 
-        File fileNote = DiskFileUtil.getScoreNote(curSong.download_url);
+        File fileNote = DiskFileUtil.getScoreNote(mFilePath);
         if (fileNote != null && fileNote.exists()) {
             ArrayList<NoteInfo> notes = ScoreFileUtil.readNoteFile(fileNote.getAbsolutePath());
             Logger.d(TAG, "Score note line:" + notes);
@@ -450,11 +467,16 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
         }
     }
 
+
+    private void setIsRecord(String recordFileName) {
+        mRecordFileName = recordFileName;
+    }
+
     private void initRecord() {
-        if (!TextUtils.isEmpty(curSong.RecordFile)) {
+        if (!TextUtils.isEmpty(mRecordFileName)) {
             BnsAudioRecorder bnsAudioRecorder = BnsAudioRecorder.getInstance();
             bnsAudioRecorder.setAudioRecordListener(this);
-            bnsAudioRecorder.start(curSong.RecordFile);
+            bnsAudioRecorder.start(mRecordFileName);
         }
     }
 
