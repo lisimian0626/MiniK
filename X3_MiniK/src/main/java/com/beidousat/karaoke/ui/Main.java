@@ -621,7 +621,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         try {
             int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
             SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
-//            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
+            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mOTCPort, Common.mInfraredBaudRate);
         } catch (Exception e) {
             e.printStackTrace();
         }
