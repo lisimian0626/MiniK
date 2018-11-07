@@ -135,6 +135,31 @@
                 android:gravity="center"
                 android:text="@string/text_pay_card" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lin_ost"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_rect_white_corner"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_ost"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:contentDescription="@null"
+                android:src="@drawable/octopus" />
+
+            <TextView
+                style="@style/TitleStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/text_pay_toubi" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -150,4 +175,5 @@
         android:id="@+id/btn_back"
         android:visibility="gone"
         />
+
 </RelativeLayout>

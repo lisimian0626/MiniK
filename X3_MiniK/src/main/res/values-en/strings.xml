@@ -290,6 +290,7 @@
     <string name="text_pay_zhifubao">Alipay</string>
     <string name="text_pay_weixin">WeChat</string>
     <string name="text_pay_toubi">Coin</string>
+    <string name="text_pay_Octopus">Octopus</string>
     <string name="text_pay_card">Card</string>
     <string name="input_limit">Please enter 16 characters of valid passwords</string>
     <string name="paycard_fail">The gift coupons is insufficient</string>

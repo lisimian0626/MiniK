@@ -44,7 +44,7 @@ import java.util.List;
 
 public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, SupportQueryOrder {
 
-    private LinearLayout mZhiFuBaoBtn, mWeiXinBtn, mTouBiBtn, mCardBtn;
+    private LinearLayout mZhiFuBaoBtn, mWeiXinBtn, mTouBiBtn, mCardBtn,mOctBtn;
     private ImageView mBackBtn, mIv_zhifubao, mIv_wechat, mIv_toubi;
     private String mPayment;
     public final static String MEAL_TAG = "SelectedMeal";
@@ -79,6 +79,8 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
         mIv_zhifubao = (ImageView) findViewById(R.id.iv_zhifubao);
         mIv_wechat = (ImageView) findViewById(R.id.iv_wechat);
         mIv_toubi = (ImageView) findViewById(R.id.iv_toubi);
+        mOctBtn=(LinearLayout)findViewById(R.id.lin_ost);
+
         List<PayMent> payMentList = KBoxInfo.getInstance().getmPayMentlist();
         if (payMentList != null && payMentList.size() > 0) {
             for (PayMent payMent : payMentList) {
@@ -149,6 +151,9 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
                 mPayment = "card";
                 showCardPay();
 //                initStoreRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_CREATE).post();
+                break;
+            case R.id.lin_ost:
+
                 break;
             case R.id.dlg_fm_pay_back:
                 CommonDialog dialog = CommonDialog.getInstance();

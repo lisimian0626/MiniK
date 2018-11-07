@@ -23,7 +23,7 @@ public class OctopusService extends Service implements Runnable{
     private boolean mFinished = true;
     Thread mThread = null;
     ReadUart mReadUart = null;
-    int port=1;
+    int port=4;
     int baut=9600;
     private final static String TAG = "OCT";
 

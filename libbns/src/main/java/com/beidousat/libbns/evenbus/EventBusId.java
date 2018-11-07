@@ -284,4 +284,9 @@ public class EventBusId {
     public static final class INFARAED {
         public static final int RECEIVE_CODE = 40000;
     }
+
+    public static final class Ost {
+        public static final int RECEIVE_CODE = 50000;
+        public static final int CHECK_CODE = 50001;
+    }
 }

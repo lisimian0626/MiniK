@@ -11,20 +11,23 @@ import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libserial.InfraredSerialSendRecvHelper;
+import com.beidousat.libserial.OSTSendRecvHelper;
 import com.beidousat.libserial.SerialSendRecvHelper;
 
 /**
  * Created by J Wong on 2015/11/5 10:18.
  */
-public class SerialController implements SerialSendRecvHelper.OnSerialReceiveListener, InfraredSerialSendRecvHelper.OnInfraredSerialReceiveListener{
+public class SerialController implements SerialSendRecvHelper.OnSerialReceiveListener, InfraredSerialSendRecvHelper.OnInfraredSerialReceiveListener, OSTSendRecvHelper.OnOstSerialReceiveListener {
 
     private static SerialController mSerialController;
     private Context mContext;
     private SerialSendRecvHelper mSerialHelper;
     private InfraredSerialSendRecvHelper mInfraredHelper;
-    private final int Serial=1;
-    private final int InfraredSerial=2;
-    private boolean mIsOpened,mIsfraredOpened;
+    private OSTSendRecvHelper mOSTHelper;
+    private final int Serial = 1;
+    private final int InfraredSerial = 2;
+    private final int ostSerial=3;
+    private boolean mIsOpened, mIsfraredOpened, mOSTOpened;
 
     private final static String TAG = "SerialController";
 
@@ -46,7 +49,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         this.mContext = context;
     }
 
-    public void open(String port,int baudrate) {
+    public void open(String port, int baudrate) {
         try {
             mSerialHelper = SerialSendRecvHelper.getInstance();
 //            if (mIsOpened) {
@@ -54,33 +57,69 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
 //            }
             Logger.i(TAG, "open");
 //            Toast.makeText(mContext,"open",Toast.LENGTH_SHORT);
-            mSerialHelper.open(port,baudrate);
+            mSerialHelper.open(port, baudrate);
             mIsOpened = true;
             mSerialHelper.setOnSerialReceiveListener(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void openInfrared(String port,int baudrate) {
+
+    public void openInfrared(String port, int baudrate) {
 
         try {
             mInfraredHelper = InfraredSerialSendRecvHelper.getInstance();
 //                        if (mIsfraredOpened) {
 //                            mInfraredHelper.close();
 //            }
-            Logger.i(TAG, "open");
-            mInfraredHelper.open(port,baudrate);
+            Logger.i(TAG, "Infrared open");
+            mInfraredHelper.open(port, baudrate);
             mIsfraredOpened = true;
             mInfraredHelper.setOnInfraredSerialReceiveListener(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    public void openOst(String port, int baudrate) {
+
+        try {
+            mOSTHelper = OSTSendRecvHelper.getInstance().getInstance();
+//                        if (mIsfraredOpened) {
+//                            mInfraredHelper.close();
+//            }
+            Logger.i(TAG, "OST open");
+            mOSTHelper.open(port, baudrate);
+            mOSTOpened = true;
+            mOSTHelper.setOnOstSerialReceiveListener(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void OnSerialReceive(String data) {
         Logger.d(TAG, "OnSerialReceive :" + data + "");
         Message msg = new Message();
-        msg.what=Serial;
+        msg.what = Serial;
+        msg.obj = data;
+        handler.sendMessage(msg);
+    }
+
+    @Override
+    public void OnInfraredSerialReceive(String data) {
+//        Logger.i(TAG, "OnInfraredSerialReceive :" + data + "");
+        Message msg = new Message();
+        msg.what = InfraredSerial;
+        msg.obj = data;
+        handler.sendMessage(msg);
+    }
+
+    @Override
+    public void OnOstReceive(String data) {
+        Logger.d(TAG, "OnOstReceive :" + data + "");
+        Message msg = new Message();
+        msg.what = ostSerial;
         msg.obj = data;
         handler.sendMessage(msg);
     }
@@ -89,7 +128,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         @Override
         public void handleMessage(Message msg) {
             String data = msg.obj.toString();
-            switch (msg.what){
+            switch (msg.what) {
                 case Serial:
                     Logger.d(TAG, "OnSerialReceive handler:" + data + "");
                     if (!TextUtils.isEmpty(data)) {
@@ -120,10 +159,12 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     super.handleMessage(msg);
                     break;
                 case InfraredSerial:
-                    EventBusUtil.postSticky(EventBusId.INFARAED.RECEIVE_CODE,data);
+                    EventBusUtil.postSticky(EventBusId.INFARAED.RECEIVE_CODE, data);
                     break;
-                    default:
-                        break;
+                case ostSerial:
+                    break;
+                default:
+                    break;
             }
         }
     };
@@ -225,33 +266,28 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         }
     }
 
-    @Override
-    public void OnInfraredSerialReceive(String data) {
-//        Logger.i(TAG, "OnInfraredSerialReceive :" + data + "");
-        Message msg = new Message();
-        msg.what=InfraredSerial;
-        msg.obj = data;
-        handler.sendMessage(msg);
-    }
 
-    public void close(){
-        if(mInfraredHelper!=null) {
-            Logger.i(TAG, "close" );
-            Toast.makeText(mContext,"close",Toast.LENGTH_SHORT);
+    public void close() {
+        if (mInfraredHelper != null) {
+            Logger.i(TAG, "close");
+            Toast.makeText(mContext, "close", Toast.LENGTH_SHORT);
             mInfraredHelper.close();
         }
     }
 
-    public void send(String msg){
-        if(mInfraredHelper!=null) {
+    public void send(String msg) {
+        if (mInfraredHelper != null) {
 //            Logger.i(TAG, "send" );
             mInfraredHelper.send(msg);
         }
     }
-    public void sendbyte(byte[] cmddata){
-        if(mInfraredHelper!=null) {
+
+    public void sendbyte(byte[] cmddata) {
+        if (mInfraredHelper != null) {
 //            Logger.i(TAG, "send" );
             mInfraredHelper.send(cmddata);
         }
     }
+
+
 }
