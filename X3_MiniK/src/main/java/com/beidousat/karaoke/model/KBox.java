@@ -68,6 +68,8 @@ public class KBox {
     String autocephalous;
     @SerializedName("def_play")
     String [] def_play;
+    @SerializedName("use_pos")
+    int use_pos;
 
     public String[] getDef_play() {
         return def_play;
@@ -284,5 +286,13 @@ public class KBox {
 
     public void setUse_gift_card(int use_gift_card) {
         this.use_gift_card = use_gift_card;
+    }
+
+    public int getUse_pos() {
+        return use_pos;
+    }
+
+    public void setUse_pos(int use_pos) {
+        this.use_pos = use_pos;
     }
 }

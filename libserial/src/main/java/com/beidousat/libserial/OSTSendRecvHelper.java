@@ -28,12 +28,12 @@ public class OSTSendRecvHelper {
             @Override
             protected void onReceive(final byte[] btData) {
                 data = new StringBuffer();
-                Log.i(Tag, new String(btData));
+//                Log.i(Tag, new String(btData));
                 // int i=0;
                 for (byte b : btData) {
                     data.append(DataTransition.byte2Hex(b) + " ");
                 }
-                Log.i(Tag, data.toString());
+//                Log.i(Tag, data.toString());
                 if (mOnOstReceiveListener != null && data.length() > 0) {
                     mOnOstReceiveListener.OnOstReceive(data.toString().trim());
                 }
@@ -70,7 +70,6 @@ public class OSTSendRecvHelper {
     }
     public void sendbyte(byte[] code) {
         try {
-            Log.i(Tag, "send :" + code.toString());
             mSerialHelper.send(code);
         } catch (Exception ex) {
             Log.e(Tag, ex.toString());

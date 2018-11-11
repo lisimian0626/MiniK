@@ -22,10 +22,14 @@ import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.model.PayStatus;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusUtil;
+import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.Logger;
 import com.hoho.android.usbserial.util.TBManager;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 
@@ -38,7 +42,7 @@ import de.greenrobot.event.EventBus;
 public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
 
     private TextView mTBNumber;
-    private int mTBCount = 0;
+//    private int mTBCount = 0;
     private TextView mTvMeal;
     public final static String MEAL_TAG = "SelectedMeal";
     private Meal mSelectedMeal;
@@ -48,24 +52,32 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     private TextView mBtnBack;
     private TextView tvMoneyUnit;
     private int mNeedCoin;
+    private Timer mQueryTimer = new Timer();
+    private final static int OctCheck = 1;
+    private final static int CLOSE_DIALOG = 2;
+//    Handler myHandler = new Handler() {
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case TOUBI_CHANGE_MSG:
+//                    if (mTBCount >= mNeedCoin) {
+//                        //支付成功
+//                        mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
+//                        paySuccess();
+//                    } else {
+//                        mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
+//                    }
+//                    break;
+//            }
+//            super.handleMessage(msg);
+//        }
+//    };
 
-    Handler myHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case TOUBI_CHANGE_MSG:
-                    if (mTBCount >= mNeedCoin) {
-                        //支付成功
-                        mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
-                        paySuccess();
-                    } else {
-                        mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
-                    }
-                    break;
-            }
-            super.handleMessage(msg);
+    private TimerTask mQueryTask = new TimerTask() {
+        @Override
+        public void run() {
+            mRequestHandler.sendEmptyMessage(OctCheck);
         }
     };
-
 
     private void paySuccess() {
         PayStatus payStatus = new PayStatus();
@@ -130,10 +142,10 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         mTBNumber = (TextView) findViewById(R.id.tv_money);
         mTvMeal = (TextView) findViewById(R.id.tv_selected_meal);
 
-        mNeedCoin = getBiCount();
+//        mNeedCoin = getBiCount();
 
-        Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
-                "  Cion_exchange_rate:" + KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
+//        Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
+//                "  Cion_exchange_rate:" + KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
 
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
@@ -141,19 +153,19 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         mTBNumber.setText(mNeedCoin + "/0 "+getResources().getString(R.string.coin));
 
 
-        TBManager.getInstance().start(getContext(), new TBManager.TBManagerListener() {
-            @Override
-            public void onNewBi() {
-                mTBCount++;
-                myHandler.sendEmptyMessage(TOUBI_CHANGE_MSG);
-            }
-
-            @Override
-            public void onError(String error) {
-//                tvMoneyUnit.setText(getString(R.string.coin_error));
-//                mTBNumber.setVisibility(View.GONE);
-            }
-        });
+//        TBManager.getInstance().start(getContext(), new TBManager.TBManagerListener() {
+//            @Override
+//            public void onNewBi() {
+//                mTBCount++;
+//                myHandler.sendEmptyMessage(TOUBI_CHANGE_MSG);
+//            }
+//
+//            @Override
+//            public void onError(String error) {
+////                tvMoneyUnit.setText(getString(R.string.coin_error));
+////                mTBNumber.setVisibility(View.GONE);
+//            }
+//        });
 
     }
 
@@ -175,7 +187,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showConfirmDialog();
+//                showConfirmDialog();
             }
         });
     }
@@ -188,9 +200,10 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         mAttached.registerCloseListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showConfirmDialog();
+//                showConfirmDialog();
             }
         });
+        mQueryTimer.schedule(mQueryTask, 100, Common.Order_query_limit); //请求超时为5s
     }
 
     @Override
@@ -208,24 +221,24 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     }
 
 
-    private void showConfirmDialog() {
-        if (mTBCount == 0) {//已投币提示损失
-            mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }, getString(R.string.text_cancel_order_coin, mTBCount));
-        } else {
-            mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
-        }
-    }
+//    private void showConfirmDialog() {
+//        if (mTBCount == 0) {//已投币提示损失
+//            mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+//                        }
+//                    }, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    }, getString(R.string.text_cancel_order_coin, mTBCount));
+//        } else {
+//            mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+//        }
+//    }
 
     @Override
     public Context getSupportedContext() {

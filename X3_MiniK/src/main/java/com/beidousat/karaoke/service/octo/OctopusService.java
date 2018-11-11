@@ -71,7 +71,7 @@ public class OctopusService extends Service implements Runnable{
         while(mFinished)
         {	try{
             //查询状态
-            Log.d(TAG, "run...."+"status:"+mReadUart.pollStatus());
+            Log.d(TAG, "run....");
             if(mReadUart.pollStatus() > 0){
                 Log.d(TAG, "poll....");
                 Thread.sleep(200);

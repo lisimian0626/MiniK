@@ -339,7 +339,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     checkUsbKey();
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
-                    startService(new Intent(getApplicationContext(), OctopusService.class));
+//                    startService(new Intent(getApplicationContext(), OctopusService.class));
                     getKboxDetail();
                 } else {
                     PromptCfgDialog(getString(R.string.getting_config_error));
@@ -621,7 +621,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         try {
             int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
             SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
-            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
+//            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
             SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1239,22 +1239,23 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case R.id.tv_service:
-                byte[] cmd = new byte[6];
-                cmd[0] = (byte) 0x02;
-                cmd[1] = (byte) 0x01;
-                cmd[2] = (byte) 0x00;
-                cmd[3] = (byte) 0x00;
-                cmd[4] = (byte) 0x00;
-                cmd[5] = (byte) 0x03;
-                SerialController.getInstance(this).sendbyte(cmd);
+                byte cmdCheck[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
+                SerialController.getInstance(this).sendbyteOst(cmdCheck);
+
+
+//                String cmdstring = "020100000003";
+
+//                SerialController.getInstance(this).sendOst(cmdstring);
 //                Toast.makeText(this, "发送：" + cmd.toString(), Toast.LENGTH_LONG).show();
 //                DlgService dlgService = new DlgService(this);
 //                dlgService.show();
                 break;
             case R.id.tv_coupon:
-                DlgCoupon dlgCoupon = new DlgCoupon(this);
-//                dlgCoupon.setOnDlgTouchListener(this);
-                dlgCoupon.show();
+                byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0a, (byte)0x04, (byte)0x03};
+                SerialController.getInstance(this).sendbyteOst(cmdPay);
+//                DlgCoupon dlgCoupon = new DlgCoupon(this);
+////                dlgCoupon.setOnDlgTouchListener(this);
+//                dlgCoupon.show();
                 break;
             case R.id.tv_switch:
                 if (Common.isEn) {

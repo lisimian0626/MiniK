@@ -6,6 +6,9 @@ import java.io. IOException;
 import java.io. InputStream;
 import java.io. OutputStream;
 import android.util.Log;
+
+import com.beidousat.libserial.DataTransition;
+
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +29,7 @@ class ReadUart
             {
                     "9600"
             };
-    private static byte cmdPollStauts[] = {(byte)0x02, (byte)0x01, (byte)0x0, (byte)0x0, (byte)0x0, (byte)0x3};
+    private static byte cmdPollStauts[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
     private static int ackNormalStauts[] = {2, 1, 0xaa, 0, 0, 3};
     //private byte buff[16] ;
 
@@ -44,12 +47,12 @@ class ReadUart
     public int initUart (int portIndex, int baudrate)
     {
 
-        Log.d (TAG, " initUart portIndex = " + portIndex + ", baud = " + baudrate);
+        Log.d (TAG, " initUart portIndex = " + ttys_list[1] + ", baud = " + baudrate);
 
         //baud,N,8,1
         try
         {
-            mSerialPort 				= new SerialPort (new File (ttys_list[portIndex]), baudrate);
+            mSerialPort 				= new SerialPort (new File (ttys_list[1]), baudrate);
         }
 
         catch (Exception e)
@@ -132,6 +135,13 @@ class ReadUart
         int size = 0;
         try
         {
+            StringBuffer data = new StringBuffer();
+            data = new StringBuffer();
+            // int i=0;
+            for (byte b : cmdPollStauts) {
+                data.append(DataTransition.byte2Hex(b) + " ");
+            }
+            Log.i(TAG, "data:"+data.toString());
             mOutputStream.write (cmdPollStauts);
             sleepMills(70);
             size = mInputStream.read(mUartBuffer, 0, 6);

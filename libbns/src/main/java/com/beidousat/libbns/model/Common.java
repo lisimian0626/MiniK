@@ -15,7 +15,7 @@ public class Common {
     //红外串口
     public static final String mInfraredPort = "/dev/ttyS0";
     //八达通串口
-    public static final String mOTCPort = "/dev/ttyS0";
+    public static final String mOTCPort = "/dev/ttyS1";
     //效果器波特率
     public static final int mBaudRate = 4800;
     //红外波特率

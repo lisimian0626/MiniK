@@ -162,6 +162,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     EventBusUtil.postSticky(EventBusId.INFARAED.RECEIVE_CODE, data);
                     break;
                 case ostSerial:
+                    EventBusUtil.postSticky(EventBusId.Ost.RECEIVE_CODE, data);
                     break;
                 default:
                     break;
@@ -288,6 +289,18 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
             mInfraredHelper.send(cmddata);
         }
     }
+    public void sendOst(String msg) {
+        if (mOSTHelper != null) {
+//            Logger.i(TAG, "send" );
+            mOSTHelper.send(msg);
+        }
+    }
 
+    public void sendbyteOst(byte[] cmddata) {
+        if (mOSTHelper != null) {
+//            Logger.i(TAG, "send" );
+            mOSTHelper.sendbyte(cmddata);
+        }
+    }
 
 }

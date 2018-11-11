@@ -103,6 +103,11 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
         }else{
             mCardBtn.setVisibility(View.GONE);
         }
+//        if(KBoxInfo.getInstance().getKBox().getUse_pos() == 1){
+//            mOctBtn.setVisibility(View.VISIBLE);
+//        }else{
+//            mOctBtn.setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -112,6 +117,7 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
         mZhiFuBaoBtn.setOnClickListener(this);
         mBackBtn.setOnClickListener(this);
         mCardBtn.setOnClickListener(this);
+        mOctBtn.setOnClickListener(this);
     }
 
     @Override
@@ -153,7 +159,8 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
 //                initStoreRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_CREATE).post();
                 break;
             case R.id.lin_ost:
-
+                mPayment="Oct";
+                showOctPayNumber();
                 break;
             case R.id.dlg_fm_pay_back:
                 CommonDialog dialog = CommonDialog.getInstance();
@@ -279,7 +286,19 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
             dialog.show(getChildFragmentManager(), "commonDialog");
         }
     }
-
+    private void showOctPayNumber() {
+//        Logger.d(getClass().getSimpleName(), "showTBPayNumber  meal:" + mMeal.getPrice() + "  ");
+        CommonDialog dialog = CommonDialog.getInstance();
+        dialog.setShowClose(true);
+        FmOctoNumber fmOctoNumber = new FmOctoNumber();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(FmOctoNumber.MEAL_TAG, mMeal);
+        fmOctoNumber.setArguments(bundle);
+        dialog.setContent(fmOctoNumber);
+        if (!dialog.isAdded()) {
+            dialog.show(getChildFragmentManager(), "commonDialog");
+        }
+    }
     private void showCardPay() {
         Logger.d(getClass().getSimpleName(), "showPayCard  meal:" + mMeal.getPrice() + "  ");
         CommonDialog dialog = CommonDialog.getInstance();
