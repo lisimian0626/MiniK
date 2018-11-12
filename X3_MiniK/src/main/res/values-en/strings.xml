@@ -290,8 +290,10 @@
     <string name="text_pay_zhifubao">Alipay</string>
     <string name="text_pay_weixin">WeChat</string>
     <string name="text_pay_toubi">Coin</string>
+    <string name="text_pay_octo">Octo</string>
     <string name="text_pay_Octopus">Octopus</string>
     <string name="text_pay_card">Card</string>
+    <string name="cancle_pay">Canceling order...</string>
     <string name="input_limit">Please enter 16 characters of valid passwords</string>
     <string name="paycard_fail">The gift coupons is insufficient</string>
     <string name="text_selected_pay_meal">Package：%1$d%2$s</string>
@@ -367,6 +369,7 @@
 
     <string name="text_cancel_order_coin">Cancel the order or not? \nYou will lose %1d coins if cancel!</string>
     <string name="coin">Coin</string>
+    <string name="RMB"> RMB</string>
     <!--<string name="price_changed">查看资费说明</string>-->
     <string name="price_changed">The current tariff has been changed.</string>
     <string name="check_dsc">Check the tariff descriptions</string>

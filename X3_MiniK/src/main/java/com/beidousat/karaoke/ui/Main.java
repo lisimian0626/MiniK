@@ -1239,15 +1239,18 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case R.id.tv_service:
+//                byte cmdCheck[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
+//                SerialController.getInstance(this).sendbyteOst(cmdCheck);
                 DlgService dlgService = new DlgService(this);
                 dlgService.show();
                 break;
             case R.id.tv_coupon:
-                byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0a, (byte)0x04, (byte)0x03};
-                SerialController.getInstance(this).sendbyteOst(cmdPay);
-//                DlgCoupon dlgCoupon = new DlgCoupon(this);
-////                dlgCoupon.setOnDlgTouchListener(this);
-//                dlgCoupon.show();
+//                byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0A, (byte)0x04, (byte)0x03};
+//                byte cmdcancle[]={(byte)0x02, (byte)0x04, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
+//                SerialController.getInstance(this).sendbyteOst(cmdPay);
+                DlgCoupon dlgCoupon = new DlgCoupon(this);
+//                dlgCoupon.setOnDlgTouchListener(this);
+                dlgCoupon.show();
                 break;
             case R.id.tv_switch:
                 if (Common.isEn) {

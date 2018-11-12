@@ -12,7 +12,9 @@ public class EventBusUtil {
     public static void postSticky(int id, Object ogj) {
         EventBus.getDefault().postSticky(BusEvent.getEvent(id, ogj));
     }
-
+    public static void postOcto(int id, Object ogj) {
+        EventBus.getDefault().post(OctoEvent.getEvent(id, ogj));
+    }
     public static void postPaySucceed(Object obj) {
         Logger.d("EventBus", "----PAY_SUCCEED----");
         EventBus.getDefault().post(BusEvent.getEvent(EventBusId.id.PAY_SUCCEED, obj));

@@ -289,7 +289,9 @@
     <string name="text_pay_zhifubao">支付宝支付</string>
     <string name="text_pay_weixin">微信支付</string>
     <string name="text_pay_toubi">投币支付</string>
+    <string name="text_pay_octo">八达通支付</string>
     <string name="text_pay_card">礼品卡支付</string>
+    <string name="cancle_pay">正在取消订单...</string>
     <string name="input_limit">请输入16位有效卡密</string>
     <string name="paycard_fail">礼品卷余额不足</string>
     <string name="text_selected_pay_meal">已选套餐：%1$d%2$s</string>
@@ -364,6 +366,7 @@
     <string name="choose_song_tip_x">请在10分钟内点歌，超时会自动扣除一首歌！</string>
     <string name="known">知道了</string>
     <string name="coin"> 币</string>
+    <string name="RMB"> 元</string>
     <string name="text_cancel_order_coin">是否取消订单？\n取消将损失%1d个币！</string>
     <string name="price_changed">当前时段资费已发生变化</string>
     <string name="check_dsc">查看资费说明</string>

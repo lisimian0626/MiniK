@@ -27,7 +27,7 @@
             android:layout_height="150dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="110dp"
-            android:src="@drawable/pay_token" />
+            android:src="@drawable/octopus" />
 
         <TextView
             android:id="@+id/tv_selected_meal"
