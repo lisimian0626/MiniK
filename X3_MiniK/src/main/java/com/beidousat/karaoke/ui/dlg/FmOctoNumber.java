@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,13 +55,17 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     private TextView mBtnBack;
     private TextView tvMoneyUnit;
     private int mNeedCoin;
+
     private Timer mQueryTimer = new Timer();
     private final static int OctCheck = 1;
     private final static int OctOrder = 2;
     private final static int OctCancle = 3;
-
+    private String code;
     private final static byte cmdCheck[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
     private final static byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0a, (byte)0x04, (byte)0x03};
+
+    private final String TypeNomal="01aa000003";
+//    private final String TypeNomal="01 aa 00 00 03";
     private final static int CLOSE_DIALOG = 2;
 //    Handler myHandler = new Handler() {
 //        public void handleMessage(Message msg) {
@@ -292,8 +297,19 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         }
     });
     public void onEventMainThread(BusEvent event) {
+        Logger.i("OCT", "OnSerialReceive FmOcto:" + event.data + "");
+        String str=(String) event.data;
+        if(TextUtils.isEmpty(str))
+            return;
         switch (event.id) {
             case EventBusId.Ost.RECEIVE_CODE:
+                code+=str;
+                if(code.replace(" ","").contains(TypeNomal)){
+                    Logger.i("OCT","typeNomal");
+                    code="";
+                }else if(){
+
+                }
                 break;
         }
         }
