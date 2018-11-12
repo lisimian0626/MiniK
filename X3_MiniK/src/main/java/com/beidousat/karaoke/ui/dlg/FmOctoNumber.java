@@ -20,7 +20,9 @@ import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.model.PayStatus;
+import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.libbns.evenbus.BusEvent;
+import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.net.request.RequestMethod;
@@ -54,6 +56,11 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     private int mNeedCoin;
     private Timer mQueryTimer = new Timer();
     private final static int OctCheck = 1;
+    private final static int OctOrder = 2;
+    private final static int OctCancle = 3;
+
+    private final static byte cmdCheck[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
+    private final static byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0a, (byte)0x04, (byte)0x03};
     private final static int CLOSE_DIALOG = 2;
 //    Handler myHandler = new Handler() {
 //        public void handleMessage(Message msg) {
@@ -274,6 +281,10 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
                         mConfirmDlg.dismiss();
                     mAttached.dismiss();
                     break;
+                case OctCheck:
+
+                    SerialController.getInstance(getSupportedContext()).sendbyteOst(cmdCheck);
+                    break;
                 default:
                     break;
             }
@@ -282,7 +293,8 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     });
     public void onEventMainThread(BusEvent event) {
         switch (event.id) {
-
+            case EventBusId.Ost.RECEIVE_CODE:
+                break;
         }
         }
 

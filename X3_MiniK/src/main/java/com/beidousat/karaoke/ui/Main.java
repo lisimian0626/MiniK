@@ -1239,16 +1239,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case R.id.tv_service:
-                byte cmdCheck[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
-                SerialController.getInstance(this).sendbyteOst(cmdCheck);
-
-
-//                String cmdstring = "020100000003";
-
-//                SerialController.getInstance(this).sendOst(cmdstring);
-//                Toast.makeText(this, "发送：" + cmd.toString(), Toast.LENGTH_LONG).show();
-//                DlgService dlgService = new DlgService(this);
-//                dlgService.show();
+                DlgService dlgService = new DlgService(this);
+                dlgService.show();
                 break;
             case R.id.tv_coupon:
                 byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0a, (byte)0x04, (byte)0x03};
