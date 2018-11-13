@@ -133,6 +133,7 @@ public class FmMeal extends FmBaseDialog {
     public void onStoreSuccess(String url, Object object) {
         LoadingUtil.closeLoadingDialog();
         Meal meal= (Meal) object;
+        meal.setLable(mMeal.getLable());
         dealAfterCreateOrder(meal);
         super.onStoreSuccess(url, object);
     }

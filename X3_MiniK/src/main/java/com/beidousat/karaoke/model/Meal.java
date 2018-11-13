@@ -61,6 +61,17 @@ public class Meal implements Serializable {
     private int use_card;
     //优惠卷信息
     private String use_card_msg;
+    //八达通套餐
+    private String lable;
+
+    public String getLable() {
+        return lable;
+    }
+
+    public void setLable(String lable) {
+        this.lable = lable;
+    }
+
     public int getUser_card() {
         return use_card;
     }
@@ -76,7 +87,7 @@ public class Meal implements Serializable {
 
     }
 
-    public Meal(int type, int amount, float price, float realPrice, int use_card,String use_card_msg,float rate) {
+    public Meal(int type, int amount, float price, float realPrice, int use_card,String use_card_msg,float rate,String lable) {
         Type = type;
         Amount = amount;
         Price = price;
@@ -84,6 +95,7 @@ public class Meal implements Serializable {
         this.use_card=use_card;
         this.use_gift_card=use_gift_card;
         this.use_card_msg=use_card_msg;
+        this.lable=lable;
 //        setUse_cion(cion);
 //        setUse_online(online);
         setCion_exchange_rate(rate);

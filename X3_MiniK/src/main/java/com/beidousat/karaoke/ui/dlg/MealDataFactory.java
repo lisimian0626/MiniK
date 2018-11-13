@@ -80,14 +80,14 @@ public class MealDataFactory {
             case Meal.SONG:
                 for (Package pack : packages) {
                     if (pack.getPackType() == Meal.SONG) {
-                        meals.add(new Meal(pack.getPackType(), pack.getPackCount(), pack.getSubTotal(), pack.getRealPrice(),pack.getUsec_card(),pack.getUser_card_msg(),KBoxInfo.getInstance().getKBox().getCoin_exchange_rate()));
+                        meals.add(new Meal(pack.getPackType(), pack.getPackCount(), pack.getSubTotal(), pack.getRealPrice(),pack.getUsec_card(),pack.getUser_card_msg(),KBoxInfo.getInstance().getKBox().getCoin_exchange_rate(),pack.getLable()));
                     }
                 }
                 break;
             case Meal.TIME:
                 for (Package pack : packages) {
                     if (pack.getPackType() == Meal.TIME) {
-                        meals.add(new Meal(pack.getPackType(), pack.getPackCount(), pack.getSubTotal(), pack.getRealPrice(),pack.getUsec_card(),pack.getUser_card_msg(),KBoxInfo.getInstance().getKBox().getCoin_exchange_rate()));
+                        meals.add(new Meal(pack.getPackType(), pack.getPackCount(), pack.getSubTotal(), pack.getRealPrice(),pack.getUsec_card(),pack.getUser_card_msg(),KBoxInfo.getInstance().getKBox().getCoin_exchange_rate(),pack.getLable()));
                     }
                 }
                 break;

@@ -31,6 +31,9 @@ public class Package {
     @SerializedName("use_card_errmsg")
     String user_card_msg;
 
+    @SerializedName("label")
+    String lable;
+
     public int getUsec_card() {
         return usec_card;
     }
@@ -63,4 +66,11 @@ public class Package {
         return realPrice;
     }
 
+    public String getLable() {
+        return lable;
+    }
+
+    public void setLable(String lable) {
+        this.lable = lable;
+    }
 }

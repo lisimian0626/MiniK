@@ -143,6 +143,19 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     void initData() {
 
         mSelectedMeal = (Meal) getArguments().getSerializable(MEAL_TAG);
+        if(!TextUtils.isEmpty(mSelectedMeal.getLable())){
+            switch (mSelectedMeal.getLable()){
+                case "01h":
+                    break;
+                case "02h":
+                    break;
+                case "03h":
+                    break;
+                case "04h":
+                    break;
+
+            }
+        }
 
         mQueryOrderHelper = new QueryOrderHelper(this);
 
