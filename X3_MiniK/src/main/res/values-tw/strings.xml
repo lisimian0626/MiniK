@@ -466,4 +466,11 @@
     <string name="downloan_time_out">網絡超時!</string>
     <string name="download_fail">下載失敗</string>
     <string name="download_waiting">等待下載</string>
+
+    //Octo
+    <string name="octo_check">正在檢查設備...</string>
+    <string name="octo_nomal">請刷八達通.</string>
+    <string name="octo_paysucced">支付成功.</string>
+    <string name="octo_payfail">支付失敗.</string>
+    <string name="octo_canclepay">取消支付...</string>
 </resources>

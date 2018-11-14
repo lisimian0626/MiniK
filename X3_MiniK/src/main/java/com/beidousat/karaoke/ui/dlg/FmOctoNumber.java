@@ -58,15 +58,18 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     private int mNeedCoin;
 
     private Timer mQueryTimer = new Timer();
+    private byte pricetype=0x01;
     private final static int OctCheck = 1;
     private final static int OctOrder = 2;
     private final static int OctCancle = 3;
     private String code;
-    private final static byte cmdCheck[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
-    private final static byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0A, (byte)0x04, (byte)0x03};
-    private final static byte cmdcancle[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0A, (byte)0x04, (byte)0x03};
+    private final byte cmdCheck[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
+    private byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0A, (byte)0x04, (byte)0x03};
+    private byte cmdcancle[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0A, (byte)0x04, (byte)0x03};
     private final String TypeNomal="01AA000003";
-    private final String TypePaySuccesed="0301000003";
+    private final String TypePayFail="02FF000003";
+    private String TypePaySuccesed="0301000003";
+    private String TypeCancleSuccesed="0301000003";
 //    private final String TypeNomal="01 aa 00 00 03";
     private final static int CLOSE_DIALOG = 2;
 //    Handler myHandler = new Handler() {
@@ -144,14 +147,22 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
 
         mSelectedMeal = (Meal) getArguments().getSerializable(MEAL_TAG);
         if(!TextUtils.isEmpty(mSelectedMeal.getLable())){
-            switch (mSelectedMeal.getLable()){
+            switch (mSelectedMeal.getLable().trim().toLowerCase()){
                 case "01h":
+                    pricetype=0x01;
+                    TypePaySuccesed="0301000003";
                     break;
                 case "02h":
+                    pricetype=0x02;
+                    TypePaySuccesed="0302000003";
                     break;
                 case "03h":
+                    pricetype=0x03;
+                    TypePaySuccesed="0303000003";
                     break;
                 case "04h":
+                    pricetype=0x04;
+                    TypePaySuccesed="0304000003";
                     break;
 
             }
@@ -168,7 +179,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         tvMoneyUnit = (TextView) findViewById(R.id.tv_money_unit);
         mTBNumber = (TextView) findViewById(R.id.tv_money);
         mTvMeal = (TextView) findViewById(R.id.tv_selected_meal);
-        tvMoneyUnit.setText("请刷八达通卡支付：");
+        tvMoneyUnit.setText(getResources().getString(R.string.octo_check));
         mNeedCoin = getBiCount();
 
 //        Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
@@ -177,7 +188,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
 
-        mTBNumber.setText(mNeedCoin + "/0 "+getResources().getString(R.string.RMB));
+//        mTBNumber.setText(mNeedCoin + "/0 "+getResources().getString(R.string.RMB));
 
 
 //        TBManager.getInstance().start(getContext(), new TBManager.TBManagerListener() {
@@ -292,9 +303,12 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 10010:
-                    if (mConfirmDlg != null)
-                        mConfirmDlg.dismiss();
-                    mAttached.dismiss();
+//                    if (mConfirmDlg != null)
+//                        mConfirmDlg.dismiss();
+//                    mAttached.dismiss();
+                    cmdcancle[2]=pricetype;
+                    SerialController.getInstance(getSupportedContext()).sendbyteOst(cmdcancle);
+                    tvMoneyUnit.setText(getResources().getString(R.string.octo_canclepay));
                     break;
                 case OctCheck:
 
@@ -316,12 +330,21 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
                 code+=str;
                 if(code.replace(" ","").contains(TypeNomal)){
                     Logger.i("OCT", "cmdpay");
+                    cmdPay[2]=pricetype;
                     SerialController.getInstance(getSupportedContext()).sendbyteOst(cmdPay);
+                    tvMoneyUnit.setText(getResources().getString(R.string.octo_nomal));
                     code="";
                 }else if(code.replace(" ","").contains(TypePaySuccesed)){
                     Logger.i("OCT", "pay successed");
+                    tvMoneyUnit.setText(getResources().getString(R.string.octo_paysucced));
                     paySuccess();
                     code="";
+                }else if(code.replace(" ","").contains(TypePayFail)){
+                    tvMoneyUnit.setText(getResources().getString(R.string.octo_payfail));
+                }else if(code.replace(" ","").contains(TypeCancleSuccesed)){
+                    if (mConfirmDlg != null)
+                        mConfirmDlg.dismiss();
+                    mAttached.dismiss();
                 }
                 break;
         }

@@ -457,4 +457,11 @@
     <string name="downloan_time_out">Network timeout</string>
     <string name="download_fail">Download failed</string>
     <string name="download_waiting">Waiting for download...</string>
+
+    //Octo
+    <string name="octo_check">Checking  Octopus device...</string>
+    <string name="octo_nomal">Please pay with Octopus.</string>
+    <string name="octo_paysucced">Successful payment.</string>
+    <string name="octo_payfail">Payment Failed.</string>
+    <string name="octo_canclepay">Cancel payment...</string>
 </resources>
