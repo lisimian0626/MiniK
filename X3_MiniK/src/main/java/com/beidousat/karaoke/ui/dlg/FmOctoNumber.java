@@ -47,7 +47,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
 
     private TextView mTBNumber;
 //    private int mTBCount = 0;
-    private TextView mTvMeal;
+    private TextView mTvMeal,tv_title;
     public final static String MEAL_TAG = "SelectedMeal";
     private Meal mSelectedMeal;
     private final static int TOUBI_CHANGE_MSG = 1;
@@ -56,20 +56,21 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     private TextView mBtnBack;
     private TextView tvMoneyUnit;
     private int mNeedCoin;
-
+    private int second=5;
     private Timer mQueryTimer = new Timer();
     private byte pricetype=0x01;
+    private final static int MSG_TIMER=11;
     private final static int OctCheck = 1;
     private final static int OctOrder = 2;
     private final static int OctCancle = 3;
     private String code;
     private final byte cmdCheck[] = {(byte)0x02, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
     private byte cmdPay[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0A, (byte)0x04, (byte)0x03};
-    private byte cmdcancle[]={(byte)0x02, (byte)0x02, (byte)0x01, (byte)0x0A, (byte)0x04, (byte)0x03};
+    private byte cmdcancle[]={(byte)0x02, (byte)0x04, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03};
     private final String TypeNomal="01AA000003";
     private final String TypePayFail="02FF000003";
     private String TypePaySuccesed="0301000003";
-    private String TypeCancleSuccesed="0301000003";
+    private String TypeCancleSuccesed="0204000003";
 //    private final String TypeNomal="01 aa 00 00 03";
     private final static int CLOSE_DIALOG = 2;
 //    Handler myHandler = new Handler() {
@@ -176,6 +177,8 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
     @Override
     void initView() {
         mBtnBack = findViewById(R.id.btn_back);
+        tv_title=findViewById(R.id.tb_tv_title);
+        tv_title.setText(getResources().getString(R.string.text_pay_octo));
         tvMoneyUnit = (TextView) findViewById(R.id.tv_money_unit);
         mTBNumber = (TextView) findViewById(R.id.tv_money);
         mTvMeal = (TextView) findViewById(R.id.tv_selected_meal);
@@ -187,7 +190,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
 
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
-
+       mTBNumber.setVisibility(View.GONE);
 //        mTBNumber.setText(mNeedCoin + "/0 "+getResources().getString(R.string.RMB));
 
 
@@ -242,6 +245,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
             }
         });
         mQueryTimer.schedule(mQueryTask, 100, Common.Order_query_limit); //请求超时为5s
+        mRequestHandler.sendEmptyMessage(MSG_TIMER);
     }
 
     @Override
@@ -261,13 +265,13 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
 
 
     private void showConfirmDialog() {
-            DialogFactory.showErrorDialog(getContext(), getResources().getString(R.string.cancle_pay), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    }
-            );
+//            DialogFactory.showErrorDialog(getContext(), getResources().getString(R.string.cancle_pay), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            dialogInterface.dismiss();
+//                        }
+//                    }
+//            );
 
         mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
     }
@@ -303,16 +307,23 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 10010:
-//                    if (mConfirmDlg != null)
-//                        mConfirmDlg.dismiss();
-//                    mAttached.dismiss();
                     cmdcancle[2]=pricetype;
                     SerialController.getInstance(getSupportedContext()).sendbyteOst(cmdcancle);
-                    tvMoneyUnit.setText(getResources().getString(R.string.octo_canclepay));
+                    if (mConfirmDlg != null)
+                        mConfirmDlg.dismiss();
+                    mAttached.dismiss();
                     break;
                 case OctCheck:
-
                     SerialController.getInstance(getSupportedContext()).sendbyteOst(cmdCheck);
+                    break;
+                case MSG_TIMER:
+                    if(second<0){
+                        tvMoneyUnit.setText(getResources().getString(R.string.octo_error));
+                    }else{
+                        tvMoneyUnit.setText(getResources().getString(R.string.octo_check)+"("+second+"s)");
+                        second--;
+                        mRequestHandler.sendEmptyMessageDelayed(MSG_TIMER, 1000);
+                    }
                     break;
                 default:
                     break;
@@ -330,6 +341,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
                 code+=str;
                 if(code.replace(" ","").contains(TypeNomal)){
                     Logger.i("OCT", "cmdpay");
+                    mRequestHandler.removeMessages(MSG_TIMER);
                     cmdPay[2]=pricetype;
                     SerialController.getInstance(getSupportedContext()).sendbyteOst(cmdPay);
                     tvMoneyUnit.setText(getResources().getString(R.string.octo_nomal));
@@ -340,11 +352,9 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
                     paySuccess();
                     code="";
                 }else if(code.replace(" ","").contains(TypePayFail)){
-                    tvMoneyUnit.setText(getResources().getString(R.string.octo_payfail));
+                    tvMoneyUnit.setText(getResources().getString(R.string.octo_paysucced));
                 }else if(code.replace(" ","").contains(TypeCancleSuccesed)){
-                    if (mConfirmDlg != null)
-                        mConfirmDlg.dismiss();
-                    mAttached.dismiss();
+
                 }
                 break;
         }

@@ -236,7 +236,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
             switchLanguage("en");
         } else if (PreferenceUtil.getString(this, "mode", "zh").equals("zh")) {
             switchLanguage("zh");
-        } else if (PreferenceUtil.getString(this, "mode", "zh").equals("en_zh")) {
+        }else if(PreferenceUtil.getString(this, "mode", "zh").equals("tw")) {
+            Logger.d(TAG,"language tw");
+            switchLanguage("tw");
+        }else if (PreferenceUtil.getString(this, "mode", "zh").equals("en_zh")) {
             Common.isAuto = true;
         }
         setContentView(R.layout.act_main);

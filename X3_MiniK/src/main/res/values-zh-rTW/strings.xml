@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <string name="app_name">MiniKTV</string>
 
@@ -468,7 +470,8 @@
     <string name="download_waiting">等待下載</string>
 
     //Octo
-    <string name="octo_check">正在檢查設備...</string>
+    <string name="octo_check">請稍候,正在連接八達通主機...</string>
+    <string name="octo_error">八達通故障</string>
     <string name="octo_nomal">請刷八達通.</string>
     <string name="octo_paysucced">支付成功.</string>
     <string name="octo_payfail">支付失敗.</string>

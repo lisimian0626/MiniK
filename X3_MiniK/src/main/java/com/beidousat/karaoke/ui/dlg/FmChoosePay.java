@@ -103,11 +103,11 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
         }else{
             mCardBtn.setVisibility(View.GONE);
         }
-//        if(KBoxInfo.getInstance().getKBox().getUse_pos() == 1){
-//            mOctBtn.setVisibility(View.VISIBLE);
-//        }else{
-//            mOctBtn.setVisibility(View.GONE);
-//        }
+        if(KBoxInfo.getInstance().getKBox().getUse_pos() == 1){
+            mOctBtn.setVisibility(View.VISIBLE);
+        }else{
+            mOctBtn.setVisibility(View.GONE);
+        }
     }
 
     @Override
