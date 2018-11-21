@@ -49,14 +49,10 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
             mPlayer.setMinorDisplay(minor.getHolder());
     }
 
-    public void open(String uri, String nextUri, int playmode,BeidouPlayerListener listener) {
-        if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getKbox_ip())) {
-            uri = uri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
-            nextUri = nextUri.replace(ServerConfigData.getInstance().getServerConfig().getVod_server(), ServerConfigData.getInstance().getServerConfig().getKbox_ip());
-        }
+    public void open(String uri, String savePath,String nextUri,String nextPath, int playmode,BeidouPlayerListener listener) {
 
         this.mBnsPlayerListener = listener;
-        File file = DiskFileUtil.getDiskFileByUrl(uri);
+        File file = DiskFileUtil.getDiskFileByUrl(savePath);
         // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
         //    file = DiskFileUtil.getSdcardFileByUrl(uri);
         //  }

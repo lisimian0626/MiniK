@@ -102,7 +102,7 @@ public class FileHeadLoadThread extends Thread {
         }
         int clen;
         try {
-            File file = DiskFileUtil.getDiskFileByUrl(mUrl);
+            File file = DiskFileUtil.getDiskFileByUrl(mPath);
             if (file == null || !file.exists()) {
                 Logger.d(TAG, "本地文件不存在");
                 state.onDown(mUrl, 0, IDownState.DownState.ERROREXIT, null, 0);
