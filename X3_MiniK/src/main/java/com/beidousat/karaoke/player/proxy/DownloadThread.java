@@ -1,9 +1,6 @@
-package com.beidousat.karaoke.player.online;
+package com.beidousat.karaoke.player.proxy;
 
 
-import com.beidousat.karaoke.player.proxy.Config;
-import com.beidousat.karaoke.player.proxy.Decoder;
-import com.beidousat.karaoke.player.proxy.IDownState;
 import com.beidousat.karaoke.player.proxy.IDownState.DownState;
 
 import java.io.IOException;
@@ -28,6 +25,9 @@ public class DownloadThread extends Thread {
     private boolean mError;
     private final static int BUF_LEN = 1024 * 512;
     private IDownState state;
+
+    public DownloadThread() {
+    }
 
     public DownloadThread(String url, String savePath, IDownState state, int tsize) {
         mUrl = url;
@@ -123,6 +123,8 @@ public class DownloadThread extends Thread {
 
             if (urlConnection.getResponseCode() == 404) {
                 state.onDown(mUrl, 0, DownState.ERROREXIT, null, 0);
+                mDownloading = false;
+                mStop = true;
                 return;
             }
             is = urlConnection.getInputStream();

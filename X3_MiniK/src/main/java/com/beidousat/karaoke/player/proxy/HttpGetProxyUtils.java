@@ -1,9 +1,8 @@
-package com.beidousat.karaoke.player.online;
+package com.beidousat.karaoke.player.proxy;
 
 import android.util.Log;
 
 import com.beidousat.karaoke.player.proxy.Config.ProxyResponse;
-import com.beidousat.karaoke.player.proxy.HttpParser;
 
 import java.io.File;
 import java.io.FileInputStream;

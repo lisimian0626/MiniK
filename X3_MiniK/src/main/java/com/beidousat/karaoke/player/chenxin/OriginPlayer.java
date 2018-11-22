@@ -41,8 +41,6 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
     private SurfaceView mSurface_minor;
     private String mFilePath;
     private String savePath;
-    private String mNextPath;
-    private String nextsavePath;
     private boolean isPlayerReset;
 
     private final static long INTERVAL_PROGRESS = 1000;
@@ -158,32 +156,30 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
         }
     }
 
-    public void playUrl(String videoUrl,String savePath,String recordFileName, String nextUrl,String nextSavePath) {
+    public void playUrl(String videoUrl,String savePath,String recordFileName) {
         Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl+"    savePath:"+savePath);
         setIsRecord(recordFileName);
-        playUri(videoUrl,savePath,recordFileName, nextUrl,nextSavePath);
+        playUri(videoUrl,savePath,recordFileName);
     }
 
-    private void playUri(String uri,String savePath,String recordFileName, String nextUri,String nextPath) {
+    private void playUri(String uri,String savePath,String recordFileName) {
         BnsAudioRecorder.getInstance().release();
         initParameters();
         setIsRecord(recordFileName);
         mFilePath = uri;
         this.savePath=savePath;
-        mNextPath = nextUri;
-        this.nextsavePath=nextPath;
         try {
             Logger.i(TAG, "play url :" + mFilePath);
             if (mMediaPlayer == null)
                 initPlayer();
-            openHttp(ServerFileUtil.getFileUrl(uri),savePath, ServerFileUtil.getFileUrl(nextUri),nextPath);
+            openHttp(ServerFileUtil.getFileUrl(uri),savePath);
         } catch (Exception e) {
             Logger.w(TAG, "Exception :" + e.toString());
         }
     }
 
 
-    private void openHttp(String url, final String savePath, String nextUrl, final String nextPath) {
+    private void openHttp(String url, final String savePath) {
 
         if (null != mThreadPlayer) {
             try {
@@ -197,12 +193,11 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
 //        final String nextPath = ServerFileUtil.getFileUrl(next).replace(ServerConfigData.getInstance().getServerConfig().getVod_server().toString(),ServerConfigData.getInstance().getServerConfig().getVod_server().toString()+"%20");
 
         final String downurl = ServerFileUtil.getFileUrl(url);
-        final String nextdownurl = ServerFileUtil.getFileUrl(nextUrl);
-        Logger.d(TAG, "downurl:" + downurl + "  nextdownurl:" + nextdownurl);
+        Logger.d(TAG, "downurl:" + downurl );
         mThreadPlayer = new Thread(new Runnable() {
             public void run() {
 //                mMediaPlayer.close();
-                mMediaPlayer.open(downurl, savePath,nextdownurl, nextPath,  BnsPlayer.NORMAL,OriginPlayer.this);
+                mMediaPlayer.open(downurl, savePath,BnsPlayer.NORMAL,OriginPlayer.this);
                 mThreadPlayer = null;
             }
         });
@@ -233,7 +228,7 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
     public void replay() {
         String url = mFilePath;
         mFilePath = "";
-        playUrl(url,savePath, mRecordFileName, mNextPath,nextsavePath);
+        playUrl(url,savePath, mRecordFileName);
     }
 
     public void seekTo(int seek) {

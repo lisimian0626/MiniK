@@ -43,12 +43,11 @@ public class HttpParser {
 
     private boolean isEncrypt = false;
 
-    public HttpParser(String rHost, int rPort, String lHost, int lPort, boolean isEncryt) {
+    public HttpParser(String rHost, int rPort, String lHost, int lPort) {
         remoteHost = rHost;
         remotePort = rPort;
         localHost = lHost;
         localPort = lPort;
-        this.isEncrypt = isEncryt;
     }
 
     public void clearHttpBody() {
@@ -171,9 +170,7 @@ public class HttpParser {
         return result;
     }
 
-    public boolean getisEncrypt() {
-        return isEncrypt;
-    }
+
 
     /**
      * 获取ProxyResponse
@@ -237,10 +234,10 @@ public class HttpParser {
 //		if((headerBufferLength+length)>=headerBuffer.length){
 //			clearHttpBody();
 //		}
-//
+//		
 //		System.arraycopy(source, 0, headerBuffer, headerBufferLength, length);
 //		headerBufferLength+=length;
-//
+//		
 
             String responseStr = new String(source);
             if (responseStr.contains(beginStr)
@@ -266,13 +263,13 @@ public class HttpParser {
                         //isEncrypt = false;
                         result.add(other);
                     }
-//				else
-//				{
-////					byte[] other2 = new byte[len];
+//				else  
+//				{ 
+////					byte[] other2 = new byte[len];  
 ////					System.arraycopy(other, 0, other2, 0,len);
 //					result.add(dec);
 //					isEncrypt = true;
-//
+//					
 //				}
 
 

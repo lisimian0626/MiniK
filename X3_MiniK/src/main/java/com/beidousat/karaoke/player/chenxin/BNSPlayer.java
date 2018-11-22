@@ -1,33 +1,22 @@
 package com.beidousat.karaoke.player.chenxin;
 
 import android.media.MediaPlayer;
-import android.os.Handler;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
 import com.beidousat.karaoke.player.BeidouPlayerListener;
-import com.beidousat.karaoke.player.VideoDownloader;
-import com.beidousat.karaoke.player.local.LocalFileCache;
-import com.beidousat.karaoke.player.local.LocalFileProxy;
-import com.beidousat.karaoke.player.online.CacheFile;
-import com.beidousat.karaoke.player.online.HttpGetProxy;
+import com.beidousat.karaoke.player.proxy.CacheFile;
+import com.beidousat.karaoke.player.proxy.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
-import com.beidousat.karaoke.util.DownloadQueueHelper;
-import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetWorkUtils;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
-import com.beidousat.libbns.util.ServerFileUtil;
-import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloader;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.beidousat.karaoke.player.BnsPlayer.NORMAL;
 import static com.beidousat.karaoke.player.BnsPlayer.PREVIEW;
@@ -41,15 +30,16 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
     private String TAG="BNSPlayer";
     private MPlayer mPlayer;
     private BeidouPlayerListener mBnsPlayerListener;
-
+    private HttpGetProxy proxy;
     public BNSPlayer(SurfaceView surfaceView,SurfaceView minor) {
         mPlayer = new MPlayer();
         mPlayer.init(surfaceView);
+        proxy = new HttpGetProxy(getBufferDir(), 4 * 1024 * 1024, 20);
         if(minor!=null)
             mPlayer.setMinorDisplay(minor.getHolder());
     }
 
-    public void open(String uri, String savePath,String nextUri,String nextPath, int playmode,BeidouPlayerListener listener) {
+    public void open(String uri, String savePath, int playmode,BeidouPlayerListener listener) {
 
         this.mBnsPlayerListener = listener;
         File file = DiskFileUtil.getDiskFileByUrl(savePath);
@@ -60,8 +50,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         try {
             if (file != null) {//存在本地文件
                 Logger.d("BNSPlayer", "open 本地视频 ：" + file.getAbsolutePath());
-                LocalFileCache.getInstance().add(uri, nextUri);
-                LocalFileProxy proxy = new LocalFileProxy();
+                CacheFile.getInstance().add(uri, uri);
                 proxy.startDownload(uri);
                 playUrl = proxy.getLocalURL();
             } else {//本地文件不存在
@@ -70,8 +59,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 }
                 if (playmode == PREVIEW) {
                     Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
-                    CacheFile.getInstance().add(uri, nextUri);
-                    HttpGetProxy proxy = new HttpGetProxy();
+                    CacheFile.getInstance().add(uri, uri);
                     proxy.startDownload(uri);
                     playUrl = proxy.getLocalURL();
                 }else if(playmode==NORMAL){
@@ -204,5 +192,9 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         if (mPlayer != null) {
             mPlayer.setPitch(tone);
         }
+    }
+    private String getBufferDir() {
+        String bufferDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ProxyBuffer/files";
+        return bufferDir;
     }
 }
