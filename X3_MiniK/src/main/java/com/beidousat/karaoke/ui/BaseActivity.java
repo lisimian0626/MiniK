@@ -15,6 +15,7 @@ import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.net.request.HttpRequestListener;
+import com.beidousat.libbns.util.DiskFileUtil;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 

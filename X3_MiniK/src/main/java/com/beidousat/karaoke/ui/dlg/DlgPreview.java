@@ -130,6 +130,9 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
             Logger.e(TAG, "mMediaPlayer.release");
             mMediaPlayer.stop();
             mMediaPlayer = null;
+        }else if(mMediaPlayer_cx!=null){
+            mMediaPlayer_cx.close();
+            mMediaPlayer_cx = null;
         }
         super.dismiss();
     }

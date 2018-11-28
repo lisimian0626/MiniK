@@ -18,7 +18,6 @@ public class DiskFileUtil {
 
     private final static String TAG = "DiskFileUtil";
 
-
     //晨芯硬盘根目录
     public final static String USB_PATH = "/mnt/usb_storage/USB_DISK1/udisk1/";
 

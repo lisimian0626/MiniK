@@ -158,7 +158,6 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
 
     public void playUrl(String videoUrl,String savePath,String recordFileName) {
         Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl+"    savePath:"+savePath);
-        setIsRecord(recordFileName);
         playUri(videoUrl,savePath,recordFileName);
     }
 
