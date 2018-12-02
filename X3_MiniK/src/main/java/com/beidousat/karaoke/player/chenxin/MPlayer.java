@@ -9,7 +9,8 @@ import android.view.SurfaceView;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import static com.beidousat.karaoke.player.BnsPlayer.NORMAL;
+import static com.beidousat.karaoke.player.BnsPlayer.PREVIEW;
 @SuppressLint("NewApi")
 public class MPlayer {
     MediaPlayer player = null;
@@ -81,7 +82,7 @@ public class MPlayer {
 
     private OnPreparedListener mOnPreparedListener;
 
-    public boolean open(String path, MediaPlayer.OnCompletionListener comlisten, OnPreparedListener preparedListener) {
+    public boolean open(String path, MediaPlayer.OnCompletionListener comlisten, OnPreparedListener preparedListener,int play_mode) {
         this.mOnPreparedListener = preparedListener;
         boolean ret = false;
         System.out.println("open url " + path);
@@ -92,11 +93,15 @@ public class MPlayer {
             player.release();
             player = null;
         }
+
         player = new MediaPlayer();
         System.out.println("open player " + player);
         player.setOnPreparedListener(listener);
         player.setOnCompletionListener(comlisten);
         player.setOnErrorListener(errlen);
+        if(play_mode==PREVIEW){
+            player.setVolume(0.0F,0.0F);
+        }
         String lc = path.toLowerCase();
         if (!(lc.contains(".mp3") || lc.contains(".wav"))) {
             try {

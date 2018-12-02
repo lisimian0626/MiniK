@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_dialog_dark"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -26,13 +26,13 @@
         android:textSize="26sp" />
 
     <TextView
-        android:id="@+id/tv_apk_version"
+        android:id="@+id/tv_sn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:textColor="@android:color/white"
+        android:visibility="gone"
         android:textSize="26sp" />
-
     <TextView
         android:id="@+id/tv_copyright"
         android:layout_width="wrap_content"

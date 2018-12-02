@@ -24,5 +24,6 @@ public class Common {
     public static  int versioncode=-1;
     public static  boolean isEn=false;
     public static  boolean isAuto=false;
+    public static boolean isPersonal=false;
 
 }

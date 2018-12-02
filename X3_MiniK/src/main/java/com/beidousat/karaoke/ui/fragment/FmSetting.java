@@ -30,6 +30,7 @@ import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.KBoxStatus;
 import com.beidousat.libbns.net.socket.KBoxSocketHeart;
 import com.beidousat.libbns.util.FragmentUtil;
+import com.beidousat.libbns.util.PreferenceUtil;
 
 /**
  * Created by J Wong on 2017/5/8.
@@ -38,7 +39,7 @@ import com.beidousat.libbns.util.FragmentUtil;
 public class FmSetting extends BaseFragment implements View.OnClickListener {
 
     private int mOpenType;
-
+    private TextView tv_room_no,tv_mng;
 
     public static FmSetting newInstance(int openType) {
         FmSetting fragment = new FmSetting();
@@ -70,9 +71,19 @@ public class FmSetting extends BaseFragment implements View.OnClickListener {
         mRootView.findViewById(R.id.tv_system_setting).setOnClickListener(this);
         mRootView.findViewById(R.id.tv_calibration).setOnClickListener(this);
         mRootView.findViewById(R.id.tv_password).setOnClickListener(this);
-        mRootView.findViewById(R.id.tv_room_no).setOnClickListener(this);
+        tv_room_no= (TextView) mRootView.findViewById(R.id.tv_room_no);
+        tv_room_no.setOnClickListener(this);
+        tv_mng= (TextView) mRootView.findViewById(R.id.tv_mng);
+        tv_mng.setOnClickListener(this);
+        String sn=PrefData.getRoomCode(Main.mMainActivity);
+        if(!TextUtils.isEmpty(sn)&&sn.substring(0,1).toLowerCase().equals("p")){
+            tv_room_no.setVisibility(View.GONE);
+            tv_mng.setVisibility(View.GONE);
+        }else{
+            tv_room_no.setVisibility(View.VISIBLE);
+            tv_mng.setVisibility(View.VISIBLE);
+        }
         mRootView.findViewById(R.id.tv_serial).setOnClickListener(this);
-        mRootView.findViewById(R.id.tv_mng).setOnClickListener(this);
         mRootView.findViewById(R.id.tv_infrared).setOnClickListener(this);
         switch (mOpenType) {
             case 0:
@@ -143,7 +154,7 @@ public class FmSetting extends BaseFragment implements View.OnClickListener {
                     intent = new Intent();
                     intent.setAction("android.intent.action.VIEW");
 //                Uri content_url = Uri.parse("http://test.beidousat.com/");
-                    Uri content_url = Uri.parse(KBoxInfo.STORE_WEB+"#login");
+                    Uri content_url = Uri.parse(KBoxInfo.WEBVIEW+"#login");
                     intent.setData(content_url);
                     startActivity(intent);
                     exitApp();

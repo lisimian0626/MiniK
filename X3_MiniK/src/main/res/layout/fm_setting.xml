@@ -22,28 +22,41 @@
             android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/tv_room_no"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="14dp"
-            android:drawableTop="@drawable/icon_setting_number"
-            android:gravity="center"
-            android:text="@string/room_no_setting"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-
-
-        <TextView
             android:id="@+id/tv_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
             android:drawablePadding="14dp"
             android:drawableTop="@drawable/icon_setting_code"
             android:gravity="center"
             android:text="@string/password_setting"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_room_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:drawablePadding="14dp"
+            android:drawableTop="@drawable/icon_setting_number"
+            android:gravity="center"
+            android:text="@string/room_no_setting"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_mng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:drawablePadding="14dp"
+            android:drawableTop="@drawable/icon_setting_backstage"
+            android:gravity="center"
+            android:text="@string/background_mng"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
 
         <TextView
             android:id="@+id/tv_serial"
@@ -71,17 +84,7 @@
             android:visibility="gone"
              />
 
-        <TextView
-            android:id="@+id/tv_mng"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
-            android:drawablePadding="14dp"
-            android:drawableTop="@drawable/icon_setting_backstage"
-            android:gravity="center"
-            android:text="@string/background_mng"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+
 
     </TableRow>
 

@@ -119,7 +119,6 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             } else {
                 PreferenceUtil.setBoolean(mContext, "isSingle", false);
             }
-            PrefData.setAutocephalous(mContext,kBox.getAutocephalous());
             PreferenceUtil.setString(mContext, "def_play", Arrays.toString(kBox.getDef_play()));
 //            if (kBox.getDef_play() != null && kBox.getDef_play().length > 0) {
 //                for (int i = 0; i < kBox.getDef_play().length; i++) {

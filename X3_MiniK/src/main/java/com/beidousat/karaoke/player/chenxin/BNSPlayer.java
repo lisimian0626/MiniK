@@ -83,7 +83,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         }
         Logger.d("BNSPlayer", "open play url ：" + playUrl);
         if (!TextUtils.isEmpty(playUrl)) {
-            mPlayer.open(playUrl, this, this);
+            mPlayer.open(playUrl, this, this,playmode);
         }
     }
 

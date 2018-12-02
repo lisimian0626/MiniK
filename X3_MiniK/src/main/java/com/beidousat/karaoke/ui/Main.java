@@ -333,8 +333,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         }
                         PreferenceUtil.setString(Main.this, "mode", kboxConfig.getLanguage());
                     }
-
-
+                    if(TextUtils.isEmpty(kboxConfig.getSn())){
+//                        PreferenceUtil.setBoolean(Main.this, "isSingle", false);
+                    }else{
+                        PrefData.setRoomCode(Main.this,kboxConfig.getSn());
+//                        PreferenceUtil.setBoolean(Main.this, "isSingle", true);
+                    }
 //                    dismissInitLoading();
 //                    mMarqueePlayer.loadAds("Z1");
 //                    mMarqueePlayer.startPlayer();
@@ -967,8 +971,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         if (BoughtMeal.getInstance().isMealExpire()) {
 //                            Log.e("test", "心跳检测，初始化套餐");
                             Meal meal = new Meal();
-                            meal.setType(1);
-                            meal.setAmount(10000);
+                            meal.setType(2);
+                            meal.setAmount(43200);
                             PayStatus payStatus = new PayStatus();
                             payStatus.setPayStatus(1);
                             payStatus.setPayTime((int) System.currentTimeMillis());

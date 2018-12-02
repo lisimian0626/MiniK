@@ -20,7 +20,8 @@ public class KboxConfig implements Serializable {
     private String  vod_server;
     @SerializedName("language")
     private String language;
-
+    @SerializedName("personal_sn")
+    private String sn;
     public String getLanguage() {
         return language;
     }
@@ -58,5 +59,13 @@ public class KboxConfig implements Serializable {
 
     public void setVod_server(String vod_server) {
         this.vod_server = vod_server;
+    }
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setSn(String sn) {
+        this.sn = sn;
     }
 }
