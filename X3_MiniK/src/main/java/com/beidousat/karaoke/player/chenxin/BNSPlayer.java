@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.SurfaceView;
 
 import com.beidousat.karaoke.player.BeidouPlayerListener;
+import com.beidousat.karaoke.player.local.LocalFileCache;
+import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.player.proxy.CacheFile;
 import com.beidousat.karaoke.player.proxy.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
@@ -30,19 +32,20 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
     private String TAG="BNSPlayer";
     private MPlayer mPlayer;
     private BeidouPlayerListener mBnsPlayerListener;
-    private HttpGetProxy proxy;
     public BNSPlayer(SurfaceView surfaceView,SurfaceView minor) {
         mPlayer = new MPlayer();
         mPlayer.init(surfaceView);
-        proxy = new HttpGetProxy(getBufferDir(), 4 * 1024 * 1024, 20);
+
         if(minor!=null)
             mPlayer.setMinorDisplay(minor.getHolder());
     }
 
-    public void open(String uri, String savePath, int playmode,BeidouPlayerListener listener) {
+    public void open(String uri, String savePath,String  next_uri,int playmode,BeidouPlayerListener listener) {
 
         this.mBnsPlayerListener = listener;
         File file = DiskFileUtil.getDiskFileByUrl(savePath);
+        String n_uri=uri.replace("data2_to_cube","data");
+        String n_next_uri=uri.replace("data2_to_cube","data");
         // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
         //    file = DiskFileUtil.getSdcardFileByUrl(uri);
         //  }
@@ -50,8 +53,9 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         try {
             if (file != null) {//存在本地文件
                 Logger.d("BNSPlayer", "open 本地视频 ：" + file.getAbsolutePath());
-                CacheFile.getInstance().add(uri, uri);
-                proxy.startDownload(uri);
+                LocalFileCache.getInstance().add(n_uri, n_next_uri);
+                LocalFileProxy proxy = new LocalFileProxy(savePath);
+                proxy.startDownload(n_uri);
                 playUrl = proxy.getLocalURL();
             } else {//本地文件不存在
                 if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
@@ -60,6 +64,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 if (playmode == PREVIEW) {
                     Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
                     CacheFile.getInstance().add(uri, uri);
+                    HttpGetProxy proxy = new HttpGetProxy();
                     proxy.startDownload(uri);
                     playUrl = proxy.getLocalURL();
                 }else if(playmode==NORMAL){
