@@ -93,7 +93,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
                     prepareBegin = System.currentTimeMillis();
                     mThreadPlayer = new Thread(new Runnable() {
                         public void run() {
-                            mMediaPlayer_cx.open(mFileUrl, mSong.SongFilePath,BnsPlayer.PREVIEW, DlgPreview.this);
+                            mMediaPlayer_cx.open(mFileUrl, mSong.SongFilePath,mFileUrl,BnsPlayer.PREVIEW, DlgPreview.this);
                             mThreadPlayer = null;
                         }
                     });

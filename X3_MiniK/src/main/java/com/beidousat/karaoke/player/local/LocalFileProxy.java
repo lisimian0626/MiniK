@@ -1,10 +1,16 @@
-package com.beidousat.karaoke.player.proxy;
+package com.beidousat.karaoke.player.local;
 
 import android.util.Log;
 
+import com.beidousat.karaoke.player.proxy.Config;
 import com.beidousat.karaoke.player.proxy.Config.ProxyRequest;
-import com.beidousat.karaoke.player.proxy.Config.ProxyResponse;
+import com.beidousat.karaoke.player.proxy.HttpParser;
+import com.beidousat.karaoke.player.proxy.Utils;
+import com.beidousat.libbns.util.DiskFileUtil;
+import com.beidousat.libbns.util.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -18,19 +24,10 @@ import java.net.URI;
  *
  * @author hellogv
  */
-public class HttpGetProxy {
+public class LocalFileProxy {
 
-    /**
-     * 避免某些Mediaplayer不播放尾部就结束
-     */
-    private static final int SIZE = 1024 * 1024;
+    final static public String TAG = "LocalFileProxy";
 
-    final static public String TAG = "HttpGetProxy";
-
-    /**
-     * 预加载缓存文件的最大数量
-     */
-    private int mBufferFileMaximum;
     /**
      * 链接带的端口
      */
@@ -55,13 +52,6 @@ public class HttpGetProxy {
      * 服务器的Address
      */
     private SocketAddress serverAddress;
-    /**下载线程*/
-//	private DownloadThread downloadThread = null;
-    /**
-     * Response对象
-     */
-    private ProxyResponse proxyResponse = null;
-
     /**
      * 视频id，预加载文件以ID命名
      */
@@ -70,10 +60,7 @@ public class HttpGetProxy {
      * 有效的媒体文件链接(重定向之后)
      */
     private String mMediaUrl;
-    /**
-     * 预加载文件路径
-     */
-    private String mMediaFilePath;
+
     /**
      * 预加载是否可用
      */
@@ -81,10 +68,11 @@ public class HttpGetProxy {
 
     private Proxy proxy = null;
 
+
     /**
      * 初始化代理服务器，并启动代理服务器
-     **/
-    public HttpGetProxy() {
+     */
+    public LocalFileProxy(final String savePath) {
         try {
             //初始化代理服务器
             localHost = Config.LOCAL_IP_ADDRESS;
@@ -93,16 +81,14 @@ public class HttpGetProxy {
             //启动代理服务器
             new Thread() {
                 public void run() {
-                    startProxy();
+                    startProxy(savePath);
                 }
             }.start();
-
             mEnable = true;
         } catch (Exception e) {
             mEnable = false;
         }
     }
-
 
     /**
      * 开始预加载,一个时间只能预加载一个视频
@@ -118,12 +104,17 @@ public class HttpGetProxy {
      * 获取播放链接
      */
     public String getLocalURL() {
+        //Log.e("Http mUrl",mUrl);
+        //排除HTTP特殊,如重定向
         mMediaUrl = mUrl;
+//        Utils.getRedirectUrl(mUrl);
+        //Log.e("Http mMediaUrl",mMediaUrl);
         // ----获取对应本地代理服务器的链接----//
         String localUrl = "";
         URI originalURI = URI.create(mMediaUrl);
         System.out.println("originalURI " + originalURI + " == " + mMediaUrl);
         remoteHost = originalURI.getHost();
+        Logger.d(TAG, "getLocalURL :" + remoteHost + " getPort: " + originalURI.getPort());
         if (originalURI.getPort() != -1) {// URL带Port
             serverAddress = new InetSocketAddress(remoteHost, originalURI.getPort());// 使用默认端口
             remotePort = originalURI.getPort();// 保存端口，中转时替换
@@ -133,10 +124,11 @@ public class HttpGetProxy {
             remotePort = -1;
             localUrl = mMediaUrl.replace(remoteHost, localHost + ":" + localPort);
         }
+        Logger.d(TAG, "getLocalURL :" + " localUrl: " + localUrl);
         return localUrl;
     }
 
-    private void startProxy() {
+    private void startProxy(final String savePath) {
         while (true) {
             // --------------------------------------
             // 监听MediaPlayer的请求，MediaPlayer->代理服务器
@@ -147,33 +139,34 @@ public class HttpGetProxy {
                 if (proxy != null) {
                     proxy.closeSockets();
                 }
-//				Log.i(TAG, "......started...........=="+s);
-                proxy = new Proxy(s, mUrl);
-
+                proxy = new Proxy(s, mUrl,savePath);
                 new Thread() {
                     public void run() {
                         Log.i(TAG, "......ready to start..2.........");
                         try {
                             Socket s = localServer.accept();
-//							if(proxy.checkClose(mUrl))
                             {
                                 proxy.closeSockets();
                                 Thread.sleep(100);
                                 Log.i(TAG, "......started....2.......=" + s);
-                                proxy = new Proxy(s, mUrl);
+                                proxy = new Proxy(s, mUrl,savePath);
                                 proxy.run();
                             }
                         } catch (Exception e) {
-//							Log.e(TAG, e.toString());
+                            Log.e(TAG, e.toString());
+                            Log.e(TAG, Utils.getExceptionMessage(e));
                         }
 
                     }
                 }.start();
                 proxy.run();
             } catch (IOException e) {
+//				Log.e(TAG, e.toString());
+//				Log.e(TAG, Utils.getExceptionMessage(e));
             }
         }
     }
+
 
     private class Proxy {
         /**
@@ -186,10 +179,23 @@ public class HttpGetProxy {
         private Socket sckServer = null;
         private boolean isclose = false;
         private String url;
+        private FileInputStream fileInputStream;
 
-        public Proxy(Socket sckPlayer, String url) {
+        public Proxy(Socket sckPlayer, String url,String savePath) {
+            Logger.d(TAG, "Proxy url" + url);
             this.sckPlayer = sckPlayer;
             this.url = url;
+            LocalFileCache.getInstance().add(url, url);
+            File file = DiskFileUtil.getDiskFileByUrl(savePath);
+            // if (DiskFileUtil.getSdcardFileByUrl(url) != null) {
+            //   file = DiskFileUtil.getSdcardFileByUrl(url);
+            //}
+            Logger.d(TAG, "Proxy local file==" + file.getAbsolutePath());
+            try {
+                fileInputStream = new FileInputStream(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         public boolean checkClose(String url) {
@@ -210,62 +216,59 @@ public class HttpGetProxy {
                     sckPlayer.close();
                     sckPlayer = null;
                 }
-
                 if (sckServer != null) {
                     sckServer.close();
                     sckServer = null;
                 }
+                if (fileInputStream != null) {
+                    fileInputStream.close();
+                    fileInputStream = null;
+                }
             } catch (IOException e1) {
+                Logger.w(TAG, "closeSockets IOException:" + e1.toString());
+            } catch (Exception e) {
+                Logger.w(TAG, "closeSockets Exception:" + e.toString());
             }
         }
 
         public void run() {
             HttpParser httpParser = null;
-            HttpGetProxyUtils utils = null;
+            LocalFileProxyUtils utils = null;
             String header;
             boolean sentResponseHeader = false;
-            int BLEN = 1024 * 50;
-            byte[] remote_reply = new byte[BLEN];
             byte[] local_request = new byte[1024];
-            byte[] remote_cach = new byte[1024 * 300];
-            int cachlen = 0;
             int bytes_read;
-            int len, start = 0;
+            int start = 0;
             try {
                 System.out.println("serverAddress = " + serverAddress + " mUrl " + mUrl);
-                utils = new HttpGetProxyUtils(sckPlayer, serverAddress);
-                httpParser = new HttpParser(remoteHost, remotePort, localHost,
-                        localPort, false);
-
+                utils = new LocalFileProxyUtils(sckPlayer, serverAddress);
+                httpParser = new HttpParser(remoteHost, remotePort, localHost, localPort, false);
                 ProxyRequest request = null;
-                while ((bytes_read = sckPlayer.getInputStream().read(
-                        local_request)) != -1) {
-                    byte[] buffer = httpParser.getRequestBody(local_request,
-                            bytes_read);
+                while ((bytes_read = sckPlayer.getInputStream().read(local_request)) != -1) {
+                    byte[] buffer = httpParser.getRequestBody(local_request, bytes_read);
                     if (buffer != null) {
                         request = httpParser.getProxyRequest2(buffer);
                         break;
                     }
                 }
-
-                while (true) {
+                while (!isclose) {
                     synchronized (this) {
                         if (!sentResponseHeader) {
                             start = (int) request._rangePosition;
-                            header = CacheFile.getInstance().getHeader(mUrl, request._rangePosition);
+                            header = LocalFileCache.getInstance().getHeader(mUrl, request._rangePosition);
                             System.out.println("===header==" + header);
                             if (null != header) {
                                 sentResponseHeader = true;
                                 utils.sendToMP(header.getBytes());
-                                if (CacheFile.getInstance().isError(mUrl))
+                                if (LocalFileCache.getInstance().isError(mUrl))
                                     break;
                             } else {
-                                if (CacheFile.getInstance().find(mUrl) < 0)
+                                if (LocalFileCache.getInstance().find(mUrl) < 0)
                                     break;
                                 Thread.sleep(2);
                             }
                         } else {
-                            Cache cachebuf = CacheFile.getInstance().getBuf(mUrl, start);
+                            Cache cachebuf = LocalFileCache.getInstance().getBuf(mUrl, start);
                             if (cachebuf != null) {
                                 System.out.println("downedLen:" + cachebuf.downedLen);
                                 int cpylen = cachebuf.downedLen - start;
@@ -274,30 +277,19 @@ public class HttpGetProxy {
                                 System.arraycopy(cachebuf.buf, start, buf, 0, cpylen);
                                 utils.sendToMP(buf, cpylen);
                                 start += cpylen;
-                            } else if (CacheFile.getInstance().find(mUrl) < 0)
+                            } else if (LocalFileCache.getInstance().find(mUrl) < 0)
                                 break;
-                            long pretime = System.currentTimeMillis();
-                            sckServer = utils.sentToServer(httpParser.getServerBody(request, start + (CacheFile.getInstance().isEnc(mUrl) ? 8 : 0)));
-                            sentResponseHeader = false;
-                            while (sckServer != null
-                                    && ((bytes_read = sckServer.getInputStream().read(
-                                    remote_reply)) != -1)) {
-                                if (sentResponseHeader) {
-                                    if (bytes_read > 0) utils.sendToMP(remote_reply, bytes_read);
-                                } else {
-                                    System.arraycopy(remote_reply, 0, remote_cach, cachlen, bytes_read);
-                                    cachlen += bytes_read;
-                                    proxyResponse = httpParser.getProxyResponse(remote_cach,
-                                            cachlen);
-                                    if (proxyResponse == null)
-                                        continue;
-                                    sentResponseHeader = true;
-                                    System.out.println("time  = " + (System.currentTimeMillis() - pretime));
-                                    if (null != proxyResponse._other)
-                                        utils.sendToMP(proxyResponse._other);
-                                }
+                            long preTime = System.currentTimeMillis();
+                            int seek = start + (LocalFileCache.getInstance().isEnc(mUrl) ? 8 : 0);
+                            sckServer = utils.sentToServer(httpParser.getServerBody(request, seek));
+                            long skip = fileInputStream.skip(seek);
+                            Logger.d(TAG, "run ship :" + skip + "  seek :" + seek);
+                            byte[] bytes1 = new byte[1024];
+                            int rLen;
+                            while ((rLen = fileInputStream.read(bytes1)) != -1) {
+                                utils.sendToMP(bytes1, rLen);
                             }
-                            System.out.println("time 3  " + (System.currentTimeMillis() - pretime));
+                            System.out.println("time 3  " + (System.currentTimeMillis() - preTime));
                             break;
                         }
                     }
