@@ -53,7 +53,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
 
     private String mFilePath;
 //    private String mGradeLibFile;
-
+    private String savePath;
     private OnKeyInfoListener mOnKeyInfoListener;
 
     private OnScoreListener mOnScoreListener;
@@ -118,6 +118,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         initParameters();
         setIsRecord(recordFileName);
         mFilePath = videoUrl;
+        this.savePath=savePath;
 //        mGradeLibFile = gradeLibFile;
         Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl);
         if (mMediaPlayer == null) {
@@ -240,8 +241,8 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
             mScoreLineInfos.clear();
 
         //  File fileNote = ServerFileUtil.getScoreNote(mGradeLibFile);
-        File fileNote = DiskFileUtil.getScoreNote(mFilePath);
-
+        File fileNote = DiskFileUtil.getScoreNote(savePath);
+        Logger.d(TAG, "savePath:" + fileNote.getAbsolutePath());
         if (fileNote != null && fileNote.exists()) {
             Logger.d(TAG, "read score note file:" + fileNote.getAbsolutePath());
             ArrayList<NoteInfo> notes = ScoreFileUtil.readNoteFile(fileNote.getAbsolutePath());
@@ -259,7 +260,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         }
 
         // File fileNote2 = ServerFileUtil.getScoreNoteSec(mGradeLibFile);
-        File fileNote2 = DiskFileUtil.getScoreNoteSec(mFilePath);
+        File fileNote2 = DiskFileUtil.getScoreNoteSec(savePath);
 
         if (fileNote2 != null && fileNote2.exists()) {
             Logger.d(TAG, "read score note2 file:" + fileNote2.getAbsolutePath());

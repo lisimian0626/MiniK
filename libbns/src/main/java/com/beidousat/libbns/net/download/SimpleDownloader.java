@@ -25,9 +25,13 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okio.BufferedSink;
+import okio.Okio;
+import okio.Sink;
 
 /**
  * Created by J Wong on 2015/12/7 18:41.
@@ -99,6 +103,42 @@ public class SimpleDownloader {
     }
 
     private long mTotalSize = 0L;
+    public void downloadFile(final File desFile,String url){
+        final long startTime = System.currentTimeMillis();
+        Logger.d("DOWNLOAD","startTime="+startTime);
+
+        Request request = new Request.Builder().url(url).build();
+        new OkHttpClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 下载失败
+                e.printStackTrace();
+                Logger.d("DOWNLOAD","download failed");
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Sink sink = null;
+                BufferedSink bufferedSink = null;
+                try {
+                    sink = Okio.sink(desFile);
+                    bufferedSink = Okio.buffer(sink);
+                    bufferedSink.writeAll(response.body().source());
+
+                    bufferedSink.close();
+                    Logger.d("DOWNLOAD","download success");
+                    Logger.d("DOWNLOAD","totalTime="+ (System.currentTimeMillis() - startTime));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Logger.d("DOWNLOAD","download failed");
+                } finally {
+                    if(bufferedSink != null){
+                        bufferedSink.close();
+                    }
+
+                }
+            }
+        });
+    }
 
 
     private class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
