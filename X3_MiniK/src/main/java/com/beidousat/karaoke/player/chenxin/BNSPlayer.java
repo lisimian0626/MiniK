@@ -15,6 +15,7 @@ import com.beidousat.karaoke.ui.Main;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.net.NetWorkUtils;
+import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 
@@ -44,8 +45,8 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
 
         this.mBnsPlayerListener = listener;
         File file = DiskFileUtil.getDiskFileByUrl(savePath);
-        String n_uri=uri.replace("data2_to_cube","data");
-        String n_next_uri=uri.replace("data2_to_cube","data");
+        String n_uri= BnsConfig.ProxyHost+savePath;
+        String n_next_uri=BnsConfig.ProxyHost+next_uri;;
         // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
         //    file = DiskFileUtil.getSdcardFileByUrl(uri);
         //  }

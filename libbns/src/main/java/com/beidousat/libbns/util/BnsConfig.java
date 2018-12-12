@@ -5,7 +5,7 @@ package com.beidousat.libbns.util;
  */
 
 public class BnsConfig {
-
+      public final static String ProxyHost="http://media.imtbox.com/";
 //    public final static String SERVER_ADDRESS = "172.30.4.230";
 
     /**
