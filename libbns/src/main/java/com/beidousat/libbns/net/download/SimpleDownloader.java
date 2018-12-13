@@ -105,7 +105,7 @@ public class SimpleDownloader {
     private long mTotalSize = 0L;
     public void downloadFile(final File desFile,String url){
         final long startTime = System.currentTimeMillis();
-        Logger.d("DOWNLOAD","startTime="+startTime);
+        Logger.d(TAG,"startTime="+startTime);
 
         Request request = new Request.Builder().url(url).build();
         new OkHttpClient().newCall(request).enqueue(new Callback() {
@@ -113,7 +113,7 @@ public class SimpleDownloader {
             public void onFailure(Call call, IOException e) {
                 // 下载失败
                 e.printStackTrace();
-                Logger.d("DOWNLOAD","download failed");
+                Logger.d(TAG,"download failed");
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -125,11 +125,11 @@ public class SimpleDownloader {
                     bufferedSink.writeAll(response.body().source());
 
                     bufferedSink.close();
-                    Logger.d("DOWNLOAD","download success");
-                    Logger.d("DOWNLOAD","totalTime="+ (System.currentTimeMillis() - startTime));
+                    Logger.d(TAG,"download success");
+                    Logger.d(TAG,"totalTime="+ (System.currentTimeMillis() - startTime));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Logger.d("DOWNLOAD","download failed");
+                    Logger.d(TAG,"download failed");
                 } finally {
                     if(bufferedSink != null){
                         bufferedSink.close();

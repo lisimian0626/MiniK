@@ -29,22 +29,22 @@ public class ScoreNoteDownloader implements SimpleDownloadListener {
 
                     File file2 = new File(DiskFileUtil.getGradeDir(), noteFileName2);
 
-                    Logger.d("ScoreNoteDownloader", "downloadNote note2FileName:" + noteFileName2
-                            + "  noteFileUrl:" + note2FileUrl + "  file path  " + file2.getAbsolutePath());
+
 
                     if (!file2.exists()) {
 //                        new SimpleDownloader().download(file2, note2FileUrl, this);
                         new SimpleDownloader().downloadFile(file2,note2FileUrl);
+                    }else{
+                        Logger.d("ScoreNoteDownloader", "file2："+file2.getAbsolutePath()+"   exists");
                     }
 
                     String noteFileName = ServerFileUtil.getFileName(songPath) + ".txt";
                     String noteFileUrl = ServerFileUtil.getScoreNoteUrl(song.download_url);
                     File file = new File(DiskFileUtil.getGradeDir(), noteFileName);
-                    Logger.d("ScoreNoteDownloader", "downloadNote noteFileName:" + noteFileName
-                            + "  noteFileUrl:" + noteFileUrl + "  file path  " + file.getAbsolutePath());
                     if (!file.exists()) {
-                        new SimpleDownloader().downloadFile(file2,note2FileUrl);
-//                        new SimpleDownloader().download(file, noteFileUrl, this);
+                        new SimpleDownloader().downloadFile(file,noteFileUrl);
+                    }else{
+                        Logger.d("ScoreNoteDownloader", "file："+file.getAbsolutePath()+"  exists");
                     }
                 }
             }
