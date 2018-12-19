@@ -6,12 +6,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.beidousat.karaoke.model.CXdownloadInfo;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.local.LocalFileCache;
 import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.player.proxy.CacheFile;
 import com.beidousat.karaoke.player.proxy.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.net.NetWorkUtils;
@@ -46,13 +48,20 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         this.mBnsPlayerListener = listener;
         File file = DiskFileUtil.getDiskFileByUrl(savePath);
         String n_uri= BnsConfig.ProxyHost+savePath;
-        String n_next_uri=BnsConfig.ProxyHost+next_uri;;
+        String n_next_uri=BnsConfig.ProxyHost+savePath;;
         // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
         //    file = DiskFileUtil.getSdcardFileByUrl(uri);
         //  }
+
         String playUrl = null;
         try {
             if (file != null) {//存在本地文件
+                Logger.d("BNSPlayer", "file length：" + String.valueOf(file.length()));
+                if(file.length()<1024*1024){
+                    file.delete();
+                    EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
+                    return;
+                }
                 Logger.d("BNSPlayer", "open 本地视频 ：" + file.getAbsolutePath());
                 LocalFileCache.getInstance().add(n_uri, n_next_uri);
                 LocalFileProxy proxy = new LocalFileProxy(savePath);
@@ -74,7 +83,10 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                         return;
                     }
                     try {
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, uri);
+                        CXdownloadInfo cXdownloadInfo=new CXdownloadInfo();
+                        cXdownloadInfo.setDownUrl(uri);
+                        cXdownloadInfo.setSavePath(savePath);
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, cXdownloadInfo);
 //                        MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
 //                                DiskFileUtil.getFileSavedPath(uri));
 

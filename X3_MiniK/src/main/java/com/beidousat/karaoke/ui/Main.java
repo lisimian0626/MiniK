@@ -54,6 +54,7 @@ import com.beidousat.karaoke.data.PayUserInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.data.PublicSong;
 import com.beidousat.karaoke.db.DatabaseHelper;
+import com.beidousat.karaoke.model.CXdownloadInfo;
 import com.beidousat.karaoke.model.CouponDetail;
 import com.beidousat.karaoke.model.GiftDetail;
 import com.beidousat.karaoke.model.KBox;
@@ -693,48 +694,48 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case EventBusId.id.PLAYER_NEXT_DELAY:
-                String downpath = event.data.toString();
-                Log.d(TAG,"download:"+ServerFileUtil.getFileUrl(downpath)+"   "+"savepath:"+DiskFileUtil.getFileSavedPath(downpath));
-                List<BaseDownloadTask> mTaskList = new ArrayList<>();
-                BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downpath))
-                        .setPath(DiskFileUtil.getFileSavedPath(downpath));
-                mTaskList.add(task);
-                DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
-                final String finalUri = downpath;
-                DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
-                    @Override
-                    public void onDownloadComplete(BaseDownloadTask task) {
-                        Log.d(TAG,"download Commplete:"+ServerFileUtil.getFileUrl(finalUri));
-                    }
-
-                    @Override
-                    public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
-                        Log.d(TAG,"download Error:"+ServerFileUtil.getFileUrl(finalUri));
-                    }
-
-                    @Override
-                    public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        Log.d(TAG,"download:"+(int) ((float) soFarBytes / totalBytes * 100));
-                    }
-
-                    @Override
-                    public void onDownloadTaskOver() {
-
-                    }
-                });
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (player != null || player_cx != null) {
-                            mKaraokeController.getPlayerStatus().isMute = false;
-                            closePauseTipView();
-                            next();
-                            if (mPresentation != null)
-                                mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+                if(event.data instanceof CXdownloadInfo) {
+                     final CXdownloadInfo cXdownloadInfo= (CXdownloadInfo) event.data;
+                    Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(cXdownloadInfo.getSavePath()));
+                    List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                    BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()))
+                            .setPath(DiskFileUtil.getFileSavedPath(cXdownloadInfo.getSavePath()));
+                    mTaskList.add(task);
+                    DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
+                    DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
+                        @Override
+                        public void onDownloadComplete(BaseDownloadTask task) {
+                            Log.d(TAG, "download Commplete:" + ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()));
                         }
-                    }
-                },10*1000);
 
+                        @Override
+                        public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
+                            Log.d(TAG, "download Error:" + ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()));
+                        }
+
+                        @Override
+                        public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                            Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
+                        }
+
+                        @Override
+                        public void onDownloadTaskOver() {
+
+                        }
+                    });
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (player != null || player_cx != null) {
+                                mKaraokeController.getPlayerStatus().isMute = false;
+                                closePauseTipView();
+                                next();
+                                if (mPresentation != null)
+                                    mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+                            }
+                        }
+                    }, 10 * 1000);
+                }
                 break;
             case EventBusId.id.PLAYER_STATUS_CHANGED:
                 PlayerStatus status = (PlayerStatus) event.data;

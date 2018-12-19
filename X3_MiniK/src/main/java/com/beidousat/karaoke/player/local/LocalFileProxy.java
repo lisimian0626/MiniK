@@ -190,11 +190,13 @@ public class LocalFileProxy {
             // if (DiskFileUtil.getSdcardFileByUrl(url) != null) {
             //   file = DiskFileUtil.getSdcardFileByUrl(url);
             //}
-            Logger.d(TAG, "Proxy local file==" + file.getAbsolutePath());
-            try {
-                fileInputStream = new FileInputStream(file);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if(file!=null){
+                Logger.d(TAG, "Proxy local file==" + file.getAbsolutePath());
+                try {
+                    fileInputStream = new FileInputStream(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
