@@ -105,8 +105,8 @@ public class RequestMethod {
     public static final String SONG_RANKING = "SongRanking";
 
 //    public static final String GET_KBOX = "StoreKbox";
-
-    public static final String DEVICE_STORE = "Localstore/warehouse";
+//public static final String DEVICE_STORE = "Localstore/warehouse";
+    public static final String DEVICE_STORE = "device/push_store";
 
     public static final String GET_CONFIG = "getConfig";
 

@@ -68,7 +68,7 @@ public class DeviceStore extends BaseDialog {
         mPgbLoading.setVisibility(View.VISIBLE);
         mTvMsg.setVisibility(View.VISIBLE);
         String devSn = DeviceUtil.getCupChipID();
-        String url = ServerConfigData.getInstance().getServerConfig().getAd_web() + RequestMethod.DEVICE_STORE;
+        String url = ServerConfigData.getInstance().getServerConfig().getStore_web() + RequestMethod.DEVICE_STORE;
 
         BaseHttpRequest baseHttpRequest = new BaseHttpRequest();
         baseHttpRequest.setBaseHttpRequestListener(new BaseHttpRequestListener() {

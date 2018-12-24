@@ -10,6 +10,7 @@ import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libserial.ICTRecvHelper;
 import com.beidousat.libserial.InfraredSerialSendRecvHelper;
 import com.beidousat.libserial.OSTSendRecvHelper;
 import com.beidousat.libserial.SerialSendRecvHelper;
@@ -17,17 +18,19 @@ import com.beidousat.libserial.SerialSendRecvHelper;
 /**
  * Created by J Wong on 2015/11/5 10:18.
  */
-public class SerialController implements SerialSendRecvHelper.OnSerialReceiveListener, InfraredSerialSendRecvHelper.OnInfraredSerialReceiveListener, OSTSendRecvHelper.OnOstSerialReceiveListener {
+public class SerialController implements SerialSendRecvHelper.OnSerialReceiveListener, InfraredSerialSendRecvHelper.OnInfraredSerialReceiveListener, OSTSendRecvHelper.OnOstSerialReceiveListener,ICTRecvHelper.OnICTSerialReceiveListener {
 
     private static SerialController mSerialController;
     private Context mContext;
     private SerialSendRecvHelper mSerialHelper;
     private InfraredSerialSendRecvHelper mInfraredHelper;
     private OSTSendRecvHelper mOSTHelper;
+    private ICTRecvHelper mICTHelper;
     private final int Serial = 1;
     private final int InfraredSerial = 2;
     private final int ostSerial=3;
-    private boolean mIsOpened, mIsfraredOpened, mOSTOpened;
+    private final int ictSerial=4;
+    private boolean mIsOpened, mIsfraredOpened, mOSTOpened,mICTOpened;
 
     private final static String TAG = "SerialController";
 
@@ -96,7 +99,21 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
             e.printStackTrace();
         }
     }
+    public void openICT(String port, int baudrate) {
 
+        try {
+            mICTHelper = ICTRecvHelper.getInstance().getInstance();
+//                        if (mIsfraredOpened) {
+//                            mInfraredHelper.close();
+//            }
+            Logger.i(TAG, "ICT open");
+            mICTHelper.open(port, baudrate);
+            mICTOpened = true;
+            mICTHelper.setOnICTSerialReceiveListener(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void OnSerialReceive(String data) {
         Logger.d(TAG, "OnSerialReceive :" + data + "");
@@ -122,6 +139,11 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         msg.what = ostSerial;
         msg.obj = data;
         handler.sendMessage(msg);
+    }
+
+    @Override
+    public void OnICTReceive(String data) {
+
     }
 
     private Handler handler = new Handler() {
@@ -163,6 +185,9 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     break;
                 case ostSerial:
                     EventBusUtil.postOcto(EventBusId.Ost.RECEIVE_CODE, data);
+                    break;
+                case ictSerial:
+                    EventBusUtil.postICT(EventBusId.Ost.RECEIVE_CODE, data);
                     break;
                 default:
                     break;
@@ -302,5 +327,20 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
             mOSTHelper.sendbyte(cmddata);
         }
     }
+
+    public void sendICT(String msg) {
+        if (mICTHelper != null) {
+//            Logger.i(TAG, "send" );
+            mICTHelper.send(msg);
+        }
+    }
+
+    public void sendbyteICT(byte[] cmddata) {
+        if (mICTHelper != null) {
+            Logger.i(TAG, "send" );
+            mICTHelper.sendbyte(cmddata);
+        }
+    }
+
 
 }

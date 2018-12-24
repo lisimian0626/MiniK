@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -22,6 +23,8 @@ import com.beidousat.karaoke.biz.SupportQueryOrder;
 import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
+import com.beidousat.karaoke.util.SerialController;
+import com.beidousat.libbns.evenbus.OctoEvent;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.model.PayStatus;
@@ -53,6 +56,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private TextView mTBNumber;
     private int mTBCount = 0;
     private TextView mTvMeal;
+    private ImageView mImage;
     public final static String MEAL_TAG = "SelectedMeal";
     private Meal mSelectedMeal;
     private final static int TOUBI_CHANGE_MSG = 1;
@@ -61,6 +65,14 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private TextView mBtnBack;
     private TextView tvMoneyUnit;
     private int mNeedCoin;
+    private String code;
+    private final String TypeON="808f";
+    private final String TypePay="818f";
+    private final String Type0="40";
+    private final String Type1="41";
+    private final String Type2="42";
+    private final String Type3="43";
+    private final String Type4="44";
 
     Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -109,6 +121,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
         mRootView = inflater.inflate(R.layout.fm_pay_tb_number, container, false);
         mAttached.getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
@@ -141,7 +154,8 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         tvMoneyUnit = (TextView) findViewById(R.id.tv_money_unit);
         mTBNumber = (TextView) findViewById(R.id.tv_money);
         mTvMeal = (TextView) findViewById(R.id.tv_selected_meal);
-
+        mImage=findViewById(R.id.iv_pay_qrcode);
+        mImage.setImageResource(R.drawable.pay_token);
         mNeedCoin = getBiCount();
 
         Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
@@ -214,6 +228,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
     @Override
     public void onDestroy() {
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -278,5 +293,32 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         }
     });
 
-
+    public void onEventMainThread(OctoEvent event) {
+        Logger.i("OCT", "OnSerialReceive FmOcto:" + event.data + "");
+        String str=(String) event.data;
+        if(TextUtils.isEmpty(str))
+            return;
+        switch (event.id) {
+            case EventBusId.Ost.RECEIVE_CODE:
+                code+=str;
+//                if(code.replace(" ","").toLowerCase().contains(TypeON)){
+//                    Logger.i("OCT", "cmdpay");
+//                    mRequestHandler.removeMessages(MSG_TIMER);
+//                    cmdPay[2]=pricetype;
+//                    SerialController.getInstance(getSupportedContext()).sendbyteICT(cmdPay);
+//                    tvMoneyUnit.setText(getResources().getString(R.string.octo_nomal));
+//                    code="";
+//                }else if(code.replace(" ","").contains(TypePaySuccesed)){
+//                    Logger.i("OCT", "pay successed");
+//                    tvMoneyUnit.setText(getResources().getString(R.string.octo_paysucced));
+//                    paySuccess();
+//                    code="";
+//                }else if(code.replace(" ","").contains(TypePayFail)){
+//                    tvMoneyUnit.setText(getResources().getString(R.string.octo_paysucced));
+//                }else if(code.replace(" ","").contains(TypeCancleSuccesed)){
+//
+//                }
+                break;
+        }
+    }
 }

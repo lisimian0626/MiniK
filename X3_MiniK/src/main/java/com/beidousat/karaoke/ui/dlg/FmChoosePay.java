@@ -19,6 +19,7 @@ import com.beidousat.karaoke.biz.SupportQueryOrder;
 import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
+import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.PayResult;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.Meal;
@@ -92,6 +93,13 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
                         GlideUtils.showImageView(getActivity(), R.drawable.pay_weixin, payMent.getLogo_url(), mIv_wechat);
                 }
             }
+        }
+        if(KBoxInfo.getInstance().getKBox().getUse_online()==1){
+            mZhiFuBaoBtn.setVisibility(View.VISIBLE);
+            mWeiXinBtn.setVisibility(View.VISIBLE);
+        }else{
+            mZhiFuBaoBtn.setVisibility(View.GONE);
+            mWeiXinBtn.setVisibility(View.GONE);
         }
         if (KBoxInfo.getInstance().getKBox().getUse_coin() == 1) {
             mTouBiBtn.setVisibility(View.VISIBLE);

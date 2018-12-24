@@ -289,4 +289,9 @@ public class EventBusId {
         public static final int RECEIVE_CODE = 50000;
         public static final int CHECK_CODE = 50001;
     }
+
+    public static final class Ict {
+        public static final int RECEIVE_CODE = 60000;
+        public static final int CHECK_CODE = 60001;
+    }
 }
