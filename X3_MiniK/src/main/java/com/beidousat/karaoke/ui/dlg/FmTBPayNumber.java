@@ -234,7 +234,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
 
     private void showConfirmDialog() {
-        if (mTBCount == 0) {//已投币提示损失
+        if (mTBCount > 0) {//已投币提示损失
             mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
                     new DialogInterface.OnClickListener() {
                         @Override

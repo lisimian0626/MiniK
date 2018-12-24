@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.adapter.PayMealAdapter;
 import com.beidousat.karaoke.data.KBoxInfo;
+import com.beidousat.karaoke.model.KBox;
 import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.util.ToastUtils;
@@ -87,24 +88,25 @@ public class FmMeal extends FmBaseDialog {
     };
 
     private void dealAfterCreateOrder(Meal meal) {
-//        float nowPrice = meal.getPrice();
-//        float preRealPrice = mMeal.getRealPrice();
-//
-//        Logger.d("FmChoosePay", "nowRealPrice:" + nowPrice + "  preRealPrice:" + preRealPrice);
-//
-//        if (nowPrice != preRealPrice) {
-//            showPriceChangeDialog();
-//        }
-        CommonDialog dialog = CommonDialog.getInstance();
-        dialog.setShowClose(true);
-        FmChoosePay choosePay = new FmChoosePay();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(FmChoosePay.MEAL_TAG, meal);
-        bundle.putString(FmChoosePay.MEAL_CARDCODE, fm_cardcode);
-        choosePay.setArguments(bundle);
-        dialog.setContent(choosePay);
-        if (!dialog.isAdded()) {
-            dialog.show(getChildFragmentManager(), "commonDialog");
+        KBox kBox=KBoxInfo.getInstance().getKBox();
+        if(kBox.getUse_coin()==1&&kBox.getUse_online()==0&&kBox.getUse_gift_card()==0&&kBox.getUse_pos()==0){
+            showTBPayNumber(meal);
+        }else if(kBox.getUse_coin()==0&&kBox.getUse_online()==0&&kBox.getUse_gift_card()==1&&kBox.getUse_pos()==0){
+            showCardPay(meal);
+        }else if(kBox.getUse_coin()==0&&kBox.getUse_online()==0&&kBox.getUse_gift_card()==0&&kBox.getUse_pos()==1){
+            showOctPayNumber(meal);
+        }else{
+            CommonDialog dialog = CommonDialog.getInstance();
+            dialog.setShowClose(true);
+            FmChoosePay choosePay = new FmChoosePay();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(FmChoosePay.MEAL_TAG, meal);
+            bundle.putString(FmChoosePay.MEAL_CARDCODE, fm_cardcode);
+            choosePay.setArguments(bundle);
+            dialog.setContent(choosePay);
+            if (!dialog.isAdded()) {
+                dialog.show(getChildFragmentManager(), "commonDialog");
+            }
         }
     }
 
@@ -145,5 +147,44 @@ public class FmMeal extends FmBaseDialog {
             return;
         ToastUtils.toast(getContext(),error);
         super.onStoreFailed(url, error);
+    }
+    private void showTBPayNumber(Meal meal) {
+        Logger.d(getClass().getSimpleName(), "showTBPayNumber  meal:" + meal.getPrice() + "  ");
+        CommonDialog dialog = CommonDialog.getInstance();
+        dialog.setShowClose(true);
+        FmTBPayNumber qrCode = new FmTBPayNumber();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(FmTBPayNumber.MEAL_TAG, meal);
+        qrCode.setArguments(bundle);
+        dialog.setContent(qrCode);
+        if (!dialog.isAdded()) {
+            dialog.show(getChildFragmentManager(), "commonDialog");
+        }
+    }
+    private void showOctPayNumber(Meal meal) {
+//        Logger.d(getClass().getSimpleName(), "showTBPayNumber  meal:" + mMeal.getPrice() + "  ");
+        CommonDialog dialog = CommonDialog.getInstance();
+        dialog.setShowClose(true);
+        FmOctoNumber fmOctoNumber = new FmOctoNumber();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(FmOctoNumber.MEAL_TAG, meal);
+        fmOctoNumber.setArguments(bundle);
+        dialog.setContent(fmOctoNumber);
+        if (!dialog.isAdded()) {
+            dialog.show(getChildFragmentManager(), "commonDialog");
+        }
+    }
+    private void showCardPay(Meal meal) {
+        Logger.d(getClass().getSimpleName(), "showPayCard  meal:" + meal.getPrice() + "  ");
+        CommonDialog dialog = CommonDialog.getInstance();
+        dialog.setShowClose(true);
+        FmPayCard payCard = new FmPayCard();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(FmPayCard.MEAL_TAG, meal);
+        payCard.setArguments(bundle);
+        dialog.setContent(payCard);
+        if (!dialog.isAdded()) {
+            dialog.show(getChildFragmentManager(), "commonDialog");
+        }
     }
 }
