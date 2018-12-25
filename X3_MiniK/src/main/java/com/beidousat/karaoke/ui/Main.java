@@ -87,6 +87,7 @@ import com.beidousat.karaoke.ui.dlg.FmPayMeal;
 import com.beidousat.karaoke.ui.dlg.FmPayResult;
 import com.beidousat.karaoke.ui.dlg.FmPaySevice;
 import com.beidousat.karaoke.ui.dlg.FmRoomSet;
+import com.beidousat.karaoke.ui.dlg.FmTBPayNumber;
 import com.beidousat.karaoke.ui.dlg.MngPwdDialog;
 import com.beidousat.karaoke.ui.dlg.PopVersionInfo;
 import com.beidousat.karaoke.ui.dlg.PromptDialog;
@@ -117,6 +118,7 @@ import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.DownloadBusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
+import com.beidousat.libbns.evenbus.ICTEvent;
 import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.FragmentModel;
@@ -162,6 +164,8 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import io.reactivex.Observable;
+
+import static com.beidousat.karaoke.ui.dlg.FmTBPayNumber.acceptbyte;
 
 
 public class Main extends BaseActivity implements View.OnClickListener,
@@ -229,7 +233,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private boolean surf_show = false;
     private float touch_x = 0;
     private float touch_y = 0;
-
+    private String code;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1058,6 +1062,20 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
     }
 
+    public void onICTEvenThread(ICTEvent event) {
+        Logger.i(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
+        String str = (String) event.data;
+        if (TextUtils.isEmpty(str))
+            return;
+        switch (event.id) {
+            case EventBusId.Ost.RECEIVE_CODE:
+                code += str;
+             if(code.replace(" ", "").toLowerCase().contains(FmTBPayNumber.TypeON)){
+                 SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+             }
+                break;
+        }
+    }
     private void pay_sucessed(BusEvent event) {
         boolean isExpire = true;
         try {

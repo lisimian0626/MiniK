@@ -369,6 +369,7 @@
     <string name="known">知道了</string>
     <string name="coin"> 幣</string>
     <string name="RMB"> 元</string>
+    <string name="TWD"> 圓</string>
     <string name="text_cancel_order_coin">是否取消訂單？\n取消將損失%1d个幣！</string>
     <string name="price_changed">當前時段資費已發生變化</string>
     <string name="check_dsc">查看資費說明</string>

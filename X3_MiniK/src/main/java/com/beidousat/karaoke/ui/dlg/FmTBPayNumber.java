@@ -24,7 +24,9 @@ import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.util.SerialController;
+import com.beidousat.libbns.evenbus.ICTEvent;
 import com.beidousat.libbns.evenbus.OctoEvent;
+import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.model.PayStatus;
@@ -52,9 +54,13 @@ import de.greenrobot.event.EventBus;
  */
 
 public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
-
+    private final String TAG = "TBPay";
     private TextView mTBNumber;
     private int mTBCount = 0;
+    private int curmoney = 0;
+    private int needmoney = 0;
+    private int addmoney = 0;
+    private int diffence;
     private TextView mTvMeal;
     private ImageView mImage;
     public final static String MEAL_TAG = "SelectedMeal";
@@ -66,24 +72,42 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private TextView tvMoneyUnit;
     private int mNeedCoin;
     private String code;
-    private final String TypeON="808f";
-    private final String TypePay="818f";
-    private final String Type0="40";
-    private final String Type1="41";
-    private final String Type2="42";
-    private final String Type3="43";
-    private final String Type4="44";
+    public static final byte[] acceptbyte = {0x02};
+    private byte[] rejectbyte = {0x15};
+    private byte[] holdbyte = {0x24};
+    private final String Type0 = "818f40";
+    private final String Type1 = "818f41";
+    private final String Type2 = "818f42";
+    private final String Type3 = "818f43";
+    private final String Type4 = "818f44";
+    private final String PaySucced = "10";
+    private final String PayFail = "11";
+    public static final String TypeON = "808f";
+    private final int Coin0 = 1;
+    private final int Coin1 = 5;
+    private final int Coin2 = 10;
+    private final int Coin3 = 20;
+    private final int Coin4 = 50;
 
     Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TOUBI_CHANGE_MSG:
-                    if (mTBCount >= mNeedCoin) {
-                        //支付成功
-                        mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
-                        paySuccess();
+                    if (Common.isICT) {
+                        if (curmoney >= needmoney) {
+                            mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+                            paySuccess();
+                        } else {
+                            mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.coin));
+                        }
                     } else {
-                        mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
+                        if (mTBCount >= mNeedCoin) {
+                            //支付成功
+                            mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
+                            paySuccess();
+                        } else {
+                            mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
+                        }
                     }
                     break;
             }
@@ -128,8 +152,14 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 final int action = event.getAction();
                 final boolean isDown = action == KeyEvent.ACTION_DOWN;
-                if(isDown&&keyCode==62){
-                    mTBCount++;
+                if (isDown && keyCode == 62) {
+                    if (Common.isICT) {
+                        int TbCount = Math.round(KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
+                        Logger.d(TAG, "tbCount:" + TbCount);
+                        needmoney += TbCount;
+                    } else {
+                        mTBCount++;
+                    }
                     myHandler.sendEmptyMessage(TOUBI_CHANGE_MSG);
                 }
                 return false;
@@ -154,18 +184,19 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         tvMoneyUnit = (TextView) findViewById(R.id.tv_money_unit);
         mTBNumber = (TextView) findViewById(R.id.tv_money);
         mTvMeal = (TextView) findViewById(R.id.tv_selected_meal);
-        mImage=findViewById(R.id.iv_pay_qrcode);
+        mImage = findViewById(R.id.iv_pay_qrcode);
         mImage.setImageResource(R.drawable.pay_token);
-        mNeedCoin = getBiCount();
-
-        Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
-                "  Cion_exchange_rate:" + KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
-
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
-
-        mTBNumber.setText(mNeedCoin + "/0 "+getResources().getString(R.string.coin));
-
+        if (Common.isICT) {
+            needmoney = Math.round(mSelectedMeal.getRealPrice());
+            mTBNumber.setText(needmoney + "/0 " + getResources().getString(R.string.TWD));
+        } else {
+            mNeedCoin = getBiCount();
+            Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
+                    "  Cion_exchange_rate:" + KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
+            mTBNumber.setText(mNeedCoin + "/0 " + getResources().getString(R.string.coin));
+        }
 
         TBManager.getInstance().start(getContext(), new TBManager.TBManagerListener() {
             @Override
@@ -293,31 +324,71 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         }
     });
 
-    public void onEventMainThread(OctoEvent event) {
-        Logger.i("OCT", "OnSerialReceive FmOcto:" + event.data + "");
-        String str=(String) event.data;
-        if(TextUtils.isEmpty(str))
+    public void onEventMainThread(ICTEvent event) {
+        Logger.i(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
+        String str = (String) event.data;
+        if (TextUtils.isEmpty(str))
             return;
         switch (event.id) {
-            case EventBusId.Ost.RECEIVE_CODE:
-                code+=str;
-//                if(code.replace(" ","").toLowerCase().contains(TypeON)){
-//                    Logger.i("OCT", "cmdpay");
-//                    mRequestHandler.removeMessages(MSG_TIMER);
-//                    cmdPay[2]=pricetype;
-//                    SerialController.getInstance(getSupportedContext()).sendbyteICT(cmdPay);
-//                    tvMoneyUnit.setText(getResources().getString(R.string.octo_nomal));
-//                    code="";
-//                }else if(code.replace(" ","").contains(TypePaySuccesed)){
-//                    Logger.i("OCT", "pay successed");
-//                    tvMoneyUnit.setText(getResources().getString(R.string.octo_paysucced));
-//                    paySuccess();
-//                    code="";
-//                }else if(code.replace(" ","").contains(TypePayFail)){
-//                    tvMoneyUnit.setText(getResources().getString(R.string.octo_paysucced));
-//                }else if(code.replace(" ","").contains(TypeCancleSuccesed)){
-//
-//                }
+            case EventBusId.Ict.RECEIVE_CODE:
+
+                diffence = needmoney - curmoney;
+                code += str;
+                if (code.replace(" ", "").toLowerCase().contains(Type4)) {
+                    Logger.d(TAG, "paytype4");
+                    if(diffence>=Coin4){
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+                        addmoney=Coin4;
+                    }else{
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
+                    }
+//                    curmoney += Coin4;
+//                    mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+                    code = "";
+                } else if (code.replace(" ", "").toLowerCase().contains(Type3)) {
+                    Logger.d(TAG, "paytype3");
+                    if(diffence>=Coin3){
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+                        addmoney=Coin3;
+                    }else{
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
+                    }
+                    code = "";
+                } else if (code.replace(" ", "").toLowerCase().contains(Type2)) {
+                    Logger.d(TAG, "paytype2");
+                    if(diffence>=Coin2){
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+                        addmoney=Coin2;
+                    }else{
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
+                    }
+                    code = "";
+                } else if (code.replace(" ", "").toLowerCase().contains(Type1)) {
+                    Logger.d(TAG, "paytype1");
+                    if(diffence>=Coin1){
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+                        addmoney=Coin1;
+                    }else{
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
+                    }
+                    code = "";
+                } else if (code.replace(" ", "").toLowerCase().contains(Type0)) {
+                    Logger.d(TAG, "paytype0");
+                    if(diffence>=Coin0){
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+                        addmoney=Coin0;
+                    }else{
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
+                    }
+                    code = "";
+                }else if(code.replace(" ", "").toLowerCase().contains(PaySucced)){
+                    curmoney+=addmoney;
+                    code="";
+                }else if(code.replace(" ", "").toLowerCase().contains(PayFail)){
+                    code="";
+                }else{
+                    code += str;
+                }
                 break;
         }
     }
