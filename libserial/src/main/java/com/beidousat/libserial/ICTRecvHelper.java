@@ -2,6 +2,8 @@ package com.beidousat.libserial;
 
 import android.util.Log;
 
+import java.util.logging.Logger;
+
 
 /**
  * Created by J Wong on 2016/10/26.
@@ -27,7 +29,7 @@ public class ICTRecvHelper {
             @Override
             protected void onReceive(final byte[] btData) {
                 data = new StringBuffer();
-//                Log.i(Tag, new String(btData));
+//                Log.i(Tag, "onReceive");
                 // int i=0;
                 for (byte b : btData) {
                     data.append(DataTransition.byte2Hex(b) + " ");

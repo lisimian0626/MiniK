@@ -166,6 +166,7 @@ import de.greenrobot.event.EventBus;
 import io.reactivex.Observable;
 
 import static com.beidousat.karaoke.ui.dlg.FmTBPayNumber.acceptbyte;
+import static com.beidousat.karaoke.ui.dlg.FmTBPayNumber.closebyte;
 
 
 public class Main extends BaseActivity implements View.OnClickListener,
@@ -568,8 +569,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
         PayUserInfo.getInstance().deleteObservers();
 //        mMarqueePlayer.stopPlayer();
         stopMainPlayer();
+        SerialController.getInstance(getSupportedContext()).sendbyteICT(closebyte);
+        Logger.d(TAG,"sendclosebyte");
         EventBus.getDefault().unregister(this);
         mMainActivity = null;
+
         System.exit(0);//直接结束程序
         super.onDestroy();
     }
@@ -635,7 +639,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
 //            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
             SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-            SerialController.getInstance(getApplicationContext()).openICT(Common.mOTCPort, Common.mInfraredBaudRate);
+            SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1063,20 +1067,22 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
     }
 
-    public void onICTEvenThread(ICTEvent event) {
-        Logger.i(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
-        String str = (String) event.data;
-        if (TextUtils.isEmpty(str))
-            return;
-        switch (event.id) {
-            case EventBusId.Ost.RECEIVE_CODE:
-                code += str;
-             if(code.replace(" ", "").toLowerCase().contains(FmTBPayNumber.TypeON)){
-                 SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
-             }
-                break;
-        }
-    }
+//    public void onEventMainThread(ICTEvent event) {
+//        Logger.d(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
+//        String str = (String) event.data;
+//        if (TextUtils.isEmpty(str))
+//            return;
+//        switch (event.id) {
+//            case EventBusId.Ict.RECEIVE_CODE:
+//                code += str;
+//             if(code.replace(" ", "").toLowerCase().contains(FmTBPayNumber.TypeON)){
+//                 SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+//                 Common.isICT=true;
+//             }
+//                break;
+//        }
+//    }
+
     private void pay_sucessed(BusEvent event) {
         boolean isExpire = true;
         try {
@@ -2379,6 +2385,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected void onPause() {
+
         super.onPause();
     }
 

@@ -16,6 +16,8 @@ public class Common {
     public static final String mInfraredPort = "/dev/ttyS0";
     //八达通串口
     public static final String mOTCPort = "/dev/ttyS1";
+    //八达通串口
+    public static final String mICTPort = "/dev/ttyS4";
     //效果器波特率
     public static final int mBaudRate = 4800;
     //红外波特率
@@ -25,5 +27,5 @@ public class Common {
     public static  boolean isEn=false;
     public static  boolean isAuto=false;
     public static boolean isPersonal=false;
-    public static boolean isICT=false;
+    public static boolean isICT=true;
 }

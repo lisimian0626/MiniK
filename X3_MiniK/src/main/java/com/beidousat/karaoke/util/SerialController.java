@@ -143,7 +143,11 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
 
     @Override
     public void OnICTReceive(String data) {
-
+        Logger.d(TAG, "OnICTReceive :" + data + "");
+        Message msg = new Message();
+        msg.what = ictSerial;
+        msg.obj = data;
+        handler.sendMessage(msg);
     }
 
     private Handler handler = new Handler() {
@@ -187,6 +191,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     EventBusUtil.postOcto(EventBusId.Ost.RECEIVE_CODE, data);
                     break;
                 case ictSerial:
+                    Logger.d(TAG, "OnSerialReceive handler:" + data + "");
                     EventBusUtil.postICT(EventBusId.Ict.RECEIVE_CODE, data);
                     break;
                 default:
