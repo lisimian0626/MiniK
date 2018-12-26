@@ -187,7 +187,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     EventBusUtil.postOcto(EventBusId.Ost.RECEIVE_CODE, data);
                     break;
                 case ictSerial:
-                    EventBusUtil.postICT(EventBusId.Ost.RECEIVE_CODE, data);
+                    EventBusUtil.postICT(EventBusId.Ict.RECEIVE_CODE, data);
                     break;
                 default:
                     break;

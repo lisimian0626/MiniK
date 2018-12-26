@@ -635,6 +635,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
 //            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
             SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
+            SerialController.getInstance(getApplicationContext()).openICT(Common.mOTCPort, Common.mInfraredBaudRate);
         } catch (Exception e) {
             e.printStackTrace();
         }
