@@ -342,8 +342,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if(TextUtils.isEmpty(kboxConfig.getSn())){
 //                        PreferenceUtil.setBoolean(Main.this, "isSingle", false);
                     }else{
-                        PrefData.setRoomCode(Main.this,kboxConfig.getSn());
-//                        PreferenceUtil.setBoolean(Main.this, "isSingle", true);
+//                        PrefData.setRoomCode(Main.this,kboxConfig.getSn());
+                        PreferenceUtil.setBoolean(Main.this, "isSingle", true);
                     }
 //                    dismissInitLoading();
 //                    mMarqueePlayer.loadAds("Z1");
@@ -403,6 +403,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
 
                 }
+//                PreferenceUtil.setBoolean(Main.mMainActivity, "isSingle", false);
             }
 
         }).getBoxInfo(PrefData.getRoomCode(this.getApplicationContext()));
@@ -638,7 +639,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
             SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
 //            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
-            SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
+//            SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
             SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
         } catch (Exception e) {
             e.printStackTrace();

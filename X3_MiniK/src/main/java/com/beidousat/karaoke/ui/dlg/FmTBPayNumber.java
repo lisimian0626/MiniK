@@ -76,11 +76,11 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private byte[] rejectbyte = {0x15};
     private byte[] holdbyte = {0x24};
     public static final byte[] closebyte={0x30};
-    private final String Type0 = "818f40";
-    private final String Type1 = "818f41";
-    private final String Type2 = "818f42";
-    private final String Type3 = "818f43";
-    private final String Type4 = "818f44";
+    private final String Type0 = "813D07FA";
+    private final String Type1 = "813d17f2";
+    private final String Type2 = "813d27f2";
+    private final String Type3 = "813d37fa";
+    private final String Type4 = "813d47f2";
     private final String PaySucced = "10";
     private final String PayFail = "11";
     public static final String TypeON = "808f";
@@ -329,6 +329,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
     public void onEventMainThread(ICTEvent event) {
         Logger.i(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
+
         String str = (String) event.data;
         if (TextUtils.isEmpty(str))
             return;
@@ -386,8 +387,14 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                     code = "";
                 }else if(code.replace(" ", "").toLowerCase().contains(PaySucced)){
                     curmoney+=addmoney;
-                    mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+
                     code="";
+                    if(curmoney>=needmoney){
+                        mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+                        paySuccess();
+                    }else{
+                        mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+                    }
                 }else if(code.replace(" ", "").toLowerCase().contains(PayFail)){
                     code="";
                 }else if(code.replace(" ", "").toLowerCase().contains(FmTBPayNumber.TypeON)){
