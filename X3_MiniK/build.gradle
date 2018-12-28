@@ -13,8 +13,8 @@ android {
         applicationId "com.beidousat.karaoke"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 436
-        versionName "V2.2.4"
+        versionCode 438
+        versionName "V2.2.6"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
@@ -119,6 +119,8 @@ dependencies {
     // 指定tinker依赖版本（注：应用升级1.3.5版本起，不再内置tinker）
     compile 'com.tencent.tinker:tinker-android-lib:1.9.6'
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
+    //换肤
+    compile'com.zhy:changeskin:4.0.2'
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     //    compile 'com.tencent.bugly:nativecrashreport:latest.release'
     //// 依赖插件脚本

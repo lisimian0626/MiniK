@@ -24,6 +24,7 @@ import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.util.SerialController;
+import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.ICTEvent;
 import com.beidousat.libbns.evenbus.OctoEvent;
 import com.beidousat.libbns.model.Common;
@@ -268,21 +269,40 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
 
     private void showConfirmDialog() {
-        if (mTBCount > 0) {//已投币提示损失
-            mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }, getString(R.string.text_cancel_order_coin, mTBCount));
-        } else {
-            mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+        if(Common.isICT){
+            if (curmoney > 0) {//已投币提示损失
+                mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }, getString(R.string.text_cancel_order_coin, mTBCount));
+            } else {
+                mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+            }
+        }else{
+            if (mTBCount > 0) {//已投币提示损失
+                mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }, getString(R.string.text_cancel_order_coin, mTBCount));
+            } else {
+                mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+            }
         }
     }
 
@@ -344,6 +364,10 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
                         addmoney=Coin4;
                     }else{
+                        Logger.d(TAG, "rejectbyte");
+                        if(getContext()!=null){
+                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
 //                    curmoney += Coin4;
@@ -355,6 +379,9 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
                         addmoney=Coin3;
                     }else{
+                        if(getContext()!=null){
+                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
@@ -364,6 +391,9 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
                         addmoney=Coin2;
                     }else{
+                        if(getContext()!=null){
+                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
@@ -373,6 +403,9 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
                         addmoney=Coin1;
                     }else{
+                        if(getContext()!=null){
+                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
@@ -382,6 +415,9 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
                         addmoney=Coin0;
                     }else{
+                        if(getContext()!=null){
+                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";

@@ -371,6 +371,7 @@
     <string name="coin">Coin</string>
     <string name="RMB"> RMB</string>
     <string name="TWD"> TWD</string>
+    <string name="ICT_ERROR">Please use coins or banknotes smaller than the order amount.</string>
     <!--<string name="price_changed">查看资费说明</string>-->
     <string name="price_changed">The current tariff has been changed.</string>
     <string name="check_dsc">Check the tariff descriptions</string>
