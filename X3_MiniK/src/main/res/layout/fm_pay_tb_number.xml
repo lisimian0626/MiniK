@@ -42,6 +42,7 @@
 
 
         <LinearLayout
+            android:id="@+id/lin_meal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
@@ -53,16 +54,6 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_money"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:includeFontPadding="false"
-                android:text="0/0 币"
-                android:textColor="#f35972"
-                android:textSize="40sp" />
-
-            <TextView
                 android:id="@+id/tv_money_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,7 +63,30 @@
                 android:textColor="#f35972"
                 android:textSize="24sp" />
 
+            <TextView
+                android:id="@+id/tv_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:includeFontPadding="false"
+                android:text="0/0 币"
+                android:textColor="#f35972"
+                android:textSize="40sp" />
+
         </LinearLayout>
+        <TextView
+            android:id="@+id/tv_codeMeal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lin_meal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:textColor="#f35972"
+            android:text="@string/ICT_EMPTY"
+            android:visibility="gone"
+            />
     </RelativeLayout>
 
     <TextView

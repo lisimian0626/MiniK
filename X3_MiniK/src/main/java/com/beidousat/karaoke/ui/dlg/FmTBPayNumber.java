@@ -23,6 +23,8 @@ import com.beidousat.karaoke.biz.SupportQueryOrder;
 import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
+import com.beidousat.karaoke.model.KBox;
+import com.beidousat.karaoke.model.Notecode;
 import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.ICTEvent;
@@ -43,6 +45,7 @@ import com.beidousat.libbns.util.QrCodeUtil;
 import com.beidousat.score.KeyInfo;
 import com.hoho.android.usbserial.util.TBManager;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -70,34 +73,34 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private QueryOrderHelper mQueryOrderHelper;
     private AlertDialog mConfirmDlg;
     private TextView mBtnBack;
-    private TextView tvMoneyUnit;
+    private TextView tvMoneyUnit,tvCodeMeal;
     private int mNeedCoin;
     private String code;
     public static final byte[] acceptbyte = {0x02};
     private byte[] rejectbyte = {0x15};
     private byte[] holdbyte = {0x24};
     public static final byte[] closebyte={0x30};
-    private final String Type0 = "813D07FA";
-    private final String Type1 = "813d17f2";
-    private final String Type2 = "813d27f2";
-    private final String Type3 = "813d37fa";
-    private final String Type4 = "813d47f2";
     private final String PaySucced = "10";
     private final String PayFail = "11";
     public static final String TypeON = "808f";
-    private final int Coin0 = 1;
-    private final int Coin1 = 5;
-    private final int Coin2 = 10;
-    private final int Coin3 = 20;
-    private final int Coin4 = 50;
-
+    private  String Type0 = "FFFFFFFF";
+    private  String Type1 = "FFFFFFFF";
+    private  String Type2 = "FFFFFFFF";
+    private  String Type3 = "FFFFFFFF";
+    private  String Type4 = "FFFFFFFF";
+    private  int Coin0 = 1;
+    private  int Coin1 = 5;
+    private  int Coin2 = 10;
+    private  int Coin3 = 20;
+    private  int Coin4 = 50;
+    private String unit="元";
     Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TOUBI_CHANGE_MSG:
                     if (Common.isICT) {
                         if (curmoney >= needmoney) {
-                            mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+                            mTBNumber.setText(needmoney + "/ " + curmoney + unit);
                             paySuccess();
                         } else {
                             mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.coin));
@@ -188,12 +191,45 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         mTvMeal = (TextView) findViewById(R.id.tv_selected_meal);
         mImage = findViewById(R.id.iv_pay_qrcode);
         mImage.setImageResource(R.drawable.pay_token);
+        tvCodeMeal=findViewById(R.id.tv_codeMeal);
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
         if (Common.isICT) {
+            KBox kBox=KBoxInfo.getInstance().getKBox();
+            List<Notecode> list_code=kBox.getBanknote_code();
+            if(list_code!=null&&list_code.size()>0){
+                String codeMeal = "";
+                for (int i=0;i<list_code.size();i++){
+                    if(i==0){
+                        Type0=list_code.get(0).getCode();
+                        Coin0=Integer.valueOf(list_code.get(0).getUnit());
+                    }else if(i==1){
+                        Type1=list_code.get(1).getCode();
+                        Coin1=Integer.valueOf(list_code.get(1).getUnit());
+                    }else if(i==2){
+                        Type2=list_code.get(2).getCode();
+                        Coin2=Integer.valueOf(list_code.get(2).getUnit());
+                    }else if(i==3){
+                        Type3=list_code.get(3).getCode();
+                        Coin3=Integer.valueOf(list_code.get(3).getUnit());
+                    }else if(i==4){
+                        Type4=list_code.get(4).getCode();
+                        Coin4=Integer.valueOf(list_code.get(4).getUnit());
+                    }
+                    codeMeal+=list_code.get(i).getUnit()+"  ";
+                }
+                tvCodeMeal.setText(getString(R.string.ICT_codeMeal)+codeMeal+" "+unit);
+            }else{
+                tvCodeMeal.setVisibility(View.VISIBLE);
+            }
             Logger.d(TAG,"needmoney:"+mSelectedMeal.getPrice());
             needmoney = Math.round(mSelectedMeal.getPrice());
-            mTBNumber.setText(needmoney + "/0 " + getResources().getString(R.string.TWD));
+            if(kBox!=null&&!TextUtils.isEmpty(kBox.getCoin_unit())) {
+                unit=kBox.getCoin_unit();
+                mTBNumber.setText(needmoney + "/0 " + kBox.getCoin_unit());
+            }else{
+                mTBNumber.setText(mNeedCoin + "/0 " + getResources().getString(R.string.coin));
+            }
         } else {
             mNeedCoin = getBiCount();
             Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
@@ -358,6 +394,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 //                Logger.d(TAG,"diffence:"+diffence);
                 diffence = needmoney - curmoney;
                 code += str;
+
                 if (code.replace(" ", "").toLowerCase().contains(Type4)) {
                     Logger.d(TAG, "paytype4");
                     if(diffence>=Coin4){
@@ -426,10 +463,10 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
                     code="";
                     if(curmoney>=needmoney){
-                        mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+                        mTBNumber.setText(needmoney + "/ " + unit);
                         paySuccess();
                     }else{
-                        mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+                        mTBNumber.setText(needmoney + "/ " + curmoney + unit);
                     }
                 }else if(code.replace(" ", "").toLowerCase().contains(PayFail)){
                     code="";
@@ -438,7 +475,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                     SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
                     code="";
                 }else{
-
+                    ToastUtils.toast(getContext(),"未登记的码值:"+code);
                 }
 
 

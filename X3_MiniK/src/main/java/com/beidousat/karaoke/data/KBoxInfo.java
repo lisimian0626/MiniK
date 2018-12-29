@@ -1,6 +1,7 @@
 package com.beidousat.karaoke.data;
 
 import com.beidousat.karaoke.model.KBox;
+import com.beidousat.karaoke.model.Notecode;
 import com.beidousat.karaoke.model.Package;
 import com.beidousat.karaoke.model.PayMent;
 import com.beidousat.libbns.util.Logger;
@@ -44,7 +45,12 @@ public class KBoxInfo {
 
         return mKBox.getPackages();
     }
+    public List<Notecode> getNotecode() {
+        if (mKBox == null)
+            return null;
 
+        return mKBox.getBanknote_code();
+    }
     public List<PayMent> getmPayMentlist() {
         return mPayMentlist;
     }

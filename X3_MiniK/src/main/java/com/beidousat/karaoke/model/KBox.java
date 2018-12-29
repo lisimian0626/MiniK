@@ -56,6 +56,8 @@ public class KBox {
     String service_qrcode_str;
     @SerializedName("packages")
     List<Package> Packages;
+    @SerializedName("banknote_code")
+    List<Notecode>  banknote_code;
     @SerializedName("vod_thumbnail_server")
     String kbox_ip;
     @SerializedName("vod_http_server")
@@ -70,7 +72,8 @@ public class KBox {
     String [] def_play;
     @SerializedName("use_pos")
     int use_pos;
-
+    @SerializedName("coin_unit")
+    String coin_unit;
     public String[] getDef_play() {
         return def_play;
     }
@@ -294,5 +297,21 @@ public class KBox {
 
     public void setUse_pos(int use_pos) {
         this.use_pos = use_pos;
+    }
+
+    public List<Notecode> getBanknote_code() {
+        return banknote_code;
+    }
+
+    public void setBanknote_code(List<Notecode> banknote_code) {
+        this.banknote_code = banknote_code;
+    }
+
+    public String getCoin_unit() {
+        return coin_unit;
+    }
+
+    public void setCoin_unit(String coin_unit) {
+        this.coin_unit = coin_unit;
     }
 }
