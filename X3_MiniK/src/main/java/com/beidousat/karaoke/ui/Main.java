@@ -385,7 +385,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
-                            ll_service.setVisibility(View.VISIBLE);
+                            if(Common.isEn){
+                                ll_service.setVisibility(View.GONE);
+                            }else {
+                                ll_service.setVisibility(View.VISIBLE);
+                            }
                             mTvBuy.setVisibility(View.VISIBLE);
                         }
                         getBoughtMeal();
@@ -2516,7 +2520,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
-                            ll_service.setVisibility(View.VISIBLE);
+
+                            if(Common.isEn){
+                                ll_service.setVisibility(View.GONE);
+                            }else{
+                                ll_service.setVisibility(View.VISIBLE);
+                            }
                             mTvBuy.setVisibility(View.VISIBLE);
                         }
                         ToastUtils.toast(getApplicationContext(), msg);

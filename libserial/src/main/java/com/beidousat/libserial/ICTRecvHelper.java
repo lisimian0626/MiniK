@@ -34,7 +34,7 @@ public class ICTRecvHelper {
                 for (byte b : btData) {
                     data.append(DataTransition.byte2Hex(b) + " ");
                 }
-//                Log.i(Tag, data.tICTring());
+                Log.i(Tag, data.toString());
                 if (mOnICTReceiveListener != null && data.length() > 0) {
                     mOnICTReceiveListener.OnICTReceive(data.toString().trim());
                 }

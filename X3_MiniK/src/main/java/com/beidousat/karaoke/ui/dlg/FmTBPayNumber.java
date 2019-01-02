@@ -82,7 +82,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     public static final byte[] closebyte={0x30};
     private final String PaySucced = "10";
     private final String PayFail = "11";
-    public static final String TypeON = "808f";
+    public static final String TypeON = "808F";
     private  String Type0 = "FFFFFFFF";
     private  String Type1 = "FFFFFFFF";
     private  String Type2 = "FFFFFFFF";
@@ -103,7 +103,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             mTBNumber.setText(needmoney + "/ " + curmoney + unit);
                             paySuccess();
                         } else {
-                            mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.coin));
+                            mTBNumber.setText(needmoney + "/ " + curmoney + unit);
                         }
                     } else {
                         if (mTBCount >= mNeedCoin) {
@@ -159,9 +159,9 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                 final boolean isDown = action == KeyEvent.ACTION_DOWN;
                 if (isDown && keyCode == 62) {
                     if (Common.isICT) {
-                        int TbCount = Math.round(KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
+                        int TbCount = Math.round(KBoxInfo.getInstance().getKBox().getCoin_exchange_rate()/100);
                         Logger.d(TAG, "tbCount:" + TbCount);
-                        needmoney += TbCount;
+                        curmoney += TbCount;
                     } else {
                         mTBCount++;
                     }
@@ -318,7 +318,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        }, getString(R.string.text_cancel_order_coin, mTBCount));
+                        }, getString(R.string.text_cancel_order_coin, curmoney));
             } else {
                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
             }
@@ -395,7 +395,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                 diffence = needmoney - curmoney;
                 code += str;
 
-                if (code.replace(" ", "").toLowerCase().contains(Type4)) {
+                if (code.replace(" ", "").toUpperCase().contains(Type4)) {
                     Logger.d(TAG, "paytype4");
                     if(diffence>=Coin4){
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
@@ -410,7 +410,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 //                    curmoney += Coin4;
 //                    mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
                     code = "";
-                } else if (code.replace(" ", "").toLowerCase().contains(Type3)) {
+                } else if (code.replace(" ", "").toUpperCase().contains(Type3)) {
                     Logger.d(TAG, "paytype3");
                     if(diffence>=Coin3){
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
@@ -422,7 +422,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
-                } else if (code.replace(" ", "").toLowerCase().contains(Type2)) {
+                } else if (code.replace(" ", "").toUpperCase().contains(Type2)) {
                     Logger.d(TAG, "paytype2");
                     if(diffence>=Coin2){
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
@@ -434,7 +434,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
-                } else if (code.replace(" ", "").toLowerCase().contains(Type1)) {
+                } else if (code.replace(" ", "").toUpperCase().contains(Type1)) {
                     Logger.d(TAG, "paytype1");
                     if(diffence>=Coin1){
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
@@ -446,7 +446,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
-                } else if (code.replace(" ", "").toLowerCase().contains(Type0)) {
+                } else if (code.replace(" ", "").toUpperCase().contains(Type0)) {
                     Logger.d(TAG, "paytype0");
                     if(diffence>=Coin0){
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
@@ -458,7 +458,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
-                }else if(code.replace(" ", "").toLowerCase().contains(PaySucced)){
+                }else if(code.replace(" ", "").toUpperCase().contains(PaySucced)){
                     curmoney+=addmoney;
 
                     code="";
@@ -468,14 +468,14 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                     }else{
                         mTBNumber.setText(needmoney + "/ " + curmoney + unit);
                     }
-                }else if(code.replace(" ", "").toLowerCase().contains(PayFail)){
+                }else if(code.replace(" ", "").toUpperCase().contains(PayFail)){
                     code="";
-                }else if(code.replace(" ", "").toLowerCase().contains(FmTBPayNumber.TypeON)){
+                }else if(code.replace(" ", "").toUpperCase().contains(FmTBPayNumber.TypeON)){
                     Logger.d(TAG, "TypeON");
                     SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
                     code="";
                 }else{
-                    ToastUtils.toast(getContext(),"未登记的码值:"+code);
+
                 }
 
 
