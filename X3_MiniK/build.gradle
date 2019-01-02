@@ -13,7 +13,7 @@ android {
         applicationId "com.beidousat.karaoke"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 438
+        versionCode 439
         versionName "V2.2.6"
         multiDexEnabled true
         ndk {
@@ -66,7 +66,7 @@ android {
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('apk')) {
                 // 输出apk名称为test_v1.0_2016-08-15_wandoujia.apk
-                def fileName = "X3_MiniK_${defaultConfig.versionName}_${releaseTime()}.apk"
+                def fileName = "YNH_MiniK_${defaultConfig.versionName}_${releaseTime()}.apk"
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }
@@ -119,8 +119,6 @@ dependencies {
     // 指定tinker依赖版本（注：应用升级1.3.5版本起，不再内置tinker）
     compile 'com.tencent.tinker:tinker-android-lib:1.9.6'
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
-    //换肤
-    compile'com.zhy:changeskin:4.0.2'
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     //    compile 'com.tencent.bugly:nativecrashreport:latest.release'
     //// 依赖插件脚本

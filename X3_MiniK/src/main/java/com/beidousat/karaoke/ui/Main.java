@@ -353,7 +353,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
 //                    startService(new Intent(getApplicationContext(), OctopusService.class));
-                    getKboxDetail();
+                    if(TextUtils.isEmpty(PrefData.getRoomCode(Main.this))){
+                        ToastUtils.toast(Main.this,getString(R.string.room_num_error));
+                    }else{
+                        getKboxDetail();
+                    }
                 } else {
                     PromptCfgDialog(getString(R.string.getting_config_error));
 //                    showCfgDialog(getString(R.string.getting_config), getString(R.string.getting_config_error));
@@ -1072,7 +1076,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
     }
 
-//    public void onEventMainThread(ICTEvent event) {
+    public void onEventMainThread(ICTEvent event) {
 //        Logger.d(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
 //        String str = (String) event.data;
 //        if (TextUtils.isEmpty(str))
@@ -1086,7 +1090,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //             }
 //                break;
 //        }
-//    }
+    }
 
     private void pay_sucessed(BusEvent event) {
         boolean isExpire = true;

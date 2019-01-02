@@ -1,5 +1,7 @@
 package com.beidousat.libserial;
 
+import android.util.Log;
+
 import java.util.Locale;
 
 
@@ -191,4 +193,27 @@ public class DataTransition {
         mac[5] = Long.parseLong(strMac.substring(position5 + 1), 16);
         return (mac[0] << 40) + (mac[1] << 32) + (mac[2] << 24) + (mac[3] << 16) + (mac[4] << 8) + mac[5];
     }
-}
+
+    public static String bytesToHexString(byte[] src){
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
+    }
+    public static int[] byte2Int(byte b[])
+    {	int val[] = new int[b.length];
+
+        for(int i = 0; i<b.length; i++)
+            val[i] = b[i]&0xFF;
+        return val;
+    }
+    }

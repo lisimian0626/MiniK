@@ -83,6 +83,8 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private final String PaySucced = "10";
     private final String PayFail = "11";
     public static final String TypeON = "808F";
+    public static final String REJECT = "292F";
+    int rejecttimes=0;
     private  String Type0 = "FFFFFFFF";
     private  String Type1 = "FFFFFFFF";
     private  String Type2 = "FFFFFFFF";
@@ -103,7 +105,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             mTBNumber.setText(needmoney + "/ " + curmoney + unit);
                             paySuccess();
                         } else {
-                            mTBNumber.setText(needmoney + "/ " + curmoney + unit);
+                            mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.coin));
                         }
                     } else {
                         if (mTBCount >= mNeedCoin) {
@@ -219,6 +221,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                     codeMeal+=list_code.get(i).getUnit()+"  ";
                 }
                 tvCodeMeal.setText(getString(R.string.ICT_codeMeal)+codeMeal+" "+unit);
+                tvCodeMeal.setVisibility(View.VISIBLE);
             }else{
                 tvCodeMeal.setVisibility(View.VISIBLE);
             }
@@ -384,9 +387,10 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     });
 
     public void onEventMainThread(ICTEvent event) {
-        Logger.i(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
+//        Logger.i(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
 
         String str = (String) event.data;
+        Log.i(TAG,str);
         if (TextUtils.isEmpty(str))
             return;
         switch (event.id) {
@@ -473,6 +477,14 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                 }else if(code.replace(" ", "").toUpperCase().contains(FmTBPayNumber.TypeON)){
                     Logger.d(TAG, "TypeON");
                     SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+                    code="";
+                }else if(code.replace(" ", "").toUpperCase().contains(FmTBPayNumber.REJECT)){
+                    rejecttimes++;
+                    Logger.d(TAG, "REJECT");
+                    if(rejecttimes>=3){
+                        SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
+                        rejecttimes=0;
+                    }
                     code="";
                 }else{
 

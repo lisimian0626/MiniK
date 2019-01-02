@@ -103,9 +103,6 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
 
         try {
             mICTHelper = ICTRecvHelper.getInstance().getInstance();
-//                        if (mIsfraredOpened) {
-//                            mInfraredHelper.close();
-//            }
             Logger.i(TAG, "ICT open");
             mICTHelper.open(port, baudrate);
             mICTOpened = true;
