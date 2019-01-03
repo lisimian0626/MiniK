@@ -10,6 +10,7 @@ import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
 import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.util.DownloadQueueHelper;
 import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
@@ -27,6 +28,7 @@ import com.beidousat.score.ScoreFileUtil;
 import com.beidousat.score.ScoreLineInfo;
 import com.czt.mp3recorder.BnsAudioRecorder;
 import com.czt.mp3recorder.IAudioRecordListener;
+import com.liulishuo.filedownloader.BaseDownloadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +86,6 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     private boolean isPlaying = false;
     public static int PREVIEW = 1;
     public static final int NORMAL = 2;
-    private int random=0;
     public BnsPlayer(SurfaceView videoSurfaceView, SurfaceView minor, int width, int height) {
         mVideoSurfaceView = videoSurfaceView;
         mMinor = minor;
@@ -103,14 +104,6 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
-    }
-
-    public int getRandom() {
-        return random;
-    }
-
-    public void setRandom(int random) {
-        this.random = random;
     }
 
     public void playUrl(String videoUrl,String savePath,String recordFileName, int playmode) throws IOException {
@@ -173,20 +166,33 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 if (!DiskFileUtil.hasDiskStorage()) {
                     return;
                 }
-                try {
-//                    VideoDownloader.getInstance().addDownloadUrl(uri);
-//                        Log.e("test","download:"+ServerFileUtil.getFileUrl(uri));
-                    Song song=new Song();
-                    song.SimpName="公播歌曲"+random;
-                    song.download_url=ServerFileUtil.getFileUrl(uri);
-                    song.SongFilePath=DiskFileUtil.getDiskPathByHttpPath(savePath);
-                    song.setAD(true);
-                    MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
-                            DiskFileUtil.getFileSavedPath(savePath),song);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("test", "下载失败");
-                }
+                List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)
+                        .setPath(DiskFileUtil.getFileSavedPath(savePath));
+                mTaskList.add(task);
+                DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
+                DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete(BaseDownloadTask task) {
+                        Log.d(TAG, "download Commplete:" );
+                    }
+
+                    @Override
+                    public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
+                        Log.d(TAG, "download Error:" );
+                    }
+
+                    @Override
+                    public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
+                    }
+
+                    @Override
+                    public void onDownloadTaskOver() {
+
+                    }
+                });
+
             }
         }
 
