@@ -24,6 +24,7 @@ import com.beidousat.karaoke.widget.PagerSlidingTabStrip;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.ServerConfigData;
+import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.Logger;
 
 import java.util.ArrayList;
@@ -260,7 +261,7 @@ public class FmPayMeal extends FmBaseDialog {
                     mHandler.sendEmptyMessage(MSG_SUCESS);
                 }
             }
-        }).getBoxInfo(PrefData.getRoomCode(getContext().getApplicationContext()));
+        }).getBoxInfo(PrefData.getRoomCode(getContext().getApplicationContext()), DeviceUtil.getCupChipID());
     }
 
 

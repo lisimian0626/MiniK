@@ -91,10 +91,11 @@ public class HttpParamsUtils {
         return params;
     }
 
-    public static Map<String, String> initKBoxParams(String kboxSn,String card_code) {
+    public static Map<String, String> initKBoxParams(String kboxSn,String chip,String card_code) {
         Map<String, String> params = new HashMap<>();
 
         params.put("kbox_sn", kboxSn);
+        params.put("device_sn", chip);
         if(!TextUtils.isEmpty(card_code)){
             params.put("card_code",card_code);
         }

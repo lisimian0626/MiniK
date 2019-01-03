@@ -180,7 +180,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private FragmentManager mFragmentManager;
     private Button mBtnBack;
     private TextView mTvChooseCount, mTvCurrentSong;
-    private TextView mTvPlayerPause, mTvPlayerOriAcc, mTvScore, mTvService, mTvSwitch,mTvShare;
+    private TextView mTvPlayerPause, mTvPlayerOriAcc, mTvScore, mTvService, mTvSwitch, mTvShare;
     private LinearLayout ll_service;
     private UserInfoLayout mUserInfoLayout;
     private ToggleButton mTgScore;
@@ -237,6 +237,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private float touch_x = 0;
     private float touch_y = 0;
     private String code;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -244,10 +245,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
             switchLanguage("en");
         } else if (PreferenceUtil.getString(this, "mode", "zh").equals("zh")) {
             switchLanguage("zh");
-        }else if(PreferenceUtil.getString(this, "mode", "zh").equals("tw")) {
-            Logger.d(TAG,"language tw");
+        } else if (PreferenceUtil.getString(this, "mode", "zh").equals("tw")) {
+            Logger.d(TAG, "language tw");
             switchLanguage("tw");
-        }else if (PreferenceUtil.getString(this, "mode", "zh").equals("en_zh")) {
+        } else if (PreferenceUtil.getString(this, "mode", "zh").equals("en_zh")) {
             Common.isAuto = true;
         }
         setContentView(R.layout.act_main);
@@ -341,9 +342,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         }
                         PreferenceUtil.setString(Main.this, "mode", kboxConfig.getLanguage());
                     }
-                    if(TextUtils.isEmpty(kboxConfig.getSn())){
+                    if (TextUtils.isEmpty(kboxConfig.getSn())) {
 //                        PreferenceUtil.setBoolean(Main.this, "isSingle", false);
-                    }else{
+                    } else {
 //                        PrefData.setRoomCode(Main.this,kboxConfig.getSn());
                         PreferenceUtil.setBoolean(Main.this, "isSingle", true);
                     }
@@ -355,9 +356,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
 //                    startService(new Intent(getApplicationContext(), OctopusService.class));
-                    if(TextUtils.isEmpty(PrefData.getRoomCode(Main.this))){
-                        ToastUtils.toast(Main.this,getString(R.string.room_num_error));
-                    }else{
+                    if (TextUtils.isEmpty(PrefData.getRoomCode(Main.this))) {
+                        ToastUtils.toast(Main.this, getString(R.string.room_num_error));
+                    } else {
                         getKboxDetail();
                     }
                 } else {
@@ -391,9 +392,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
-                            if(Common.isEn){
+                            if (Common.isEn) {
                                 ll_service.setVisibility(View.GONE);
-                            }else {
+                            } else {
                                 ll_service.setVisibility(View.VISIBLE);
                             }
                             mTvBuy.setVisibility(View.VISIBLE);
@@ -416,7 +417,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //                PreferenceUtil.setBoolean(Main.mMainActivity, "isSingle", false);
             }
 
-        }).getBoxInfo(PrefData.getRoomCode(this.getApplicationContext()));
+        }).getBoxInfo(PrefData.getRoomCode(this.getApplicationContext()),DeviceUtil.getCupChipID());
     }
 
     private void showTips(String tips) {
@@ -581,7 +582,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        mMarqueePlayer.stopPlayer();
         stopMainPlayer();
         SerialController.getInstance(getSupportedContext()).sendbyteICT(closebyte);
-        Logger.d(TAG,"sendclosebyte");
+        Logger.d(TAG, "sendclosebyte");
         EventBus.getDefault().unregister(this);
         mMainActivity = null;
 
@@ -695,11 +696,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 playSong(songInfo);
                 break;
             case EventBusId.id.CHOOSE_SONG_CHANGED:
-                try{
+                try {
                     int count = Integer.valueOf(event.data.toString());
                     mTvChooseCount.setText(String.valueOf(count));
                     updatePlayingText();
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
 
                 }
 
@@ -714,8 +715,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case EventBusId.id.PLAYER_NEXT_DELAY:
-                if(event.data instanceof CXdownloadInfo) {
-                     final CXdownloadInfo cXdownloadInfo= (CXdownloadInfo) event.data;
+                if (event.data instanceof CXdownloadInfo) {
+                    final CXdownloadInfo cXdownloadInfo = (CXdownloadInfo) event.data;
                     Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(cXdownloadInfo.getSavePath()));
                     List<BaseDownloadTask> mTaskList = new ArrayList<>();
                     BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()))
@@ -913,7 +914,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
             case EventBusId.id.REQUEST_MEAL:
                 KBoxInfo.getInstance().setKBox(null);
-                new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo(PrefData.getRoomCode(Main.this.getApplicationContext()));
+                new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo(PrefData.getRoomCode(Main.this.getApplicationContext()),DeviceUtil.getCupChipID());
                 break;
 
             case EventBusId.SOCKET.KBOX_STATUS_CHECKING:
@@ -970,7 +971,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             mDialogAuth.setClose(true);
                             mDialogAuth.setMessage(tipsUtil.getErrMsg(kBoxStatus.code));
                             mDialogAuth.show();
-                        } else if(kBoxStatus.code == 00301){
+                        } else if (kBoxStatus.code == 00301) {
                             if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
                                 PromptDialog promptDialog = new PromptDialog(this);
                                 promptDialog.setMessage(getResources().getString(R.string.hand_disk));
@@ -979,7 +980,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                 BoughtMeal.getInstance().clearMealInfoSharePreference();
                                 BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                             }
-                        }else {
+                        } else {
                             if (getApplicationContext() != null) {
                                 ToastUtils.toast(getApplicationContext(), tipsUtil.getErrMsg(kBoxStatus.code));
                             }
@@ -1141,9 +1142,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 updateOriAccStatus(mKaraokeController.getPlayerStatus());
                 break;
             case R.id.tv_pause:
-                    if (mPauseTipView.canPause()) {
-                        mKaraokeController.playPause();
-                    }
+                if (mPauseTipView.canPause()) {
+                    mKaraokeController.playPause();
+                }
                 break;
             case R.id.tv_replay:
                 mKaraokeController.replay();
@@ -1552,7 +1553,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mKaraokeController.getPlayerStatus().playingType = 1;
             float vol = song.Volume > 0 ? ((float) song.Volume / 100) : 0.8f;
 //            Logger.d(TAG, "playSong" + song.SongFilePath+"|ID:"+mPlayingSong.ID);
-            playUrl(ServerFileUtil.getFileUrl(song.download_url),DiskFileUtil.getFileSavedPath(song.SongFilePath), vol);
+            playUrl(ServerFileUtil.getFileUrl(song.download_url), DiskFileUtil.getFileSavedPath(song.SongFilePath), vol);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
@@ -1589,7 +1590,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
 
-    private void playUrl(String url, String savePath,float volPercent) throws IOException {
+    private void playUrl(String url, String savePath, float volPercent) throws IOException {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1601,7 +1602,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 return;
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player != null) {
-                player.playUrl(url, savePath,mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
+                player.playUrl(url, savePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
             }
         } else {
             if (player_cx == null)
@@ -1609,7 +1610,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player_cx != null) {
                 Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                player_cx.playUrl(url, savePath,secSong==null?url:secSong.SongFilePath,mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null);
+                player_cx.playUrl(url, savePath, secSong == null ? url : secSong.SongFilePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null);
             }
         }
         mKaraokeController.getPlayerStatus().isPlaying = true;
@@ -1830,34 +1831,41 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
 
     private void playVideoAdRandom() {
+        int random;
         Logger.d(TAG, "playAD");
-        int random=0;
         handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
         hideSurf();
         mAdVideo = new Ad();
         String str = PreferenceUtil.getString(this, "def_play");
-        List<BasePlay> basePlayList=BasePlay.arrayBasePlayFromData(str);
-        Logger.d(TAG,"basePlay0:"+basePlayList.get(0).getDownload_url());
-        if (basePlayList!=null &&basePlayList.size()>0) {
-            try {
-                random=PublicSong.getNum(basePlayList.size());
-                mAdVideo.DownLoadUrl = basePlayList.get(random).getDownload_url();
-                mAdVideo.ADContent = basePlayList.get(random).getSave_path();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if(TextUtils.isEmpty(str)||str.equals("[]")){
+            mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
+            mAdVideo.ADContent = PublicSong.getAdVideo();
+        }else{
+            List<BasePlay> basePlayList=BasePlay.arrayBasePlayFromData(str);
+            Logger.d(TAG,"basePlay0:"+basePlayList.get(0).getDownload_url());
+            if (basePlayList!=null &&basePlayList.size()>0) {
+                try {
+                    random=PublicSong.getNum(basePlayList.size());
+                    mAdVideo.DownLoadUrl = basePlayList.get(random).getDownload_url();
+                    mAdVideo.ADContent = basePlayList.get(random).getSave_path();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
+                    mAdVideo.ADContent = PublicSong.getAdVideo();
+                }
+            } else {
                 mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
                 mAdVideo.ADContent = PublicSong.getAdVideo();
             }
-        } else {
-            mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
-            mAdVideo.ADContent = PublicSong.getAdVideo();
         }
+
+
         mAudioChannelFlag = 4;
         mKaraokeController.getPlayerStatus().playingType = 0;
         mPlayingSong = null;
-        Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "~~~~~  savePath:" + mAdVideo.ADContent);
+        Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
         try {
-            playUrl(mAdVideo.DownLoadUrl, mAdVideo.ADContent,0.5f);
+            playUrl(mAdVideo.DownLoadUrl, mAdVideo.ADContent, 0.5f);
         } catch (IOException e) {
             ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + e.toString());
@@ -1892,7 +1900,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 if (DiskFileUtil.is901()) {
                     if (player != null) {
                         try {
-                            player.playUrl(AdDefault.getScoreResultVideo(),AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
+                            player.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
                         } catch (IOException e) {
                             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
                             Logger.w(TAG, "playSong ex:" + e.toString());
@@ -1901,7 +1909,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else {
                     if (player_cx != null) {
 //                        Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                        player_cx.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(),AdDefault.getScoreResultVideo(),null);
+                        player_cx.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null);
                     }
                 }
             }
@@ -1973,7 +1981,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void initCurrentMode() {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null && player.getCurrentPosition() < 5 * 1000) {
                 mTvPlayerPause.postDelayed(new Runnable() {
                     @Override
@@ -1988,7 +1996,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }, 1000);
                 initVol();
             }
-        }else{
+        } else {
             if (player_cx != null && player_cx.getCurrentPosition() < 5 * 1000) {
                 mTvPlayerPause.postDelayed(new Runnable() {
                     @Override
@@ -2007,10 +2015,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void onOriginal(boolean showOnScreen) {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null)
                 player.onOriginal(mAudioChannelFlag);
-        }else{
+        } else {
             if (player_cx != null)
                 player_cx.onOriginal(mAudioChannelFlag);
         }
@@ -2020,10 +2028,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void onAccom(boolean showOnScreen) {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null)
                 player.onAccom(mAudioChannelFlag);
-        }else{
+        } else {
             if (player_cx != null)
                 player_cx.onAccom(mAudioChannelFlag);
         }
@@ -2033,10 +2041,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void initVol() {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null)
                 player.setVol(mVolPercent);
-        }else{
+        } else {
             if (player_cx != null)
                 player_cx.setVol(mVolPercent);
         }
@@ -2047,20 +2055,20 @@ public class Main extends BaseActivity implements View.OnClickListener,
         int mode = mKaraokeController.getPlayerStatus().scoreMode;
         if (mPresentation != null) {
             if (mPlayingSong != null && "1".equals(mPlayingSong.IsGradeLib)) {
-                if(DiskFileUtil.is901()){
+                if (DiskFileUtil.is901()) {
                     if (player != null)
                         player.setScoreOn(mode);
-                }else{
+                } else {
                     if (player_cx != null)
                         player_cx.setScoreOn(mode);
                 }
                 mPresentation.showScoreView(mode);
             } else {
                 mPresentation.showScoreView(0);
-                if(DiskFileUtil.is901()){
+                if (DiskFileUtil.is901()) {
                     if (player != null)
                         player.setScoreOn(0);
-                }else{
+                } else {
                     if (player_cx != null)
                         player_cx.setScoreOn(0);
                 }
@@ -2100,27 +2108,27 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void volOn() {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null)
                 player.volOn();
-        }else{
+        } else {
             if (player_cx != null)
                 player_cx.volOn();
         }
     }
 
     private void volOff() {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null)
                 player.volOff();
-        }else{
+        } else {
             if (player_cx != null)
                 player_cx.volOff();
         }
     }
 
     private void play() {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null) {
                 player.play();
                 mKaraokeController.getPlayerStatus().isPlaying = true;
@@ -2128,7 +2136,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mPresentation.tipOperation(0, 0, true);
                 }
             }
-        }else{
+        } else {
             if (player_cx != null) {
                 player_cx.play();
                 mKaraokeController.getPlayerStatus().isPlaying = true;
@@ -2141,7 +2149,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void pause() {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null) {
                 player.pause();
                 mKaraokeController.getPlayerStatus().isPlaying = false;
@@ -2149,7 +2157,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mPresentation.tipOperation(R.drawable.main_bottom_bar_pause_p, R.string.pause, false);
                 }
             }
-        }else{
+        } else {
             if (player_cx != null) {
                 player_cx.pause();
                 mKaraokeController.getPlayerStatus().isPlaying = false;
@@ -2164,7 +2172,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
      * 重播
      */
     private void replay() {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null) {
                 Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
                 if (song != null) {
@@ -2182,7 +2190,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     }
                 }
             }
-        }else{
+        } else {
             if (player_cx != null) {
                 Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
                 if (song != null) {
@@ -2200,11 +2208,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void setTone(int tone) {
-        if(DiskFileUtil.is901()){
+        if (DiskFileUtil.is901()) {
             if (player != null) {
                 player.setTone(tone);
             }
-        }else{
+        } else {
             if (player_cx != null) {
                 player_cx.setTone(tone);
             }
@@ -2529,9 +2537,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             mTvBuy.setVisibility(View.GONE);
                         } else {
 
-                            if(Common.isEn){
+                            if (Common.isEn) {
                                 ll_service.setVisibility(View.GONE);
-                            }else{
+                            } else {
                                 ll_service.setVisibility(View.VISIBLE);
                             }
                             mTvBuy.setVisibility(View.VISIBLE);
@@ -2542,7 +2550,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     ToastUtils.toast(getApplicationContext(), msg);
                 }
             }
-        }).getBoxInfo(PrefData.getRoomCode(getApplicationContext()));
+        }).getBoxInfo(PrefData.getRoomCode(getApplicationContext()),DeviceUtil.getCupChipID());
     }
 
     private void registerUsbReceiver() {
@@ -2807,7 +2815,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if (mPresentation == null) {
                         return;
                     }
-                    if (time > 10 && windowsfocus&&DiskFileUtil.is901()) {
+                    if (time > 10 && windowsfocus && DiskFileUtil.is901()) {
                         showSurf();
                     } else {
                         time++;

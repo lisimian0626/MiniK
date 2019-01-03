@@ -39,6 +39,7 @@ import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.net.request.StoreHttpRequestListener;
+import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.ListUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libwidget.recycler.HorizontalDividerItemDecoration;
@@ -221,7 +222,7 @@ public class FmDlgRoom extends FmBaseDialog implements View.OnTouchListener, Vie
                               }
                           }
                     }
-                }).getBoxInfo(Kbox_sn);
+                }).getBoxInfo(Kbox_sn, DeviceUtil.getCupChipID());
 //                mAttached.dismiss();
                 break;
         }

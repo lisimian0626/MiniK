@@ -53,7 +53,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         this.mCard_code = card_code;
     }
 
-    public void getBoxInfo(String kbox_sn) {
+    public void getBoxInfo(String kbox_sn,String chip) {
 //        SSLHttpRequest request = new SSLHttpRequest(mContext, RequestMethod.GET_KBOX);
 //        request.addParam(HttpParamsUtils.initKBoxParams(PrefData.getRoomCode(mContext)));
 //        request.setHttpRequestListener(this);
@@ -63,7 +63,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             return;
         }
         StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.STORE_KBOX);
-        storeHttpRequest.addParam(HttpParamsUtils.initKBoxParams(kbox_sn, mCard_code));
+        storeHttpRequest.addParam(HttpParamsUtils.initKBoxParams(kbox_sn,chip, mCard_code));
         storeHttpRequest.setStoreHttpRequestListener(this);
         storeHttpRequest.setConvert2Class(KBox.class);
         storeHttpRequest.post();
