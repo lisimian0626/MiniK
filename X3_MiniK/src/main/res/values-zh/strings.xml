@@ -406,7 +406,7 @@
     <string name="room_input">输入房号</string>
     <string name="roomcode_id">房间编号：未设置</string>
     <string name="roomcode_input">请填写房间编号</string>
-
+    <string name="device_failed">当前设备已被禁用!</string>
     <string name="password_before">请输入原密码</string>
     <string name="password_new">请设置新密码</string>
     <string name="password_confirm">请确认密码</string>

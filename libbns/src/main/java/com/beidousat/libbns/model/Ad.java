@@ -27,6 +27,7 @@ public class Ad implements Serializable {
 
     public String SongListID;
 
+    public String DownLoadUrl;
     /**
      * Banner 大图
      */

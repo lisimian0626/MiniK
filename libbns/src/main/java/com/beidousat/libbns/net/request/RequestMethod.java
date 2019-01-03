@@ -194,4 +194,6 @@ public class RequestMethod {
     public static final String GET_SERVER_CFG="Index/getConfig";
 
     public static final String UPLOAD_SONG="Play_song/set_song";
+
+    public static final String BASEPLAY="index/baseplay ";
 }

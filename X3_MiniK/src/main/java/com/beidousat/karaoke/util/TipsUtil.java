@@ -22,6 +22,8 @@ public class TipsUtil {
             return mContext.getString(R.string.device_error);
         } else if (errCode == 3002) {
             return mContext.getString(R.string.no_information);
+        }  else if (errCode == 300) {
+            return mContext.getString(R.string.device_failed);
         } else if (errCode == 2004) {
             return mContext.getString(R.string.store_closed);
         } else if (errCode == 4001) {

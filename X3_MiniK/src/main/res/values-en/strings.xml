@@ -452,6 +452,7 @@
     <string name="unpaid_service" >Service charge of the device is unpaid</string>
     <string name="device_error">Device error, unable to use</string>
     <string name="no_information">System error, no business information found</string>
+    <string name="device_failed">Current device disabled</string>
     <string name="store_closed">The business has been closed</string>
     <string name="insufficient_permissions">Error permission denied</string>
     <string name="no_room_number">No device NO.</string>

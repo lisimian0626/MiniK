@@ -10,6 +10,7 @@ import android.hardware.display.DisplayManager;
 import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,6 +55,7 @@ import com.beidousat.karaoke.data.PayUserInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.data.PublicSong;
 import com.beidousat.karaoke.db.DatabaseHelper;
+import com.beidousat.karaoke.model.BasePlay;
 import com.beidousat.karaoke.model.CXdownloadInfo;
 import com.beidousat.karaoke.model.CouponDetail;
 import com.beidousat.karaoke.model.GiftDetail;
@@ -1835,25 +1837,28 @@ public class Main extends BaseActivity implements View.OnClickListener,
         hideSurf();
         mAdVideo = new Ad();
         String str = PreferenceUtil.getString(this, "def_play");
-        if (TextUtils.isEmpty(str) || str.equals("[]")) {
-            mAdVideo.ADMovie = PublicSong.getAdVideo();
-            mAdVideo.ADContent = PublicSong.getAdVideo();
-        } else {
+        List<BasePlay> basePlayList=BasePlay.arrayBasePlayFromData(str);
+        Logger.d(TAG,"basePlay0:"+basePlayList.get(0).getDownload_url());
+        if (basePlayList!=null &&basePlayList.size()>0) {
             try {
-                String[] def_play = str.substring(1, str.length() - 1).split(",");
-                random=PublicSong.getNum(5);
-                mAdVideo.ADMovie = def_play[random].trim();
-                mAdVideo.ADContent = def_play[random].trim();
+                random=PublicSong.getNum(basePlayList.size());
+                mAdVideo.DownLoadUrl = basePlayList.get(random).getDownload_url();
+                mAdVideo.ADContent = basePlayList.get(random).getSave_path();
             } catch (Exception e) {
                 e.printStackTrace();
+                mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
+                mAdVideo.ADContent = PublicSong.getAdVideo();
             }
+        } else {
+            mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
+            mAdVideo.ADContent = PublicSong.getAdVideo();
         }
         mAudioChannelFlag = 4;
         mKaraokeController.getPlayerStatus().playingType = 0;
         mPlayingSong = null;
-        Logger.d(TAG, "playUrl:" + ServerFileUtil.getFileUrl(mAdVideo.ADContent) + "|AdVideo:" + mAdVideo.ADContent);
+        Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "~~~~~  savePath:" + mAdVideo.ADContent);
         try {
-            playUrl(mAdVideo.ADContent, mAdVideo.ADContent,0.5f,random);
+            playUrl(mAdVideo.DownLoadUrl, mAdVideo.ADContent,0.5f,random);
         } catch (IOException e) {
             ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + e.toString());

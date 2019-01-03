@@ -1,5 +1,6 @@
 package com.beidousat.karaoke.model;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -68,18 +69,19 @@ public class KBox {
     String ad_web;
     @SerializedName("autocephalous")
     String autocephalous;
-    @SerializedName("def_play")
-    String [] def_play;
+    @SerializedName("baseplay")
+    List<BasePlay> basePlayList;
     @SerializedName("use_pos")
     int use_pos;
     @SerializedName("coin_unit")
     String coin_unit;
-    public String[] getDef_play() {
-        return def_play;
+
+    public List<BasePlay> getBasePlayList() {
+        return basePlayList;
     }
 
-    public void setDef_play(String[] def_play) {
-        this.def_play = def_play;
+    public void setBasePlayList(List<BasePlay> basePlayList) {
+        this.basePlayList = basePlayList;
     }
 
     public String getKBoxSn() {
@@ -313,5 +315,18 @@ public class KBox {
 
     public void setCoin_unit(String coin_unit) {
         this.coin_unit = coin_unit;
+    }
+    public String basePlaytoJsonStr(List<BasePlay> basePlayList){
+
+        return toJson(basePlayList);
+    }
+    private String toJson(List<BasePlay> basePlayList) {
+        try {
+            Gson gson = new Gson();
+            return gson.toJson(basePlayList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
+import com.beidousat.karaoke.model.BasePlay;
 import com.beidousat.karaoke.model.KBox;
 import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.PayMent;
@@ -119,7 +120,8 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             } else {
                 PreferenceUtil.setBoolean(mContext, "isSingle", false);
             }
-            PreferenceUtil.setString(mContext, "def_play", Arrays.toString(kBox.getDef_play()));
+            Logger.d(TAG,"def_play:"+kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+            PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
 //            if (kBox.getDef_play() != null && kBox.getDef_play().length > 0) {
 //                for (int i = 0; i < kBox.getDef_play().length; i++) {
 //                    if (DiskFileUtil.getDiskFileByUrl(kBox.getDef_play()[i]) != null) {
