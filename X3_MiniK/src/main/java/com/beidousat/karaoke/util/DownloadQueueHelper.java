@@ -53,6 +53,7 @@ public class DownloadQueueHelper {
                     break;
                 case CTRL_ERROR:
                     BaseDownloadTask task = getTask(message);
+                    if(task!=null)
                     mListener.onDownloadTaskError(task, mThrowable.get(task.getId()));
                     break;
             }

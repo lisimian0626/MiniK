@@ -113,7 +113,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         mFilePath = videoUrl;
         this.savePath=savePath;
 //        mGradeLibFile = gradeLibFile;
-        Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl);
+        Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl+"   savaPath:"+savePath);
         if (mMediaPlayer == null) {
             createMediaPlayer();
         }
@@ -450,7 +450,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     public void replay() throws IOException {
         String url = mFilePath;
         mFilePath = "";
-        playUrl(url,url, mRecordFileName, BnsPlayer.NORMAL);
+        playUrl(url,savePath, mRecordFileName, BnsPlayer.NORMAL);
     }
 
 

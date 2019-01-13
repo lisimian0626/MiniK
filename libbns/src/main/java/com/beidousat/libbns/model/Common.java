@@ -27,5 +27,5 @@ public class Common {
     public static  boolean isEn=false;
     public static  boolean isAuto=false;
     public static boolean isPersonal=false;
-    public static boolean isICT=true;
+    public static boolean isICT=false;
 }
