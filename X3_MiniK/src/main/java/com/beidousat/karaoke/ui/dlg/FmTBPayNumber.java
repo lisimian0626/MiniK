@@ -220,10 +220,10 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                     }
                     codeMeal+=list_code.get(i).getUnit()+"  ";
                 }
-                tvCodeMeal.setText(getString(R.string.ICT_codeMeal)+codeMeal+" "+unit);
-                tvCodeMeal.setVisibility(View.VISIBLE);
+//                tvCodeMeal.setText(getString(R.string.ICT_codeMeal)+codeMeal+" "+unit);
+//                tvCodeMeal.setVisibility(View.VISIBLE);
             }else{
-                tvCodeMeal.setVisibility(View.VISIBLE);
+//                tvCodeMeal.setVisibility(View.VISIBLE);
             }
             Logger.d(TAG,"needmoney:"+mSelectedMeal.getPrice());
             needmoney = Math.round(mSelectedMeal.getPrice());

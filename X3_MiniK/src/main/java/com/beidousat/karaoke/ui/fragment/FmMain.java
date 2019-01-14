@@ -63,6 +63,8 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
             wmTop.setBackgroundResource(R.drawable.song_top_en);
             wmScore.setBackgroundResource(R.drawable.song_score_en);
             wmLove.setBackgroundResource(R.drawable.song_love_en);
+            wmLove.setVisibility(View.GONE);
+            wmShow.setVisibility(View.GONE);
         }
 //        //load image
 //        mAdSupporterPlayer = (AdSupporterPlayer) mRootView.findViewById(R.id.ad_supporter);

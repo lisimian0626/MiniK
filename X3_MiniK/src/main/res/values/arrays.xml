@@ -168,6 +168,16 @@
         <item>K</item>
         <item>L</item>
     </string-array>
+    <string-array name="keyboard_keys_line3s">
+        <item>Z</item>
+        <item>X</item>
+        <item>C</item>
+        <item>V</item>
+        <item>B</item>
+        <item>N</item>
+        <item>M</item>
+        <item>Space</item>
+    </string-array>
     <string-array name="keyboard_keys_line3x">
         <item>Z</item>
         <item>X</item>
