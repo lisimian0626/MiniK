@@ -45,6 +45,7 @@ import com.beidousat.libbns.util.QrCodeUtil;
 import com.beidousat.score.KeyInfo;
 import com.hoho.android.usbserial.util.TBManager;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -161,7 +162,9 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                 final boolean isDown = action == KeyEvent.ACTION_DOWN;
                 if (isDown && keyCode == 62) {
                     if (Common.isICT) {
-                        int TbCount = Math.round(KBoxInfo.getInstance().getKBox().getCoin_exchange_rate()/100);
+                        BigDecimal b   =   new   BigDecimal(KBoxInfo.getInstance().getKBox().getCoin_exchange_rate()/100);
+                        double   TbCount   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+//                        int TbCount = Math.round(KBoxInfo.getInstance().getKBox().getCoin_exchange_rate()/100);
                         Logger.d(TAG, "tbCount:" + TbCount);
                         curmoney += TbCount;
                     } else {
@@ -192,31 +195,37 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         mTBNumber = (TextView) findViewById(R.id.tv_money);
         mTvMeal = (TextView) findViewById(R.id.tv_selected_meal);
         mImage = findViewById(R.id.iv_pay_qrcode);
-        mImage.setImageResource(R.drawable.pay_token);
+        if(Common.isEn){
+            mImage.setImageResource(R.drawable.pay_token_en);
+        }else{
+            mImage.setImageResource(R.drawable.pay_token);
+        }
+
         tvCodeMeal=findViewById(R.id.tv_codeMeal);
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
-        if (Common.isICT) {
-            KBox kBox=KBoxInfo.getInstance().getKBox();
+        KBox kBox=KBoxInfo.getInstance().getKBox();
+        if(kBox!=null&&!TextUtils.isEmpty(kBox.getCoin_unit())){
+            Common.isICT=true;
             List<Notecode> list_code=kBox.getBanknote_code();
             if(list_code!=null&&list_code.size()>0){
                 String codeMeal = "";
                 for (int i=0;i<list_code.size();i++){
                     if(i==0){
                         Type0=list_code.get(0).getCode();
-                        Coin0=Integer.valueOf(list_code.get(0).getUnit());
+                        Coin0=Integer.valueOf(list_code.get(0).getUnit())*100;
                     }else if(i==1){
                         Type1=list_code.get(1).getCode();
-                        Coin1=Integer.valueOf(list_code.get(1).getUnit());
+                        Coin1=Integer.valueOf(list_code.get(1).getUnit())*100;
                     }else if(i==2){
                         Type2=list_code.get(2).getCode();
-                        Coin2=Integer.valueOf(list_code.get(2).getUnit());
+                        Coin2=Integer.valueOf(list_code.get(2).getUnit())*100;
                     }else if(i==3){
                         Type3=list_code.get(3).getCode();
-                        Coin3=Integer.valueOf(list_code.get(3).getUnit());
+                        Coin3=Integer.valueOf(list_code.get(3).getUnit())*100;
                     }else if(i==4){
                         Type4=list_code.get(4).getCode();
-                        Coin4=Integer.valueOf(list_code.get(4).getUnit());
+                        Coin4=Integer.valueOf(list_code.get(4).getUnit())*100;
                     }
                     codeMeal+=list_code.get(i).getUnit()+"  ";
                 }
@@ -226,19 +235,62 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 //                tvCodeMeal.setVisibility(View.VISIBLE);
             }
             Logger.d(TAG,"needmoney:"+mSelectedMeal.getPrice());
-            needmoney = Math.round(mSelectedMeal.getPrice());
-            if(kBox!=null&&!TextUtils.isEmpty(kBox.getCoin_unit())) {
-                unit=kBox.getCoin_unit();
-                mTBNumber.setText(needmoney + "/0 " + kBox.getCoin_unit());
-            }else{
-                mTBNumber.setText(mNeedCoin + "/0 " + getResources().getString(R.string.coin));
-            }
-        } else {
+            BigDecimal b   =   new   BigDecimal(mSelectedMeal.getPrice());
+            needmoney   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+//            needmoney = Math.round(mSelectedMeal.getPrice());
+            unit=kBox.getCoin_unit();
+            mTBNumber.setText(needmoney + "/0 " + kBox.getCoin_unit());
+        }else{
+            Common.isICT=false;
             mNeedCoin = getBiCount();
             Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
                     "  Cion_exchange_rate:" + KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
             mTBNumber.setText(mNeedCoin + "/0 " + getResources().getString(R.string.coin));
         }
+
+//        if (Common.isICT) {
+//
+//            List<Notecode> list_code=kBox.getBanknote_code();
+//            if(list_code!=null&&list_code.size()>0){
+//                String codeMeal = "";
+//                for (int i=0;i<list_code.size();i++){
+//                    if(i==0){
+//                        Type0=list_code.get(0).getCode();
+//                        Coin0=Integer.valueOf(list_code.get(0).getUnit());
+//                    }else if(i==1){
+//                        Type1=list_code.get(1).getCode();
+//                        Coin1=Integer.valueOf(list_code.get(1).getUnit());
+//                    }else if(i==2){
+//                        Type2=list_code.get(2).getCode();
+//                        Coin2=Integer.valueOf(list_code.get(2).getUnit());
+//                    }else if(i==3){
+//                        Type3=list_code.get(3).getCode();
+//                        Coin3=Integer.valueOf(list_code.get(3).getUnit());
+//                    }else if(i==4){
+//                        Type4=list_code.get(4).getCode();
+//                        Coin4=Integer.valueOf(list_code.get(4).getUnit());
+//                    }
+//                    codeMeal+=list_code.get(i).getUnit()+"  ";
+//                }
+////                tvCodeMeal.setText(getString(R.string.ICT_codeMeal)+codeMeal+" "+unit);
+////                tvCodeMeal.setVisibility(View.VISIBLE);
+//            }else{
+////                tvCodeMeal.setVisibility(View.VISIBLE);
+//            }
+//            Logger.d(TAG,"needmoney:"+mSelectedMeal.getPrice());
+//            needmoney = Math.round(mSelectedMeal.getPrice());
+//            if(kBox!=null&&!TextUtils.isEmpty(kBox.getCoin_unit())) {
+//                unit=kBox.getCoin_unit();
+//                mTBNumber.setText(needmoney + "/0 " + kBox.getCoin_unit());
+//            }else{
+//                mTBNumber.setText(mNeedCoin + "/0 " + getResources().getString(R.string.coin));
+//            }
+//        } else {
+//            mNeedCoin = getBiCount();
+//            Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
+//                    "  Cion_exchange_rate:" + KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
+//            mTBNumber.setText(mNeedCoin + "/0 " + getResources().getString(R.string.coin));
+//        }
 
         TBManager.getInstance().start(getContext(), new TBManager.TBManagerListener() {
             @Override

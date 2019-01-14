@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
                 android:layout_gravity="bottom"
-                android:text="请投币："
+                android:text="@string/put_in"
                 android:textColor="#f35972"
                 android:textSize="24sp" />
 

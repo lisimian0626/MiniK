@@ -293,11 +293,12 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
         mRvKeyboardLine3.addItemDecoration(verDivider);
         AdtKeyboardLine3 = new AdapterKeyboard();
         mRvKeyboardLine3.setAdapter(AdtKeyboardLine3);
-        if(Common.isEn){
-            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3s)));
-        }else{
-            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
-        }
+        AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
+//        if(Common.isEn){
+//            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3s)));
+//        }else{
+//            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
+//        }
 
 
 
