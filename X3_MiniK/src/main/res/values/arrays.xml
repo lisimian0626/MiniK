@@ -197,7 +197,9 @@
         <item>N</item>
         <item>M</item>
     </string-array>
-
+    <string-array name="keyboard_keys_line4">
+        <item>Space</item>
+    </string-array>
     <string-array name="keyboard_numbers">
         <item>1</item>
         <item>2</item>

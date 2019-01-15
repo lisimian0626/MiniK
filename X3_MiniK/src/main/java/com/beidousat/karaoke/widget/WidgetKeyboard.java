@@ -44,12 +44,12 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
     private EditTextEx mEditText;
     private SelfAbsoluteLayout tablet;
     private View mTypeKeyboard, mTypeHandWriting;
-    private RecyclerView mRvKeyboardLine1, mRvKeyboardLine2, mRvKeyboardLine3, mRvNumber, mRvWords, mRvWordCount;
+    private RecyclerView mRvKeyboardLine1, mRvKeyboardLine2, mRvKeyboardLine3,mRvKeyboardLine4, mRvNumber, mRvWords, mRvWordCount;
     private WidgetTopTabs mTabInputType;
 
     private AdapterWord mAdtWord;
     private AdapterKeyboard AdtKeyboardLine1, AdtKeyboardLine2, AdtKeyboardLine3, AdtNumber;
-
+    private AdapterSign AdtKeyboardLine4;
     private KeyboardListener mKeyboardListener;
 
     private String[] texts = new String[]{"", "", "", "", "", "", "", ""};
@@ -153,7 +153,7 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
         mRvKeyboardLine1 = (RecyclerView) this.findViewById(R.id.rv_keyboard_line1);
         mRvKeyboardLine2 = (RecyclerView) this.findViewById(R.id.rv_keyboard_line2);
         mRvKeyboardLine3 = (RecyclerView) this.findViewById(R.id.rv_keyboard_line3);
-
+        mRvKeyboardLine4 = (RecyclerView) this.findViewById(R.id.rv_keyboard_line4);
         mRvNumber = (RecyclerView) this.findViewById(R.id.rv_number);
 
 //        mRvNumberLine2 = (RecyclerView) this.findViewById(R.id.rv_number_line2);
@@ -294,11 +294,11 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
         AdtKeyboardLine3 = new AdapterKeyboard();
         mRvKeyboardLine3.setAdapter(AdtKeyboardLine3);
         AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
-        if (Common.isEn) {
-            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3s)));
-        } else {
-            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
-        }
+//        if (Common.isEn) {
+//            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3s)));
+//        } else {
+//            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
+//        }
 
 
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
@@ -317,6 +317,20 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
         AdtKeyboardLine1 = new AdapterKeyboard();
         mRvKeyboardLine1.setAdapter(AdtKeyboardLine1);
         AdtKeyboardLine1.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line1)));
+
+        if(Common.isEn){
+            mRvKeyboardLine4.setVisibility(VISIBLE);
+            LinearLayoutManager layoutManager4 = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            mRvKeyboardLine4.setLayoutManager(layoutManager4);
+            mRvKeyboardLine4.addItemDecoration(verDivider);
+            AdtKeyboardLine4 = new AdapterSign();
+            mRvKeyboardLine4.setAdapter(AdtKeyboardLine4);
+            AdtKeyboardLine4.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line4)));
+        }else{
+            mRvKeyboardLine4.setVisibility(GONE);
+        }
+
     }
 
     private void initNumber() {
@@ -411,13 +425,14 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
             setHintText(mStrHint);
         }
 
-        showInputType(showInputType);
 
-        setInputType(focusType);
         if (Common.isEn) {
             showWordCount(false);
+            showInputType(false);
         } else {
             showWordCount(showWordCount);
+            showInputType(showInputType);
+            setInputType(focusType);
         }
 
 
@@ -649,9 +664,7 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
                         if (!TextUtils.isEmpty(keyText)) {
                             if (keyText.equals(getContext().getString(R.string.delete))) {
                                 deleteChar();
-                            } else if (keyText.toLowerCase().trim().equals("space")) {
-                                addText(" ");
-                            } else {
+                            }else {
                                 addText(keyText);
                             }
                         }
@@ -735,7 +748,46 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
         }
     }
 
+    public class AdapterSign extends BaseAdapter {
 
+        public AdapterSign() {
+            super();
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View view = mInflater.inflate(R.layout.list_item_keyboard_sign, viewGroup, false);
+            ViewHolder viewHolder = new ViewHolder(view);
+            viewHolder.tvKey = (TextView) view.findViewById(android.R.id.button1);
+            return viewHolder;
+        }
+
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            final String keyText = mData.get(position);
+            holder.tvKey.setText(keyText);
+            final boolean isEnable = mIsCleanText || TextUtils.isEmpty(mEditText.getText())
+                    || keyText.equals(getContext().getString(R.string.delete))
+                    || (!TextUtils.isEmpty(mEnableText) && (mEnableText.contains(keyText)
+                    || mEnableText.contains(keyText.toLowerCase())));
+            holder.tvKey.setEnabled(mNeedDisableKey ? isEnable : true);
+            holder.tvKey.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        if (!TextUtils.isEmpty(keyText)) {
+                            if (keyText.toLowerCase().trim().equals("space")) {
+                                addText(" ");
+                            }
+                        }
+                    } catch (Exception e) {
+                        Logger.e("WidgetKeyBoard", e.toString());
+                    }
+                }
+            });
+        }
+    }
     /**
      * @param inputType 0:keyboard 1:write 2:number
      */

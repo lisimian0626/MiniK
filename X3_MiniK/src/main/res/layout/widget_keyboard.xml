@@ -93,7 +93,15 @@
                     android:scaleType="center"
                     android:src="@drawable/selector_keyboard_del" />
             </LinearLayout>
-
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_keyboard_line4"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="100dp"
+                android:overScrollMode="never"
+                android:visibility="gone"
+                />
         </LinearLayout>
 
         <RelativeLayout
