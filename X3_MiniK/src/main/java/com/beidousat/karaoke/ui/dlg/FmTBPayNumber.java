@@ -46,6 +46,7 @@ import com.beidousat.score.KeyInfo;
 import com.hoho.android.usbserial.util.TBManager;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -97,16 +98,21 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private  int Coin3 = 20;
     private  int Coin4 = 50;
     private String unit="元";
+    DecimalFormat df = new DecimalFormat("0.00");
     Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TOUBI_CHANGE_MSG:
                     if (Common.isICT) {
+                        if(needmoney==0||curmoney==0)
+                            return;
+                        double f1=needmoney/100f;
+                        double f2=curmoney/100f;
                         if (curmoney >= needmoney) {
-                            mTBNumber.setText(needmoney + "/ " + curmoney + unit);
+                            mTBNumber.setText(String.valueOf(df.format(f1)) + "/ " + String.valueOf(df.format(f2)) + unit);
                             paySuccess();
                         } else {
-                            mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.coin));
+                            mTBNumber.setText(String.valueOf(df.format(f1)) + "/ " + String.valueOf(df.format(f2))+ getResources().getString(R.string.coin));
                         }
                     } else {
                         if (mTBCount >= mNeedCoin) {
@@ -162,9 +168,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                 final boolean isDown = action == KeyEvent.ACTION_DOWN;
                 if (isDown && keyCode == 62) {
                     if (Common.isICT) {
-                        BigDecimal b   =   new   BigDecimal(KBoxInfo.getInstance().getKBox().getCoin_exchange_rate()/100);
-                        double   TbCount   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
-//                        int TbCount = Math.round(KBoxInfo.getInstance().getKBox().getCoin_exchange_rate()/100);
+                        int TbCount = KBoxInfo.getInstance().getKBox().getCoin_exchange_rate();
                         Logger.d(TAG, "tbCount:" + TbCount);
                         curmoney += TbCount;
                     } else {
@@ -234,12 +238,12 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
             }else{
 //                tvCodeMeal.setVisibility(View.VISIBLE);
             }
-            Logger.d(TAG,"needmoney:"+mSelectedMeal.getPrice());
-            BigDecimal b   =   new   BigDecimal(mSelectedMeal.getPrice());
-            needmoney   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+            Logger.d(TAG,"needmoney:"+mSelectedMeal.getIntPrice());
+            needmoney   = mSelectedMeal.getIntPrice();
 //            needmoney = Math.round(mSelectedMeal.getPrice());
             unit=kBox.getCoin_unit();
-            mTBNumber.setText(needmoney + "/0 " + kBox.getCoin_unit());
+            double f=needmoney/100f;
+            mTBNumber.setText(String.valueOf(df.format(f)) + "/0.00 " + kBox.getCoin_unit());
         }else{
             Common.isICT=false;
             mNeedCoin = getBiCount();
@@ -373,7 +377,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        }, getString(R.string.text_cancel_order_coin, curmoney));
+                        }, getString(R.string.text_cancel_order_coin, curmoney/100));
             } else {
                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
             }
@@ -519,10 +523,13 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
                     code="";
                     if(curmoney>=needmoney){
-                        mTBNumber.setText(needmoney + "/ " + unit);
+
+                        if(needmoney==0||needmoney==0)
+                            return;
+                        mTBNumber.setText(String.valueOf(df.format(needmoney/100f)) + "/ "+String.valueOf(df.format(curmoney/100f)) + unit);
                         paySuccess();
                     }else{
-                        mTBNumber.setText(needmoney + "/ " + curmoney + unit);
+                        mTBNumber.setText(String.valueOf(df.format(needmoney/100f)) + "/ " + String.valueOf(df.format(curmoney/100)) + unit);
                     }
                 }else if(code.replace(" ", "").toUpperCase().contains(PayFail)){
                     code="";

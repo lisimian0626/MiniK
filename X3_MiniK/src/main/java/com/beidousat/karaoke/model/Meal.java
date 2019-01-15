@@ -30,7 +30,7 @@ public class Meal implements Serializable {
     private int Amount;
     @Expose
     @SerializedName("subtotal")
-    private float Price;
+    private int Price;
 
     @Expose
     @SerializedName("qrcode_data")
@@ -87,7 +87,7 @@ public class Meal implements Serializable {
 
     }
 
-    public Meal(int type, int amount, float price, float realPrice, int use_card,String use_card_msg,float rate,String lable) {
+    public Meal(int type, int amount, int price, float realPrice, int use_card,String use_card_msg,float rate,String lable) {
         Type = type;
         Amount = amount;
         Price = price;
@@ -111,6 +111,10 @@ public class Meal implements Serializable {
 
     public int getAmount() {
         return Amount;
+    }
+
+    public int getIntPrice() {
+        return Price; //分->元
     }
 
     public float getPrice() {
@@ -220,7 +224,7 @@ public class Meal implements Serializable {
         Amount = amount;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(int price) {
         Price = price;
     }
 

@@ -22,21 +22,21 @@ public class MealDataFactory {
         Meal meal1 = new Meal();
         meal1.setID(0x01);
         meal1.setAmount(15);
-        meal1.setPrice(1200f);
+        meal1.setPrice(1200);
         meal1.setType(Meal.TIME);
         array.add(meal1);
 
         Meal meal2 = new Meal();
         meal2.setID(0x02);
         meal2.setAmount(30);
-        meal2.setPrice(2000f);
+        meal2.setPrice(2000);
         meal2.setType(Meal.TIME);
         array.add(meal2);
 
         Meal meal3 = new Meal();
         meal3.setID(0x03);
         meal3.setAmount(60);
-        meal3.setPrice(3800f);
+        meal3.setPrice(3800);
         meal3.setType(Meal.TIME);
         array.add(meal3);
 
@@ -48,21 +48,21 @@ public class MealDataFactory {
         Meal meal1 = new Meal();
         meal1.setID(0x11);
         meal1.setAmount(1);
-        meal1.setPrice(500f);
+        meal1.setPrice(500);
         meal1.setType(Meal.SONG);
         array.add(meal1);
 
         Meal meal2 = new Meal();
         meal2.setID(0x12);
         meal2.setAmount(5);
-        meal2.setPrice(2000f);
+        meal2.setPrice(2000);
         meal2.setType(Meal.SONG);
         array.add(meal2);
 
         Meal meal3 = new Meal();
         meal3.setID(0x13);
         meal3.setAmount(10);
-        meal3.setPrice(3800f);
+        meal3.setPrice(3800);
         meal3.setType(Meal.SONG);
         array.add(meal3);
 

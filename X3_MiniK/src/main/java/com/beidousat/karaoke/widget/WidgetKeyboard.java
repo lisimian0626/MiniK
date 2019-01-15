@@ -294,12 +294,11 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
         AdtKeyboardLine3 = new AdapterKeyboard();
         mRvKeyboardLine3.setAdapter(AdtKeyboardLine3);
         AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
-//        if(Common.isEn){
-//            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3s)));
-//        }else{
-//            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
-//        }
-
+        if (Common.isEn) {
+            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3s)));
+        } else {
+            AdtKeyboardLine3.setData(ListUtil.array2List(getResources().getStringArray(R.array.keyboard_keys_line3)));
+        }
 
 
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
@@ -365,9 +364,9 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
     private void initInputType() {
 
         mTabInputType.setRightClickSelect(false);
-        if(Common.isEn){
+        if (Common.isEn) {
             mTabInputType.setLeftTabs(R.array.keyboard_input_types_en);
-        }else{
+        } else {
             mTabInputType.setLeftTabs(R.array.keyboard_input_types);
         }
 
@@ -415,9 +414,9 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
         showInputType(showInputType);
 
         setInputType(focusType);
-        if(Common.isEn){
+        if (Common.isEn) {
             showWordCount(false);
-        }else{
+        } else {
             showWordCount(showWordCount);
         }
 
@@ -650,6 +649,8 @@ public class WidgetKeyboard extends LinearLayout implements View.OnClickListener
                         if (!TextUtils.isEmpty(keyText)) {
                             if (keyText.equals(getContext().getString(R.string.delete))) {
                                 deleteChar();
+                            } else if (keyText.toLowerCase().trim().equals("space")) {
+                                addText(" ");
                             } else {
                                 addText(keyText);
                             }

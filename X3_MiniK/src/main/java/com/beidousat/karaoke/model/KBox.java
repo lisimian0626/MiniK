@@ -50,7 +50,7 @@ public class KBox {
     @SerializedName("use_gift_card") //是否使用礼品卡方案，1=是，0=否
             int use_gift_card;
     @SerializedName("coin_exchange_rate") //汇率，一个币的价格
-    float coin_exchange_rate;
+    int coin_exchange_rate;
     @SerializedName("service_telphone")//客服电话
     String service_desc;
     @SerializedName("service_qrcode_str")//客服二维码
@@ -137,11 +137,11 @@ public class KBox {
         this.use_coin = use_coin;
     }
 
-    public float getCoin_exchange_rate() {
+    public int getCoin_exchange_rate() {
         return coin_exchange_rate;
     }
 
-    public void setCoin_exchange_rate(float coin_exchange_rate) {
+    public void setCoin_exchange_rate(int coin_exchange_rate) {
         this.coin_exchange_rate = coin_exchange_rate;
     }
 
