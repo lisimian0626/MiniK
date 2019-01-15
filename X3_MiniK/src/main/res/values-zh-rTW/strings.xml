@@ -375,6 +375,7 @@
     <string name="ICT_ERROR">請使用小於訂單金額的硬幣或紙鈔</string>
     <string name="ICT_EMPTY">当前沒有設置任何紙鈔面額</string>
     <string name="text_cancel_order_coin">是否取消訂單？\n取消將損失%1d个幣！</string>
+    <string name="text_cancel_order_coin2">是否取消訂單？\n取消將損失 </string>
     <string name="price_changed">當前時段資費已發生變化</string>
     <string name="check_dsc">查看資費說明</string>
     <string name="not_buy">不購買了</string>

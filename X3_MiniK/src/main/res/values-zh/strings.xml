@@ -373,6 +373,7 @@
     <string name="ICT_EMPTY">当前没有设置任何纸钞面额</string>
     <string name="ICT_CODEMEAL">可使用：</string>
     <string name="text_cancel_order_coin">是否取消订单？\n取消将损失%1d个币！</string>
+    <string name="text_cancel_order_coin2">是否取消订单？\n取消将损失 </string>
     <string name="ICT_codeMeal">可使用:</string>
     <string name="price_changed">当前时段资费已发生变化</string>
     <string name="check_dsc">查看资费说明</string>

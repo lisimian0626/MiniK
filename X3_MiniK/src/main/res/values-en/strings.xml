@@ -369,6 +369,7 @@
     <string name="known">Understand</string>
 
     <string name="text_cancel_order_coin">Cancel the order or not? \nYou will lose %1d coins if cancel!</string>
+    <string name="text_cancel_order_coin2">Cancel the order or not? \nYou will lose </string>
     <string name="coin">Coin</string>
     <string name="RMB"> RMB</string>
     <!--<string name="TWD"> TWD</string>-->

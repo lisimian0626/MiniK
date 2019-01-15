@@ -1,5 +1,6 @@
 package com.beidousat.karaoke.ui.dlg;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -75,52 +76,48 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private QueryOrderHelper mQueryOrderHelper;
     private AlertDialog mConfirmDlg;
     private TextView mBtnBack;
-    private TextView tvMoneyUnit,tvCodeMeal;
+    private TextView tvMoneyUnit, tvCodeMeal;
     private int mNeedCoin;
     private String code;
     public static final byte[] acceptbyte = {0x02};
     private byte[] rejectbyte = {0x15};
     private byte[] holdbyte = {0x24};
-    public static final byte[] closebyte={0x30};
+    public static final byte[] closebyte = {0x30};
     private final String PaySucced = "10";
     private final String PayFail = "11";
     public static final String TypeON = "808F";
     public static final String REJECT = "292F";
-    int rejecttimes=0;
-    private  String Type0 = "FFFFFFFF";
-    private  String Type1 = "FFFFFFFF";
-    private  String Type2 = "FFFFFFFF";
-    private  String Type3 = "FFFFFFFF";
-    private  String Type4 = "FFFFFFFF";
-    private  int Coin0 = 1;
-    private  int Coin1 = 5;
-    private  int Coin2 = 10;
-    private  int Coin3 = 20;
-    private  int Coin4 = 50;
-    private String unit="元";
+    int rejecttimes = 0;
+    private String Type0 = "FFFFFFFF";
+    private String Type1 = "FFFFFFFF";
+    private String Type2 = "FFFFFFFF";
+    private String Type3 = "FFFFFFFF";
+    private String Type4 = "FFFFFFFF";
+    private int Coin0 = 1;
+    private int Coin1 = 5;
+    private int Coin2 = 10;
+    private int Coin3 = 20;
+    private int Coin4 = 50;
+    private String unit = "元";
     DecimalFormat df = new DecimalFormat("0.00");
     Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TOUBI_CHANGE_MSG:
                     if (Common.isICT) {
-                        if(needmoney==0||curmoney==0)
+                        if (needmoney == 0 || curmoney == 0)
                             return;
-                        double f1=needmoney/100f;
-                        double f2=curmoney/100f;
+                        double f1 = needmoney / 100f;
+                        double f2 = curmoney / 100f;
+                        mTBNumber.setText(String.valueOf(df.format(f1)) + "/ " + String.valueOf(df.format(f2)) + unit);
                         if (curmoney >= needmoney) {
-                            mTBNumber.setText(String.valueOf(df.format(f1)) + "/ " + String.valueOf(df.format(f2)) + unit);
                             paySuccess();
-                        } else {
-                            mTBNumber.setText(String.valueOf(df.format(f1)) + "/ " + String.valueOf(df.format(f2))+ getResources().getString(R.string.coin));
                         }
                     } else {
+                        mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
                         if (mTBCount >= mNeedCoin) {
                             //支付成功
-                            mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
                             paySuccess();
-                        } else {
-                            mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
                         }
                     }
                     break;
@@ -199,53 +196,53 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         mTBNumber = (TextView) findViewById(R.id.tv_money);
         mTvMeal = (TextView) findViewById(R.id.tv_selected_meal);
         mImage = findViewById(R.id.iv_pay_qrcode);
-        if(Common.isEn){
+        if (Common.isEn) {
             mImage.setImageResource(R.drawable.pay_token_en);
-        }else{
+        } else {
             mImage.setImageResource(R.drawable.pay_token);
         }
 
-        tvCodeMeal=findViewById(R.id.tv_codeMeal);
+        tvCodeMeal = findViewById(R.id.tv_codeMeal);
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
-        KBox kBox=KBoxInfo.getInstance().getKBox();
-        if(kBox!=null&&!TextUtils.isEmpty(kBox.getCoin_unit())){
-            Common.isICT=true;
-            List<Notecode> list_code=kBox.getBanknote_code();
-            if(list_code!=null&&list_code.size()>0){
+        KBox kBox = KBoxInfo.getInstance().getKBox();
+        if (kBox != null && !TextUtils.isEmpty(kBox.getCoin_unit())) {
+            Common.isICT = true;
+            List<Notecode> list_code = kBox.getBanknote_code();
+            if (list_code != null && list_code.size() > 0) {
                 String codeMeal = "";
-                for (int i=0;i<list_code.size();i++){
-                    if(i==0){
-                        Type0=list_code.get(0).getCode();
-                        Coin0=Integer.valueOf(list_code.get(0).getUnit())*100;
-                    }else if(i==1){
-                        Type1=list_code.get(1).getCode();
-                        Coin1=Integer.valueOf(list_code.get(1).getUnit())*100;
-                    }else if(i==2){
-                        Type2=list_code.get(2).getCode();
-                        Coin2=Integer.valueOf(list_code.get(2).getUnit())*100;
-                    }else if(i==3){
-                        Type3=list_code.get(3).getCode();
-                        Coin3=Integer.valueOf(list_code.get(3).getUnit())*100;
-                    }else if(i==4){
-                        Type4=list_code.get(4).getCode();
-                        Coin4=Integer.valueOf(list_code.get(4).getUnit())*100;
+                for (int i = 0; i < list_code.size(); i++) {
+                    if (i == 0) {
+                        Type0 = list_code.get(0).getCode();
+                        Coin0 = Integer.valueOf(list_code.get(0).getUnit()) * 100;
+                    } else if (i == 1) {
+                        Type1 = list_code.get(1).getCode();
+                        Coin1 = Integer.valueOf(list_code.get(1).getUnit()) * 100;
+                    } else if (i == 2) {
+                        Type2 = list_code.get(2).getCode();
+                        Coin2 = Integer.valueOf(list_code.get(2).getUnit()) * 100;
+                    } else if (i == 3) {
+                        Type3 = list_code.get(3).getCode();
+                        Coin3 = Integer.valueOf(list_code.get(3).getUnit()) * 100;
+                    } else if (i == 4) {
+                        Type4 = list_code.get(4).getCode();
+                        Coin4 = Integer.valueOf(list_code.get(4).getUnit()) * 100;
                     }
-                    codeMeal+=list_code.get(i).getUnit()+"  ";
+                    codeMeal += list_code.get(i).getUnit() + "  ";
                 }
 //                tvCodeMeal.setText(getString(R.string.ICT_codeMeal)+codeMeal+" "+unit);
 //                tvCodeMeal.setVisibility(View.VISIBLE);
-            }else{
+            } else {
 //                tvCodeMeal.setVisibility(View.VISIBLE);
             }
-            Logger.d(TAG,"needmoney:"+mSelectedMeal.getIntPrice());
-            needmoney   = mSelectedMeal.getIntPrice();
+            Logger.d(TAG, "needmoney:" + mSelectedMeal.getIntPrice());
+            needmoney = mSelectedMeal.getIntPrice();
 //            needmoney = Math.round(mSelectedMeal.getPrice());
-            unit=kBox.getCoin_unit();
-            double f=needmoney/100f;
+            unit = kBox.getCoin_unit();
+            double f = needmoney / 100f;
             mTBNumber.setText(String.valueOf(df.format(f)) + "/0.00 " + kBox.getCoin_unit());
-        }else{
-            Common.isICT=false;
+        } else {
+            Common.isICT = false;
             mNeedCoin = getBiCount();
             Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
                     "  Cion_exchange_rate:" + KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
@@ -314,7 +311,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
     public int getBiCount() {
         int count = 0;
-        float needMoney = mSelectedMeal.getPrice() * 100;
+        float needMoney = mSelectedMeal.getIntPrice();
         if (KBoxInfo.getInstance().getKBox().getCoin_exchange_rate() > 0) {
             if (needMoney % KBoxInfo.getInstance().getKBox().getCoin_exchange_rate() == 0) {
                 count = (int) (needMoney / KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
@@ -363,8 +360,9 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     }
 
 
+    @SuppressLint("StringFormatMatches")
     private void showConfirmDialog() {
-        if(Common.isICT){
+        if (Common.isICT) {
             if (curmoney > 0) {//已投币提示损失
                 mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
                         new DialogInterface.OnClickListener() {
@@ -377,11 +375,11 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        }, getString(R.string.text_cancel_order_coin, curmoney/100));
+                        }, getString(R.string.text_cancel_order_coin2) + String.valueOf(df.format(curmoney/100f)) + unit);
             } else {
                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
             }
-        }else{
+        } else {
             if (mTBCount > 0) {//已投币提示损失
                 mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
                         new DialogInterface.OnClickListener() {
@@ -446,7 +444,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 //        Logger.i(TAG, "OnSerialReceive FmTbPay:" + event.data + "");
 
         String str = (String) event.data;
-        Log.i(TAG,str);
+        Log.i(TAG, str);
         if (TextUtils.isEmpty(str))
             return;
         switch (event.id) {
@@ -457,13 +455,13 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
                 if (code.replace(" ", "").toUpperCase().contains(Type4)) {
                     Logger.d(TAG, "paytype4");
-                    if(diffence>=Coin4){
+                    if (diffence >= Coin4) {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
-                        addmoney=Coin4;
-                    }else{
+                        addmoney = Coin4;
+                    } else {
                         Logger.d(TAG, "rejectbyte");
-                        if(getContext()!=null){
-                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        if (getContext() != null) {
+                            ToastUtils.toast(getContext(), getString(R.string.ICT_ERROR));
                         }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
@@ -472,80 +470,76 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                     code = "";
                 } else if (code.replace(" ", "").toUpperCase().contains(Type3)) {
                     Logger.d(TAG, "paytype3");
-                    if(diffence>=Coin3){
+                    if (diffence >= Coin3) {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
-                        addmoney=Coin3;
-                    }else{
-                        if(getContext()!=null){
-                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        addmoney = Coin3;
+                    } else {
+                        if (getContext() != null) {
+                            ToastUtils.toast(getContext(), getString(R.string.ICT_ERROR));
                         }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
                 } else if (code.replace(" ", "").toUpperCase().contains(Type2)) {
                     Logger.d(TAG, "paytype2");
-                    if(diffence>=Coin2){
+                    if (diffence >= Coin2) {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
-                        addmoney=Coin2;
-                    }else{
-                        if(getContext()!=null){
-                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        addmoney = Coin2;
+                    } else {
+                        if (getContext() != null) {
+                            ToastUtils.toast(getContext(), getString(R.string.ICT_ERROR));
                         }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
                 } else if (code.replace(" ", "").toUpperCase().contains(Type1)) {
                     Logger.d(TAG, "paytype1");
-                    if(diffence>=Coin1){
+                    if (diffence >= Coin1) {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
-                        addmoney=Coin1;
-                    }else{
-                        if(getContext()!=null){
-                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        addmoney = Coin1;
+                    } else {
+                        if (getContext() != null) {
+                            ToastUtils.toast(getContext(), getString(R.string.ICT_ERROR));
                         }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
                 } else if (code.replace(" ", "").toUpperCase().contains(Type0)) {
                     Logger.d(TAG, "paytype0");
-                    if(diffence>=Coin0){
+                    if (diffence >= Coin0) {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
-                        addmoney=Coin0;
-                    }else{
-                        if(getContext()!=null){
-                            ToastUtils.toast(getContext(),getString(R.string.ICT_ERROR));
+                        addmoney = Coin0;
+                    } else {
+                        if (getContext() != null) {
+                            ToastUtils.toast(getContext(), getString(R.string.ICT_ERROR));
                         }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
                     code = "";
-                }else if(code.replace(" ", "").toUpperCase().contains(PaySucced)){
-                    curmoney+=addmoney;
-
-                    code="";
-                    if(curmoney>=needmoney){
-
-                        if(needmoney==0||needmoney==0)
-                            return;
-                        mTBNumber.setText(String.valueOf(df.format(needmoney/100f)) + "/ "+String.valueOf(df.format(curmoney/100f)) + unit);
+                } else if (code.replace(" ", "").toUpperCase().contains(PaySucced)) {
+                    curmoney += addmoney;
+                    code = "";
+                    if (needmoney == 0 || needmoney == 0)
+                        return;
+                    mTBNumber.setText(String.valueOf(df.format(needmoney / 100f)) + "/ " + String.valueOf(df.format(curmoney / 100f)) + unit);
+                    if (curmoney >= needmoney) {
                         paySuccess();
-                    }else{
-                        mTBNumber.setText(String.valueOf(df.format(needmoney/100f)) + "/ " + String.valueOf(df.format(curmoney/100)) + unit);
                     }
-                }else if(code.replace(" ", "").toUpperCase().contains(PayFail)){
-                    code="";
-                }else if(code.replace(" ", "").toUpperCase().contains(FmTBPayNumber.TypeON)){
+                } else if (code.replace(" ", "").toUpperCase().contains(PayFail)) {
+                    code = "";
+                } else if (code.replace(" ", "").toUpperCase().contains(FmTBPayNumber.TypeON)) {
                     Logger.d(TAG, "TypeON");
                     SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
-                    code="";
-                }else if(code.replace(" ", "").toUpperCase().contains(FmTBPayNumber.REJECT)){
+                    code = "";
+                } else if (code.replace(" ", "").toUpperCase().contains(FmTBPayNumber.REJECT)) {
                     rejecttimes++;
                     Logger.d(TAG, "REJECT");
-                    if(rejecttimes>=3){
+                    if (rejecttimes >= 3) {
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(acceptbyte);
-                        rejecttimes=0;
+                        rejecttimes = 0;
                     }
-                    code="";
-                }else{
+                    code = "";
+                } else {
 
                 }
 
