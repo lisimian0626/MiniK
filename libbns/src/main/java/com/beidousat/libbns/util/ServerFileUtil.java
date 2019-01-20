@@ -18,6 +18,17 @@ public class ServerFileUtil {
 
     private final static String TAG = ServerFileUtil.class.getSimpleName();
 
+    public static String SongSecurity(String path) {
+        String url=null;
+        if (!TextUtils.isEmpty(path)) {
+            if(ServerConfigData.getInstance().getServerConfig()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())) {
+                url = ServerConfigData.getInstance().getServerConfig().getVod_server() + path;
+            }
+        }
+        Logger.d(TAG,TAG+"   "+"SongSecurity:"+url);
+        return url;
+    }
+
     public static String getScoreNoteUrl(String songFilePath) {
         String url=null;
         if (!TextUtils.isEmpty(songFilePath)) {

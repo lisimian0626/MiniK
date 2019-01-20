@@ -9,6 +9,7 @@ import com.beidousat.libbns.net.download.FileDownloader;
 import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.KaraokeSdHelper;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.ServerFileUtil;
 
 import java.io.File;
 
@@ -37,7 +38,8 @@ public class PrivateKeyUpdater implements FileDownloadListener {
 
     private void updateKey(File file) {
         FileDownloader fileDownloader = new FileDownloader();
-        fileDownloader.download(file, KEY_URL, this);
+        String downUrl=ServerFileUtil.SongSecurity(KEY_URL);
+        fileDownloader.download(file, downUrl, this);
     }
 
     @Override

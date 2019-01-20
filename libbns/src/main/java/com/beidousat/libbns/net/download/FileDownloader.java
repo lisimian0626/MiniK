@@ -184,6 +184,7 @@ public class FileDownloader {
                 parentFile.mkdirs();
             }
             Logger.d(getClass().getSimpleName(), "download url doInBackground:" + mUrl);
+
             OkHttpClient httpClient = new OkHttpClient();
             Call call = httpClient.newCall(new Request.Builder().url(mUrl).get().build());
             try {
