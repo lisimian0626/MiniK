@@ -26,6 +26,7 @@ import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.util.QrCodeUtil;
 
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -44,7 +45,7 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
     private AlertDialog mConfirmDlg;
     private Meal mSelectedMeal;
     private QueryOrderHelper mQueryOrderHelper;
-
+    private DecimalFormat df = new DecimalFormat("0.00");
     private Timer mQueryTimer = new Timer();
 
     private final static int HTTP_REQUEST_MSG = 1;
@@ -112,7 +113,7 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
         }
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
-        mTvMoney.setText(String.format("%.2f", mSelectedMeal.getPrice()));
+        mTvMoney.setText(String.valueOf(df.format(mSelectedMeal.getIntPrice()/100f)) );
         if(!TextUtils.isEmpty(qr_code)){
             mIvQrCode.setImageBitmap(QrCodeUtil.createQRCode(qr_code));
         }
