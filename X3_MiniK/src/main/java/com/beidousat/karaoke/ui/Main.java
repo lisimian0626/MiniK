@@ -1831,6 +1831,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
 
     private void playVideoAdRandom() {
+        String path="";
         int random;
         Logger.d(TAG, "playAD");
         handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
@@ -1838,8 +1839,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mAdVideo = new Ad();
         String str = PreferenceUtil.getString(this, "def_play");
         if(TextUtils.isEmpty(str)||str.equals("[]")){
-            mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
-            mAdVideo.ADContent = PublicSong.getAdVideo();
+            path=PublicSong.getAdVideo();
+            mAdVideo.DownLoadUrl = path;
+            mAdVideo.ADContent = path;
         }else{
             List<BasePlay> basePlayList=BasePlay.arrayBasePlayFromData(str);
             Logger.d(TAG,"basePlay0:"+basePlayList.get(0).getDownload_url());
@@ -1850,12 +1852,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mAdVideo.ADContent = basePlayList.get(random).getSave_path();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
-                    mAdVideo.ADContent = PublicSong.getAdVideo();
+                    mAdVideo.DownLoadUrl = path;
+                    mAdVideo.ADContent = path;
                 }
             } else {
-                mAdVideo.DownLoadUrl = PublicSong.getAdVideo();
-                mAdVideo.ADContent = PublicSong.getAdVideo();
+                mAdVideo.DownLoadUrl = path;
+                mAdVideo.ADContent = path;
             }
         }
 
@@ -1865,7 +1867,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mPlayingSong = null;
         Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
         try {
-            playUrl(mAdVideo.DownLoadUrl, mAdVideo.ADContent, 0.5f);
+            playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) , mAdVideo.ADContent, 0.5f);
         } catch (IOException e) {
             ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + e.toString());
