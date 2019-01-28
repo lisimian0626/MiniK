@@ -16,10 +16,12 @@ import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
+import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetWorkUtils;
 import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.ServerFileUtil;
 
 import java.io.File;
 
@@ -47,8 +49,10 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
 
         this.mBnsPlayerListener = listener;
         File file = DiskFileUtil.getDiskFileByUrl(savePath);
-        String n_uri= BnsConfig.ProxyHost+savePath;
-        String n_next_uri=BnsConfig.ProxyHost+savePath;;
+        String n_uri= ServerConfigData.getInstance().getServerConfig().getVod_server()+savePath;
+        String n_next_uri=ServerConfigData.getInstance().getServerConfig().getVod_server()+savePath;
+//        String n_uri= "http://"+Config.LOCAL_IP_ADDRESS+":2800/"+savePath;
+//        String n_next_uri="http://"+Config.LOCAL_IP_ADDRESS+":2800/"+savePath;
         // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
         //    file = DiskFileUtil.getSdcardFileByUrl(uri);
         //  }
