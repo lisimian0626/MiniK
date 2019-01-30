@@ -138,7 +138,9 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
     }
 
     private void close() {
-        this.dismiss();
+        if(this.isShowing()){
+            this.dismiss();
+        }
     }
 
     @Override

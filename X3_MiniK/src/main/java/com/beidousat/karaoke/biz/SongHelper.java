@@ -1,6 +1,7 @@
 package com.beidousat.karaoke.biz;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.model.ServerConfigData;
@@ -35,10 +36,12 @@ public class SongHelper implements StoreHttpRequestListener {
     }
 
     public void upLoad(String songID,String orderSn,long playtime,long finishtime,int songlenght,int score){
-        StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.UPLOAD_SONG);
-        storeHttpRequest.addParam(HttpParamsUtils.initUploadSongParams(PrefData.getRoomCode(mContext),songID,orderSn,playtime,finishtime,songlenght,score));
-        storeHttpRequest.setStoreHttpRequestListener(this);
-        storeHttpRequest.post();
+        if(ServerConfigData.getInstance().getServerConfig()!=null&& !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getStore_web())){
+            StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.UPLOAD_SONG);
+            storeHttpRequest.addParam(HttpParamsUtils.initUploadSongParams(PrefData.getRoomCode(mContext),songID,orderSn,playtime,finishtime,songlenght,score));
+            storeHttpRequest.setStoreHttpRequestListener(this);
+            storeHttpRequest.post();
+        }
     }
     @Override
     public void onStoreStart(String method) {
