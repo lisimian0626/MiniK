@@ -36,7 +36,7 @@ public class SongHelper implements StoreHttpRequestListener {
     }
 
     public void upLoad(String songID,String orderSn,long playtime,long finishtime,int songlenght,int score){
-        if(ServerConfigData.getInstance().getServerConfig()!=null&& !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getStore_web())){
+        if(ServerConfigData.getInstance().getServerConfig()!=null&& ServerConfigData.getInstance().getServerConfig().getStore_web()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getStore_web())){
             StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.UPLOAD_SONG);
             storeHttpRequest.addParam(HttpParamsUtils.initUploadSongParams(PrefData.getRoomCode(mContext),songID,orderSn,playtime,finishtime,songlenght,score));
             storeHttpRequest.setStoreHttpRequestListener(this);
