@@ -112,11 +112,13 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
+        if(mBnsPlayerListener!=null)
         mBnsPlayerListener.onPlayerCompletion();
     }
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        if(mBnsPlayerListener!=null)
         mBnsPlayerListener.onPlayerPrepared();
     }
 
