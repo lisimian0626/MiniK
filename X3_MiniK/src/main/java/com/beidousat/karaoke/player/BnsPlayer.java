@@ -130,9 +130,6 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 mMediaPlayer.setMinorDisplay(mMinor.getHolder());
             mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
             mMediaPlayer.prepare();
-            UploadSongData uploadSongData = new UploadSongData();
-            uploadSongData.setDuration(mMediaPlayer.getDuration());
-            UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
 //            mMediaPlayer.start();
             isPlaying = true;
             getTrack(mMediaPlayer);
@@ -278,6 +275,9 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     @Override
     public void onPrepared(MediaPlayer mp) {
         Logger.w(TAG, "onPrepared  =========================>");
+        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null) {
+            UpLoadDataUtil.getInstance().getmUploadSongData().setDuration(mp.getDuration());
+        }
         mp.start();
         try {
             if (mBeidouPlayerListener != null)

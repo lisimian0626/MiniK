@@ -67,6 +67,7 @@ import com.beidousat.karaoke.model.PayStatus;
 import com.beidousat.karaoke.model.PlayerStatus;
 import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
+import com.beidousat.karaoke.model.UploadSongData;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
@@ -173,7 +174,7 @@ import static com.beidousat.karaoke.ui.dlg.FmTBPayNumber.closebyte;
 
 
 public class Main extends BaseActivity implements View.OnClickListener,
-        BeidouPlayerListener, OnKeyInfoListener, OnScoreListener, SupportQueryOrder, View.OnLongClickListener {
+        BeidouPlayerListener, OnKeyInfoListener, OnScoreListener, SupportQueryOrder, View.OnLongClickListener,View.OnKeyListener {
 
     private static final String TAG = "Main";
 
@@ -594,6 +595,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     private void initView() {
         mRoot = findViewById(R.id.act_main);
+        mRoot.setOnKeyListener(this);
         mViewTop = findViewById(R.id.rl_top);
         mViewBottom = findViewById(R.id.rl_bottom);
         mBtnBack = (Button) findViewById(R.id.btn_back);
@@ -1554,16 +1556,17 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mKaraokeController.getPlayerStatus().playingType = 1;
             float vol = song.Volume > 0 ? ((float) song.Volume / 100) : 0.8f;
 //            Logger.d(TAG, "playSong" + song.SongFilePath+"|ID:"+mPlayingSong.ID);
+            UploadSongData uploadSongData = new UploadSongData();
+            uploadSongData.setPayTime(System.currentTimeMillis());
+            uploadSongData.setSongId(song.ID);
+            UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
             playUrl(ServerFileUtil.getFileUrl(song.download_url), DiskFileUtil.getFileSavedPath(song.SongFilePath), vol);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
             }
             Logger.d(TAG, "playSong" + song.SongFilePath + "|ID:" + song.ID);
-            if (UpLoadDataUtil.getInstance().getmUploadSongData() != null) {
-                UpLoadDataUtil.getInstance().getmUploadSongData().setPayTime(System.currentTimeMillis());
-                UpLoadDataUtil.getInstance().getmUploadSongData().setSongId(song.ID);
-            }
+
             //减掉一首
 
             new increaseSongHotTask().execute(song.SongFilePath);
@@ -1750,8 +1753,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
             if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
                 order_sn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
             }
-            SongHelper.getInstance(Main.this, null).upLoad(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId(), order_sn, UpLoadDataUtil.getInstance().getmUploadSongData().getPayTime(), System.currentTimeMillis(), UpLoadDataUtil.getInstance().getmUploadSongData().getDuration(), mPresentation.getScore());
-            UpLoadDataUtil.getInstance().setmUploadSongData(null);
+            UpLoadDataUtil.getInstance().getmUploadSongData().setSN(order_sn);
+            UpLoadDataUtil.getInstance().getmUploadSongData().setFinishTime(System.currentTimeMillis());
+            UpLoadDataUtil.getInstance().getmUploadSongData().setScore(mPresentation.getScore());
+            SongHelper.getInstance(Main.this, null).upLoadSongData(UpLoadDataUtil.getInstance().getmUploadSongData());
         }
         if (mKaraokeController.getPlayerStatus().playingType == 1) {//歌曲播完
             if (mKaraokeController.getPlayerStatus().scoreMode != 0 && mPlayingSong != null && "1".equals(mPlayingSong.IsGradeLib)) {//播放转场
@@ -2787,6 +2792,16 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mChooseSongTipView.hideView();
             ((ViewGroup) getWindow().getDecorView().getRootView()).removeView(mChooseSongTipView);
         }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        final int action = event.getAction();
+        final boolean isDown = action == KeyEvent.ACTION_DOWN;
+        if (isDown && keyCode == 62) {
+            Common.TBcount++;
+        }
+        return true;
     }
 
 
