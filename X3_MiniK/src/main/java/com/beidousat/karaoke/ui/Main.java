@@ -103,6 +103,7 @@ import com.beidousat.karaoke.ui.fragment.FmSettingInfrared;
 import com.beidousat.karaoke.ui.fragment.FmSettingSerail;
 import com.beidousat.karaoke.ui.fragment.FmShows;
 import com.beidousat.karaoke.ui.presentation.PlayerPresentation;
+import com.beidousat.karaoke.util.ANRCacheHelper;
 import com.beidousat.karaoke.util.AnimatorUtils;
 import com.beidousat.karaoke.util.ChooseSongTimer;
 import com.beidousat.karaoke.util.DownloadQueueHelper;
@@ -257,6 +258,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mMainActivity = this;
         initView();
         init();
+        ANRCacheHelper.registerANRReceiver(this);
         EventBus.getDefault().register(this);
         if (!DiskFileUtil.is901()) {
             FileUtil.chmod777FileSu(KaraokeSdHelper.getSongSecurityKeyFileFor901());
@@ -586,6 +588,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         SerialController.getInstance(getSupportedContext()).sendbyteICT(closebyte);
         Logger.d(TAG, "sendclosebyte");
         EventBus.getDefault().unregister(this);
+        ANRCacheHelper.unregisterANRReceiver(this);
         mMainActivity = null;
 
         System.exit(0);//直接结束程序
