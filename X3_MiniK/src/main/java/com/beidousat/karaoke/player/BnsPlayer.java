@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
@@ -206,6 +207,40 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     getTrack(mMediaPlayer);
                 }else{
                     Logger.d(TAG, "public file:" + "不存在");
+                    File Localfile = DiskFileUtil.getDiskFileByUrl(savePath);
+                    if(Localfile!=null) {
+                        LanApp.getInstance().copyFile(Localfile, FileUtil.getSongSaveDir(savePath));
+                    }else{
+                        if (!DiskFileUtil.hasDiskStorage()) {
+                            return;
+                        }
+                        List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                        BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)
+                                .setPath(DiskFileUtil.getFileSavedPath(savePath));
+                        mTaskList.add(task);
+                        DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
+                        DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
+                            @Override
+                            public void onDownloadComplete(BaseDownloadTask task) {
+                                Log.d(TAG, "download Commplete:");
+                            }
+
+                            @Override
+                            public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
+                                Log.d(TAG, "download Error:");
+                            }
+
+                            @Override
+                            public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
+                            }
+
+                            @Override
+                            public void onDownloadTaskOver() {
+
+                            }
+                        });
+                    }
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

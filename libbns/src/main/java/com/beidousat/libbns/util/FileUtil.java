@@ -188,13 +188,25 @@ public class FileUtil {
     }
     public static File getSongDir(String savePath) {
         String filepath = Environment.getExternalStorageDirectory()+APP_ROOT_DIR+savePath;
-        File file = new File(filepath);
-
-        if (!file.exists()) {
-            boolean mkdirs=file.mkdirs();
-            Logger.d("FileUtil","mkdirs:"+mkdirs);
+        try {
+            File file = new File(filepath);
+            if(file.exists()){
+                return file;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
 
+        return null;
+    }
+    public static File getSongSaveDir(String savePath) {
+        String filepath = Environment.getExternalStorageDirectory()+APP_ROOT_DIR+savePath;
+        File file = new File(filepath);
+        if (!file.exists()) {
+            boolean mkdirs=file.mkdir();
+            Logger.d("FileUtil","mkdirs:"+mkdirs);
+        }
         return file;
     }
     public static String getApkRootPath() {

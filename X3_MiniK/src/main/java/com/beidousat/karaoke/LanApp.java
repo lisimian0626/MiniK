@@ -113,16 +113,12 @@ public class LanApp extends Application {
 //    // 安装tinker
 //    Beta.installTinker();
     }
-    public void copyFile(File souce,File des){
-        mCopyFileTask.execute(souce,des);
-    }
-    AsyncTask mCopyFileTask = new AsyncTask() {
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            File f1 = (File) objects[0];
-            File f2 = (File) objects[1];
-            FileUtil.copyFile(f1, f2);
-            return null;
-        }
-    };
+//    public void copyFile(File souce,File des){
+//        new mCopyFileTask.execute(souce,des);
+//    }
+//    File f1 = (File) objects[0];
+//    File f2 = (File) objects[1];
+//            FileUtil.copyFile(f1, f2);
+//
+//    private class mCopyFileTask extends AsyncTask<>
 }
