@@ -1,12 +1,17 @@
 package com.beidousat.libbns.util;
 
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
@@ -15,7 +20,7 @@ import java.security.MessageDigest;
  */
 
 public class FileUtil {
-
+    private static final String APP_ROOT_DIR = "/MiniK/";
     public static String readFileContent(String strFilePath) {
         StringBuilder builder = new StringBuilder();
         Log.w("FileUtil", "readFileContent file :" + strFilePath);
@@ -121,5 +126,86 @@ public class FileUtil {
             Log.e("KaraokeSdHelper", "su -c chmod 777 SongSecurityKey Exception");
         }
         return false;
+    }
+
+//    public void copy(File sourceLocation, File targetLocation) throws IOException {
+//        if (sourceLocation.isDirectory()) {
+//            copyDirectory(sourceLocation, targetLocation);
+//        } else {
+//            copyFile(sourceLocation, targetLocation);
+//        }
+//    }
+//
+//    private void copyDirectory(File source, File target) throws IOException {
+//        if (!target.exists()) {
+//            target.mkdir();
+//        }
+//
+//        for (String f : source.list()) {
+//            copy(new File(source, f), new File(target, f));
+//        }
+//    }
+
+    public static void copyFile(File source, File target){
+        try {
+            InputStream in = new FileInputStream(source);
+            OutputStream out = new FileOutputStream(target);
+
+            byte[] buf = new byte[1024];
+            int length;
+            while ((length = in.read(buf)) > 0) {
+                out.write(buf, 0, length);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteFile(File file) {
+        if (file == null) {
+            return;
+        }
+
+        if (file.isDirectory()) {
+            for (File item : file.listFiles()) {
+                deleteFile(item);
+            }
+        } else {
+            file.delete();
+        }
+    }
+
+    public static File getApkDir() {
+        String filepath = Environment.getExternalStorageDirectory()+APP_ROOT_DIR;
+        File file = new File(filepath);
+
+        if (!file.exists()) {
+            boolean mkdirs=file.mkdirs();
+            Logger.d("FileUtil","mkdirs:"+mkdirs);
+        }
+
+        return file;
+    }
+    public static File getSongDir(String savePath) {
+        String filepath = Environment.getExternalStorageDirectory()+APP_ROOT_DIR+savePath;
+        File file = new File(filepath);
+
+        if (!file.exists()) {
+            boolean mkdirs=file.mkdirs();
+            Logger.d("FileUtil","mkdirs:"+mkdirs);
+        }
+
+        return file;
+    }
+    public static String getApkRootPath() {
+        String filepath = Environment.getExternalStorageDirectory()+APP_ROOT_DIR;
+        File file = new File(filepath);
+
+        if (!file.exists()) {
+            boolean mkdirs=file.mkdirs();
+            Logger.d("FileUtil","mkdirs:"+mkdirs);
+        }
+
+        return filepath;
     }
 }

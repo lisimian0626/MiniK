@@ -50,6 +50,8 @@ public class BnsConfig {
         String model = android.os.Build.MODEL;
         return "rk3288_box".equalsIgnoreCase(model);
     }
-
+    public static final int PREVIEW = 1;
+    public static final int NORMAL = 2;
+    public static final int PUBLIC = 3;
 }
 

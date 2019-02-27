@@ -7,10 +7,10 @@ import android.media.MediaPlayer.TrackInfo;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.beidousat.libbns.util.BnsConfig;
+
 import java.util.ArrayList;
 import java.util.List;
-import static com.beidousat.karaoke.player.BnsPlayer.NORMAL;
-import static com.beidousat.karaoke.player.BnsPlayer.PREVIEW;
 @SuppressLint("NewApi")
 public class MPlayer {
     MediaPlayer player = null;
@@ -99,7 +99,7 @@ public class MPlayer {
         player.setOnPreparedListener(listener);
         player.setOnCompletionListener(comlisten);
         player.setOnErrorListener(errlen);
-        if(play_mode==PREVIEW){
+        if(play_mode== BnsConfig.PREVIEW){
             player.setVolume(0.0F,0.0F);
         }
         String lc = path.toLowerCase();

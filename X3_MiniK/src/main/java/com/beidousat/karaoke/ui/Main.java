@@ -1563,7 +1563,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             uploadSongData.setPayTime(System.currentTimeMillis());
             uploadSongData.setSongId(song.ID);
             UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
-            playUrl(ServerFileUtil.getFileUrl(song.download_url), DiskFileUtil.getFileSavedPath(song.SongFilePath), vol);
+            playUrl(ServerFileUtil.getFileUrl(song.download_url), DiskFileUtil.getFileSavedPath(song.SongFilePath), vol,BnsConfig.NORMAL);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
@@ -1597,7 +1597,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
 
-    private void playUrl(String url, String savePath, float volPercent) throws IOException {
+    private void playUrl(String url, String savePath, float volPercent,int playMode) throws IOException {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1609,7 +1609,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 return;
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player != null) {
-                player.playUrl(url, savePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, BnsPlayer.NORMAL);
+                player.playUrl(url, savePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, playMode);
             }
         } else {
             if (player_cx == null)
@@ -1617,7 +1617,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player_cx != null) {
                 Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                player_cx.playUrl(url, savePath, secSong == null ? url : secSong.SongFilePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null);
+                player_cx.playUrl(url, savePath, secSong == null ? url : secSong.SongFilePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null,playMode);
             }
         }
         mKaraokeController.getPlayerStatus().isPlaying = true;
@@ -1876,7 +1876,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mPlayingSong = null;
         Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
         try {
-            playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) , mAdVideo.ADContent, 0.5f);
+            playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) , mAdVideo.ADContent, 0.5f,BnsConfig.PUBLIC);
         } catch (IOException e) {
             ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + e.toString());
@@ -1911,7 +1911,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 if (DiskFileUtil.is901()) {
                     if (player != null) {
                         try {
-                            player.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null, BnsPlayer.NORMAL);
+                            player.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null, BnsConfig.NORMAL);
                         } catch (IOException e) {
                             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
                             Logger.w(TAG, "playSong ex:" + e.toString());
@@ -1920,7 +1920,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else {
                     if (player_cx != null) {
 //                        Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                        player_cx.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null);
+                        player_cx.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null,BnsConfig.NORMAL);
                     }
                 }
             }

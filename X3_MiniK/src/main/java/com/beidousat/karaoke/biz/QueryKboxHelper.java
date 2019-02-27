@@ -2,14 +2,18 @@ package com.beidousat.karaoke.biz;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.BasePlay;
 import com.beidousat.karaoke.model.KBox;
 import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.PayMent;
+import com.beidousat.karaoke.util.BasePlayFitter;
+import com.beidousat.karaoke.util.DownloadQueueHelper;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.ServerConfig;
 import com.beidousat.libbns.model.ServerConfigData;
@@ -17,10 +21,12 @@ import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.net.request.StoreHttpRequestListener;
 import com.beidousat.libbns.util.DiskFileUtil;
+import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.PreferenceUtil;
 import com.google.gson.reflect.TypeToken;
+import com.liulishuo.filedownloader.BaseDownloadTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -121,6 +127,71 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 PreferenceUtil.setBoolean(mContext, "isSingle", false);
             }
             Logger.d(TAG,"def_play:"+kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+            String jsonBefore=PreferenceUtil.getString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+            if(TextUtils.isEmpty(jsonBefore)||jsonBefore.equals("[]")) {
+
+            }else{
+                List<BasePlay> basePlayListBefor = BasePlay.arrayBasePlayFromData(jsonBefore);
+                List<BasePlay> basePlayListNow = kBox.getBasePlayList();
+                List<BasePlay> list_add = new ArrayList<>();
+                List<BasePlay> list_delete = new ArrayList<>();
+                List<BasePlay> list_diffent = BasePlayFitter.getDiffrent(basePlayListBefor, basePlayListNow);
+                for (BasePlay p : list_diffent) {
+                    if (basePlayListNow.contains(p)) {
+                        list_delete.add(p);
+                    } else {
+                        list_add.add(p);
+                    }
+                }
+                if(list_add.size()>0){
+                    for (BasePlay basePlay:list_add){
+                        File file = DiskFileUtil.getDiskFileByUrl(basePlay.getSave_path());
+                        if(file==null){
+                            if (!DiskFileUtil.hasDiskStorage()) {
+                                return;
+                            }
+                            List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                            BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(basePlay.getDownload_url())
+                                    .setPath(DiskFileUtil.getFileSavedPath(basePlay.getSave_path()));
+                            mTaskList.add(task);
+                            DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
+                            DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
+                                @Override
+                                public void onDownloadComplete(BaseDownloadTask task) {
+                                    Log.d(TAG, "download Commplete:" );
+                                }
+
+                                @Override
+                                public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
+                                    Log.d(TAG, "download Error:" );
+                                }
+
+                                @Override
+                                public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                    Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
+                                }
+
+                                @Override
+                                public void onDownloadTaskOver() {
+
+                                }
+                            });
+
+                        }else {
+                            if(file!=null&&FileUtil.getApkDir()!=null) {
+                                LanApp.getInstance().copyFile(file, FileUtil.getSongDir(basePlay.getSave_path()));
+                            }
+                        }
+                    }
+
+                }
+                if(list_delete.size()>0){
+                    for (BasePlay basePlay:list_delete){
+                        FileUtil.deleteFile(FileUtil.getSongDir(basePlay.getSave_path()));
+                    }
+
+                }
+            }
             PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
 //            if (kBox.getDef_play() != null && kBox.getDef_play().length > 0) {
 //                for (int i = 0; i < kBox.getDef_play().length; i++) {

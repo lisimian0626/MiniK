@@ -17,6 +17,7 @@ import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.player.chenxin.BNSPlayer;
 import com.beidousat.karaoke.player.chenxin.OriginPlayer;
+import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
@@ -81,7 +82,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
                         Logger.i(TAG, "play url:" + mFileUrl);
                         prepareBegin = System.currentTimeMillis();
                         mMediaPlayer.setBeidouPlayerListener(DlgPreview.this);
-                        mMediaPlayer.playUrl(mFileUrl,mSong.SongFilePath, null, BnsPlayer.PREVIEW);
+                        mMediaPlayer.playUrl(mFileUrl,mSong.SongFilePath, null, BnsConfig.PREVIEW);
                     } catch (Exception e) {
                         Logger.e(TAG, "Exception:" + e.toString());
                     }
@@ -93,7 +94,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
                     prepareBegin = System.currentTimeMillis();
                     mThreadPlayer = new Thread(new Runnable() {
                         public void run() {
-                            mMediaPlayer_cx.open(mFileUrl, mSong.SongFilePath,mSong.SongFilePath,BnsPlayer.PREVIEW, DlgPreview.this);
+                            mMediaPlayer_cx.open(mFileUrl, mSong.SongFilePath,mSong.SongFilePath,BnsConfig.PREVIEW, DlgPreview.this);
                             mThreadPlayer = null;
                         }
                     });

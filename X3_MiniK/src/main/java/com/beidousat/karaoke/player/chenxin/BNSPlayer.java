@@ -2,6 +2,7 @@ package com.beidousat.karaoke.player.chenxin;
 
 import android.media.MediaPlayer;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -13,20 +14,16 @@ import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.player.proxy.CacheFile;
 import com.beidousat.karaoke.player.proxy.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
-import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetWorkUtils;
 import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DiskFileUtil;
+import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.Logger;
-import com.beidousat.libbns.util.ServerFileUtil;
 
 import java.io.File;
-
-import static com.beidousat.karaoke.player.BnsPlayer.NORMAL;
-import static com.beidousat.karaoke.player.BnsPlayer.PREVIEW;
 
 /**
  * Created by J Wong on 2017/5/3.
@@ -47,67 +44,85 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
     }
 
     public void open(String uri, String savePath, String next_uri, int playmode, BeidouPlayerListener listener) {
-        this.mBnsPlayerListener = listener;
-        File file = DiskFileUtil.getDiskFileByUrl(savePath);
-        String n_uri = ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
-        String n_next_uri = ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
-        String playUrl = null;
-        try {
-            if (file != null) {//存在本地文件
-                Logger.d("BNSPlayer", "file length：" + String.valueOf(file.length()));
-                if (file.length() < 1024 * 1024) {
-                    file.delete();
-                    EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
-                    return;
-                }
-                Logger.d("BNSPlayer", "open 本地视频 ：" + file.getAbsolutePath());
-                LocalFileCache.getInstance().add(n_uri, n_next_uri);
-                LocalFileProxy proxy = new LocalFileProxy(savePath);
-                proxy.startDownload(n_uri);
-                playUrl = proxy.getLocalURL();
-            } else {//本地文件不存在
-                if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
-                    return;
-                }
-                if (playmode == PREVIEW) {
-                    Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
-                    CacheFile.getInstance().add(uri, uri);
-                    HttpGetProxy proxy = new HttpGetProxy();
-                    proxy.startDownload(uri);
-                    playUrl = proxy.getLocalURL();
-                } else if (playmode == NORMAL) {
-                    Log.e("test", "文件不存在");
-                    if (!DiskFileUtil.hasDiskStorage()) {
-                        return;
+        switch (playmode){
+            case BnsConfig.PREVIEW:
+            case BnsConfig.NORMAL:
+                this.mBnsPlayerListener = listener;
+                File file = DiskFileUtil.getDiskFileByUrl(savePath);
+                String n_uri = ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
+                String n_next_uri = ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
+                String playUrl = null;
+                try {
+                    if (file != null) {//存在本地文件
+                        Logger.d("BNSPlayer", "file length：" + String.valueOf(file.length()));
+                        if (file.length() < 1024 * 1024) {
+                            file.delete();
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
+                            return;
+                        }
+                        Logger.d("BNSPlayer", "open 本地视频 ：" + file.getAbsolutePath());
+                        LocalFileCache.getInstance().add(n_uri, n_next_uri);
+                        LocalFileProxy proxy = new LocalFileProxy(savePath);
+                        proxy.startDownload(n_uri);
+                        playUrl = proxy.getLocalURL();
+                    } else {//本地文件不存在
+                        if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
+                            return;
+                        }
+                        if (playmode == BnsConfig.PREVIEW) {
+                            Logger.d("BNSPlayer", "open 网络视频 ：" + uri);
+                            CacheFile.getInstance().add(uri, uri);
+                            HttpGetProxy proxy = new HttpGetProxy();
+                            proxy.startDownload(uri);
+                            playUrl = proxy.getLocalURL();
+                        } else if (playmode == BnsConfig.NORMAL) {
+                            Log.e("test", "文件不存在");
+                            if (!DiskFileUtil.hasDiskStorage()) {
+                                return;
+                            }
+                            try {
+                                CXdownloadInfo cXdownloadInfo = new CXdownloadInfo();
+                                cXdownloadInfo.setDownUrl(uri);
+                                cXdownloadInfo.setSavePath(savePath);
+                                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, cXdownloadInfo);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e("test", "下载失败");
+                            }
+                        }
                     }
-                    try {
-                        CXdownloadInfo cXdownloadInfo = new CXdownloadInfo();
-                        cXdownloadInfo.setDownUrl(uri);
-                        cXdownloadInfo.setSavePath(savePath);
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, cXdownloadInfo);
-//                        MyDownloader.getInstance().startDownload(ServerFileUtil.getFileUrl(uri),
-//                                DiskFileUtil.getFileSavedPath(uri));
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("test", "下载失败");
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+                Logger.d("BNSPlayer", "open play url ：" + playUrl);
+                if (!TextUtils.isEmpty(playUrl)) {
+                    mPlayer.open(playUrl, this, this, playmode);
+                }
+                break;
+            case BnsConfig.PUBLIC:
+                File mFile= FileUtil.getSongDir(savePath);
+                if(mFile!=null){
+                    Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
+                    mPlayer.open(mFile.getAbsolutePath(), this, this, playmode);
+//                    LocalFileCache.getInstance().add(p_url, p_next_uri);
+//                    LocalFileProxy proxy = new LocalFileProxy(savePath);
+//                    try {
+//                        proxy.startDownload(p_url);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                    mplayUrl = proxy.getLocalURL();
+                }else{
+                    Logger.d(TAG, "public file:" + "不存在");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
+                        }
+                    }, 10 * 1000);
+                }
+                break;
         }
-        Logger.d("BNSPlayer", "open play url ：" + playUrl);
-        if (!TextUtils.isEmpty(playUrl)) {
-            mPlayer.open(playUrl, this, this, playmode);
-        }
-
-
-        // if (DiskFileUtil.getSdcardFileByUrl(uri) != null) {
-        //    file = DiskFileUtil.getSdcardFileByUrl(uri);
-        //  }
-
-
     }
 
     @Override

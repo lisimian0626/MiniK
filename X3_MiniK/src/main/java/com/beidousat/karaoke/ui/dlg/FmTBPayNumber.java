@@ -110,12 +110,14 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         double f2 = curmoney / 100f;
                         mTBNumber.setText(String.valueOf(df.format(f1)) + "/ " + String.valueOf(df.format(f2)) + unit);
                         if (curmoney >= needmoney) {
+
                             paySuccess();
                         }
                     } else {
                         mTBNumber.setText(mNeedCoin + "/ " + Common.TBcount + getResources().getString(R.string.coin));
                         if (Common.TBcount >= mNeedCoin) {
                             //支付成功
+                            Common.TBcount=Common.TBcount-mNeedCoin;
                             paySuccess();
                         }
                     }
