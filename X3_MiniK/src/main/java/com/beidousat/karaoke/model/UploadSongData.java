@@ -1,11 +1,12 @@
 package com.beidousat.karaoke.model;
 
 public class UploadSongData {
-private String songId;
-private long payTime;
-private long finishTime;
-private int duration;
-private int score;
+    private String songId;
+    private long payTime;
+    private long finishTime;
+    private int duration;
+    private int score;
+    private String SN;
 
     public String getSongId() {
         return songId;
@@ -45,5 +46,13 @@ private int score;
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public String getSN() {
+        return SN;
+    }
+
+    public void setSN(String SN) {
+        this.SN = SN;
     }
 }

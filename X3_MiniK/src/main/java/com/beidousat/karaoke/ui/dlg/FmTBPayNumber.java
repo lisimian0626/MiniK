@@ -63,7 +63,6 @@ import de.greenrobot.event.EventBus;
 public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private final String TAG = "TBPay";
     private TextView mTBNumber;
-    private int mTBCount = 0;
     private int curmoney = 0;
     private int needmoney = 0;
     private int addmoney = 0;
@@ -111,12 +110,14 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         double f2 = curmoney / 100f;
                         mTBNumber.setText(String.valueOf(df.format(f1)) + "/ " + String.valueOf(df.format(f2)) + unit);
                         if (curmoney >= needmoney) {
+
                             paySuccess();
                         }
                     } else {
-                        mTBNumber.setText(mNeedCoin + "/ " + mTBCount + getResources().getString(R.string.coin));
-                        if (mTBCount >= mNeedCoin) {
+                        mTBNumber.setText(mNeedCoin + "/ " + Common.TBcount + getResources().getString(R.string.coin));
+                        if (Common.TBcount >= mNeedCoin) {
                             //支付成功
+                            Common.TBcount=Common.TBcount-mNeedCoin;
                             paySuccess();
                         }
                     }
@@ -169,11 +170,11 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         Logger.d(TAG, "tbCount:" + TbCount);
                         curmoney += TbCount;
                     } else {
-                        mTBCount++;
+                        Common.TBcount++;
                     }
                     myHandler.sendEmptyMessage(TOUBI_CHANGE_MSG);
                 }
-                return false;
+                return true;
             }
         });
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -296,7 +297,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         TBManager.getInstance().start(getContext(), new TBManager.TBManagerListener() {
             @Override
             public void onNewBi() {
-                mTBCount++;
+                Common.TBcount++;
                 myHandler.sendEmptyMessage(TOUBI_CHANGE_MSG);
             }
 
@@ -380,7 +381,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
             }
         } else {
-            if (mTBCount > 0) {//已投币提示损失
+            if (Common.TBcount > 0) {//已投币提示损失
                 mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -392,7 +393,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        }, getString(R.string.text_cancel_order_coin, mTBCount));
+                        }, getString(R.string.text_cancel_order_coin, Common.TBcount));
             } else {
                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
             }

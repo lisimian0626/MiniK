@@ -15,14 +15,15 @@ import java.util.List;
  */
 
 public class KBoxInfo {
-        public static final String STORE_WEB="http://box.imtbox.com/";
-    public static  String WEBVIEW = "https://www.imtbox.com/";
-//    public static final String STORE_WEB="http://ktv.mesong.me/";
+    public static final String STORE_WEB = "http://box.imtbox.com/";
+    public static String WEBVIEW = "https://www.imtbox.com/";
+    //    public static final String STORE_WEB="http://ktv.mesong.me/";
 //    public static final String STORE_WEB="http://k.mesong.me/";
 //    public static final String STORE_WEB = "http://minorder.beidousat.com/";
     private static final KBoxInfo mInstance = new KBoxInfo();
     private KBox mKBox;
     private List<PayMent> mPayMentlist;
+
     private KBoxInfo() {
 
     }
@@ -45,12 +46,14 @@ public class KBoxInfo {
 
         return mKBox.getPackages();
     }
+
     public List<Notecode> getNotecode() {
         if (mKBox == null)
             return null;
 
         return mKBox.getBanknote_code();
     }
+
     public List<PayMent> getmPayMentlist() {
         return mPayMentlist;
     }

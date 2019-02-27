@@ -1,8 +1,10 @@
 package com.beidousat.karaoke.biz;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.beidousat.karaoke.data.PrefData;
+import com.beidousat.karaoke.model.UploadSongData;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
@@ -21,7 +23,8 @@ public class SongHelper implements StoreHttpRequestListener {
     private Context mContext;
     private SongFeedback songFeedback;
     private static SongHelper mSongHelper;
-
+    private UploadSongData mUploadSongData;
+    private int uploadCount=0;
     public static SongHelper getInstance(Context context,SongFeedback cb) {
         if (mSongHelper == null) {
             mSongHelper = new SongHelper(context,cb);
@@ -34,11 +37,18 @@ public class SongHelper implements StoreHttpRequestListener {
         this.songFeedback = cb;
     }
 
-    public void upLoad(String songID,String orderSn,long playtime,long finishtime,int songlenght,int score){
-        StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.UPLOAD_SONG);
-        storeHttpRequest.addParam(HttpParamsUtils.initUploadSongParams(PrefData.getRoomCode(mContext),songID,orderSn,playtime,finishtime,songlenght,score));
-        storeHttpRequest.setStoreHttpRequestListener(this);
-        storeHttpRequest.post();
+    public void upLoadSongData(UploadSongData uploadSongData){
+        mUploadSongData=uploadSongData;
+        upLoad(uploadSongData.getSongId(),uploadSongData.getSN(),uploadSongData.getPayTime(),uploadSongData.getFinishTime(),uploadSongData.getDuration(),uploadSongData.getScore());
+    }
+
+    private void upLoad(String songID,String orderSn,long playtime,long finishtime,int songlenght,int score){
+        if(ServerConfigData.getInstance().getServerConfig()!=null&& ServerConfigData.getInstance().getServerConfig().getStore_web()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getStore_web())){
+            StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.UPLOAD_SONG);
+            storeHttpRequest.addParam(HttpParamsUtils.initUploadSongParams(PrefData.getRoomCode(mContext),songID,orderSn,playtime,finishtime,songlenght,score));
+            storeHttpRequest.setStoreHttpRequestListener(this);
+            storeHttpRequest.post();
+        }
     }
     @Override
     public void onStoreStart(String method) {
@@ -50,6 +60,14 @@ public class SongHelper implements StoreHttpRequestListener {
     @Override
     public void onStoreFailed(String method, String error) {
         Logger.d(TAG, "onFailed :" + error);
+        if(method.equals(RequestMethod.UPLOAD_SONG)){
+            if(uploadCount<=3){
+                upLoadSongData(mUploadSongData);
+                uploadCount++;
+            }else{
+                uploadCount=0;
+            }
+        }
         if (songFeedback != null) {
             songFeedback.onFeedback(false, error,null);
         }

@@ -2,6 +2,7 @@ package com.beidousat.karaoke;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.multidex.MultiDex;
 
@@ -12,6 +13,7 @@ import com.beidousat.karaoke.util.UnCeHandler;
 import com.beidousat.libbns.net.download.OkHttp3Connection;
 import com.beidousat.libbns.net.request.OkHttpUtil;
 import com.beidousat.libbns.util.DiskFileUtil;
+import com.beidousat.libbns.util.FileUtil;
 import com.facebook.stetho.Stetho;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.services.DownloadMgrInitialParams;
@@ -19,6 +21,8 @@ import com.liulishuo.filedownloader.util.FileDownloadLog;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.crashreport.CrashReport;
+
+import java.io.File;
 
 /**
  * Created by J Wong on 2017/3/24.
@@ -28,7 +32,8 @@ public class LanApp extends Application {
     public KaraokeController mKaraokeController;
     private DatabaseHelper mDbHelper;
     private static LanApp mInstance = null;
-//    private DaoMaster.DevOpenHelper mHelper;
+
+    //    private DaoMaster.DevOpenHelper mHelper;
 //    private SQLiteDatabase db;
     public void onCreate() {
         super.onCreate();
@@ -43,9 +48,9 @@ public class LanApp extends Application {
 //        Beta.storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);//设置sd卡的Download为更新资源存储目录
 //        Beta.canShowUpgradeActs.add(Main.class);//添加可显示弹窗的Activity,例如，只允许在MainActivity上显示更新弹窗，其他activity上不显示弹窗; 如果不设置默认所有activity都可以显示弹窗。
 //        Beta.autoDownloadOnWifi = true;//设置Wifi下自动下载,默认false
-        if(!DiskFileUtil.is901()){
+        if (!DiskFileUtil.is901()) {
             CrashReport.initCrashReport(getApplicationContext(), "6e63a3d9f1", false);
-        }else{
+        } else {
             CrashReport.initCrashReport(getApplicationContext(), "0d38972028", false);
             Bugly.init(this, "0d38972028", false);
         }
@@ -75,7 +80,8 @@ public class LanApp extends Application {
         UnCeHandler catchExcep = new UnCeHandler(this);
         Thread.setDefaultUncaughtExceptionHandler(catchExcep);
     }
-//    private void setDatabase() {
+
+    //    private void setDatabase() {
 //
 //        // 通过DaoMaster 的内部类 DevOpenHelper，你可以得到一个便利的SQLiteOpenHelper 对象。
 //        // 可能你已经注意到了，你并不需要去编写「CREATE TABLE」这样的 SQL 语句，因为greenDAO 已经帮你做了。
@@ -97,14 +103,26 @@ public class LanApp extends Application {
 //    public SQLiteDatabase getDb() {
 //        return db;
 //    }
-@Override
-protected void attachBaseContext(Context base) {
-    super.attachBaseContext(base);
-    // you must install multiDex whatever tinker is installed!
-    MultiDex.install(base);
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        // you must install multiDex whatever tinker is installed!
+        MultiDex.install(base);
 
 
 //    // 安装tinker
 //    Beta.installTinker();
-}
+    }
+    public void copyFile(File souce,File des){
+        mCopyFileTask.execute(souce,des);
+    }
+    AsyncTask mCopyFileTask = new AsyncTask() {
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            File f1 = (File) objects[0];
+            File f2 = (File) objects[1];
+            FileUtil.copyFile(f1, f2);
+            return null;
+        }
+    };
 }

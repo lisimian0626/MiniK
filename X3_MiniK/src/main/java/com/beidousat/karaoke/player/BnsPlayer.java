@@ -16,7 +16,9 @@ import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.net.NetWorkUtils;
 import com.beidousat.libbns.net.download.FileDownloader;
+import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DiskFileUtil;
+import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.score.KeyInfo;
@@ -54,7 +56,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     private final static String TAG = "BnsPlayer";
 
     private String mFilePath;
-//    private String mGradeLibFile;
+    //    private String mGradeLibFile;
     private String savePath;
     private OnKeyInfoListener mOnKeyInfoListener;
 
@@ -62,7 +64,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
 
     private List<ScoreLineInfo> mScoreLineInfos;
     private int mScoreMode = 0;
-
+    private int mPlayMode;
     private final static float PROFESSIONAL_MODE = 3.0f;
     private final static float NORMAL_MODE = 5.0f;
     private float mCurrentVol = 0.5F;
@@ -84,8 +86,8 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     private MediaPlayer mMediaPlayer;
 
     private boolean isPlaying = false;
-    public static int PREVIEW = 1;
-    public static final int NORMAL = 2;
+
+
     public BnsPlayer(SurfaceView videoSurfaceView, SurfaceView minor, int width, int height) {
         mVideoSurfaceView = videoSurfaceView;
         mMinor = minor;
@@ -106,94 +108,113 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         mMediaPlayer.setOnErrorListener(this);
     }
 
-    public void playUrl(String videoUrl,String savePath,String recordFileName, int playmode) throws IOException {
+    public void playUrl(String videoUrl, String savePath, String recordFileName, int playmode) throws IOException {
         stop();
         initParameters();
         setIsRecord(recordFileName);
+        this.mPlayMode=playmode;
         mFilePath = videoUrl;
-        this.savePath=savePath;
+        this.savePath = savePath;
 //        mGradeLibFile = gradeLibFile;
-        Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl+"   savaPath:"+savePath);
+        Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl + "   savaPath:" + savePath);
         if (mMediaPlayer == null) {
             createMediaPlayer();
         }
-        open(videoUrl,savePath,playmode);
+        open(videoUrl, savePath, playmode);
     }
 
-    private void open(String uri,String savePath, int playmode) throws IOException {
-        Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
-        File file = DiskFileUtil.getDiskFileByUrl(savePath);
-        if (file != null) {//存在本地文件
-            Logger.d(TAG, "open local file:" + file.getAbsolutePath());
-            mMediaPlayer.setDataSource(file.getAbsolutePath());
-            if (mMinor != null)
-                mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-            mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-            mMediaPlayer.prepare();
-            UploadSongData uploadSongData = new UploadSongData();
-            uploadSongData.setDuration(mMediaPlayer.getDuration());
-            UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
-//            mMediaPlayer.start();
-            isPlaying = true;
-            getTrack(mMediaPlayer);
-        } else {//本地文件不存在
-            if (playmode == PREVIEW) {
-                if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
-                    return;
+    private void open(String uri, String savePath, int playmode) throws IOException {
+        switch (playmode) {
+            case BnsConfig.PREVIEW:
+            case BnsConfig.NORMAL:
+                Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
+                File file = DiskFileUtil.getDiskFileByUrl(savePath);
+                if (file != null) {//存在本地文件
+                    Logger.d(TAG, "open local file:" + file.getAbsolutePath());
+                    mMediaPlayer.setDataSource(file.getAbsolutePath());
+                    if (mMinor != null)
+                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                    mMediaPlayer.prepare();
+                    isPlaying = true;
+                    getTrack(mMediaPlayer);
+                } else {//本地文件不存在
+                    if (playmode == BnsConfig.PREVIEW) {
+                        if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
+                            return;
+                        }
+                        Logger.d(TAG, "open net file:" + uri);
+
+                        mMediaPlayer.setDataSource(uri);
+                        if (mMinor != null)
+                            mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                        mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                        mMediaPlayer.prepare();
+                        isPlaying = true;
+                        getTrack(mMediaPlayer);
+                    } else if (playmode == BnsConfig.NORMAL) {
+                        Log.e("test", "文件不存在");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
+                            }
+                        }, 10 * 1000);
+
+                        if (!DiskFileUtil.hasDiskStorage()) {
+                            return;
+                        }
+                        List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                        BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)
+                                .setPath(DiskFileUtil.getFileSavedPath(savePath));
+                        mTaskList.add(task);
+                        DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
+                        DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
+                            @Override
+                            public void onDownloadComplete(BaseDownloadTask task) {
+                                Log.d(TAG, "download Commplete:");
+                            }
+
+                            @Override
+                            public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
+                                Log.d(TAG, "download Error:");
+                            }
+
+                            @Override
+                            public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
+                            }
+
+                            @Override
+                            public void onDownloadTaskOver() {
+
+                            }
+                        });
+                    }
                 }
-                Logger.d(TAG, "open net file:" + uri);
-
-                mMediaPlayer.setDataSource(uri);
-                if (mMinor != null)
-                    mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                mMediaPlayer.prepare();
-//                mMediaPlayer.start();
-                isPlaying = true;
-                getTrack(mMediaPlayer);
-            } else if (playmode == NORMAL) {
-                Log.e("test", "文件不存在");
-
-//                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, uri);
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
-                    }
-                }, 10 * 1000);
-
-                if (!DiskFileUtil.hasDiskStorage()) {
-                    return;
+                break;
+            case BnsConfig.PUBLIC:
+                File mFile=FileUtil.getSongDir(savePath);
+                if(mFile!=null){
+                    Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
+                    mMediaPlayer.setDataSource(mFile.getAbsolutePath());
+                    if (mMinor != null)
+                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                    mMediaPlayer.prepare();
+                    isPlaying = true;
+                    getTrack(mMediaPlayer);
+                }else{
+                    Logger.d(TAG, "public file:" + "不存在");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
+                        }
+                    }, 10 * 1000);
                 }
-                List<BaseDownloadTask> mTaskList = new ArrayList<>();
-                BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)
-                        .setPath(DiskFileUtil.getFileSavedPath(savePath));
-                mTaskList.add(task);
-                DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
-                DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
-                    @Override
-                    public void onDownloadComplete(BaseDownloadTask task) {
-                        Log.d(TAG, "download Commplete:" );
-                    }
 
-                    @Override
-                    public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
-                        Log.d(TAG, "download Error:" );
-                    }
-
-                    @Override
-                    public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
-                    }
-
-                    @Override
-                    public void onDownloadTaskOver() {
-
-                    }
-                });
-
-            }
+                break;
         }
 
 
@@ -278,6 +299,9 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     @Override
     public void onPrepared(MediaPlayer mp) {
         Logger.w(TAG, "onPrepared  =========================>");
+        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null) {
+            UpLoadDataUtil.getInstance().getmUploadSongData().setDuration(mp.getDuration());
+        }
         mp.start();
         try {
             if (mBeidouPlayerListener != null)
@@ -450,7 +474,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     public void replay() throws IOException {
         String url = mFilePath;
         mFilePath = "";
-        playUrl(url,savePath, mRecordFileName, BnsPlayer.NORMAL);
+        playUrl(url, savePath, mRecordFileName,mPlayMode);
     }
 
 
