@@ -9,6 +9,7 @@ import android.support.multidex.MultiDex;
 import com.beidousat.karaoke.db.DatabaseHelper;
 import com.beidousat.karaoke.player.KaraokeController;
 import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.util.RxAsyncTask;
 import com.beidousat.karaoke.util.UnCeHandler;
 import com.beidousat.libbns.net.download.OkHttp3Connection;
 import com.beidousat.libbns.net.request.OkHttpUtil;
@@ -113,12 +114,15 @@ public class LanApp extends Application {
 //    // 安装tinker
 //    Beta.installTinker();
     }
-//    public void copyFile(File souce,File des){
-//        new mCopyFileTask.execute(souce,des);
-//    }
-//    File f1 = (File) objects[0];
-//    File f2 = (File) objects[1];
-//            FileUtil.copyFile(f1, f2);
+    public void copyFile(File souce,File des) {
+        new RxAsyncTask<File, String, String>() {
+            @Override
+            protected String call(File... files) {
+                FileUtil.copyFile(files[0], files[1]);
+                return null;
+            }
+        }.execute(souce, des);
+    }
 //
 //    private class mCopyFileTask extends AsyncTask<>
 }
