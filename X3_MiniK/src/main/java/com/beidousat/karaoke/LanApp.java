@@ -114,14 +114,14 @@ public class LanApp extends Application {
 //    // 安装tinker
 //    Beta.installTinker();
     }
-    public void copyFile(File souce,File des) {
-        new RxAsyncTask<File, String, String>() {
+    public void copyFile(String souce,String desPath) {
+        new RxAsyncTask<String, String, String>() {
             @Override
-            protected String call(File... files) {
+            protected String call(String... files) {
                 FileUtil.copyFile(files[0], files[1]);
                 return null;
             }
-        }.execute(souce, des);
+        }.execute(souce, desPath);
     }
 //
 //    private class mCopyFileTask extends AsyncTask<>

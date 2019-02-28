@@ -1847,6 +1847,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         hideSurf();
         mAdVideo = new Ad();
         String str = PreferenceUtil.getString(this, "def_play");
+        str="";
         if(TextUtils.isEmpty(str)||str.equals("[]")){
             path=PublicSong.getAdVideo();
             mAdVideo.DownLoadUrl = path;
