@@ -152,7 +152,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                             }
                             List<BaseDownloadTask> mTaskList = new ArrayList<>();
                             BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(basePlay.getDownload_url())
-                                    .setPath(FileUtil.getSongSaveDir(basePlay.getSave_path()));
+                                    .setPath(FileUtil.getSongPath(basePlay.getSave_path()));
                             mTaskList.add(task);
                             DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
                             DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
@@ -178,16 +178,14 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                             });
 
                         }else {
-                            if(file!=null&&FileUtil.getApkDir()!=null) {
-                                LanApp.getInstance().copyFile(file.getAbsolutePath(), FileUtil.getSongSaveDir(basePlay.getSave_path()));
-                            }
+                                LanApp.getInstance().copyFile(file, FileUtil.getSongDir(basePlay.getSave_path()));
                         }
                     }
 
                 }
                 if(list_delete.size()>0){
                     for (BasePlay basePlay:list_delete){
-                        FileUtil.deleteFile(new File(FileUtil.getSongSaveDir(basePlay.getSave_path())));
+                        FileUtil.deleteFile(FileUtil.getSongSaveDir(basePlay.getSave_path()));
                     }
 
                 }

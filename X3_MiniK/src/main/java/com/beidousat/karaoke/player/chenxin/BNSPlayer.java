@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.model.CXdownloadInfo;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.local.LocalFileCache;
@@ -14,6 +15,7 @@ import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.player.proxy.CacheFile;
 import com.beidousat.karaoke.player.proxy.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.util.DownloadQueueHelper;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.ServerConfigData;
@@ -22,8 +24,11 @@ import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.Logger;
+import com.liulishuo.filedownloader.BaseDownloadTask;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by J Wong on 2017/5/3.
@@ -100,7 +105,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 }
                 break;
             case BnsConfig.PUBLIC:
-                File mFile= FileUtil.getSongDir(savePath);
+                File mFile= FileUtil.getSongSaveDir(savePath);
                 if(mFile!=null){
                     Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
                     mPlayer.open(mFile.getAbsolutePath(), this, this, playmode);
@@ -114,6 +119,40 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
 //                    mplayUrl = proxy.getLocalURL();
                 }else{
                     Logger.d(TAG, "public file:" + "不存在");
+                    File Localfile = DiskFileUtil.getDiskFileByUrl(savePath);
+                    if(Localfile!=null) {
+                        LanApp.getInstance().copyFile(Localfile, FileUtil.getSongDir(savePath));
+                    }else{
+                        if (!DiskFileUtil.hasDiskStorage()) {
+                            return;
+                        }
+                        List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                        BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)
+                                .setPath(FileUtil.getSongPath(savePath));
+                        mTaskList.add(task);
+                        DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
+                        DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
+                            @Override
+                            public void onDownloadComplete(BaseDownloadTask task) {
+                                Log.d(TAG, "download Commplete:");
+                            }
+
+                            @Override
+                            public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
+                                Log.d(TAG, "download Error:");
+                            }
+
+                            @Override
+                            public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
+                            }
+
+                            @Override
+                            public void onDownloadTaskOver() {
+
+                            }
+                        });
+                    }
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

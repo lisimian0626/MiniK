@@ -195,7 +195,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 }
                 break;
             case BnsConfig.PUBLIC:
-                File mFile=FileUtil.getSongDir(savePath);
+                File mFile=FileUtil.getSongSaveDir(savePath);
                 if(mFile!=null&&mFile.length()>0){
                     Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
                     mMediaPlayer.setDataSource(mFile.getAbsolutePath());
@@ -209,14 +209,14 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     Logger.d(TAG, "public file:" + "不存在");
                     File Localfile = DiskFileUtil.getDiskFileByUrl(savePath);
                     if(Localfile!=null) {
-                        LanApp.getInstance().copyFile(Localfile.getAbsolutePath(), FileUtil.getSongSaveDir(savePath));
+                        LanApp.getInstance().copyFile(Localfile, FileUtil.getSongDir(savePath));
                     }else{
                         if (!DiskFileUtil.hasDiskStorage()) {
                             return;
                         }
                         List<BaseDownloadTask> mTaskList = new ArrayList<>();
                         BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)
-                                .setPath(FileUtil.getSongSaveDir(savePath));
+                                .setPath(FileUtil.getSongPath(savePath));
                         mTaskList.add(task);
                         DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
                         DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
