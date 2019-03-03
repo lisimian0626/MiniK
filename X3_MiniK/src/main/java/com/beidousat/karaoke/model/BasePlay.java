@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BasePlay {
 
@@ -59,5 +60,33 @@ public class BasePlay {
 
     public void setDownload_url(String download_url) {
         this.download_url = download_url;
+    }
+
+    @Override
+    public String toString() {
+        return toJson();
+    }
+    private String toJson() {
+        try {
+            Gson gson = new Gson();
+            return gson.toJson(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BasePlay basePlay = (BasePlay) o;
+        return Objects.equals(save_path, basePlay.save_path);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(save_path);
     }
 }

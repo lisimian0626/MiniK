@@ -1,5 +1,6 @@
 package com.beidousat.karaoke.ui;
 
+import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,7 +11,6 @@ import android.hardware.display.DisplayManager;
 import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,7 +56,7 @@ import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.data.PublicSong;
 import com.beidousat.karaoke.db.DatabaseHelper;
 import com.beidousat.karaoke.model.BasePlay;
-import com.beidousat.karaoke.model.CXdownloadInfo;
+import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.model.CouponDetail;
 import com.beidousat.karaoke.model.GiftDetail;
 import com.beidousat.karaoke.model.KBox;
@@ -73,7 +73,6 @@ import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.player.KaraokeController;
 import com.beidousat.karaoke.player.chenxin.OriginPlayer;
-import com.beidousat.karaoke.service.octo.OctopusService;
 import com.beidousat.karaoke.ui.dlg.CommonDialog;
 import com.beidousat.karaoke.ui.dlg.DeviceStore;
 import com.beidousat.karaoke.ui.dlg.DlgAdScreen;
@@ -90,7 +89,6 @@ import com.beidousat.karaoke.ui.dlg.FmPayMeal;
 import com.beidousat.karaoke.ui.dlg.FmPayResult;
 import com.beidousat.karaoke.ui.dlg.FmPaySevice;
 import com.beidousat.karaoke.ui.dlg.FmRoomSet;
-import com.beidousat.karaoke.ui.dlg.FmTBPayNumber;
 import com.beidousat.karaoke.ui.dlg.MngPwdDialog;
 import com.beidousat.karaoke.ui.dlg.PopVersionInfo;
 import com.beidousat.karaoke.ui.dlg.PromptDialog;
@@ -130,7 +128,6 @@ import com.beidousat.libbns.model.KBoxStatus;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetChecker;
 import com.beidousat.libbns.net.NetWorkUtils;
-import com.beidousat.libbns.net.download.FileDownloadListener;
 import com.beidousat.libbns.net.download.SimpleDownloadListener;
 import com.beidousat.libbns.net.download.SimpleDownloader;
 import com.beidousat.libbns.net.request.HttpRequest;
@@ -162,7 +159,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -170,7 +166,6 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import io.reactivex.Observable;
 
-import static com.beidousat.karaoke.ui.dlg.FmTBPayNumber.acceptbyte;
 import static com.beidousat.karaoke.ui.dlg.FmTBPayNumber.closebyte;
 
 
@@ -712,6 +707,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                 break;
             case EventBusId.id.PLAYER_NEXT:
+
                 if (player != null || player_cx != null) {
                     mKaraokeController.getPlayerStatus().isMute = false;
                     closePauseTipView();
@@ -721,23 +717,23 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case EventBusId.id.PLAYER_NEXT_DELAY:
-                if (event.data instanceof CXdownloadInfo) {
-                    final CXdownloadInfo cXdownloadInfo = (CXdownloadInfo) event.data;
-                    Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(cXdownloadInfo.getSavePath()));
+                if (event.data instanceof downLoadInfo) {
+                    final downLoadInfo downLoadInfo = (downLoadInfo) event.data;
+                    Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
                     List<BaseDownloadTask> mTaskList = new ArrayList<>();
-                    BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()))
-                            .setPath(DiskFileUtil.getFileSavedPath(cXdownloadInfo.getSavePath()));
+                    BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()))
+                            .setPath(downLoadInfo.getPlayMode()==BnsConfig.NORMAL?DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()):FileUtil.getSongPath(downLoadInfo.getSavePath()));
                     mTaskList.add(task);
                     DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
                     DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
                         @Override
                         public void onDownloadComplete(BaseDownloadTask task) {
-                            Log.d(TAG, "download Commplete:" + ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()));
+                            Log.d(TAG, "download Commplete:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()));
                         }
 
                         @Override
                         public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
-                            Log.d(TAG, "download Error:" + ServerFileUtil.getFileUrl(cXdownloadInfo.getDownUrl()));
+                            Log.d(TAG, "download Error:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()));
                         }
 
                         @Override
@@ -750,15 +746,17 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                         }
                     });
-                    new Handler().postDelayed(new Runnable() {
+                    mRoot.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (player != null || player_cx != null) {
-                                mKaraokeController.getPlayerStatus().isMute = false;
-                                closePauseTipView();
-                                next();
-                                if (mPresentation != null)
-                                    mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+                            if(downLoadInfo.getSavePath().equals(Common.curSongPath)){
+                                if (player != null || player_cx != null) {
+                                    mKaraokeController.getPlayerStatus().isMute = false;
+                                    closePauseTipView();
+                                    next();
+                                    if (mPresentation != null)
+                                        mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+                                }
                             }
                         }
                     }, 10 * 1000);
@@ -1268,6 +1266,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
             case R.id.iv_logo:
 //                getPayMent();
+                sendBack();
                 if (mLogoHits == 0) {
                     mTvPlayerPause.postDelayed(new Runnable() {
                         @Override
@@ -1847,7 +1846,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
         hideSurf();
         mAdVideo = new Ad();
         String str = PreferenceUtil.getString(this, "def_play");
-        str="";
         if(TextUtils.isEmpty(str)||str.equals("[]")){
             path=PublicSong.getAdVideo();
             mAdVideo.DownLoadUrl = path;
@@ -2800,6 +2798,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
+        Logger.d(TAG,"Onkey");
         final int action = event.getAction();
         final boolean isDown = action == KeyEvent.ACTION_DOWN;
         if (isDown && keyCode == 62) {
@@ -2853,17 +2852,27 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
                 TouchScreen();
                 break;
             case KeyEvent.ACTION_UP:
-                touch_x = ev.getX();
-                touch_y = ev.getY();
+                touch_x = event.getX();
+                touch_y = event.getY();
                 break;
         }
-        return super.dispatchTouchEvent(ev);
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        Logger.d(TAG,"Onkey:"+event.getKeyCode());
+        if (event.getKeyCode() == 62) {
+            Common.TBcount++;
+//            Logger.d(TAG,"TBcount");
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     private void TouchScreen() {
@@ -2975,6 +2984,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
             }
         });
 
+    }
+    public void sendBack(){
+        new Thread(){
+            public void run() {
+                try{
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_SPACE);
+                    Logger.d(TAG,"发送space");
+                }
+                catch (Exception e) {
+                }
+            }
+        }.start();
     }
 
 }

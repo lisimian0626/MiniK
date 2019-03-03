@@ -30,4 +30,5 @@ public class Common {
     public static boolean isICT=false;
 
     public static int TBcount=0;
+    public static String curSongPath;
 }

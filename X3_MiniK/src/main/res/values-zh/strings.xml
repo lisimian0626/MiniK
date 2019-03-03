@@ -83,7 +83,7 @@
     <string name="shuffle">打乱</string>
     <string name="priority">优先</string>
     <string name="delete">删除</string>
-    <string name="put_in">请投币</string>
+    <string name="put_in">请投币:</string>
     <string name="preview">预览</string>
     <string name="listen">试听</string>
     <string name="download">下载</string>

@@ -169,6 +169,7 @@ public class BannerPlayer extends JazzyViewPager implements AdsRequestListener {
     }
 
 
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 //        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -176,10 +177,10 @@ public class BannerPlayer extends JazzyViewPager implements AdsRequestListener {
 //        } else {
 //            startPlayer();
 //        }
-        return false;
+        return true;
     }
-
     private boolean mIsCorner = true;
+
 
     public void setCorner(boolean isCorner) {
         mIsCorner = isCorner;

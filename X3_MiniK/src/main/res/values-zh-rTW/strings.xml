@@ -308,7 +308,7 @@
     <string name="text_finish_prompt">您本次歡唱的時間已經到達尾聲了！\n請選擇繼續歡唱或分享您的作品！</string>
     <string name="text_goto_share">我要分享</string>
     <string name="goto_continue">我要繼續</string>
-    <string name="put_in">請投幣</string>
+    <string name="put_in">請投幣:</string>
     <string name="creating_share_url">正在生成分享鏈接...</string>
     <string name="music_vol_x">音樂音量：%s</string>
     <string name="tone_x">音調：%d</string>

@@ -1,6 +1,7 @@
 package com.beidousat.karaoke.ui.dlg;
 
 import android.annotation.SuppressLint;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,41 +17,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.biz.QueryOrderHelper;
 import com.beidousat.karaoke.biz.SupportQueryOrder;
 import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
-import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.KBox;
 import com.beidousat.karaoke.model.Notecode;
 import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.ICTEvent;
-import com.beidousat.libbns.evenbus.OctoEvent;
 import com.beidousat.libbns.model.Common;
-import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.model.PayStatus;
-import com.beidousat.karaoke.ui.Main;
-import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.Logger;
-import com.beidousat.libbns.util.QrCodeUtil;
-import com.beidousat.score.KeyInfo;
 import com.hoho.android.usbserial.util.TBManager;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 
@@ -63,9 +52,11 @@ import de.greenrobot.event.EventBus;
 public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private final String TAG = "TBPay";
     private TextView mTBNumber;
-    private int curmoney = 0;
+    private int totoal=0;
+    private int papermoney = 0;
     private int needmoney = 0;
     private int addmoney = 0;
+    private int tbmoney=0;
     private int diffence;
     private TextView mTvMeal;
     private ImageView mImage;
@@ -104,17 +95,20 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
             switch (msg.what) {
                 case TOUBI_CHANGE_MSG:
                     if (Common.isICT) {
-                        if (needmoney == 0 || curmoney == 0)
+                        if (needmoney == 0)
                             return;
+                        int TbCount = KBoxInfo.getInstance().getKBox().getCoin_exchange_rate();
+                        tbmoney=Common.TBcount*TbCount;
+                        totoal= papermoney +tbmoney;
                         double f1 = needmoney / 100f;
-                        double f2 = curmoney / 100f;
-                        mTBNumber.setText(String.valueOf(df.format(f1)) + "/ " + String.valueOf(df.format(f2)) + unit);
-                        if (curmoney >= needmoney) {
+                        double f2 = totoal / 100f;
+                        mTBNumber.setText(String.valueOf(df.format(f1)) + "/" + String.valueOf(df.format(f2)) + unit);
+                        if (totoal >= needmoney) {
 
                             paySuccess();
                         }
                     } else {
-                        mTBNumber.setText(mNeedCoin + "/ " + Common.TBcount + getResources().getString(R.string.coin));
+                        mTBNumber.setText(mNeedCoin + "/" + Common.TBcount + getResources().getString(R.string.coin));
                         if (Common.TBcount >= mNeedCoin) {
                             //支付成功
                             Common.TBcount=Common.TBcount-mNeedCoin;
@@ -151,7 +145,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         //设置当前购买的套餐
         BoughtMeal.getInstance().setBoughtMeal(mSelectedMeal, payStatus);
         EventBusUtil.postPaySucceed(isMealExpire);
-
+        Common.TBcount=0;
     }
 
     @Nullable
@@ -165,13 +159,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                 final int action = event.getAction();
                 final boolean isDown = action == KeyEvent.ACTION_DOWN;
                 if (isDown && keyCode == 62) {
-                    if (Common.isICT) {
-                        int TbCount = KBoxInfo.getInstance().getKBox().getCoin_exchange_rate();
-                        Logger.d(TAG, "tbCount:" + TbCount);
-                        curmoney += TbCount;
-                    } else {
-                        Common.TBcount++;
-                    }
+                    Common.TBcount++;
                     myHandler.sendEmptyMessage(TOUBI_CHANGE_MSG);
                 }
                 return true;
@@ -202,7 +190,12 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         } else {
             mImage.setImageResource(R.drawable.pay_token);
         }
-
+//        mImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                sendBack();
+//            }
+//        });
         tvCodeMeal = findViewById(R.id.tv_codeMeal);
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
@@ -241,13 +234,22 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 //            needmoney = Math.round(mSelectedMeal.getPrice());
             unit = kBox.getCoin_unit();
             double f = needmoney / 100f;
-            mTBNumber.setText(String.valueOf(df.format(f)) + "/0.00 " + kBox.getCoin_unit());
+            int TbCount = KBoxInfo.getInstance().getKBox().getCoin_exchange_rate();
+            tbmoney=Common.TBcount*TbCount;
+            totoal=papermoney+tbmoney;
+            if(totoal>=needmoney){
+                paySuccess();
+            }
+            mTBNumber.setText(String.valueOf(df.format(f)) + "/"+df.format(totoal/100f) + kBox.getCoin_unit());
         } else {
             Common.isICT = false;
             mNeedCoin = getBiCount();
             Logger.d(getClass().getSimpleName(), "initView mNeedCoin:" + mNeedCoin +
                     "  Cion_exchange_rate:" + KBoxInfo.getInstance().getKBox().getCoin_exchange_rate());
-            mTBNumber.setText(mNeedCoin + "/0 " + getResources().getString(R.string.coin));
+            if(Common.TBcount>=mNeedCoin){
+                paySuccess();
+            }
+            mTBNumber.setText(mNeedCoin + "/"+Common.TBcount + getResources().getString(R.string.coin));
         }
 
 //        if (Common.isICT) {
@@ -364,19 +366,20 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     @SuppressLint("StringFormatMatches")
     private void showConfirmDialog() {
         if (Common.isICT) {
-            if (curmoney > 0) {//已投币提示损失
+            if (totoal > 0) {//已投币提示损失
                 mConfirmDlg = DialogFactory.showCancelCoinDialog(getContext(),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                                Common.TBcount=0;
                             }
                         }, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        }, getString(R.string.text_cancel_order_coin2) + String.valueOf(df.format(curmoney/100f)) + unit);
+                        }, getString(R.string.text_cancel_order_coin2) + String.valueOf(df.format(totoal /100f)) + unit);
             } else {
                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
             }
@@ -387,6 +390,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                                Common.TBcount=0;
                             }
                         }, new DialogInterface.OnClickListener() {
                             @Override
@@ -451,7 +455,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         switch (event.id) {
             case EventBusId.Ict.RECEIVE_CODE:
 //                Logger.d(TAG,"diffence:"+diffence);
-                diffence = needmoney - curmoney;
+                diffence = needmoney - totoal;
                 code += str;
 
                 if (code.replace(" ", "").toUpperCase().contains(Type4)) {
@@ -466,8 +470,8 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         }
                         SerialController.getInstance(getSupportedContext()).sendbyteICT(rejectbyte);
                     }
-//                    curmoney += Coin4;
-//                    mTBNumber.setText(needmoney + "/ " + curmoney + getResources().getString(R.string.TWD));
+//                    papermoney += Coin4;
+//                    mTBNumber.setText(needmoney + "/ " + papermoney + getResources().getString(R.string.TWD));
                     code = "";
                 } else if (code.replace(" ", "").toUpperCase().contains(Type3)) {
                     Logger.d(TAG, "paytype3");
@@ -518,12 +522,13 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                     }
                     code = "";
                 } else if (code.replace(" ", "").toUpperCase().contains(PaySucced)) {
-                    curmoney += addmoney;
+                    papermoney += addmoney;
                     code = "";
-                    if (needmoney == 0 || needmoney == 0)
+                    if (needmoney == 0)
                         return;
-                    mTBNumber.setText(String.valueOf(df.format(needmoney / 100f)) + "/ " + String.valueOf(df.format(curmoney / 100f)) + unit);
-                    if (curmoney >= needmoney) {
+                    totoal=papermoney+tbmoney;
+                    mTBNumber.setText(String.valueOf(df.format(needmoney / 100f)) + "/ " + String.valueOf(df.format(totoal / 100f)) + unit);
+                    if (totoal >= needmoney) {
                         paySuccess();
                     }
                 } else if (code.replace(" ", "").toUpperCase().contains(PayFail)) {
@@ -547,5 +552,17 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
 
                 break;
         }
+    }
+    public void sendBack(){
+        new Thread(){
+            public void run() {
+                try{
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_SPACE);
+                }
+                catch (Exception e) {
+                }
+            }
+        }.start();
     }
 }

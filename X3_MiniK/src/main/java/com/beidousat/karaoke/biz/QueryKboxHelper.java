@@ -127,7 +127,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 PreferenceUtil.setBoolean(mContext, "isSingle", false);
             }
             Logger.d(TAG,"def_play:"+kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
-            String jsonBefore=PreferenceUtil.getString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+            String jsonBefore=PreferenceUtil.getString(mContext, "def_play","");
             if(TextUtils.isEmpty(jsonBefore)||jsonBefore.equals("[]")) {
 
             }else{
@@ -137,7 +137,8 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 List<BasePlay> list_delete = new ArrayList<>();
                 List<BasePlay> list_diffent = BasePlayFitter.getDiffrent(basePlayListBefor, basePlayListNow);
                 for (BasePlay p : list_diffent) {
-                    if (basePlayListNow.contains(p)) {
+                    if (basePlayListBefor.contains(p)) {
+                        Logger.d(TAG,"diffent:"+p.getSave_path());
                         list_delete.add(p);
                     } else {
                         list_add.add(p);
@@ -145,11 +146,11 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 }
                 if(list_add.size()>0){
                     for (BasePlay basePlay:list_add){
-                        File file = DiskFileUtil.getDiskFileByUrl(basePlay.getSave_path());
-                        if(file==null){
-                            if (!DiskFileUtil.hasDiskStorage()) {
-                                return;
-                            }
+//                        File file = DiskFileUtil.getDiskFileByUrl(basePlay.getSave_path());
+//                        if(file==null){
+//                            if (!DiskFileUtil.hasDiskStorage()) {
+//                                return;
+//                            }
                             List<BaseDownloadTask> mTaskList = new ArrayList<>();
                             BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(basePlay.getDownload_url())
                                     .setPath(FileUtil.getSongPath(basePlay.getSave_path()));
@@ -177,9 +178,9 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                                 }
                             });
 
-                        }else {
-                                LanApp.getInstance().copyFile(file, FileUtil.getSongDir(basePlay.getSave_path()));
-                        }
+//                        }else {
+//                                LanApp.getInstance().copyFile(file, FileUtil.getSongDir(basePlay.getSave_path()));
+//                        }
                     }
 
                 }

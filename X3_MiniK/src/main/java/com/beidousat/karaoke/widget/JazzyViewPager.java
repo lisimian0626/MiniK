@@ -24,7 +24,7 @@ public class JazzyViewPager extends ViewPager {
 
     public static final String TAG = JazzyViewPager.class.getSimpleName();
 
-    private boolean mEnabled = true;
+    private boolean mEnabled = false;
     private boolean mFadeEnabled = false;
     private boolean mOutlineEnabled = false;
     public static int sOutlineColor = Color.WHITE;
