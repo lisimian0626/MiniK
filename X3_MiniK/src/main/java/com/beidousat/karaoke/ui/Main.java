@@ -1265,7 +1265,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
             case R.id.iv_logo:
 //                getPayMent();
-//                sendBack();
+                sendBack();
                 if (mLogoHits == 0) {
                     mTvPlayerPause.postDelayed(new Runnable() {
                         @Override
@@ -2864,12 +2864,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //    }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         Logger.d(TAG,"Onkey:"+event.getKeyCode());
         if (event.getKeyCode() == 62) {
-            ++Common.TBcount;
+            Common.TBcount++;
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 
     private void TouchScreen() {
