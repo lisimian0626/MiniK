@@ -111,7 +111,6 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         mTBNumber.setText(mNeedCoin + "/" + Common.TBcount + getResources().getString(R.string.coin));
                         if (Common.TBcount >= mNeedCoin) {
                             //支付成功
-                            Common.TBcount=Common.TBcount-mNeedCoin;
                             paySuccess();
                         }
                     }

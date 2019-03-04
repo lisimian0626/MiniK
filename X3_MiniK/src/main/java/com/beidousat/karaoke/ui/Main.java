@@ -170,7 +170,7 @@ import static com.beidousat.karaoke.ui.dlg.FmTBPayNumber.closebyte;
 
 
 public class Main extends BaseActivity implements View.OnClickListener,
-        BeidouPlayerListener, OnKeyInfoListener, OnScoreListener, SupportQueryOrder, View.OnLongClickListener,View.OnKeyListener {
+        BeidouPlayerListener, OnKeyInfoListener, OnScoreListener, SupportQueryOrder, View.OnLongClickListener {
 
     private static final String TAG = "Main";
 
@@ -593,7 +593,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     private void initView() {
         mRoot = findViewById(R.id.act_main);
-        mRoot.setOnKeyListener(this);
         mViewTop = findViewById(R.id.rl_top);
         mViewBottom = findViewById(R.id.rl_bottom);
         mBtnBack = (Button) findViewById(R.id.btn_back);
@@ -1266,7 +1265,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
             case R.id.iv_logo:
 //                getPayMent();
-                sendBack();
+//                sendBack();
                 if (mLogoHits == 0) {
                     mTvPlayerPause.postDelayed(new Runnable() {
                         @Override
@@ -2796,18 +2795,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        Logger.d(TAG,"Onkey");
-        final int action = event.getAction();
-        final boolean isDown = action == KeyEvent.ACTION_DOWN;
-        if (isDown && keyCode == 62) {
-            Common.TBcount++;
-        }
-        return true;
-    }
-
-
     class increaseSongHotTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -2865,14 +2852,24 @@ public class Main extends BaseActivity implements View.OnClickListener,
         return super.onTouchEvent(event);
     }
 
+//    @Override
+//    public boolean dispatchKeyEvent(KeyEvent event) {
+//
+//        if(event.getAction()==KeyEvent.ACTION_DOWN){
+//            if (event.getKeyCode() == 62) {
+//                Common.TBcount++;
+//            }
+//        }
+//        return super.dispatchKeyEvent(event);
+//    }
+
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         Logger.d(TAG,"Onkey:"+event.getKeyCode());
         if (event.getKeyCode() == 62) {
-            Common.TBcount++;
-//            Logger.d(TAG,"TBcount");
+            ++Common.TBcount;
         }
-        return super.dispatchKeyEvent(event);
+        return super.onKeyDown(keyCode, event);
     }
 
     private void TouchScreen() {
