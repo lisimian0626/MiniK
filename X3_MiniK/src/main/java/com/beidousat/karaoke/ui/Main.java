@@ -2838,21 +2838,35 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     }
 
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        switch (event.getAction()) {
+//            case KeyEvent.ACTION_DOWN:
+//                touch_x = event.getX();
+//                touch_y = event.getY();
+//                Logger.d(TAG,"x:"+touch_x+"   y:"+touch_y);
+//                TouchScreen();
+//                break;
+//            case KeyEvent.ACTION_UP:
+//                break;
+//        }
+//        return super.onTouchEvent(event);
+//    }
+
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
             case KeyEvent.ACTION_DOWN:
                 TouchScreen();
+                touch_x = ev.getX();
+                touch_y = ev.getY();
                 break;
             case KeyEvent.ACTION_UP:
-                touch_x = event.getX();
-                touch_y = event.getY();
                 break;
         }
-        return super.onTouchEvent(event);
+        return super.dispatchTouchEvent(ev);
     }
-
-//    @Override
+    //    @Override
 //    public boolean dispatchKeyEvent(KeyEvent event) {
 //
 //        if(event.getAction()==KeyEvent.ACTION_DOWN){

@@ -193,6 +193,9 @@ public class MyDownloader {
         if (mSongCache.size() > 10) {
             throw new Exception("下载队列不能超过10个任务.");
         }
+        if(mSongCache.get(url)!=null){
+            return;
+        }
         EventBusUtil.postDownloadStart(url, savedPath);
         mSongCache.put(url, song);
         mSongErro.remove(url);
