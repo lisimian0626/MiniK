@@ -16,7 +16,7 @@ public class BasePlay {
      * object_name : data2_to_cube/song/yyzx/76096824-0a14-4f56-b49e-871660109697.mp4
      * download_url : http://media.imtbox.com/data/song/yyzx/76096824-0a14-4f56-b49e-871660109697.mp4
      */
-
+    private String type;    //url,mp4
     private String save_path;
     private String song_name;
     private String object_name;

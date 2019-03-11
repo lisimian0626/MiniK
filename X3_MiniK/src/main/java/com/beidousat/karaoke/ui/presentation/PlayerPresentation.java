@@ -11,6 +11,7 @@ import android.view.Display;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.animation.Animation;
+import android.webkit.WebSettings;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libwidget.image.RecyclerImageView;
 import com.beidousat.libwidget.progress.NumberProgressBar;
 import com.bumptech.glide.Glide;
+import com.github.lzyzsd.jsbridge.BridgeWebView;
 
 import de.greenrobot.event.EventBus;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -46,7 +48,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class PlayerPresentation extends Presentation implements AdsRequestListener {
 
     private static final String TAG = "PlayerPresentation";
-
+    private BridgeWebView mWebView;
     private SurfaceView surfaceView;
     private TextView mTvCenter;
 //    private MarqueePlayer mMarqueePlayer;
@@ -145,7 +147,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         linearParams.height = mHdmiH;
         linearParams.width = mHdmiW;
         mRootView.setLayoutParams(linearParams);
-
+        mWebView= (BridgeWebView) findViewById(R.id.webview);
         mViewAdCorner = findViewById(R.id.ll_next);
         mTvResultScore = (TextView) findViewById(R.id.tv_result_score);
         mTvResultSong = (TextView) findViewById(R.id.tv_result_song_name);
@@ -175,6 +177,21 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
 //        mMarqueePlayer.loadAds("Z2");
         setSize();
+
+        initWebView();
+    }
+
+    private void initWebView() {
+        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        mWebView.setVerticalScrollBarEnabled(false);
+        mWebView.setHorizontalScrollBarEnabled(false);
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setAllowFileAccess(true);
+        //适配网页宽高
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+        webSettings.setUseWideViewPort(true);
     }
 
     private void setSize() {

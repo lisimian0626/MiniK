@@ -75,6 +75,11 @@ public class KBox {
     int use_pos;
     @SerializedName("coin_unit")
     String coin_unit;
+    @SerializedName("baseplay_type")
+    String baseplay_type;//cycle,random,single
+    @SerializedName("single_index")
+    int single_index;
+
 
     public List<BasePlay> getBasePlayList() {
         return basePlayList;
