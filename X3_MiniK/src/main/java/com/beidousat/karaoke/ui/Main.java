@@ -416,7 +416,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //                PreferenceUtil.setBoolean(Main.mMainActivity, "isSingle", false);
             }
 
-        }).getBoxInfo(PrefData.getRoomCode(this.getApplicationContext()),DeviceUtil.getCupChipID());
+        }).getBoxInfo(PrefData.getRoomCode(this.getApplicationContext()), DeviceUtil.getCupChipID());
     }
 
     private void showTips(String tips) {
@@ -721,7 +721,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
                     List<BaseDownloadTask> mTaskList = new ArrayList<>();
                     BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()))
-                            .setPath(downLoadInfo.getPlayMode()==BnsConfig.NORMAL?DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()):FileUtil.getSongPath(downLoadInfo.getSavePath()));
+                            .setPath(downLoadInfo.getPlayMode() == BnsConfig.NORMAL ? DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()) : FileUtil.getSongPath(downLoadInfo.getSavePath()));
                     mTaskList.add(task);
                     DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
                     DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
@@ -748,7 +748,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mRoot.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(downLoadInfo.getSavePath().equals(Common.curSongPath)){
+                            if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
                                 if (player != null || player_cx != null) {
                                     mKaraokeController.getPlayerStatus().isMute = false;
                                     closePauseTipView();
@@ -917,7 +917,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
             case EventBusId.id.REQUEST_MEAL:
                 KBoxInfo.getInstance().setKBox(null);
-                new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo(PrefData.getRoomCode(Main.this.getApplicationContext()),DeviceUtil.getCupChipID());
+                new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo(PrefData.getRoomCode(Main.this.getApplicationContext()), DeviceUtil.getCupChipID());
                 break;
 
             case EventBusId.SOCKET.KBOX_STATUS_CHECKING:
@@ -1561,7 +1561,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             uploadSongData.setPayTime(System.currentTimeMillis());
             uploadSongData.setSongId(song.ID);
             UpLoadDataUtil.getInstance().setmUploadSongData(uploadSongData);
-            playUrl(ServerFileUtil.getFileUrl(song.download_url), DiskFileUtil.getFileSavedPath(song.SongFilePath), vol,BnsConfig.NORMAL);
+            playUrl(ServerFileUtil.getFileUrl(song.download_url), DiskFileUtil.getFileSavedPath(song.SongFilePath), vol, BnsConfig.NORMAL);
             BoughtMeal.getInstance().updateLeftSongs();
             if (song.IsAdSong == 1 && !TextUtils.isEmpty(song.ADID)) {
                 mAdBillHelper.billAd(song.ADID, "R1", PrefData.getRoomCode(getApplicationContext()));
@@ -1595,7 +1595,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
 
-    private void playUrl(String url, String savePath, float volPercent,int playMode) throws IOException {
+    private void playUrl(String url, String savePath, float volPercent, int playMode) throws IOException {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1615,7 +1615,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player_cx != null) {
                 Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                player_cx.playUrl(url, savePath, secSong == null ? url : secSong.SongFilePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null,playMode);
+                player_cx.playUrl(url, savePath, secSong == null ? url : secSong.SongFilePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, playMode);
             }
         }
         mKaraokeController.getPlayerStatus().isPlaying = true;
@@ -1838,30 +1838,72 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
 
     private void playVideoAdRandom() {
-        String path="";
-        int random;
+        String path = "";
+
         Logger.d(TAG, "playAD");
         handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
         hideSurf();
         mAdVideo = new Ad();
         String str = PreferenceUtil.getString(this, "def_play");
-        if(TextUtils.isEmpty(str)||str.equals("[]")){
-            path=PublicSong.getAdVideo();
+        if (TextUtils.isEmpty(str) || str.equals("[]")) {
+            path = PublicSong.getAdVideo();
             mAdVideo.DownLoadUrl = path;
             mAdVideo.ADContent = path;
-        }else{
-            List<BasePlay> basePlayList=BasePlay.arrayBasePlayFromData(str);
-            Logger.d(TAG,"basePlay0:"+basePlayList.get(0).getDownload_url());
-            if (basePlayList!=null &&basePlayList.size()>0) {
-                try {
-                    random=PublicSong.getNum(basePlayList.size());
-                    mAdVideo.DownLoadUrl = basePlayList.get(random).getDownload_url();
-                    mAdVideo.ADContent = basePlayList.get(random).getSave_path();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mAdVideo.DownLoadUrl = path;
-                    mAdVideo.ADContent = path;
+        } else {
+            List<BasePlay> basePlayList = BasePlay.arrayBasePlayFromData(str);
+
+            Logger.d(TAG, "basePlay0:" + basePlayList.get(0).getDownload_url());
+            if (basePlayList != null && basePlayList.size() > 0) {
+                int index = -1;
+                switch (KBoxInfo.getInstance().getKBox().getBaseplay_type()) {
+                    case "single":
+                        if(KBoxInfo.getInstance().getKBox().getSingle_index()>0&&KBoxInfo.getInstance().getKBox().getSingle_index()<basePlayList.size()){
+                            index=KBoxInfo.getInstance().getKBox().getSingle_index();
+                        }else{
+                            index=0;
+                        }
+                        Logger.d(TAG,"single:"+"index:"+index);
+                        break;
+                    case "cycle":
+                        index = PublicSong.getCycleNum(basePlayList.size());
+                        Logger.d(TAG,"cycle:"+"index:"+index+"   ListSize:"+basePlayList.size());
+                        break;
+                    case "random":
+                        index = PublicSong.getNum(basePlayList.size());
+                        Logger.d(TAG,"random:"+"index:"+index);
+                        break;
                 }
+
+                if (basePlayList.get(index).getType().equals("url")) {
+                    Logger.d(TAG,"play url:"+"url:"+basePlayList.get(index).getDownload_url());
+                    if(!TextUtils.isEmpty(basePlayList.get(index).getDownload_url())){
+                        mPresentation.PlayWebView(basePlayList.get(index).getDownload_url());
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                next();
+                            }
+                        },30*1000);
+                    }else{
+                        next();
+                    }
+
+                } else if (basePlayList.get(index).getType().equals("mp4")) {
+                    mAdVideo.DownLoadUrl = basePlayList.get(index).getDownload_url();
+                    mAdVideo.ADContent = basePlayList.get(index).getSave_path();
+                    mAudioChannelFlag = 4;
+                    mKaraokeController.getPlayerStatus().playingType = 0;
+                    mPlayingSong = null;
+                    Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
+                    try {
+                        playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
+                    } catch (IOException e) {
+                        ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
+                        Logger.w(TAG, "playSong ex:" + e.toString());
+                    }
+                }
+
+
             } else {
                 mAdVideo.DownLoadUrl = path;
                 mAdVideo.ADContent = path;
@@ -1869,16 +1911,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
 
 
-        mAudioChannelFlag = 4;
-        mKaraokeController.getPlayerStatus().playingType = 0;
-        mPlayingSong = null;
-        Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
-        try {
-            playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) , mAdVideo.ADContent, 0.5f,BnsConfig.PUBLIC);
-        } catch (IOException e) {
-            ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
-            Logger.w(TAG, "playSong ex:" + e.toString());
-        }
+
     }
 
     private Runnable runShowScoreResult = new Runnable() {
@@ -1918,7 +1951,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else {
                     if (player_cx != null) {
 //                        Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                        player_cx.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null,BnsConfig.NORMAL);
+                        player_cx.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null, BnsConfig.NORMAL);
                     }
                 }
             }
@@ -2559,7 +2592,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     ToastUtils.toast(getApplicationContext(), msg);
                 }
             }
-        }).getBoxInfo(PrefData.getRoomCode(getApplicationContext()),DeviceUtil.getCupChipID());
+        }).getBoxInfo(PrefData.getRoomCode(getApplicationContext()), DeviceUtil.getCupChipID());
     }
 
     private void registerUsbReceiver() {
@@ -2879,7 +2912,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        Logger.d(TAG,"Onkey:"+event.getKeyCode());
+        Logger.d(TAG, "Onkey:" + event.getKeyCode());
         if (event.getKeyCode() == 62) {
             Common.TBcount++;
         }
@@ -2996,15 +3029,15 @@ public class Main extends BaseActivity implements View.OnClickListener,
         });
 
     }
-    public void sendBack(){
-        new Thread(){
+
+    public void sendBack() {
+        new Thread() {
             public void run() {
-                try{
+                try {
                     Instrumentation inst = new Instrumentation();
                     inst.sendKeyDownUpSync(KeyEvent.KEYCODE_SPACE);
-                    Logger.d(TAG,"发送space");
-                }
-                catch (Exception e) {
+                    Logger.d(TAG, "发送space");
+                } catch (Exception e) {
                 }
             }
         }.start();

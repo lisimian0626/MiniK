@@ -62,6 +62,14 @@ public class BasePlay {
         this.download_url = download_url;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return toJson();

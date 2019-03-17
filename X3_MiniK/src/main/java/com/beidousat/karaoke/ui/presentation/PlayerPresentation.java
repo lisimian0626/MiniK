@@ -10,8 +10,10 @@ import android.text.TextUtils;
 import android.view.Display;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.ad.AdPauseGetter;
 import com.beidousat.karaoke.ad.CornerGetter;
 import com.beidousat.karaoke.data.KBoxInfo;
+import com.beidousat.karaoke.data.PayUserInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.player.ChooseSongs;
@@ -38,6 +41,7 @@ import com.beidousat.libwidget.image.RecyclerImageView;
 import com.beidousat.libwidget.progress.NumberProgressBar;
 import com.bumptech.glide.Glide;
 import com.github.lzyzsd.jsbridge.BridgeWebView;
+import com.github.lzyzsd.jsbridge.DefaultHandler;
 
 import de.greenrobot.event.EventBus;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -49,6 +53,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
     private static final String TAG = "PlayerPresentation";
     private BridgeWebView mWebView;
+    MyWebChromeClient mWebChromeClient;
     private SurfaceView surfaceView;
     private TextView mTvCenter;
 //    private MarqueePlayer mMarqueePlayer;
@@ -100,8 +105,15 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         display.getRealSize(realSize);
         mHdmiW = realSize.x;
         mHdmiH = realSize.y;
+//        PayUserInfo.getInstance().setHdmi_width(mHdmiW);
+//        PayUserInfo.getInstance().setHdmi_width(mHdmiH);
     }
-
+    public void setScreenSize(int with,int high){
+        ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
+        params.width = with;
+        params.height = high;
+        surfaceView.setLayoutParams(params);
+    }
     public SurfaceView getSurfaceView() {
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         return surfaceView;
@@ -180,7 +192,16 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
         initWebView();
     }
-
+    public void PlayWebView(String url){
+        ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
+        params.width = 1;
+        params.height = 1;
+        surfaceView.setLayoutParams(params);
+        initWebView();
+        initJsBridge();
+        mWebView.loadUrl(url);
+        mWebView.setVisibility(View.VISIBLE);
+    }
     private void initWebView() {
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mWebView.setVerticalScrollBarEnabled(false);
@@ -193,7 +214,11 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         webSettings.setUseWideViewPort(true);
     }
-
+    private void initJsBridge() {
+        mWebChromeClient = new MyWebChromeClient(null) ;
+        mWebView.setWebChromeClient(mWebChromeClient);
+        mWebView.setDefaultHandler(new DefaultHandler());
+    }
     private void setSize() {
     }
 
@@ -379,6 +404,13 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
 
     public void cleanScreen() {
+        if(mWebView.getVisibility()==View.VISIBLE){
+            mWebView.setVisibility(View.GONE);
+            ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
+            params.width = mHdmiW;
+            params.height = mHdmiH;
+            surfaceView.setLayoutParams(params);
+        }
         findViewById(R.id.rl_score_result).setVisibility(View.GONE);
         mTvCenter.setVisibility(View.GONE);
         tipOperation(0, 0, false);

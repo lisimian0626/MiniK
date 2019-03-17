@@ -15,10 +15,30 @@ import java.util.Observable;
 public class PayUserInfo extends Observable {
     private List<User> mUsers;
 
+    private int hdmi_width;
+
+    private int hdmi_heigh;
+
     private static PayUserInfo ourInstance = new PayUserInfo();
 
     public static PayUserInfo getInstance() {
         return ourInstance;
+    }
+
+    public int getHdmi_width() {
+        return hdmi_width;
+    }
+
+    public void setHdmi_width(int hdmi_width) {
+        this.hdmi_width = hdmi_width;
+    }
+
+    public int getHdmi_heigh() {
+        return hdmi_heigh;
+    }
+
+    public void setHdmi_heigh(int hdmi_heigh) {
+        this.hdmi_heigh = hdmi_heigh;
     }
 
     private PayUserInfo() {

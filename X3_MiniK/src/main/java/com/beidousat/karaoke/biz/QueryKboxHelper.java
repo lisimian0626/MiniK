@@ -137,11 +137,13 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 List<BasePlay> list_delete = new ArrayList<>();
                 List<BasePlay> list_diffent = BasePlayFitter.getDiffrent(basePlayListBefor, basePlayListNow);
                 for (BasePlay p : list_diffent) {
-                    if (basePlayListBefor.contains(p)) {
-                        Logger.d(TAG,"diffent:"+p.getSave_path());
-                        list_delete.add(p);
-                    } else {
-                        list_add.add(p);
+                    if(p.getType().equals("mp4")){
+                        if (basePlayListBefor.contains(p)) {
+                            Logger.d(TAG,"diffent:"+p.getSave_path());
+                            list_delete.add(p);
+                        } else {
+                            list_add.add(p);
+                        }
                     }
                 }
                 if(list_add.size()>0){
@@ -186,6 +188,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 }
                 if(list_delete.size()>0){
                     for (BasePlay basePlay:list_delete){
+                        Logger.d(getClass().getSimpleName(),"deleteFile:"+FileUtil.getSongSaveDir(basePlay.getSave_path()));
                         FileUtil.deleteFile(FileUtil.getSongSaveDir(basePlay.getSave_path()));
                     }
 

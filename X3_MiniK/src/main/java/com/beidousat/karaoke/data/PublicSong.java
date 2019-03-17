@@ -2,6 +2,8 @@ package com.beidousat.karaoke.data;
 
 import android.util.Log;
 
+import com.beidousat.libbns.util.Logger;
+
 import java.util.Random;
 
 /**
@@ -9,7 +11,7 @@ import java.util.Random;
  */
 
 public class PublicSong {
-
+    private static int index=-1;
     private static final String videoAdDir = "/data/PublicSong/";
 
 
@@ -24,5 +26,14 @@ public class PublicSong {
             return random.nextInt(endNum);
         }
         return 0;
+    }
+    public static int getCycleNum(int endNum){
+        if(index<endNum-1){
+            index++;
+        }else{
+            index=0;
+        }
+        Logger.d("Main","index:"+index);
+        return index;
     }
 }

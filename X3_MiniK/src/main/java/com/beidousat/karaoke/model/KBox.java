@@ -321,6 +321,23 @@ public class KBox {
     public void setCoin_unit(String coin_unit) {
         this.coin_unit = coin_unit;
     }
+
+    public String getBaseplay_type() {
+        return baseplay_type;
+    }
+
+    public void setBaseplay_type(String baseplay_type) {
+        this.baseplay_type = baseplay_type;
+    }
+
+    public int getSingle_index() {
+        return single_index;
+    }
+
+    public void setSingle_index(int single_index) {
+        this.single_index = single_index;
+    }
+
     public String basePlaytoJsonStr(List<BasePlay> basePlayList){
 
         return toJson(basePlayList);
