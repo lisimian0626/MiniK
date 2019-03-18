@@ -718,47 +718,65 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.id.PLAYER_NEXT_DELAY:
                 if (event.data instanceof downLoadInfo) {
                     final downLoadInfo downLoadInfo = (downLoadInfo) event.data;
-                    Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
-                    List<BaseDownloadTask> mTaskList = new ArrayList<>();
-                    BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()))
-                            .setPath(downLoadInfo.getPlayMode() == BnsConfig.NORMAL ? DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()) : FileUtil.getSongPath(downLoadInfo.getSavePath()));
-                    mTaskList.add(task);
-                    DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
-                    DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
-                        @Override
-                        public void onDownloadComplete(BaseDownloadTask task) {
-                            Log.d(TAG, "download Commplete:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()));
-                        }
+                    if(!TextUtils.isEmpty(downLoadInfo.getSavePath())){
+                        Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
+                        List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                        BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()))
+                                .setPath(downLoadInfo.getPlayMode() == BnsConfig.NORMAL ? DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()) : FileUtil.getSongPath(downLoadInfo.getSavePath()));
+                        mTaskList.add(task);
+                        DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
+                        DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
+                            @Override
+                            public void onDownloadComplete(BaseDownloadTask task) {
+                                Log.d(TAG, "download Commplete:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()));
+                            }
 
-                        @Override
-                        public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
-                            Log.d(TAG, "download Error:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()));
-                        }
+                            @Override
+                            public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
+                                Log.d(TAG, "download Error:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()));
+                            }
 
-                        @Override
-                        public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                            Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
-                        }
+                            @Override
+                            public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
+                            }
 
-                        @Override
-                        public void onDownloadTaskOver() {
+                            @Override
+                            public void onDownloadTaskOver() {
 
-                        }
-                    });
-                    mRoot.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
-                                if (player != null || player_cx != null) {
-                                    mKaraokeController.getPlayerStatus().isMute = false;
-                                    closePauseTipView();
-                                    next();
-                                    if (mPresentation != null)
-                                        mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+                            }
+                        });
+                        mRoot.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
+                                    if (player != null || player_cx != null) {
+                                        mKaraokeController.getPlayerStatus().isMute = false;
+                                        closePauseTipView();
+                                        next();
+                                        if (mPresentation != null)
+                                            mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+                                    }
                                 }
                             }
-                        }
-                    }, 10 * 1000);
+                        }, 10 * 1000);
+                    }else{
+                        mRoot.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
+                                    if (player != null || player_cx != null) {
+                                        mKaraokeController.getPlayerStatus().isMute = false;
+                                        closePauseTipView();
+                                        next();
+                                        if (mPresentation != null)
+                                            mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+                                    }
+                                }
+                            }
+                        }, 120 * 1000);
+                    }
+
                 }
                 break;
             case EventBusId.id.PLAYER_STATUS_CHANGED:
@@ -1857,37 +1875,35 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 int index = -1;
                 switch (KBoxInfo.getInstance().getKBox().getBaseplay_type()) {
                     case "single":
-                        if(KBoxInfo.getInstance().getKBox().getSingle_index()>0&&KBoxInfo.getInstance().getKBox().getSingle_index()<basePlayList.size()){
-                            index=KBoxInfo.getInstance().getKBox().getSingle_index();
-                        }else{
-                            index=0;
+                        if (KBoxInfo.getInstance().getKBox().getSingle_index() > 0 && KBoxInfo.getInstance().getKBox().getSingle_index() < basePlayList.size()) {
+                            index = KBoxInfo.getInstance().getKBox().getSingle_index();
+                        } else {
+                            index = 0;
                         }
-                        Logger.d(TAG,"single:"+"index:"+index);
+                        Logger.d(TAG, "single:" + "index:" + index);
                         break;
                     case "cycle":
                         index = PublicSong.getCycleNum(basePlayList.size());
-                        Logger.d(TAG,"cycle:"+"index:"+index+"   ListSize:"+basePlayList.size());
+                        Logger.d(TAG, "cycle:" + "index:" + index + "   ListSize:" + basePlayList.size());
                         break;
                     case "random":
                         index = PublicSong.getNum(basePlayList.size());
-                        Logger.d(TAG,"random:"+"index:"+index);
+                        Logger.d(TAG, "random:" + "index:" + index);
                         break;
                 }
-
-                if (basePlayList.get(index).getType().equals("url")) {
-                    Logger.d(TAG,"play url:"+"url:"+basePlayList.get(index).getDownload_url());
-                    if(!TextUtils.isEmpty(basePlayList.get(index).getDownload_url())){
+                BasePlay basePlay = basePlayList.get(index);
+                if (basePlay.getType().equals("url")) {
+                    Logger.d(TAG, "play url:" + "url:" + basePlay.getDownload_url());
+                    if (!TextUtils.isEmpty(basePlay.getDownload_url())) {
+                        downLoadInfo downLoadInfo = new downLoadInfo();
+                        downLoadInfo.setDownUrl(basePlay.getDownload_url());
+                        downLoadInfo.setSavePath("");
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
                         mPresentation.PlayWebView(basePlayList.get(index).getDownload_url());
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                next();
-                            }
-                        },30*1000);
-                    }else{
+                        Common.curSongPath="";
+                    } else {
                         next();
                     }
-
                 } else if (basePlayList.get(index).getType().equals("mp4")) {
                     mAdVideo.DownLoadUrl = basePlayList.get(index).getDownload_url();
                     mAdVideo.ADContent = basePlayList.get(index).getSave_path();
@@ -1909,7 +1925,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 mAdVideo.ADContent = path;
             }
         }
-
 
 
     }
