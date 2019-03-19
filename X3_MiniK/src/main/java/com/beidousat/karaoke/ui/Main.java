@@ -706,7 +706,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                 break;
             case EventBusId.id.PLAYER_NEXT:
-
                 if (player != null || player_cx != null) {
                     mKaraokeController.getPlayerStatus().isMute = false;
                     closePauseTipView();

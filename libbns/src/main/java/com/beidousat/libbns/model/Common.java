@@ -31,4 +31,9 @@ public class Common {
 
     public static int TBcount;
     public static String curSongPath;
+    //webviewinterface
+    public static String INTERFACE_CLOSEWINDOWS = "closewindows";
+    public static String INTERFACE_LOADSTART = "loadStart";
+    public static String INTERFACE_LOADFINISH = "loadFinish";
+    public static String INTERFACE_PROGRESSCHANGE = "progressChange";
 }

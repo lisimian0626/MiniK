@@ -1,46 +1,57 @@
 package com.beidousat.karaoke.ui.presentation;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.beidousat.libbns.model.Common;
+import com.github.lzyzsd.jsbridge.BridgeWebView;
+import com.github.lzyzsd.jsbridge.BridgeWebViewClient;
+import com.github.lzyzsd.jsbridge.CallBackFunction;
+
 /**
  * MyWebChromeClient
  */
-public class MyWebChromeClient extends WebChromeClient {
+public class MyWebChromeClient extends BridgeWebViewClient {
+    BridgeWebView mWebview;
 
-    private OpenFileChooserCallBack mOpenFileChooserCallBack;
-
-    public MyWebChromeClient(OpenFileChooserCallBack openFileChooserCallBack) {
-        mOpenFileChooserCallBack = openFileChooserCallBack;
+    public MyWebChromeClient(BridgeWebView webView) {
+        super(webView);
+        this.mWebview=webView;
     }
 
-    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
-        mOpenFileChooserCallBack.openFileChooserCallBack(uploadMsg, acceptType);
+    @Override
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        super.onPageStarted(view, url, favicon);
+        mWebview.callHandler(Common.INTERFACE_LOADSTART, "loadStart", new CallBackFunction() {
+            @Override
+            public void onCallBack(String s) {
+
+            }
+        });
     }
 
-    public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-        openFileChooser(uploadMsg, "");
+    @Override
+    public void onPageFinished(WebView view, String url) {
+        super.onPageFinished(view, url);
+        mWebview.callHandler(Common.INTERFACE_LOADFINISH, "loadFinish", new CallBackFunction() {
+            @Override
+            public void onCallBack(String s) {
+
+            }
+        });
     }
 
-    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        openFileChooser(uploadMsg, acceptType);
+    @Override
+    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+        super.onReceivedError(view, errorCode, description, failingUrl);
+        mWebview.callHandler(Common.INTERFACE_LOADFINISH, "loadFinish", new CallBackFunction() {
+            @Override
+            public void onCallBack(String s) {
+
+            }
+        });
     }
-
-    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
-                                     FileChooserParams fileChooserParams) {
-        return mOpenFileChooserCallBack.openFileChooserCallBackAndroid5(webView, filePathCallback, fileChooserParams);
-    }
-
-    public interface OpenFileChooserCallBack {
-        // for API - Version below 5.0.
-        void openFileChooserCallBack(ValueCallback<Uri> uploadMsg, String acceptType);
-
-        // for API - Version above 5.0 (contais 5.0).
-        boolean openFileChooserCallBackAndroid5(WebView webView, ValueCallback<Uri[]> filePathCallback,
-                                                FileChooserParams fileChooserParams);
-    }
-
-
 }

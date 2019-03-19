@@ -25,6 +25,7 @@ import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PayUserInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.Song;
+import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.widget.MarqueePlayer;
 import com.beidousat.karaoke.widget.WidgetScore;
@@ -34,13 +35,17 @@ import com.beidousat.libbns.amin.CubeAnimation;
 import com.beidousat.libbns.amin.MoveAnimation;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.Common;
+import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libwidget.image.RecyclerImageView;
 import com.beidousat.libwidget.progress.NumberProgressBar;
 import com.bumptech.glide.Glide;
+import com.github.lzyzsd.jsbridge.BridgeHandler;
 import com.github.lzyzsd.jsbridge.BridgeWebView;
+import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.github.lzyzsd.jsbridge.DefaultHandler;
 
 import de.greenrobot.event.EventBus;
@@ -201,6 +206,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         initJsBridge();
         mWebView.loadUrl(url);
         mWebView.setVisibility(View.VISIBLE);
+        Function();
     }
     private void initWebView() {
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
@@ -215,10 +221,23 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         webSettings.setUseWideViewPort(true);
     }
     private void initJsBridge() {
-        mWebChromeClient = new MyWebChromeClient(null) ;
-        mWebView.setWebChromeClient(mWebChromeClient);
+        mWebChromeClient = new MyWebChromeClient(mWebView) ;
+        mWebView.setWebViewClient(mWebChromeClient);
         mWebView.setDefaultHandler(new DefaultHandler());
     }
+
+    private void Function() {
+        mWebView.registerHandler(Common.INTERFACE_CLOSEWINDOWS, new BridgeHandler() {
+            @Override
+            public void handler(String s, CallBackFunction callBackFunction) {
+                Logger.d("test","close:"+s);
+                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT,"");
+            }
+
+        });
+
+    }
+
     private void setSize() {
     }
 
