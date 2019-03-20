@@ -144,7 +144,11 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         //设置当前购买的套餐
         BoughtMeal.getInstance().setBoughtMeal(mSelectedMeal, payStatus);
         EventBusUtil.postPaySucceed(isMealExpire);
-        Common.TBcount=0;
+        if(Common.isICT){
+            Common.TBcount=0;
+        }else{
+            Common.TBcount=Common.TBcount-mNeedCoin;
+        }
     }
 
     @Nullable
