@@ -29,6 +29,7 @@ public class Common {
     public static boolean isPersonal=false;
     public static boolean isICT=false;
 
+    public static int lastMoney;
     public static int TBcount;
     public static String curSongPath;
     //webviewinterface

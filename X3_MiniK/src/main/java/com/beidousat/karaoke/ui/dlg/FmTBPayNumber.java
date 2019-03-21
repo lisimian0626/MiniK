@@ -145,6 +145,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         BoughtMeal.getInstance().setBoughtMeal(mSelectedMeal, payStatus);
         EventBusUtil.postPaySucceed(isMealExpire);
         if(Common.isICT){
+            Common.lastMoney=totoal-needmoney;
             Common.TBcount=0;
         }else{
             Common.TBcount=Common.TBcount-mNeedCoin;
@@ -239,7 +240,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
             double f = needmoney / 100f;
             int TbCount = KBoxInfo.getInstance().getKBox().getCoin_exchange_rate();
             tbmoney=Common.TBcount*TbCount;
-            totoal=papermoney+tbmoney;
+            totoal=papermoney+tbmoney+Common.lastMoney;
             if(totoal>=needmoney){
                 paySuccess();
             }
@@ -375,7 +376,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
-                                Common.TBcount=0;
+                                Common.lastMoney=0;
                             }
                         }, new DialogInterface.OnClickListener() {
                             @Override
