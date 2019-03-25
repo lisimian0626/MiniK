@@ -994,7 +994,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         } else if (kBoxStatus.code == 00301) {
                             if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
                                 PromptDialog promptDialog = new PromptDialog(this);
-                                promptDialog.setMessage(getResources().getString(R.string.hand_disk));
+                                promptDialog.setMessage(getResources().getString(R.string.auth_fail));
                                 promptDialog.show();
                                 ChooseSongs.getInstance(Main.this).cleanChoose();
                                 BoughtMeal.getInstance().clearMealInfoSharePreference();

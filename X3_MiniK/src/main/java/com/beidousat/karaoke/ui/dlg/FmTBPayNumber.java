@@ -52,7 +52,7 @@ import de.greenrobot.event.EventBus;
 public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
     private final String TAG = "TBPay";
     private TextView mTBNumber;
-    private int totoal=0;
+    private int totoal;
     private int papermoney = 0;
     private int needmoney = 0;
     private int addmoney = 0;
@@ -99,7 +99,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             return;
                         int TbCount = KBoxInfo.getInstance().getKBox().getCoin_exchange_rate();
                         tbmoney=Common.TBcount*TbCount;
-                        totoal= papermoney +tbmoney;
+                        totoal= papermoney +tbmoney+Common.lastMoney;
                         double f1 = needmoney / 100f;
                         double f2 = totoal / 100f;
                         mTBNumber.setText(String.valueOf(df.format(f1)) + "/" + String.valueOf(df.format(f2)) + unit);
@@ -530,7 +530,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                     code = "";
                     if (needmoney == 0)
                         return;
-                    totoal=papermoney+tbmoney;
+                    totoal=papermoney+tbmoney+Common.lastMoney;
                     mTBNumber.setText(String.valueOf(df.format(needmoney / 100f)) + "/ " + String.valueOf(df.format(totoal / 100f)) + unit);
                     if (totoal >= needmoney) {
                         paySuccess();
