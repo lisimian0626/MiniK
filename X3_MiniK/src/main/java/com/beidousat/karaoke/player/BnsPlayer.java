@@ -539,6 +539,8 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         public void run() {
             if (mVolUpCount <= VOL_UP_COUNT) {
                 float vol = mVolUpCount == VOL_UP_COUNT ? mCurrentVol : (mCurrentVol * mVolUpCount / VOL_UP_COUNT);
+                if(mMediaPlayer==null)
+                    return;
                 mMediaPlayer.setVolume(vol, vol);
                 mHandlerVolInit.postDelayed(this, 250);
                 mVolUpCount++;
@@ -647,12 +649,14 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     }
 
     public void stop() {
-        isPlaying = false;
-        mMediaPlayer.release();
-        mMediaPlayer = null;
-        Logger.i(TAG, "release player");
-        BnsAudioRecorder.getInstance().release();
-        stopTimer();
+        if(mMediaPlayer!=null) {
+            isPlaying = false;
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+            Logger.i(TAG, "release player");
+            BnsAudioRecorder.getInstance().release();
+            stopTimer();
+        }
     }
 
     public void play() {

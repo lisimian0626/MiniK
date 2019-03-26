@@ -710,7 +710,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mKaraokeController.getPlayerStatus().isMute = false;
                     closePauseTipView();
                     next();
-                    if (mPresentation != null)
+                    if (mPresentation != null&&ChooseSongs.getInstance(Main.this).getSongs().size()>0)
                         mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
                 }
                 break;
@@ -753,7 +753,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                         mKaraokeController.getPlayerStatus().isMute = false;
                                         closePauseTipView();
                                         next();
-                                        if (mPresentation != null)
+
+                                        if (mPresentation != null&&ChooseSongs.getInstance(Main.this).getSongs().size()>0)
                                             mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
                                     }
                                 }
@@ -1282,7 +1283,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
             case R.id.iv_logo:
 //                getPayMent();
-                sendBack();
+//                sendBack();
                 if (mLogoHits == 0) {
                     mTvPlayerPause.postDelayed(new Runnable() {
                         @Override
@@ -1872,6 +1873,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
             Logger.d(TAG, "basePlay0:" + basePlayList.get(0).getDownload_url());
             if (basePlayList != null && basePlayList.size() > 0) {
                 int index = -1;
+                if(TextUtils.isEmpty(KBoxInfo.getInstance().getKBox().getBaseplay_type())){
+                    index = PublicSong.getNum(basePlayList.size());
+                    Logger.d(TAG, "random:" + "index:" + index);
+                }
                 switch (KBoxInfo.getInstance().getKBox().getBaseplay_type()) {
                     case "single":
                         if (KBoxInfo.getInstance().getKBox().getSingle_index() > 0 && KBoxInfo.getInstance().getKBox().getSingle_index() < basePlayList.size()) {
@@ -1898,6 +1903,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         downLoadInfo.setDownUrl(basePlay.getDownload_url());
                         downLoadInfo.setSavePath("");
                         EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
+                        player.stop();
                         mPresentation.PlayWebView(basePlayList.get(index).getDownload_url());
                         Common.curSongPath="";
                     } else {
