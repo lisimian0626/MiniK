@@ -216,6 +216,8 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(false);
         webSettings.setAllowFileAccess(true);
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
         //适配网页宽高
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         webSettings.setUseWideViewPort(true);

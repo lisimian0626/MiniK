@@ -6,8 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
-import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
+import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;

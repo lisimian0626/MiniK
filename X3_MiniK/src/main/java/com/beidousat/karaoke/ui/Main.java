@@ -13,6 +13,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
@@ -56,7 +57,6 @@ import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.data.PublicSong;
 import com.beidousat.karaoke.db.DatabaseHelper;
 import com.beidousat.karaoke.model.BasePlay;
-import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.model.CouponDetail;
 import com.beidousat.karaoke.model.GiftDetail;
 import com.beidousat.karaoke.model.KBox;
@@ -68,6 +68,7 @@ import com.beidousat.karaoke.model.PlayerStatus;
 import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
+import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
@@ -152,7 +153,6 @@ import com.czt.mp3recorder.AudioRecordFileUtil;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloader;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -235,7 +235,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private float touch_x = 0;
     private float touch_y = 0;
     private String code;
-
+    private CountDownTimer countDownTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -646,6 +646,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        initSystemVol();
         initMealInfo();
         registerUsbReceiver();
+
         try {
             int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
             SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
@@ -655,8 +656,25 @@ public class Main extends BaseActivity implements View.OnClickListener,
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        //初始化计时器
+        if(countDownTimer==null){
+            initCountDownTimer();
+        }
         mTvChooseCount.setText(String.valueOf(ChooseSongs.getInstance(getApplicationContext()).getChooseSize()));
+    }
+
+    private void initCountDownTimer() {
+        countDownTimer=new CountDownTimer(120*1000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                next();
+            }
+        };
     }
 
     private void checkMic() {
@@ -717,7 +735,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.id.PLAYER_NEXT_DELAY:
                 if (event.data instanceof downLoadInfo) {
                     final downLoadInfo downLoadInfo = (downLoadInfo) event.data;
-                    if(!TextUtils.isEmpty(downLoadInfo.getSavePath())){
                         Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
                         List<BaseDownloadTask> mTaskList = new ArrayList<>();
                         BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()))
@@ -760,23 +777,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                 }
                             }
                         }, 10 * 1000);
-                    }else{
-                        mRoot.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
-                                    if (player != null || player_cx != null) {
-                                        mKaraokeController.getPlayerStatus().isMute = false;
-                                        closePauseTipView();
-                                        next();
-                                        if (mPresentation != null)
-                                            mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
-                                    }
-                                }
-                            }
-                        }, 120 * 1000);
-                    }
-
                 }
                 break;
             case EventBusId.id.PLAYER_STATUS_CHANGED:
@@ -1856,8 +1856,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
 
     private void playVideoAdRandom() {
+        if(countDownTimer==null){
+            initCountDownTimer();
+        }
+        countDownTimer.cancel();
         String path = "";
-
         Logger.d(TAG, "playAD");
         handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
         hideSurf();
@@ -1902,7 +1905,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         downLoadInfo downLoadInfo = new downLoadInfo();
                         downLoadInfo.setDownUrl(basePlay.getDownload_url());
                         downLoadInfo.setSavePath("");
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
+                        if(countDownTimer==null){
+                            initCountDownTimer();
+                        }
+                        countDownTimer.start();
                         player.stop();
                         mPresentation.PlayWebView(basePlayList.get(index).getDownload_url());
                         Common.curSongPath="";
