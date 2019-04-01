@@ -581,6 +581,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        mMarqueePlayer.stopPlayer();
         stopMainPlayer();
         SerialController.getInstance(getSupportedContext()).sendbyteICT(closebyte);
+        closeTimer();
         Logger.d(TAG, "sendclosebyte");
         EventBus.getDefault().unregister(this);
         ANRCacheHelper.unregisterANRReceiver(this);
@@ -588,6 +589,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
         System.exit(0);//直接结束程序
         super.onDestroy();
+    }
+
+    private void closeTimer() {
+        if(countDownTimer!=null){
+            countDownTimer.cancel();
+            countDownTimer=null;
+        }
     }
 
 
@@ -672,6 +680,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
             @Override
             public void onFinish() {
+                Logger.d("Main","onFinish 切歌");
                 next();
             }
         };
@@ -1876,28 +1885,30 @@ public class Main extends BaseActivity implements View.OnClickListener,
             Logger.d(TAG, "basePlay0:" + basePlayList.get(0).getDownload_url());
             if (basePlayList != null && basePlayList.size() > 0) {
                 int index = -1;
-                if(TextUtils.isEmpty(KBoxInfo.getInstance().getKBox().getBaseplay_type())){
+                if(KBoxInfo.getInstance().getKBox()==null||TextUtils.isEmpty(KBoxInfo.getInstance().getKBox().getBaseplay_type())){
                     index = PublicSong.getNum(basePlayList.size());
                     Logger.d(TAG, "random:" + "index:" + index);
+                }else{
+                    switch (KBoxInfo.getInstance().getKBox().getBaseplay_type()) {
+                        case "single":
+                            if (KBoxInfo.getInstance().getKBox().getSingle_index() > 0 && KBoxInfo.getInstance().getKBox().getSingle_index() < basePlayList.size()) {
+                                index = KBoxInfo.getInstance().getKBox().getSingle_index();
+                            } else {
+                                index = 0;
+                            }
+                            Logger.d(TAG, "single:" + "index:" + index);
+                            break;
+                        case "cycle":
+                            index = PublicSong.getCycleNum(basePlayList.size());
+                            Logger.d(TAG, "cycle:" + "index:" + index + "   ListSize:" + basePlayList.size());
+                            break;
+                        case "random":
+                            index = PublicSong.getNum(basePlayList.size());
+                            Logger.d(TAG, "random:" + "index:" + index);
+                            break;
+                    }
                 }
-                switch (KBoxInfo.getInstance().getKBox().getBaseplay_type()) {
-                    case "single":
-                        if (KBoxInfo.getInstance().getKBox().getSingle_index() > 0 && KBoxInfo.getInstance().getKBox().getSingle_index() < basePlayList.size()) {
-                            index = KBoxInfo.getInstance().getKBox().getSingle_index();
-                        } else {
-                            index = 0;
-                        }
-                        Logger.d(TAG, "single:" + "index:" + index);
-                        break;
-                    case "cycle":
-                        index = PublicSong.getCycleNum(basePlayList.size());
-                        Logger.d(TAG, "cycle:" + "index:" + index + "   ListSize:" + basePlayList.size());
-                        break;
-                    case "random":
-                        index = PublicSong.getNum(basePlayList.size());
-                        Logger.d(TAG, "random:" + "index:" + index);
-                        break;
-                }
+
                 BasePlay basePlay = basePlayList.get(index);
                 if (basePlay.getType().equals("url")) {
                     Logger.d(TAG, "play url:" + "url:" + basePlay.getDownload_url());
@@ -1909,31 +1920,34 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             initCountDownTimer();
                         }
                         countDownTimer.start();
-                        player.stop();
+                        if(DiskFileUtil.is901()){
+                            player.stop();
+                        }else{
+                            player_cx.stop();
+                        }
                         mPresentation.PlayWebView(basePlayList.get(index).getDownload_url());
                         Common.curSongPath="";
+                        return;
                     } else {
                         next();
                     }
                 } else if (basePlayList.get(index).getType().equals("mp4")) {
                     mAdVideo.DownLoadUrl = basePlayList.get(index).getDownload_url();
                     mAdVideo.ADContent = basePlayList.get(index).getSave_path();
-                    mAudioChannelFlag = 4;
-                    mKaraokeController.getPlayerStatus().playingType = 0;
-                    mPlayingSong = null;
-                    Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
-                    try {
-                        playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
-                    } catch (IOException e) {
-                        ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
-                        Logger.w(TAG, "playSong ex:" + e.toString());
-                    }
                 }
-
-
             } else {
                 mAdVideo.DownLoadUrl = path;
                 mAdVideo.ADContent = path;
+            }
+            mAudioChannelFlag = 4;
+            mKaraokeController.getPlayerStatus().playingType = 0;
+            mPlayingSong = null;
+            Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
+            try {
+                playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
+            } catch (IOException e) {
+                ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
+                Logger.w(TAG, "playSong ex:" + e.toString());
             }
         }
 

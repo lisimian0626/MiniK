@@ -43,7 +43,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
     }
 
     public void open(String uri, String savePath, String next_uri, int playmode, BeidouPlayerListener listener) {
-        switch (playmode){
+        switch (playmode) {
             case BnsConfig.PREVIEW:
             case BnsConfig.NORMAL:
                 this.mBnsPlayerListener = listener;
@@ -100,31 +100,16 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 }
                 break;
             case BnsConfig.PUBLIC:
-                File mFile= FileUtil.getSongSaveDir(savePath);
-                String p_uri = ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
-                String p_next_uri = ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
-                String mplayUrl = null;
-                if(mFile!=null){
+                File mFile = FileUtil.getSongSaveDir(savePath);
+                if (mFile != null) {
                     Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
-                    LocalFileCache.getInstance().add(p_uri, p_next_uri);
-                    LocalFileProxy proxy = new LocalFileProxy(savePath);
-                    try {
-                        proxy.startDownload(p_uri);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    mplayUrl = proxy.getLocalURL();
-                    if (!TextUtils.isEmpty(mplayUrl)) {
-                        mPlayer.open(mplayUrl, this, this, playmode);
-                    }
-//                    mPlayer.open(mFile.getAbsolutePath(), this, this, playmode);
-//
-                }else{
+                    mPlayer.open(mFile.getAbsolutePath(), this, this, playmode);
+                } else {
                     Logger.d(TAG, "public file:" + "不存在");
                     try {
                         downLoadInfo downLoadInfo = new downLoadInfo();
                         downLoadInfo.setDownUrl(uri);
-                        downLoadInfo.setSavePath(savePath);
+                        downLoadInfo.setSavePath(mFile.getAbsolutePath());
                         downLoadInfo.setPlayMode(playmode);
                         EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
                     } catch (Exception e) {
@@ -138,14 +123,14 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if(mBnsPlayerListener!=null)
-        mBnsPlayerListener.onPlayerCompletion();
+        if (mBnsPlayerListener != null)
+            mBnsPlayerListener.onPlayerCompletion();
     }
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        if(mBnsPlayerListener!=null)
-        mBnsPlayerListener.onPlayerPrepared();
+        if (mBnsPlayerListener != null)
+            mBnsPlayerListener.onPlayerPrepared();
     }
 
     public void close() {

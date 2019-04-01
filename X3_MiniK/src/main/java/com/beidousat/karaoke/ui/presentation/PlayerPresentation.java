@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.SurfaceView;
@@ -102,7 +103,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     private int mHdmiH = 1080;
 
     private RelativeLayout mRootView;
-
+    private CountDownTimer countDownTimer;
 
     public PlayerPresentation(Context outerContext, Display display) {
         super(outerContext, display);
@@ -427,6 +428,12 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     public void cleanScreen() {
         if(mWebView.getVisibility()==View.VISIBLE){
             mWebView.setVisibility(View.GONE);
+            mWebView.registerHandler(Common.INTERFACE_CLOSEWINDOWS, new BridgeHandler() {
+                @Override
+                public void handler(String s, CallBackFunction callBackFunction) {
+                    Logger.d("test","close:"+s);
+                }
+            });
             ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
             params.width = mHdmiW;
             params.height = mHdmiH;
