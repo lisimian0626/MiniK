@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.BnsPlayer;
+import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
@@ -158,6 +159,7 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
     }
 
     public void playUrl(String videoUrl,String savePath,String nexturi,String recordFileName,int playMode) {
+        Common.curSongPath=savePath;
         Logger.d(TAG, "record file name:" + recordFileName + "   videoUrl:" + videoUrl+"    savePath:"+savePath+"   nexturi:"+nexturi);
         setIsRecord(recordFileName);
         playUri(videoUrl,savePath,nexturi,recordFileName,playMode);

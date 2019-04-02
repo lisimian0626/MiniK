@@ -109,7 +109,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                     try {
                         downLoadInfo downLoadInfo = new downLoadInfo();
                         downLoadInfo.setDownUrl(uri);
-                        downLoadInfo.setSavePath(mFile.getAbsolutePath());
+                        downLoadInfo.setSavePath(savePath);
                         downLoadInfo.setPlayMode(playmode);
                         EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
                     } catch (Exception e) {
