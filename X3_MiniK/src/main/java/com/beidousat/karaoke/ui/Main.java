@@ -1532,6 +1532,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
      * 切歌
      **/
     private void next() {
+        countDownTimer.cancel();
 //        if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
 //            String order_sn = "";
 //            if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
@@ -1566,7 +1567,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
 
     private void playSong(Song song) {
-
+        PublicSong.index=-1;
 //        String orderSn = null;
 //        if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
 //            orderSn = BoughtMeal.getInstance().getTheLastPaystatus().getOrderSn();
@@ -1868,7 +1869,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         if(countDownTimer==null){
             initCountDownTimer();
         }
-        countDownTimer.cancel();
+
         String path = "";
         Logger.d(TAG, "playAD");
         handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);

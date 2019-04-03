@@ -11,7 +11,7 @@ import java.util.Random;
  */
 
 public class PublicSong {
-    private static int index=-1;
+    public static int index=-1;
     private static final String videoAdDir = "/data/PublicSong/";
 
 
