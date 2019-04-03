@@ -56,6 +56,10 @@ public class DownloadQueueHelper {
                     if(task!=null)
                     mListener.onDownloadTaskError(task, mThrowable.get(task.getId()));
                     break;
+                case CTRL_COMPLETE:
+                    BaseDownloadTask task1 = getTask(message);
+                    mListener.onDownloadComplete(task1);
+                    break;
             }
             return true;
         }

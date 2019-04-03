@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.adapter.DownloaderAdapter;
+import com.beidousat.karaoke.biz.SongHelper;
 import com.beidousat.karaoke.model.DownloadProgress;
 import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.DownloadBusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 
@@ -102,6 +104,11 @@ public class FmDownloader extends FmBaseDialog {
                 mAdapter.notifyDataSetChanged();
                 break;
             case EventBusId.Download.FINISH:
+                de = (DownloadBusEvent) event;
+                if(getContext()!=null){
+                    SongHelper.getInstance(getContext(), null).sendDownLoad(DeviceUtil.getCupChipID(),de.path);
+                }
+
                 /*de = (DownloadBusEvent) event;
                 for (DownloadProgress item : mSongs) {
                     if (ServerFileUtil.getFileUrl(item.song.SongFilePath).equals(de.url)) {

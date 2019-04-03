@@ -196,4 +196,6 @@ public class RequestMethod {
     public static final String UPLOAD_SONG="Play_song/set_song";
 
     public static final String BASEPLAY="index/baseplay ";
+
+    public static final String DOWNLOAD_TIMES="Binary/download_times";
 }

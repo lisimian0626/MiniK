@@ -115,4 +115,11 @@ public class HttpParamsUtils {
         params.put("score",String.valueOf(score));
         return params;
     }
+
+    public static Map<String, String> initDownLoadParams(String kboxSn,String savePath) {
+        Map<String, String> params = new HashMap<>();
+        params.put("device_sn", kboxSn);
+        params.put("file_path",savePath);
+        return params;
+    }
 }

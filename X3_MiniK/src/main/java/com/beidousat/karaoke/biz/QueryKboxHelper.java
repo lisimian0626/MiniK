@@ -12,6 +12,7 @@ import com.beidousat.karaoke.model.BasePlay;
 import com.beidousat.karaoke.model.KBox;
 import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.PayMent;
+import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.util.BasePlayFitter;
 import com.beidousat.karaoke.util.DownloadQueueHelper;
 import com.beidousat.libbns.model.Common;
@@ -20,6 +21,7 @@ import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.net.request.StoreHttpRequestListener;
+import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
@@ -147,7 +149,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                     }
                 }
                 if(list_add.size()>0){
-                    for (BasePlay basePlay:list_add){
+                    for (final BasePlay basePlay:list_add){
 //                        File file = DiskFileUtil.getDiskFileByUrl(basePlay.getSave_path());
 //                        if(file==null){
 //                            if (!DiskFileUtil.hasDiskStorage()) {
@@ -162,6 +164,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                                 @Override
                                 public void onDownloadComplete(BaseDownloadTask task) {
                                     Log.d(TAG, "download Commplete:" );
+                                    SongHelper.getInstance(mContext, null).sendDownLoad(DeviceUtil.getCupChipID(),basePlay.getSave_path());
                                 }
 
                                 @Override
@@ -176,7 +179,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 
                                 @Override
                                 public void onDownloadTaskOver() {
-
+                                    Log.d(TAG, "download Commplete:" );
                                 }
                             });
 

@@ -5,12 +5,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.beidousat.karaoke.LanApp;
+import com.beidousat.karaoke.biz.SongHelper;
 import com.beidousat.karaoke.db.DatabaseHelper;
 import com.beidousat.karaoke.db.service.SongDao;
 import com.beidousat.karaoke.model.DownloadProgress;
 import com.beidousat.karaoke.model.Song;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.net.download.DownloaderHelper;
+import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.StorageUtil;
@@ -77,6 +79,7 @@ public class MyDownloader {
 
         @Override
         protected void completed(BaseDownloadTask task) {
+
             //是否是最后一个任务
             isFinishAll = mSongCache.size() == 1;
             EventBusUtil.postDownloadProgress(task.getUrl(), task.getPath(), 100);

@@ -9,6 +9,7 @@ import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.net.request.StoreHttpRequestListener;
+import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
 
@@ -42,10 +43,20 @@ public class SongHelper implements StoreHttpRequestListener {
         upLoad(uploadSongData.getSongId(),uploadSongData.getSN(),uploadSongData.getPayTime(),uploadSongData.getFinishTime(),uploadSongData.getDuration(),uploadSongData.getScore());
     }
 
+
     private void upLoad(String songID,String orderSn,long playtime,long finishtime,int songlenght,int score){
         if(ServerConfigData.getInstance().getServerConfig()!=null&& ServerConfigData.getInstance().getServerConfig().getStore_web()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getStore_web())){
             StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.UPLOAD_SONG);
             storeHttpRequest.addParam(HttpParamsUtils.initUploadSongParams(PrefData.getRoomCode(mContext),songID,orderSn,playtime,finishtime,songlenght,score));
+            storeHttpRequest.setStoreHttpRequestListener(this);
+            storeHttpRequest.post();
+        }
+    }
+
+    public void sendDownLoad(String sn,String savaPath){
+        if(ServerConfigData.getInstance().getServerConfig()!=null&& ServerConfigData.getInstance().getServerConfig().getStore_web()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getStore_web())){
+            StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.DOWNLOAD_TIMES);
+            storeHttpRequest.addParam(HttpParamsUtils.initDownLoadParams(sn,savaPath));
             storeHttpRequest.setStoreHttpRequestListener(this);
             storeHttpRequest.post();
         }
