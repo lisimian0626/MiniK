@@ -1943,19 +1943,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 mAdVideo.DownLoadUrl = path;
                 mAdVideo.ADContent = path;
             }
-            mAudioChannelFlag = 4;
-            mKaraokeController.getPlayerStatus().playingType = 0;
-            mPlayingSong = null;
-            Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
-            try {
-                playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
-            } catch (IOException e) {
-                ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
-                Logger.w(TAG, "playSong ex:" + e.toString());
-            }
+
         }
 
-
+        mAudioChannelFlag = 4;
+        mKaraokeController.getPlayerStatus().playingType = 0;
+        mPlayingSong = null;
+        Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
+        try {
+            playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
+        } catch (IOException e) {
+            ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
+            Logger.w(TAG, "playSong ex:" + e.toString());
+        }
     }
 
     private Runnable runShowScoreResult = new Runnable() {
