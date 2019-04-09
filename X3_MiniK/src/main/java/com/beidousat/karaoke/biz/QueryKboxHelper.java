@@ -130,6 +130,8 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             }
             Logger.d(TAG,"def_play:"+kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
             String jsonBefore=PreferenceUtil.getString(mContext, "def_play","");
+            ArrayList<String> filelist=refreshFileList("路径",new ArrayList<String>());
+
             if(TextUtils.isEmpty(jsonBefore)||jsonBefore.equals("[]")) {
 
             }else{
@@ -290,4 +292,21 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 
             void onFeedback(boolean suceed, String msg, Object obj);
         }
+
+    public ArrayList<String> refreshFileList(String strPath,ArrayList<String> filelist) {
+        //遍历指定目录
+        File dir = new File(strPath);
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    filelist=refreshFileList(files[i].getAbsolutePath(),filelist);
+                }
+                else {
+                    filelist.add(files[i].getAbsolutePath());
+                }
+            }
+        }
+        return filelist;
+    }
     }
