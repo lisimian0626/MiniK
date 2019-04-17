@@ -135,18 +135,27 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             if(kBox.getBasePlayList()==null||kBox.getBasePlayList().equals("[]")) {
 
             }else{
+
                 List<BasePlay> basePlayListBefor = BasePlay.arrayBasePlayFromData(jsonBefore);
                 List<BasePlay> basePlayListNow = kBox.getBasePlayList();
                 List<BasePlay> list_add = new ArrayList<>();
                 final List<BasePlay> list_delete = new ArrayList<>();
-                List<BasePlay> list_diffent = BasePlayFitter.getDiffrent(basePlayListBefor_new, basePlayListNow);
+                List<BasePlay> list_diffent = BasePlayFitter.getDiffrent(basePlayListNow, basePlayListBefor);
                 for (BasePlay p : list_diffent) {
+                    if(p.getType().equals("mp4")){
+                        if (basePlayListBefor.contains(p)) {
+
+                        } else {
+                            list_add.add(p);
+                        }
+                    }
+                }
+                List<BasePlay> list_diffent2 = BasePlayFitter.getDiffrent(basePlayListBefor_new, basePlayListBefor);
+                for (BasePlay p : list_diffent2) {
                     if(p.getType().equals("mp4")){
                         if (basePlayListBefor.contains(p)) {
                             Logger.d(TAG,"diffent:"+p.getSave_path());
                             list_delete.add(p);
-                        } else {
-                            list_add.add(p);
                         }
                     }
                 }
@@ -157,7 +166,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 //                            if (!DiskFileUtil.hasDiskStorage()) {
 //                                return;
 //                            }
-                            List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                            final List<BaseDownloadTask> mTaskList = new ArrayList<>();
                             BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(basePlay.getDownload_url())
                                     .setPath(FileUtil.getSongPath(basePlay.getSave_path()));
                             mTaskList.add(task);
@@ -165,7 +174,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                             DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
                                 @Override
                                 public void onDownloadComplete(BaseDownloadTask task) {
-                                    Log.d(TAG, "download Commplete:" );
+//                                    Log.d(TAG, "download Commplete:" );
                                     SongHelper.getInstance(mContext, null).sendDownLoad(DeviceUtil.getCupChipID(),basePlay.getSave_path());
                                 }
 
@@ -181,24 +190,24 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 
                                 @Override
                                 public void onDownloadTaskOver() {
-                                    Log.d(TAG, "download Commplete:" );
-                                    if(list_delete.size()>0){
-                                        for (BasePlay basePlay:list_delete){
-                                            Logger.d(getClass().getSimpleName(),"deleteFile:"+FileUtil.getSongSaveDir(basePlay.getSave_path()));
-                                            FileUtil.deleteFile(FileUtil.getSongSaveDir(basePlay.getSave_path()));
-                                        }
-                                    }
-                                    PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+                                       if(mTaskList.size()==0){
+                                           Log.d(TAG, "download onDownloadTaskOver() :" );
+                                           PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+                                       }
                                 }
                             });
 
-//                        }else {
-//                                LanApp.getInstance().copyFile(file, FileUtil.getSongDir(basePlay.getSave_path()));
-//                        }
                     }
 
+                }else{
+                    PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
                 }
-
+                if(list_delete.size()>0){
+                    for (BasePlay basePlay:list_delete){
+                        Logger.d(getClass().getSimpleName(),"deleteFile:"+FileUtil.getSongSaveDir(basePlay.getSave_path()));
+                        FileUtil.deleteFile(FileUtil.getSongSaveDir(basePlay.getSave_path()));
+                    }
+                }
             }
 
 //            if (kBox.getDef_play() != null && kBox.getDef_play().length > 0) {
@@ -299,6 +308,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         for (String path:filelist) {
             BasePlay basePlay=new BasePlay();
             basePlay.setSave_path(path);
+            basePlay.setType("mp4");
             basePlayList.add(basePlay);
         }
         return basePlayList;
