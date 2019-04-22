@@ -122,7 +122,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
     public void onStoreSuccess(String method, Object object) {
         Logger.d("QueryKboxHelper", "onSuccess :" + object);
         if (object != null && object instanceof KBox) {
-            KBox kBox = (KBox) object;
+            final KBox kBox = (KBox) object;
             if (kBox.getAutocephalous() != null && kBox.getAutocephalous().equals("1")) {
                 PreferenceUtil.setBoolean(mContext, "isSingle", true);
             } else {
@@ -130,21 +130,32 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             }
             Logger.d(TAG,"def_play:"+kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
             String jsonBefore=PreferenceUtil.getString(mContext, "def_play","");
-            if(TextUtils.isEmpty(jsonBefore)||jsonBefore.equals("[]")) {
+            List<BasePlay> basePlayListBefor_new=getCurBasePlay(refreshFileList(FileUtil.getApkDir().getAbsolutePath(),new ArrayList<String>()));
+
+            if(kBox.getBasePlayList()==null||kBox.getBasePlayList().equals("[]")) {
 
             }else{
+
                 List<BasePlay> basePlayListBefor = BasePlay.arrayBasePlayFromData(jsonBefore);
                 List<BasePlay> basePlayListNow = kBox.getBasePlayList();
                 List<BasePlay> list_add = new ArrayList<>();
-                List<BasePlay> list_delete = new ArrayList<>();
-                List<BasePlay> list_diffent = BasePlayFitter.getDiffrent(basePlayListBefor, basePlayListNow);
+                final List<BasePlay> list_delete = new ArrayList<>();
+                List<BasePlay> list_diffent = BasePlayFitter.getDiffrent(basePlayListNow, basePlayListBefor);
                 for (BasePlay p : list_diffent) {
+                    if(p.getType().equals("mp4")){
+                        if (basePlayListBefor.contains(p)) {
+
+                        } else {
+                            list_add.add(p);
+                        }
+                    }
+                }
+                List<BasePlay> list_diffent2 = BasePlayFitter.getDiffrent(basePlayListBefor_new, basePlayListBefor);
+                for (BasePlay p : list_diffent2) {
                     if(p.getType().equals("mp4")){
                         if (basePlayListBefor.contains(p)) {
                             Logger.d(TAG,"diffent:"+p.getSave_path());
                             list_delete.add(p);
-                        } else {
-                            list_add.add(p);
                         }
                     }
                 }
@@ -155,7 +166,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 //                            if (!DiskFileUtil.hasDiskStorage()) {
 //                                return;
 //                            }
-                            List<BaseDownloadTask> mTaskList = new ArrayList<>();
+                            final List<BaseDownloadTask> mTaskList = new ArrayList<>();
                             BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(basePlay.getDownload_url())
                                     .setPath(FileUtil.getSongPath(basePlay.getSave_path()));
                             mTaskList.add(task);
@@ -163,7 +174,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                             DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
                                 @Override
                                 public void onDownloadComplete(BaseDownloadTask task) {
-                                    Log.d(TAG, "download Commplete:" );
+//                                    Log.d(TAG, "download Commplete:" );
                                     SongHelper.getInstance(mContext, null).sendDownLoad(DeviceUtil.getCupChipID(),basePlay.getSave_path());
                                 }
 
@@ -179,25 +190,26 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 
                                 @Override
                                 public void onDownloadTaskOver() {
-                                    Log.d(TAG, "download Commplete:" );
+                                       if(mTaskList.size()==0){
+                                           Log.d(TAG, "download onDownloadTaskOver() :" );
+                                           PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+                                       }
                                 }
                             });
 
-//                        }else {
-//                                LanApp.getInstance().copyFile(file, FileUtil.getSongDir(basePlay.getSave_path()));
-//                        }
                     }
 
+                }else{
+                    PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
                 }
                 if(list_delete.size()>0){
                     for (BasePlay basePlay:list_delete){
                         Logger.d(getClass().getSimpleName(),"deleteFile:"+FileUtil.getSongSaveDir(basePlay.getSave_path()));
                         FileUtil.deleteFile(FileUtil.getSongSaveDir(basePlay.getSave_path()));
                     }
-
                 }
             }
-            PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+
 //            if (kBox.getDef_play() != null && kBox.getDef_play().length > 0) {
 //                for (int i = 0; i < kBox.getDef_play().length; i++) {
 //                    if (DiskFileUtil.getDiskFileByUrl(kBox.getDef_play()[i]) != null) {
@@ -290,4 +302,34 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 
             void onFeedback(boolean suceed, String msg, Object obj);
         }
+
+    private List<BasePlay> getCurBasePlay(ArrayList<String> filelist){
+            List<BasePlay> basePlayList=new ArrayList<>();
+        for (String path:filelist) {
+            BasePlay basePlay=new BasePlay();
+            basePlay.setSave_path(path);
+            basePlay.setType("mp4");
+            basePlayList.add(basePlay);
+        }
+        return basePlayList;
+    }
+
+
+    public ArrayList<String> refreshFileList(String strPath,ArrayList<String> filelist) {
+        //遍历指定目录
+        File dir = new File(strPath);
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    filelist=refreshFileList(files[i].getAbsolutePath(),filelist);
+                }
+                else {
+                    filelist.add(files[i].getAbsolutePath());
+                    Logger.d(TAG,"filepath:"+files[i].getAbsolutePath());
+                }
+            }
+        }
+        return filelist;
+    }
     }

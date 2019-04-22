@@ -7,12 +7,14 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 
 /**
@@ -185,6 +187,53 @@ public class FileUtil {
         {
             return -1;
         }
+    }
+
+    private final static String FileName = "a23.wav";
+
+    /**
+     * 根据文件路径拷贝文件
+     * @param src 源文件
+     * @param destPath 目标文件路径
+     * @return boolean 成功true、失败false
+     */
+    public static boolean copyFile_new(File src, String destPath) {
+        boolean result = false;
+        if ((src == null) || (destPath== null)) {
+            return result;
+        }
+        File dest= new File(destPath + FileName);
+        if (dest!= null && dest.exists()) {
+            dest.delete(); // delete file
+        }
+        try {
+            dest.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        FileChannel srcChannel = null;
+        FileChannel dstChannel = null;
+
+        try {
+            srcChannel = new FileInputStream(src).getChannel();
+            dstChannel = new FileOutputStream(dest).getChannel();
+            srcChannel.transferTo(0, srcChannel.size(), dstChannel);
+            result = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return result;
+        }
+        try {
+            srcChannel.close();
+            dstChannel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public static void deleteFile(File file) {

@@ -118,7 +118,7 @@ public class LanApp extends Application {
         new RxAsyncTask<File, String, String>() {
             @Override
             protected String call(File... files) {
-                FileUtil.copyFile(files[0], files[1]);
+                FileUtil.copyFile_new(files[0], files[1].getAbsolutePath());
                 return null;
             }
         }.execute(souce, desPath);
