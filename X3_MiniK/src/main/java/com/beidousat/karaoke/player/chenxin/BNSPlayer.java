@@ -11,6 +11,7 @@ import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.local.LocalFileCache;
 import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.player.proxy.CacheFile;
+import com.beidousat.karaoke.player.proxy.Config;
 import com.beidousat.karaoke.player.proxy.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.libbns.evenbus.EventBusId;
@@ -23,6 +24,8 @@ import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.Logger;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Created by J Wong on 2017/5/3.
@@ -49,12 +52,15 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
             case BnsConfig.PUBLIC:
                 this.mBnsPlayerListener = listener;
                 File file = DiskFileUtil.getDiskFileByUrl(savePath);
-                String n_uri = ServerConfigData.getInstance().getServerConfig()==null?uri:ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
-                String n_next_uri =ServerConfigData.getInstance().getServerConfig()==null?next_uri:ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
+                String  n_uri = ServerConfigData.getInstance().getServerConfig()==null? BnsConfig.LocalAddress+savePath:ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
+                String n_next_uri =ServerConfigData.getInstance().getServerConfig()==null?BnsConfig.LocalAddress+savePath:ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
                 String playUrl = null;
                 try {
                     if (file != null) {//存在本地文件
-                        Logger.d("BNSPlayer", "file length：" + String.valueOf(file.length()));
+//                        Logger.d("BNSPlayer", "file length：" + String.valueOf(file.length()));
+//                        Logger.d("BNSPlayer", "uri:" + uri);
+//                        Logger.d("BNSPlayer", "n_uri:" + n_uri);
+//                        Logger.d("BNSPlayer", "local_uri:" + BnsConfig.LocalAddress+savePath);
                         if (file.length() < 1024 * 1024) {
                             file.delete();
                             EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");

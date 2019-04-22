@@ -6,8 +6,8 @@ package com.beidousat.libbns.util;
 
 public class BnsConfig {
       public final static String ProxyHost="http://media.imtbox.com/";
-//    public final static String SERVER_ADDRESS = "172.30.4.230";
-
+    public final static String LocalAddress = "http://127.0.0.1/";
+//    public final static String LocalAddress = "http://vl.imbox.com/";
     /**
      * VOD api
      */
@@ -28,7 +28,7 @@ public class BnsConfig {
     /**
      * 是否开启LOG
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * 普通倒计时(结束、续费)
