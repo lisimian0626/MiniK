@@ -13,8 +13,8 @@ android {
         applicationId "com.beidousat.karaoke"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 321
-        versionName "V2.0.3"
+        versionCode 322
+        versionName "V2.0.4"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
@@ -66,7 +66,7 @@ android {
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('apk')) {
                 // 输出apk名称为test_v1.0_2016-08-15_wandoujia.apk
-                def fileName = "YNH_MiniK_${defaultConfig.versionName}_${releaseTime()}.apk"
+                def fileName = "YNH_MiniK_${defaultConfig.versionName}_${defaultConfig.versionCode}_${releaseTime()}.apk"
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }
