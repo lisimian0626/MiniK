@@ -144,8 +144,8 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 }
                 if (list_delete.size() > 0) {
                     for (BasePlay basePlay : list_delete) {
-                        Logger.d(getClass().getSimpleName(), "deleteFile:" + FileUtil.getSongSaveDir(basePlay.getSave_path()));
-                        FileUtil.deleteFile(FileUtil.getSongSaveDir(basePlay.getSave_path()));
+                        Logger.d(getClass().getSimpleName(), "deleteFile:" + FileUtil.getDeleteSongSaveDir(basePlay.getSave_path()));
+                        FileUtil.deleteFile(FileUtil.getDeleteSongSaveDir(basePlay.getSave_path()));
                     }
                 }
             }

@@ -756,7 +756,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         public void onDownloadComplete(BaseDownloadTask task) {
                             Log.d(TAG, "download Commplete: main");
                             SongHelper.getInstance(Main.this, null).sendDownLoad(DeviceUtil.getCupChipID(), downLoadInfo.getSavePath());
-                            next();
+                            if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
+                                next();
+                            }
                         }
 
                         @Override
@@ -774,20 +776,21 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //                            Log.d(TAG, "download Commplete: main");
                         }
                     });
-                    mRoot.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
-                                if (player != null || player_cx != null) {
-                                    mKaraokeController.getPlayerStatus().isMute = false;
-                                    closePauseTipView();
-                                    next();
-                                    if (mPresentation != null && ChooseSongs.getInstance(Main.this).getSongs().size() > 0)
-                                        mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
-                                }
-                            }
-                        }
-                    }, 180 * 1000);
+                    countDownTimer.start();
+//                    mRoot.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
+//                                if (player != null || player_cx != null) {
+//                                    mKaraokeController.getPlayerStatus().isMute = false;
+//                                    closePauseTipView();
+//                                    next();
+//                                    if (mPresentation != null && ChooseSongs.getInstance(Main.this).getSongs().size() > 0)
+//                                        mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
+//                                }
+//                            }
+//                        }
+//                    }, 180 * 1000);
                 }
                 break;
             case EventBusId.id.PLAYER_STATUS_CHANGED:

@@ -22,7 +22,7 @@ import java.security.MessageDigest;
  */
 
 public class FileUtil {
-    private static final String APP_ROOT_DIR = "/MiniK/";
+    private static final String APP_ROOT_DIR = "/MiniK";
     public static String readFileContent(String strFilePath) {
         StringBuilder builder = new StringBuilder();
         Log.w("FileUtil", "readFileContent file :" + strFilePath);
@@ -294,9 +294,21 @@ public class FileUtil {
             e.printStackTrace();
             return null;
         }
-
         return null;
     }
+    public static File getDeleteSongSaveDir(String savePath) {
+        try {
+            File file = new File(savePath);
+            if(file.exists()){
+                return file;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
     public static String getApkRootPath() {
         String filepath = Environment.getExternalStorageDirectory()+APP_ROOT_DIR;
         File file = new File(filepath);
