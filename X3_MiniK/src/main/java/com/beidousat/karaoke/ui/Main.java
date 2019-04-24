@@ -748,7 +748,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
                     List<BaseDownloadTask> mTaskList = new ArrayList<>();
                     BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()))
-                            .setPath(downLoadInfo.getPlayMode() == BnsConfig.NORMAL ? DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()) : FileUtil.getSongPath(downLoadInfo.getSavePath()));
+                            .setPath(downLoadInfo.getPlayMode() == BnsConfig.PUBLIC ?  FileUtil.getSongPath(downLoadInfo.getSavePath()):DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
                     mTaskList.add(task);
                     DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
                     DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
@@ -756,6 +756,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         public void onDownloadComplete(BaseDownloadTask task) {
                             Log.d(TAG, "download Commplete: main");
                             SongHelper.getInstance(Main.this, null).sendDownLoad(DeviceUtil.getCupChipID(), downLoadInfo.getSavePath());
+                            next();
                         }
 
                         @Override
@@ -781,13 +782,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                     mKaraokeController.getPlayerStatus().isMute = false;
                                     closePauseTipView();
                                     next();
-
                                     if (mPresentation != null && ChooseSongs.getInstance(Main.this).getSongs().size() > 0)
                                         mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
                                 }
                             }
                         }
-                    }, 10 * 1000);
+                    }, 180 * 1000);
                 }
                 break;
             case EventBusId.id.PLAYER_STATUS_CHANGED:

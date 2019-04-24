@@ -61,7 +61,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         this.mCard_code = card_code;
     }
 
-    public void getBoxInfo(String kbox_sn,String chip) {
+    public void getBoxInfo(String kbox_sn, String chip) {
 //        SSLHttpRequest request = new SSLHttpRequest(mContext, RequestMethod.GET_KBOX);
 //        request.addParam(HttpParamsUtils.initKBoxParams(PrefData.getRoomCode(mContext)));
 //        request.setHttpRequestListener(this);
@@ -71,7 +71,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             return;
         }
         StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.STORE_KBOX);
-        storeHttpRequest.addParam(HttpParamsUtils.initKBoxParams(kbox_sn,chip, mCard_code));
+        storeHttpRequest.addParam(HttpParamsUtils.initKBoxParams(kbox_sn, chip, mCard_code));
         storeHttpRequest.setStoreHttpRequestListener(this);
         storeHttpRequest.setConvert2Class(KBox.class);
         storeHttpRequest.post();
@@ -128,131 +128,57 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             } else {
                 PreferenceUtil.setBoolean(mContext, "isSingle", false);
             }
-            Logger.d(TAG,"def_play:"+kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
-            String jsonBefore=PreferenceUtil.getString(mContext, "def_play","");
-            List<BasePlay> basePlayListBefor_new=getCurBasePlay(refreshFileList(FileUtil.getApkDir().getAbsolutePath(),new ArrayList<String>()));
+            Logger.d(TAG, "def_play:" + kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+            List<BasePlay> curBasePlay = getCurBasePlay(refreshFileList(FileUtil.getApkDir().getAbsolutePath(), new ArrayList<String>()));
+            if (kBox.getBasePlayList() == null || kBox.getBasePlayList().equals("[]")) {
 
-            if(kBox.getBasePlayList()==null||kBox.getBasePlayList().equals("[]")) {
-
-            }else{
-
-                List<BasePlay> basePlayListBefor = BasePlay.arrayBasePlayFromData(jsonBefore);
-                List<BasePlay> basePlayListNow = kBox.getBasePlayList();
-                List<BasePlay> list_add = new ArrayList<>();
-                final List<BasePlay> list_delete = new ArrayList<>();
-                List<BasePlay> list_diffent = BasePlayFitter.getDiffrent(basePlayListNow, basePlayListBefor);
-                for (BasePlay p : list_diffent) {
-                    if(p.getType().equals("mp4")){
-                        if (basePlayListBefor.contains(p)) {
-
-                        } else {
-                            list_add.add(p);
+            } else {
+                List<BasePlay> list_delete = new ArrayList<>();
+                for (BasePlay basePlay : curBasePlay) {
+                    if (basePlay.getType().equals("mp4")) {
+                        if (!kBox.getBasePlayList().contains(basePlay)) {
+                            Logger.d(TAG, "diffent:" + basePlay.getSave_path());
+                            list_delete.add(basePlay);
                         }
                     }
                 }
-                List<BasePlay> list_diffent2 = BasePlayFitter.getDiffrent(basePlayListBefor_new, basePlayListBefor);
-                for (BasePlay p : list_diffent2) {
-                    if(p.getType().equals("mp4")){
-                        if (basePlayListBefor.contains(p)) {
-                            Logger.d(TAG,"diffent:"+p.getSave_path());
-                            list_delete.add(p);
-                        }
-                    }
-                }
-                if(list_add.size()>0){
-                    for (final BasePlay basePlay:list_add){
-//                        File file = DiskFileUtil.getDiskFileByUrl(basePlay.getSave_path());
-//                        if(file==null){
-//                            if (!DiskFileUtil.hasDiskStorage()) {
-//                                return;
-//                            }
-                            final List<BaseDownloadTask> mTaskList = new ArrayList<>();
-                            BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(basePlay.getDownload_url())
-                                    .setPath(FileUtil.getSongPath(basePlay.getSave_path()));
-                            mTaskList.add(task);
-                            DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
-                            DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
-                                @Override
-                                public void onDownloadComplete(BaseDownloadTask task) {
-//                                    Log.d(TAG, "download Commplete:" );
-                                    SongHelper.getInstance(mContext, null).sendDownLoad(DeviceUtil.getCupChipID(),basePlay.getSave_path());
-                                }
-
-                                @Override
-                                public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
-                                    Log.d(TAG, "download Error:" );
-                                }
-
-                                @Override
-                                public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                                    Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
-                                }
-
-                                @Override
-                                public void onDownloadTaskOver() {
-                                       if(mTaskList.size()==0){
-                                           Log.d(TAG, "download onDownloadTaskOver() :" );
-                                           PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
-                                       }
-                                }
-                            });
-
-                    }
-
-                }else{
-                    PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
-                }
-                if(list_delete.size()>0){
-                    for (BasePlay basePlay:list_delete){
-                        Logger.d(getClass().getSimpleName(),"deleteFile:"+FileUtil.getSongSaveDir(basePlay.getSave_path()));
+                if (list_delete.size() > 0) {
+                    for (BasePlay basePlay : list_delete) {
+                        Logger.d(getClass().getSimpleName(), "deleteFile:" + FileUtil.getSongSaveDir(basePlay.getSave_path()));
                         FileUtil.deleteFile(FileUtil.getSongSaveDir(basePlay.getSave_path()));
                     }
                 }
             }
-
-//            if (kBox.getDef_play() != null && kBox.getDef_play().length > 0) {
-//                for (int i = 0; i < kBox.getDef_play().length; i++) {
-//                    if (DiskFileUtil.getDiskFileByUrl(kBox.getDef_play()[i]) != null) {
-//                        File file = new File(DiskFileUtil.getDiskFileByUrl(kBox.getDef_play()[i]).getAbsolutePath());
-//                        if (file.exists()) {
-//                            file.delete();
-//                            Log.e(TAG, "delete:" + file.getAbsolutePath());
-//                        }
-////        }
-//                    }
-//                }
-//            }
-
-                KBoxInfo.getInstance().setKBox(kBox);
-
-            } else if (object != null && object instanceof KboxConfig) {
-                KboxConfig kboxConfig = (KboxConfig) object;
-                ServerConfig config = new ServerConfig();
-                config.setAd_web(kboxConfig.getAd_web());
+            PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+            KBoxInfo.getInstance().setKBox(kBox);
+        } else if (object != null && object instanceof KboxConfig) {
+            KboxConfig kboxConfig = (KboxConfig) object;
+            ServerConfig config = new ServerConfig();
+            config.setAd_web(kboxConfig.getAd_web());
 //            config.setKbox_ip(kboxConfig.getKbox_ip());
-                String kbox_url = kboxConfig.getStore_ip_port();
-                String[] kbox_ipandport = kbox_url.split(":");
-                if (kbox_ipandport != null) {
-                    config.setStore_ip(kbox_ipandport[0]);
-                    config.setStore_port(Integer.parseInt(kbox_ipandport[1]));
-                } else {
-                    config.setStore_ip(kbox_url);
-                    config.setStore_port(1260);
-                }
-                config.setStore_web(KBoxInfo.STORE_WEB);
-                config.setVod_server(kboxConfig.getVod_server());
-                ServerConfigData.getInstance().setConfigData(config);
+            String kbox_url = kboxConfig.getStore_ip_port();
+            String[] kbox_ipandport = kbox_url.split(":");
+            if (kbox_ipandport != null) {
+                config.setStore_ip(kbox_ipandport[0]);
+                config.setStore_port(Integer.parseInt(kbox_ipandport[1]));
+            } else {
+                config.setStore_ip(kbox_url);
+                config.setStore_port(1260);
+            }
+            config.setStore_web(KBoxInfo.STORE_WEB);
+            config.setVod_server(kboxConfig.getVod_server());
+            ServerConfigData.getInstance().setConfigData(config);
 
 //            Logger.d(TAG,"kbox_ipandport:"+kboxConfig.getStore_ip_port()+"~~~~~~"+"kbox_url:"+kboxConfig.getStore_ip_port()+"~~~~~~~~~~~~"+"kbox_ip:"+kboxConfig.getKbox_ip());
-            } else if (object != null && object instanceof ArrayList) {
-                List<PayMent> payMentList = (List<PayMent>) object;
-                KBoxInfo.getInstance().setmPayMentlist(payMentList);
-                Logger.d(TAG, "url :" + payMentList.get(0).getLogo_url());
-            }
-            if (mQueryKboxFeedback != null) {
-                mQueryKboxFeedback.onFeedback(true, null, object);
-            }
+        } else if (object != null && object instanceof ArrayList) {
+            List<PayMent> payMentList = (List<PayMent>) object;
+            KBoxInfo.getInstance().setmPayMentlist(payMentList);
+            Logger.d(TAG, "url :" + payMentList.get(0).getLogo_url());
         }
+        if (mQueryKboxFeedback != null) {
+            mQueryKboxFeedback.onFeedback(true, null, object);
+        }
+    }
 
 //    @Override
 //    public void onStart(String method) {
@@ -261,7 +187,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 //        }
 //    }
 
-        private Handler handler = new Handler();
+    private Handler handler = new Handler();
 
 //    public void loadKBoxInfo(Context context, final QueryKboxFeedback cb) {
 //        SSLHttpRequest request = new SSLHttpRequest(context, RequestMethod.GET_KBOX);
@@ -297,16 +223,16 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 //        request.doPost(0);
 //    }
 
-        public interface QueryKboxFeedback {
-            void onStart();
+    public interface QueryKboxFeedback {
+        void onStart();
 
-            void onFeedback(boolean suceed, String msg, Object obj);
-        }
+        void onFeedback(boolean suceed, String msg, Object obj);
+    }
 
-    private List<BasePlay> getCurBasePlay(ArrayList<String> filelist){
-            List<BasePlay> basePlayList=new ArrayList<>();
-        for (String path:filelist) {
-            BasePlay basePlay=new BasePlay();
+    private List<BasePlay> getCurBasePlay(ArrayList<String> filelist) {
+        List<BasePlay> basePlayList = new ArrayList<>();
+        for (String path : filelist) {
+            BasePlay basePlay = new BasePlay();
             basePlay.setSave_path(path);
             basePlay.setType("mp4");
             basePlayList.add(basePlay);
@@ -315,21 +241,20 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
     }
 
 
-    public ArrayList<String> refreshFileList(String strPath,ArrayList<String> filelist) {
+    public ArrayList<String> refreshFileList(String strPath, ArrayList<String> filelist) {
         //遍历指定目录
         File dir = new File(strPath);
         File[] files = dir.listFiles();
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
-                    filelist=refreshFileList(files[i].getAbsolutePath(),filelist);
-                }
-                else {
+                    filelist = refreshFileList(files[i].getAbsolutePath(), filelist);
+                } else {
                     filelist.add(files[i].getAbsolutePath());
-                    Logger.d(TAG,"filepath:"+files[i].getAbsolutePath());
+                    Logger.d(TAG, "filepath:" + files[i].getAbsolutePath());
                 }
             }
         }
         return filelist;
     }
-    }
+}

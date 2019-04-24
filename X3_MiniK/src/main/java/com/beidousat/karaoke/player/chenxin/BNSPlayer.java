@@ -11,7 +11,6 @@ import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.local.LocalFileCache;
 import com.beidousat.karaoke.player.local.LocalFileProxy;
 import com.beidousat.karaoke.player.proxy.CacheFile;
-import com.beidousat.karaoke.player.proxy.Config;
 import com.beidousat.karaoke.player.proxy.HttpGetProxy;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.libbns.evenbus.EventBusId;
@@ -24,8 +23,6 @@ import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.Logger;
 
 import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Created by J Wong on 2017/5/3.
@@ -56,10 +53,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 String playUrl = null;
                 try {
                     if (file != null) {//存在本地文件
-//                        Logger.d("BNSPlayer", "file length：" + String.valueOf(file.length()));
-//                        Logger.d("BNSPlayer", "uri:" + uri);
-//                        Logger.d("BNSPlayer", "n_uri:" + n_uri);
-//                        Logger.d("BNSPlayer", "local_uri:" + BnsConfig.LocalAddress+savePath);
+                        Logger.d("BNSPlayer", "file length：" + String.valueOf(file.length()));
                         if (file.length() < 1024 * 1024) {
                             file.delete();
                             EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
@@ -106,7 +100,8 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 }
                 break;
             case BnsConfig.PUBLIC:
-                File mFile = DiskFileUtil.getDiskFileByUrl(savePath);
+                this.mBnsPlayerListener = listener;
+                File mFile = FileUtil.getSongSaveDir(savePath);
                 if (mFile != null) {
                     Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
                     mPlayer.open(mFile.getAbsolutePath(), this, this, playmode);
