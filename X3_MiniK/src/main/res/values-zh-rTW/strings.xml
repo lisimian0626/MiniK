@@ -409,7 +409,7 @@
     <string name="room_input">輸入房號</string>
     <string name="roomcode_id">房間編號：未設置</string>
     <string name="roomcode_input">請填寫房間編號</string>
-
+    <string name="room_repeat">房間號沒有改變</string>
     <string name="password_before">請輸入原密碼</string>
     <string name="password_new">請設置新密碼</string>
     <string name="password_confirm">請確認密碼</string>

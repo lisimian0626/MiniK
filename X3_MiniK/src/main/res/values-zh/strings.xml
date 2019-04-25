@@ -412,7 +412,9 @@
     <string name="password_before">请输入原密码</string>
     <string name="password_new">请设置新密码</string>
     <string name="password_confirm">请确认密码</string>
-
+    <string name="room_repeat">房间号没有改变</string>
+    
+    
     <string name="Porter_rate">波特率</string>
     <string name="Reset">重 置</string>
     <string name="MIC_UP">麦克风+</string>

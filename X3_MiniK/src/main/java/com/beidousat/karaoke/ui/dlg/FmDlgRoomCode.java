@@ -164,6 +164,7 @@ public class FmDlgRoomCode extends FmBaseDialog{
                             String pwd = mEtPwd.getText().toString().trim();
                             if (!TextUtils.isEmpty(pwd)) {
                                 if(pwd.equals(PrefData.getRoomCode(getContext().getApplicationContext()))){
+                                    ToastUtils.toast(getContext(), getString(R.string.room_repeat));
                                     return;
                                 }
                                 final String kbox_sn="B" + pwd;

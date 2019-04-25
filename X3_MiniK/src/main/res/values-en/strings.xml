@@ -399,7 +399,7 @@
     <string name="room_input">Enter the device NO.</string>
     <string name="roomcode_id">Device NO.: not set</string>
     <string name="roomcode_input">Please fill in the device NO.</string>
-
+    <string name="room_repeat">The room number not changed.</string>
     <string name="password_before">Please input the original password</string>
     <string name="password_new">Please set up a new password</string>
     <string name="password_confirm">Please confirm the password</string>
