@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.local.LocalFileCache;
@@ -107,15 +108,20 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                     mPlayer.open(mFile.getAbsolutePath(), this, this, playmode);
                 } else {
                     Logger.d(TAG, "public file:" + "不存在");
-                    try {
-                        downLoadInfo downLoadInfo = new downLoadInfo();
-                        downLoadInfo.setDownUrl(uri);
-                        downLoadInfo.setSavePath(savePath);
-                        downLoadInfo.setPlayMode(playmode);
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("test", "下载失败");
+                    File diskFile = DiskFileUtil.getDiskFileByUrl(savePath);
+                    if(diskFile!=null){
+                        LanApp.getInstance().copyFile(diskFile,FileUtil.getSongDir(savePath));
+                    }else{
+                        try {
+                            downLoadInfo downLoadInfo = new downLoadInfo();
+                            downLoadInfo.setDownUrl(uri);
+                            downLoadInfo.setSavePath(savePath);
+                            downLoadInfo.setPlayMode(playmode);
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e("test", "下载失败");
+                        }
                     }
                 }
                 break;

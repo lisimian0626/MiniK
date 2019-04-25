@@ -1,6 +1,10 @@
 package com.beidousat.karaoke.util;
 
 
+import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
+import com.beidousat.libbns.util.Logger;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -69,6 +73,8 @@ public abstract class RxAsyncTask<Param, Progress, Result> {
 
     /**RxJava中的onComplete回调*/
     protected void onCompleted() {
+        Logger.d("test","task oncompleted");
+        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
     }
     /**RxJava中的onError回调*/
     protected void onError(Throwable e) {
