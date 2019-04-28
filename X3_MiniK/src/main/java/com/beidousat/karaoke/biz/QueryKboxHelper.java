@@ -1,6 +1,7 @@
 package com.beidousat.karaoke.biz;
 
 import android.content.Context;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -144,8 +145,8 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 }
                 if (list_delete.size() > 0) {
                     for (BasePlay basePlay : list_delete) {
-                        Logger.d(getClass().getSimpleName(), "deleteFile:" + FileUtil.getDeleteSongSaveDir(basePlay.getSave_path()));
-                        FileUtil.deleteFile(FileUtil.getDeleteSongSaveDir(basePlay.getSave_path()));
+
+                        FileUtil.deleteFile(new File(Environment.getExternalStorageDirectory()+FileUtil.APP_ROOT_DIR+basePlay.getSave_path()));
                     }
                 }
             }
@@ -233,7 +234,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         List<BasePlay> basePlayList = new ArrayList<>();
         for (String path : filelist) {
             BasePlay basePlay = new BasePlay();
-            basePlay.setSave_path(path);
+            basePlay.setSave_path(FileUtil.getDeleteSongSavePath(path));
             basePlay.setType("mp4");
             basePlayList.add(basePlay);
         }

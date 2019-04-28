@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.ui.Main;
@@ -160,42 +161,6 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                             e.printStackTrace();
                             Log.e("test", "下载失败");
                         }
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, savePath);
-//                            }
-//                        }, 10 * 1000);
-
-//                        if (!DiskFileUtil.hasDiskStorage()) {
-//                            return;
-//                        }
-//                        List<BaseDownloadTask> mTaskList = new ArrayList<>();
-//                        BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)
-//                                .setPath(DiskFileUtil.getFileSavedPath(savePath));
-//                        mTaskList.add(task);
-//                        DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
-//                        DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
-//                            @Override
-//                            public void onDownloadComplete(BaseDownloadTask task) {
-//                                Log.d(TAG, "download Commplete:");
-//                            }
-//
-//                            @Override
-//                            public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
-//                                Log.d(TAG, "download Error:");
-//                            }
-//
-//                            @Override
-//                            public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-//                                Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
-//                            }
-//
-//                            @Override
-//                            public void onDownloadTaskOver() {
-//
-//                            }
-//                        });
                     }
                 }
                 break;
@@ -212,19 +177,20 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     getTrack(mMediaPlayer);
                 } else {
                     Logger.d(TAG, "public file:" + "不存在");
-//                    File Localfile = DiskFileUtil.getDiskFileByUrl(savePath);
-//                    if(Localfile!=null) {
-//                        LanApp.getInstance().copyFile(Localfile, FileUtil.getSongDir(savePath));
-//                    }else{
-                    try {
-                        downLoadInfo downLoadInfo = new downLoadInfo();
-                        downLoadInfo.setDownUrl(uri);
-                        downLoadInfo.setSavePath(savePath);
-                        downLoadInfo.setPlayMode(playmode);
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("test", "下载失败");
+                    File Localfile = DiskFileUtil.getDiskFileByUrl(savePath);
+                    if(Localfile!=null) {
+                        LanApp.getInstance().copyFile(Localfile, FileUtil.getSongDir(savePath));
+                    }else {
+                        try {
+                            downLoadInfo downLoadInfo = new downLoadInfo();
+                            downLoadInfo.setDownUrl(uri);
+                            downLoadInfo.setSavePath(savePath);
+                            downLoadInfo.setPlayMode(playmode);
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e("test", "下载失败");
+                        }
                     }
 //                    List<BaseDownloadTask> mTaskList = new ArrayList<>();
 //                    BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)

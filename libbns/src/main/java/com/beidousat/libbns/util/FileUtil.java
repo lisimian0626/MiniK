@@ -22,7 +22,7 @@ import java.security.MessageDigest;
  */
 
 public class FileUtil {
-    private static final String APP_ROOT_DIR = "/MiniK";
+    public static final String APP_ROOT_DIR = "/MiniK/";
     public static String readFileContent(String strFilePath) {
         StringBuilder builder = new StringBuilder();
         Log.w("FileUtil", "readFileContent file :" + strFilePath);
@@ -130,23 +130,23 @@ public class FileUtil {
         return false;
     }
 
-//    public void copy(File sourceLocation, File targetLocation) throws IOException {
-//        if (sourceLocation.isDirectory()) {
-//            copyDirectory(sourceLocation, targetLocation);
-//        } else {
-//            copyFile(sourceLocation, targetLocation);
-//        }
-//    }
-//
-//    private void copyDirectory(File source, File target) throws IOException {
-//        if (!target.exists()) {
-//            target.mkdir();
-//        }
-//
-//        for (String f : source.list()) {
-//            copy(new File(source, f), new File(target, f));
-//        }
-//    }
+    public void copy(File sourceLocation, File targetLocation) throws IOException {
+        if (sourceLocation.isDirectory()) {
+            copyDirectory(sourceLocation, targetLocation);
+        } else {
+            copyFile(sourceLocation, targetLocation);
+        }
+    }
+
+    private void copyDirectory(File source, File target) throws IOException {
+        if (!target.exists()) {
+            target.mkdir();
+        }
+
+        for (String f : source.list()) {
+            copy(new File(source, f), new File(target, f));
+        }
+    }
 
     public static void copyFile(File source, File target){
         if(target.length()>0)
@@ -189,7 +189,6 @@ public class FileUtil {
         }
     }
 
-    private final static String FileName = "a23.wav";
 
     /**
      * 根据文件路径拷贝文件
@@ -202,7 +201,7 @@ public class FileUtil {
         if ((src == null) || (destPath== null)) {
             return result;
         }
-        File dest= new File(destPath + FileName);
+        File dest= new File(destPath);
         if (dest!= null && dest.exists()) {
             dest.delete(); // delete file
         }
@@ -240,7 +239,6 @@ public class FileUtil {
         if (file == null) {
             return;
         }
-
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
                 deleteFile(item);
@@ -275,13 +273,12 @@ public class FileUtil {
             }else{
                 file.getParentFile().mkdirs();
                 file.createNewFile();
+                return file;
             }
         }catch (Exception e){
             e.printStackTrace();
             return null;
         }
-
-        return null;
     }
     public static File getSongSaveDir(String savePath) {
         String filepath = Environment.getExternalStorageDirectory()+APP_ROOT_DIR+savePath;
@@ -296,17 +293,15 @@ public class FileUtil {
         }
         return null;
     }
-    public static File getDeleteSongSaveDir(String savePath) {
+    public static String getDeleteSongSavePath(String savePath) {
         try {
-            File file = new File(savePath);
-            if(file.exists()){
-                return file;
-            }
+            int indexOf = savePath.indexOf("data/");
+            String path = savePath.substring(indexOf, savePath.length());
+            return path;
         }catch (Exception e){
             e.printStackTrace();
-            return null;
+            return savePath;
         }
-        return null;
     }
 
     public static String getApkRootPath() {

@@ -2,25 +2,24 @@ package com.beidousat.karaoke;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Environment;
 import android.support.multidex.MultiDex;
 
 import com.beidousat.karaoke.db.DatabaseHelper;
 import com.beidousat.karaoke.player.KaraokeController;
-import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.util.RxAsyncTask;
 import com.beidousat.karaoke.util.UnCeHandler;
+import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.net.download.OkHttp3Connection;
 import com.beidousat.libbns.net.request.OkHttpUtil;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.FileUtil;
+import com.beidousat.libbns.util.Logger;
 import com.facebook.stetho.Stetho;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.services.DownloadMgrInitialParams;
 import com.liulishuo.filedownloader.util.FileDownloadLog;
 import com.tencent.bugly.Bugly;
-import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
@@ -115,11 +114,16 @@ public class LanApp extends Application {
 //    Beta.installTinker();
     }
     public void copyFile(File souce,File desPath) {
-        new RxAsyncTask<File, String, String>() {
+        new RxAsyncTask<File,String,Boolean>() {
             @Override
-            protected String call(File... files) {
-                FileUtil.copyFile_new(files[0], files[1].getAbsolutePath());
-                return null;
+            protected Boolean call(File... files) {
+                return FileUtil.copyFile_new(files[0], files[1].getAbsolutePath());
+            }
+
+            @Override
+            protected void onCompleted() {
+                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
+                super.onCompleted();
             }
         }.execute(souce, desPath);
     }

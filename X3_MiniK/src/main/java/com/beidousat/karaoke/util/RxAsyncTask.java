@@ -73,8 +73,6 @@ public abstract class RxAsyncTask<Param, Progress, Result> {
 
     /**RxJava中的onComplete回调*/
     protected void onCompleted() {
-        Logger.d("test","task oncompleted");
-        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
     }
     /**RxJava中的onError回调*/
     protected void onError(Throwable e) {
