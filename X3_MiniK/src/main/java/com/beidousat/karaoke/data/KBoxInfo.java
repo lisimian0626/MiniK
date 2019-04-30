@@ -1,6 +1,7 @@
 package com.beidousat.karaoke.data;
 
 import com.beidousat.karaoke.model.KBox;
+import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.Notecode;
 import com.beidousat.karaoke.model.Package;
 import com.beidousat.karaoke.model.PayMent;
@@ -23,10 +24,19 @@ public class KBoxInfo {
     private static final KBoxInfo mInstance = new KBoxInfo();
     private KBox mKBox;
     private List<PayMent> mPayMentlist;
-
+    private KboxConfig kboxConfig;
     private KBoxInfo() {
 
     }
+
+    public KboxConfig getKboxConfig() {
+        return kboxConfig;
+    }
+
+    public void setKboxConfig(KboxConfig kboxConfig) {
+        this.kboxConfig = kboxConfig;
+    }
+
 
     public static KBoxInfo getInstance() {
         return mInstance;

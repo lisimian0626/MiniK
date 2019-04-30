@@ -169,7 +169,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             config.setStore_web(KBoxInfo.STORE_WEB);
             config.setVod_server(kboxConfig.getVod_server());
             ServerConfigData.getInstance().setConfigData(config);
-
+            KBoxInfo.getInstance().setKboxConfig(kboxConfig);
 //            Logger.d(TAG,"kbox_ipandport:"+kboxConfig.getStore_ip_port()+"~~~~~~"+"kbox_url:"+kboxConfig.getStore_ip_port()+"~~~~~~~~~~~~"+"kbox_ip:"+kboxConfig.getKbox_ip());
         } else if (object != null && object instanceof ArrayList) {
             List<PayMent> payMentList = (List<PayMent>) object;

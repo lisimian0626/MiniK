@@ -8,7 +8,6 @@ public class ServerConfigData {
 
     private static ServerConfigData mServerConfigData;
     private ServerConfig mServerConfig;
-
     public static ServerConfigData getInstance() {
         if (mServerConfigData == null)
             mServerConfigData = new ServerConfigData();

@@ -30,6 +30,7 @@ public class ServerConfig implements Serializable {
     private String vod_server;
 
     private String vod_url;
+
     public String getStore_web() {
         return store_web;
     }
