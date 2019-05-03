@@ -130,26 +130,26 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 PreferenceUtil.setBoolean(mContext, "isSingle", false);
             }
             Logger.d(TAG, "def_play:" + kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
-            List<BasePlay> curBasePlay = getCurBasePlay(refreshFileList(FileUtil.getApkDir().getAbsolutePath(), new ArrayList<String>()));
-            if (kBox.getBasePlayList() == null || kBox.getBasePlayList().equals("[]")) {
-
-            } else {
-                List<BasePlay> list_delete = new ArrayList<>();
-                for (BasePlay basePlay : curBasePlay) {
-                    if (basePlay.getType().equals("mp4")) {
-                        if (!kBox.getBasePlayList().contains(basePlay)) {
-                            Logger.d(TAG, "diffent:" + basePlay.getSave_path());
-                            list_delete.add(basePlay);
-                        }
-                    }
-                }
-                if (list_delete.size() > 0) {
-                    for (BasePlay basePlay : list_delete) {
-
-                        FileUtil.deleteFile(new File(Environment.getExternalStorageDirectory()+FileUtil.APP_ROOT_DIR+basePlay.getSave_path()));
-                    }
-                }
-            }
+//            List<BasePlay> curBasePlay = getCurBasePlay(refreshFileList(FileUtil.getApkDir().getAbsolutePath(), new ArrayList<String>()));
+//            if (kBox.getBasePlayList() == null || kBox.getBasePlayList().equals("[]")) {
+//
+//            } else {
+//                List<BasePlay> list_delete = new ArrayList<>();
+//                for (BasePlay basePlay : curBasePlay) {
+//                    if (basePlay.getType().equals("mp4")) {
+//                        if (!kBox.getBasePlayList().contains(basePlay)) {
+//                            Logger.d(TAG, "diffent:" + basePlay.getSave_path());
+//                            list_delete.add(basePlay);
+//                        }
+//                    }
+//                }
+//                if (list_delete.size() > 0) {
+//                    for (BasePlay basePlay : list_delete) {
+//
+//                        FileUtil.deleteFile(new File(Environment.getExternalStorageDirectory()+FileUtil.APP_ROOT_DIR+basePlay.getSave_path()));
+//                    }
+//                }
+//            }
             PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
             KBoxInfo.getInstance().setKBox(kBox);
         } else if (object != null && object instanceof KboxConfig) {

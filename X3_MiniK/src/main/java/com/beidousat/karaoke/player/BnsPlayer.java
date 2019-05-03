@@ -124,6 +124,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         switch (playmode) {
             case BnsConfig.PREVIEW:
             case BnsConfig.NORMAL:
+            case BnsConfig.PUBLIC:
                 Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
                 File file = DiskFileUtil.getDiskFileByUrl(savePath);
                 if (file != null) {//存在本地文件
@@ -149,7 +150,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                         mMediaPlayer.prepare();
                         isPlaying = true;
                         getTrack(mMediaPlayer);
-                    } else if (playmode == BnsConfig.NORMAL) {
+                    } else{
                         Log.e("test", "文件不存在");
                         try {
                             downLoadInfo downLoadInfo = new downLoadInfo();
@@ -164,70 +165,36 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     }
                 }
                 break;
-            case BnsConfig.PUBLIC:
-                File mFile = FileUtil.getSongSaveDir(savePath);
-                if (mFile != null && mFile.length() > 0) {
-                    Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
-                    mMediaPlayer.setDataSource(mFile.getAbsolutePath());
-                    if (mMinor != null)
-                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                    mMediaPlayer.prepare();
-                    isPlaying = true;
-                    getTrack(mMediaPlayer);
-                } else {
-                    Logger.d(TAG, "public file:" + "不存在");
-                    File Localfile = DiskFileUtil.getDiskFileByUrl(savePath);
-                    if(Localfile!=null) {
-                        LanApp.getInstance().copyFile(Localfile, FileUtil.getSongDir(savePath));
-                    }else {
-                        try {
-                            downLoadInfo downLoadInfo = new downLoadInfo();
-                            downLoadInfo.setDownUrl(uri);
-                            downLoadInfo.setSavePath(savePath);
-                            downLoadInfo.setPlayMode(playmode);
-                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e("test", "下载失败");
-                        }
-                    }
-//                    List<BaseDownloadTask> mTaskList = new ArrayList<>();
-//                    BaseDownloadTask task = com.liulishuo.filedownloader.FileDownloader.getImpl().create(uri)
-//                            .setPath(FileUtil.getSongPath(savePath));
-//                    mTaskList.add(task);
-//                    DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
-//                    DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
-//                        @Override
-//                        public void onDownloadComplete(BaseDownloadTask task) {
-//                            Log.d(TAG, "download Commplete:");
+//            case BnsConfig.PUBLIC:
+//                File mFile = FileUtil.getSongSaveDir(savePath);
+//                if (mFile != null && mFile.length() > 0) {
+//                    Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
+//                    mMediaPlayer.setDataSource(mFile.getAbsolutePath());
+//                    if (mMinor != null)
+//                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+//                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+//                    mMediaPlayer.prepare();
+//                    isPlaying = true;
+//                    getTrack(mMediaPlayer);
+//                } else {
+//                    Logger.d(TAG, "public file:" + "不存在");
+//                    File Localfile = DiskFileUtil.getDiskFileByUrl(savePath);
+//                    if(Localfile!=null) {
+//                        LanApp.getInstance().copyFile(Localfile, FileUtil.getSongDir(savePath));
+//                    }else {
+//                        try {
+//                            downLoadInfo downLoadInfo = new downLoadInfo();
+//                            downLoadInfo.setDownUrl(uri);
+//                            downLoadInfo.setSavePath(savePath);
+//                            downLoadInfo.setPlayMode(playmode);
+//                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                            Log.e("test", "下载失败");
 //                        }
-//
-//                        @Override
-//                        public void onDownloadTaskError(BaseDownloadTask task, Throwable e) {
-//                            Log.d(TAG, "download Error:");
-//                        }
-//
-//                        @Override
-//                        public void onDownloadProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-//                            Log.d(TAG, "download:" + (int) ((float) soFarBytes / totalBytes * 100));
-//                        }
-//
-//                        @Override
-//                        public void onDownloadTaskOver() {
-//
-//                        }
-//                    });
-//
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
-//                        }
-//                    }, 10 * 1000);
-                }
-
-                break;
+//                    }
+//                }
+//                break;
         }
 
 

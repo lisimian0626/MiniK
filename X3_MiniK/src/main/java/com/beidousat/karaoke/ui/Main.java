@@ -748,7 +748,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     Log.d(TAG, "download:" + ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()) + "   " + "savepath:" + DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
                     List<BaseDownloadTask> mTaskList = new ArrayList<>();
                     BaseDownloadTask task = FileDownloader.getImpl().create(ServerFileUtil.getFileUrl(downLoadInfo.getDownUrl()))
-                            .setPath(downLoadInfo.getPlayMode() == BnsConfig.PUBLIC ?  FileUtil.getSongPath(downLoadInfo.getSavePath()):DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
+                            .setPath(DiskFileUtil.getFileSavedPath(downLoadInfo.getSavePath()));
                     mTaskList.add(task);
                     DownloadQueueHelper.getInstance().downloadSequentially(mTaskList);
                     DownloadQueueHelper.getInstance().setOnDownloadListener(new DownloadQueueHelper.OnDownloadListener() {
@@ -1888,8 +1888,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mAdVideo.ADContent = path;
         } else {
             List<BasePlay> basePlayList = BasePlay.arrayBasePlayFromData(str);
-
-            Logger.d(TAG, "basePlay0:" + basePlayList.get(0).getDownload_url());
+            Logger.d("def_play",basePlayList.toString());
             if (basePlayList != null && basePlayList.size() > 0) {
                 int index = -1;
                 if (KBoxInfo.getInstance().getKBox() == null || TextUtils.isEmpty(KBoxInfo.getInstance().getKBox().getBaseplay_type())) {
@@ -1939,6 +1938,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         next();
                     }
                 } else if (basePlayList.get(index).getType().equals("mp4")) {
+                    Logger.d(TAG, "play url:" + "url:" + basePlay.getDownload_url());
                     mAdVideo.DownLoadUrl = basePlayList.get(index).getDownload_url();
                     mAdVideo.ADContent = basePlayList.get(index).getSave_path();
                 }
