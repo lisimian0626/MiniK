@@ -1608,27 +1608,27 @@ public class Main extends BaseActivity implements View.OnClickListener,
             handler.sendEmptyMessage(HandlerSystem.MSG_RESET);
             handler.sendEmptyMessageDelayed(HandlerSystem.MSG_UPDATE_TIME, 100);
         } catch (Exception ex) {
-            ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
             Logger.w(TAG, "playSong ex:" + ex.toString());
-            final String path = song.SongFilePath;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    String diskPath = DiskFileUtil.getFileSavedPath(path);
-                    File file = new File(diskPath);
-                    if (file.exists() && file.isFile()) {
-                        file.delete();
-                        Logger.d(TAG, "执行删除路径:" + diskPath.toString());
-                    }
-                    next();
-                }
-            }, 2000);
-
+//            ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+//            Logger.w(TAG, "playSong ex:" + ex.toString());
+//            final String path = song.SongFilePath;
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    String diskPath = DiskFileUtil.getFileSavedPath(path);
+//                    File file = new File(diskPath);
+//                    if (file.exists() && file.isFile()) {
+//                        file.delete();
+//                        Logger.d(TAG, "执行删除路径:" + diskPath.toString());
+//                    }
+//                    next();
+//                }
+//            }, 2000);
         }
     }
 
 
-    private void playUrl(String url, String savePath, float volPercent, int playMode) throws IOException {
+    private void playUrl(String url, String savePath, float volPercent, int playMode) {
 //        url= "http://minik.beidousat.com:2800/data/song/yyzx/fa49e8ea-8918-49f1-8ac0-917942e4cb84.mp4";
         mVolPercent = volPercent;
         if (mPresentation != null)
@@ -1640,7 +1640,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 return;
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
             if (player != null) {
-                player.playUrl(url, savePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, playMode);
+                try {
+                    player.playUrl(url, savePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, playMode);
+                } catch (IOException e) {
+                    Logger.w(TAG, "playUrl ex:" + e.toString());
+                    e.printStackTrace();
+                }
             }
         } else {
             if (player_cx == null)
@@ -1953,12 +1958,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mKaraokeController.getPlayerStatus().playingType = 0;
         mPlayingSong = null;
         Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
-        try {
+
             playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
-        } catch (IOException e) {
-            ToastUtils.toast(getApplicationContext(), getString(R.string.play_error));
-            Logger.w(TAG, "playSong ex:" + e.toString());
-        }
+
     }
 
     private Runnable runShowScoreResult = new Runnable() {
