@@ -10,6 +10,7 @@ import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Common;
@@ -105,7 +106,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     }
 
     public void playUrl(String videoUrl, String savePath, String recordFileName, int playmode) throws IOException {
-        Common.curSongPath=savePath;
+        Common.curSongPath = savePath;
         stop();
         initParameters();
         setIsRecord(recordFileName);
@@ -124,7 +125,6 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         switch (playmode) {
             case BnsConfig.PREVIEW:
             case BnsConfig.NORMAL:
-            case BnsConfig.PUBLIC:
                 Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
                 File file = DiskFileUtil.getDiskFileByUrl(savePath);
                 if (file != null) {//存在本地文件
@@ -150,38 +150,16 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                         mMediaPlayer.prepare();
                         isPlaying = true;
                         getTrack(mMediaPlayer);
-                    } else{
-                        Log.e("test", "文件不存在");
-                        try {
-                            downLoadInfo downLoadInfo = new downLoadInfo();
-                            downLoadInfo.setDownUrl(uri);
-                            downLoadInfo.setSavePath(savePath);
-                            downLoadInfo.setPlayMode(playmode);
-                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e("test", "下载失败");
+                    } else {
+                        Logger.w(TAG, "onError  =========================> 歌曲不存在");
+                        if (mBeidouPlayerListener != null) {
+                            mBeidouPlayerListener.onPlayerCompletion();
                         }
+                        BnsAudioRecorder.getInstance().release();
+                        NativeScoreRunner.getInstance().stop();
                     }
-                }
-                break;
-//            case BnsConfig.PUBLIC:
-//                File mFile = FileUtil.getSongSaveDir(savePath);
-//                if (mFile != null && mFile.length() > 0) {
-//                    Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
-//                    mMediaPlayer.setDataSource(mFile.getAbsolutePath());
-//                    if (mMinor != null)
-//                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-//                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-//                    mMediaPlayer.prepare();
-//                    isPlaying = true;
-//                    getTrack(mMediaPlayer);
-//                } else {
-//                    Logger.d(TAG, "public file:" + "不存在");
-//                    File Localfile = DiskFileUtil.getDiskFileByUrl(savePath);
-//                    if(Localfile!=null) {
-//                        LanApp.getInstance().copyFile(Localfile, FileUtil.getSongDir(savePath));
-//                    }else {
+//                    else{
+//                        Log.e("test", "文件不存在");
 //                        try {
 //                            downLoadInfo downLoadInfo = new downLoadInfo();
 //                            downLoadInfo.setDownUrl(uri);
@@ -193,8 +171,33 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
 //                            Log.e("test", "下载失败");
 //                        }
 //                    }
-//                }
-//                break;
+                }
+                break;
+            case BnsConfig.PUBLIC:
+                Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
+                File public_file = DiskFileUtil.getDiskFileByUrl(savePath);
+                if (public_file != null) {//存在本地文件
+                    Logger.d(TAG, "open local file:" + public_file.getAbsolutePath());
+                    mMediaPlayer.setDataSource(public_file.getAbsolutePath());
+                    if (mMinor != null)
+                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                    mMediaPlayer.prepare();
+                    isPlaying = true;
+                    getTrack(mMediaPlayer);
+                } else {//本地文件不存在
+                    try {
+                        downLoadInfo downLoadInfo = new downLoadInfo();
+                        downLoadInfo.setDownUrl(uri);
+                        downLoadInfo.setSavePath(savePath);
+                        downLoadInfo.setPlayMode(playmode);
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("test", "下载失败");
+                    }
+                }
+                break;
         }
 
 
@@ -203,14 +206,12 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Logger.w(TAG, "onError  =========================> what:" + what + " extra:" + extra);
-//        if (mBeidouPlayerListener != null) {
-//            mBeidouPlayerListener.onPlayerCompletion();
-//        }
-//        BnsAudioRecorder.getInstance().release();
-//        NativeScoreRunner.getInstance().stop();
-//        if(mPlayMode==BnsConfig.PUBLIC){
-//            FileUtil.deleteFile(FileUtil.getSongSaveDir(savePath));
-//        }
+        if (mBeidouPlayerListener != null) {
+            mBeidouPlayerListener.onPlayerCompletion();
+        }
+        BnsAudioRecorder.getInstance().release();
+        NativeScoreRunner.getInstance().stop();
+        FileUtil.deleteFile(DiskFileUtil.getDiskFileByUrl(savePath));
         return false;
     }
 
@@ -472,7 +473,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         public void run() {
             if (mVolUpCount <= VOL_UP_COUNT) {
                 float vol = mVolUpCount == VOL_UP_COUNT ? mCurrentVol : (mCurrentVol * mVolUpCount / VOL_UP_COUNT);
-                if(mMediaPlayer==null)
+                if (mMediaPlayer == null)
                     return;
                 mMediaPlayer.setVolume(vol, vol);
                 mHandlerVolInit.postDelayed(this, 250);
@@ -582,7 +583,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     }
 
     public void stop() {
-        if(mMediaPlayer!=null) {
+        if (mMediaPlayer != null) {
             isPlaying = false;
             mMediaPlayer.release();
             mMediaPlayer = null;

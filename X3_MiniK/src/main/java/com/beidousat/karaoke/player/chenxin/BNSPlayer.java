@@ -47,7 +47,6 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
         switch (playmode) {
             case BnsConfig.PREVIEW:
             case BnsConfig.NORMAL:
-            case BnsConfig.PUBLIC:
                 this.mBnsPlayerListener = listener;
                 File file = DiskFileUtil.getDiskFileByUrl(savePath);
                 String  n_uri = ServerConfigData.getInstance().getServerConfig()==null? BnsConfig.LocalAddress+savePath:ServerConfigData.getInstance().getServerConfig().getVod_server() + savePath;
@@ -77,20 +76,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                             proxy.startDownload(uri);
                             playUrl = proxy.getLocalURL();
                         } else if (playmode == BnsConfig.NORMAL) {
-                            Log.e("test", "文件不存在");
-                            if (!DiskFileUtil.hasDiskStorage()) {
-                                return;
-                            }
-                            try {
-                                downLoadInfo downLoadInfo = new downLoadInfo();
-                                downLoadInfo.setDownUrl(uri);
-                                downLoadInfo.setSavePath(savePath);
-                                downLoadInfo.setPlayMode(playmode);
-                                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.e("test", "下载失败");
-                            }
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
                         }
                     }
                 } catch (Exception e) {
@@ -101,31 +87,25 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                     mPlayer.open(playUrl, this, this, playmode);
                 }
                 break;
-//            case BnsConfig.PUBLIC:
-//                this.mBnsPlayerListener = listener;
-//                File mFile = FileUtil.getSongSaveDir(savePath);
-//                if (mFile != null) {
-//                    Logger.d(TAG, "open public file:" + mFile.getAbsolutePath());
-//                    mPlayer.open(mFile.getAbsolutePath(), this, this, playmode);
-//                } else {
-//                    Logger.d(TAG, "public file:" + "不存在");
-//                    File diskFile = DiskFileUtil.getDiskFileByUrl(savePath);
-//                    if(diskFile!=null){
-//                        LanApp.getInstance().copyFile(diskFile,FileUtil.getSongDir(savePath));
-//                    }else{
-//                        try {
-//                            downLoadInfo downLoadInfo = new downLoadInfo();
-//                            downLoadInfo.setDownUrl(uri);
-//                            downLoadInfo.setSavePath(savePath);
-//                            downLoadInfo.setPlayMode(playmode);
-//                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                            Log.e("test", "下载失败");
-//                        }
-//                    }
-//                }
-//                break;
+            case BnsConfig.PUBLIC:
+                Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
+                File public_file = DiskFileUtil.getDiskFileByUrl(savePath);
+                if (public_file != null) {
+                    Logger.d(TAG, "open public file:" + public_file.getAbsolutePath());
+                    mPlayer.open(public_file.getAbsolutePath(), this, this, playmode);
+                } else {
+                    try {
+                        downLoadInfo downLoadInfo = new downLoadInfo();
+                        downLoadInfo.setDownUrl(uri);
+                        downLoadInfo.setSavePath(savePath);
+                        downLoadInfo.setPlayMode(playmode);
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("test", "下载失败");
+                    }
+                }
+                break;
         }
     }
 
