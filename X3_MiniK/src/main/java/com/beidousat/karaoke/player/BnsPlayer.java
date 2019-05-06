@@ -11,6 +11,7 @@ import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.util.ToastUtils;
+import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Common;
@@ -37,6 +38,8 @@ import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by J Wong on 2017/8/24.
@@ -206,6 +209,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Logger.w(TAG, "onError  =========================> what:" + what + " extra:" + extra);
+        EventBus.getDefault().post(BusEvent.getEvent(EventBusId.id.TOAST, "playing error"));
         if (mBeidouPlayerListener != null) {
             mBeidouPlayerListener.onPlayerCompletion();
         }

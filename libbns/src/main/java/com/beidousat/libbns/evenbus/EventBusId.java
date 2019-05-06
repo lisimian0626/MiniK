@@ -249,6 +249,7 @@ public class EventBusId {
         public static final int GIFT_SUCCESSED=99;
         public static final int GIFT_FAIL=100;
 
+        public static final int TOAST=200;
     }
 
 
@@ -294,4 +295,5 @@ public class EventBusId {
         public static final int RECEIVE_CODE = 60000;
         public static final int CHECK_CODE = 60001;
     }
+
 }

@@ -13,12 +13,10 @@ public class Logger {
     }
 
     public static void e(String tag, String msg, Throwable e) {
-        if (BnsConfig.DEBUG)
             Log.e(tag, msg, e);
     }
 
     public static void w(String tag, String msg) {
-        if (BnsConfig.DEBUG)
             Log.w(tag, msg);
     }
 

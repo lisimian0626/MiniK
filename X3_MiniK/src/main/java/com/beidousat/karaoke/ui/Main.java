@@ -1111,6 +1111,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.INFARAED.RECEIVE_CODE:
                 Logger.i(TAG, "OnSerialReceive Main:" + event.data + "");
                 break;
+
+            case EventBusId.id.TOAST:
+                ToastUtils.toast(this,event.data.toString());
+//                Logger.d(TAG, "Main:" + event.data + "");
+                break;
         }
     }
 
@@ -1643,6 +1648,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 try {
                     player.playUrl(url, savePath, mKaraokeController.getPlayerStatus().playingType == 1 ? mPlayingSong.RecordFile : null, playMode);
                 } catch (IOException e) {
+                    EventBus.getDefault().post(BusEvent.getEvent(EventBusId.id.TOAST, e.toString()));
                     Logger.w(TAG, "playUrl ex:" + e.toString());
                     e.printStackTrace();
                 }
