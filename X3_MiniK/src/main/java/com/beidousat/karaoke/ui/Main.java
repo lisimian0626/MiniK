@@ -380,12 +380,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
             public void onFeedback(boolean suceed, String msg, Object object) {
                 hideTips();
                 if (suceed) {
-//                                dismissInitLoading();
                     if (object != null && object instanceof KBox) {
+                        KBox kBox= (KBox) object;
                         if (TextUtils.isEmpty(((KBox) object).getLabel())) {
                             lable.setVisibility(View.INVISIBLE);
                         } else {
-                            lable.setText(((KBox) object).getLabel());
+                            lable.setText(kBox.getLabel());
                             lable.setVisibility(View.VISIBLE);
                         }
                         if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
@@ -398,6 +398,18 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                 ll_service.setVisibility(View.VISIBLE);
                             }
                             mTvBuy.setVisibility(View.VISIBLE);
+                        }
+                        if(kBox != null && !TextUtils.isEmpty(kBox.getCoin_unit())){
+                            Common.isICT = true;
+                            SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
+                        }else{
+                            Common.isICT = false;
+                        }
+                        if(kBox!=null&&kBox.getUse_pos()==1){
+                            Common.isOCT = true;
+                            SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
+                        }else{
+                            Common.isOCT = false;
                         }
                         getBoughtMeal();
                         restoreUserInfo();
@@ -661,7 +673,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
 //            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
 //            SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-            SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

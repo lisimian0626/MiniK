@@ -377,6 +377,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             public void onClick(DialogInterface dialog, int which) {
                                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
                                 Common.lastMoney=0;
+                                Common.TBcount=0;
                             }
                         }, new DialogInterface.OnClickListener() {
                             @Override
@@ -394,6 +395,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                                Common.lastMoney=0;
                                 Common.TBcount=0;
                             }
                         }, new DialogInterface.OnClickListener() {

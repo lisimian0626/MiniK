@@ -63,11 +63,6 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
     }
 
     public void getBoxInfo(String kbox_sn, String chip) {
-//        SSLHttpRequest request = new SSLHttpRequest(mContext, RequestMethod.GET_KBOX);
-//        request.addParam(HttpParamsUtils.initKBoxParams(PrefData.getRoomCode(mContext)));
-//        request.setHttpRequestListener(this);
-//        request.setConvert2Class(KBox.class);
-//        request.doPost(0);
         if (ServerConfigData.getInstance().getServerConfig() == null) {
             return;
         }
@@ -108,15 +103,6 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         if (mQueryKboxFeedback != null) {
             mQueryKboxFeedback.onFeedback(false, error, null);
         }
-//        if(!error.equals("K-box信息不存在！")){
-//            handler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    getBoxInfo();
-//                }
-//            }, 3000);
-//        }
-
     }
 
     @Override
@@ -130,26 +116,6 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
                 PreferenceUtil.setBoolean(mContext, "isSingle", false);
             }
             Logger.d(TAG, "def_play:" + kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
-//            List<BasePlay> curBasePlay = getCurBasePlay(refreshFileList(FileUtil.getApkDir().getAbsolutePath(), new ArrayList<String>()));
-//            if (kBox.getBasePlayList() == null || kBox.getBasePlayList().equals("[]")) {
-//
-//            } else {
-//                List<BasePlay> list_delete = new ArrayList<>();
-//                for (BasePlay basePlay : curBasePlay) {
-//                    if (basePlay.getType().equals("mp4")) {
-//                        if (!kBox.getBasePlayList().contains(basePlay)) {
-//                            Logger.d(TAG, "diffent:" + basePlay.getSave_path());
-//                            list_delete.add(basePlay);
-//                        }
-//                    }
-//                }
-//                if (list_delete.size() > 0) {
-//                    for (BasePlay basePlay : list_delete) {
-//
-//                        FileUtil.deleteFile(new File(Environment.getExternalStorageDirectory()+FileUtil.APP_ROOT_DIR+basePlay.getSave_path()));
-//                    }
-//                }
-//            }
             PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
             KBoxInfo.getInstance().setKBox(kBox);
         } else if (object != null && object instanceof KboxConfig) {
@@ -180,49 +146,6 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             mQueryKboxFeedback.onFeedback(true, null, object);
         }
     }
-
-//    @Override
-//    public void onStart(String method) {
-//        if (mQueryKboxFeedback != null) {
-//            mQueryKboxFeedback.onStart();
-//        }
-//    }
-
-    private Handler handler = new Handler();
-
-//    public void loadKBoxInfo(Context context, final QueryKboxFeedback cb) {
-//        SSLHttpRequest request = new SSLHttpRequest(context, RequestMethod.GET_KBOX);
-//        //TODO 获取boxsn
-////        request.addParam(HttpParamsUtils.initKBoxParams(KBoxInfo.getInstance().getKBox().getKBoxSn()));
-//        request.addParam(HttpParamsUtils.initKBoxParams(PrefData.getRoomCode(context)));
-//        request.setHttpRequestListener(new HttpRequestListener() {
-//            @Override
-//            public void onStart(String method) {
-//                if (cb != null) {
-//                    cb.onStart();
-//                }
-//            }
-//
-//            @Override
-//            public void onSuccess(String method, Object object) {
-//                if (object != null && object instanceof KBox) {
-//                    KBoxInfo.getInstance().setKBox((KBox) object);
-//                }
-//                if (cb != null) {
-//                    cb.onFeedback(true, null);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailed(String method, String error) {
-//                if (cb != null) {
-//                    cb.onFeedback(false, error);
-//                }
-//            }
-//        });
-//        request.setConvert2Class(KBox.class);
-//        request.doPost(0);
-//    }
 
     public interface QueryKboxFeedback {
         void onStart();
