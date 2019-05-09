@@ -14,7 +14,7 @@ public class PrefData {
     private final static String KEY_MNG_PWD = "key_mng_pwd";
 
     private final static String KEY_ROOM_CODE = "key_room_code";
-
+    private final static String KEY_SN_CODE = "key_sn_code";
     private final static String SERIAL_BAUD_RATE = "serial_baud_rate";
     private final static String SERIAL_MIC_DOWN = "serial_mic_down";
     private final static String SERIAL_MIC_UP = "serial_mic_up";
@@ -198,7 +198,25 @@ public class PrefData {
         PreferenceUtil.setString(context, KEY_ROOM_CODE, roomCode);
     }
 
+    /**
+     * 获取SN号
+     *
+     * @param context
+     * @return
+     */
+    public static String getSNCode(Context context) {
+        return PreferenceUtil.getString(context, KEY_SN_CODE, "");
+    }
 
+    /**
+     * 设置SN号
+     *
+     * @param context
+     * @param roomCode
+     */
+    public static void setSNCode(Context context, String roomCode) {
+        PreferenceUtil.setString(context, KEY_SN_CODE, roomCode);
+    }
     /**
      * 获取管理密码，默认值666888
      *

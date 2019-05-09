@@ -324,6 +324,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 hideTips();
                 if (suceed) {
                     KboxConfig kboxConfig = (KboxConfig) obj;
+                    if(!TextUtils.isEmpty(kboxConfig.getSn())){
+                        PrefData.setSNCode(Main.this,kboxConfig.getSn());
+                    }
                     String language = kboxConfig.getLanguage().toLowerCase();
                     if (!TextUtils.isEmpty(language)) {
                         if (!language.equals(PreferenceUtil.getString(Main.this, "mode", "zh"))) {

@@ -39,8 +39,8 @@ public class PopVersionInfo extends BaseDialog {
         getWindow().setAttributes(lp);
         ((TextView) findViewById(R.id.tv_system_version)).setText(mContext.getString(R.string.sys_version_x, PackageUtil.getVersionName(mContext.getApplication())+" / "+PackageUtil.getSystemVersionCode()));
         tv_sn= (TextView) findViewById(R.id.tv_sn);
-        String sn= PrefData.getRoomCode(Main.mMainActivity);
-        if(!TextUtils.isEmpty(sn)&&sn.substring(0,1).toLowerCase().equals("p")){
+        String sn= PrefData.getSNCode(Main.mMainActivity);
+        if(!TextUtils.isEmpty(sn)){
             tv_sn.setText("SN:"+sn);
             tv_sn.setVisibility(View.VISIBLE);
         }else{
