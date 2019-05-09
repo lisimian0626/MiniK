@@ -75,7 +75,7 @@ public class FmSetting extends BaseFragment implements View.OnClickListener {
         tv_room_no.setOnClickListener(this);
         tv_mng= (TextView) mRootView.findViewById(R.id.tv_mng);
         tv_mng.setOnClickListener(this);
-        String sn=KBoxInfo.getInstance().getKboxConfig().getSn();
+        String sn= PrefData.getSNCode(Main.mMainActivity);
         if(!TextUtils.isEmpty(sn)){
             tv_room_no.setVisibility(View.GONE);
             tv_mng.setVisibility(View.GONE);
