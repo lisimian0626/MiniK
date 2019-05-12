@@ -2513,8 +2513,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onResume() {
         checkAvailable();
-        SystemBroadcastSender.setVol(this, 1, 1);
-        SystemBroadcastSender.setVol(this, 0, 1);
+        SystemBroadcastSender.setVol(this, 1, 0);
+        SystemBroadcastSender.setVol(this, 0, 0);
         super.onResume();
     }
 

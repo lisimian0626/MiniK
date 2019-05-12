@@ -88,6 +88,7 @@ public class BNSPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.
                 }
                 break;
             case BnsConfig.PUBLIC:
+                this.mBnsPlayerListener = listener;
                 Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
                 File public_file = DiskFileUtil.getDiskFileByUrl(savePath);
                 if (public_file != null) {
