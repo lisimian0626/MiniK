@@ -71,6 +71,11 @@ public class ServerFileUtil {
         if (!TextUtils.isEmpty(filePath)) {
             if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getVod_server())) {
                 url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getVod_server() + filePath;
+                if(url.contains("?")){
+                        url=url+"&dev"+(DiskFileUtil.is901()?"YNH":"X3")+"&sn"+DeviceUtil.getCupChipID();
+                }else{
+                    url=url+"?&dev"+(DiskFileUtil.is901()?"YNH":"X3")+"&sn"+DeviceUtil.getCupChipID();
+                }
             }
         }
         Logger.d(TAG,"getFileUrl:"+url);
