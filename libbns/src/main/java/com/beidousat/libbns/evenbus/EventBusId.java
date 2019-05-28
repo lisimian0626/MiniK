@@ -249,6 +249,11 @@ public class EventBusId {
         public static final int GIFT_SUCCESSED=99;
         public static final int GIFT_FAIL=100;
 
+        /**
+         * 获取配置信息成功
+         */
+        public static final int GET_CONFIG_SUCCESS = 122;
+
         public static final int TOAST=200;
     }
 

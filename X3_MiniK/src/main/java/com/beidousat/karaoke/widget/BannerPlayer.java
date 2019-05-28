@@ -17,6 +17,7 @@ import com.beidousat.karaoke.ui.fragment.FmBannerDetail;
 import com.beidousat.libbns.ad.AdsRequestListener;
 import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.Common;
+import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
@@ -35,12 +36,12 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 /**
  * Created by J Wong on 2015/12/11 19:59.
  */
-public class BannerPlayer extends JazzyViewPager implements AdsRequestListener {
+public class BannerPlayer extends JazzyViewPager {
 
     private static final int VIEW_PAGER_SCROLL_DURATION = 1000;
 
     private Context mContext;
-    private BannerGetter mBannerGetter;
+//    private BannerGetter mBannerGetter;
     private String mAdPosition;
     private int mPlaceholder;
     private MainAdapter mAdapter;
@@ -65,6 +66,11 @@ public class BannerPlayer extends JazzyViewPager implements AdsRequestListener {
 
     private void initView(Context context) {
         mContext = context;
+        if(Common.isEn){
+            this.mPlaceholder = R.drawable.ad_banner_default_en;
+        }else{
+            this.mPlaceholder = R.drawable.ad_banner_default;
+        }
         ViewPagerScroller.setViewPagerScrollDuration(this, VIEW_PAGER_SCROLL_DURATION);
         String[] effects = getResources().getStringArray(R.array.jazzy_effects);
         TransitionEffect effect = TransitionEffect.valueOf(effects[effects.length - 1]);
@@ -72,26 +78,24 @@ public class BannerPlayer extends JazzyViewPager implements AdsRequestListener {
 
         mAdapter = new MainAdapter(mContext);
         setAdapter(mAdapter);
-        mBannerGetter = new BannerGetter(mContext, this);
+//        mBannerGetter = new BannerGetter(mContext, this);
 
     }
 
-    public void loadAds(String position) {
-        mAdPosition = position;
-        if(Common.isEn){
-            this.mPlaceholder = R.drawable.ad_banner_default_en;
-        }else{
-            this.mPlaceholder = R.drawable.ad_banner_default;
-        }
+//    public void loadAds(String position) {
+//        mAdPosition = position;
+//        if(Common.isEn){
+//            this.mPlaceholder = R.drawable.ad_banner_default_en;
+//        }else{
+//            this.mPlaceholder = R.drawable.ad_banner_default;
+//        }
+//
+//    }
 
-    }
 
-
-    private void requestAds() {
-        if (!TextUtils.isEmpty(mAdPosition)) {
-            mBannerGetter.getBanner(mAdPosition, KBoxInfo.getInstance().getKBox() != null ? KBoxInfo.getInstance().getKBox().getArea() : null);
-        }
-    }
+//    private void requestAds() {
+//            mBannerGetter.getBanner(mAdPosition, DeviceUtil.getCupChipID());
+//    }
 
     public void loadImage(String imgUrl, int placeholder) {
         loadImage(ServerFileUtil.getImageUrl(imgUrl), placeholder);
@@ -103,70 +107,70 @@ public class BannerPlayer extends JazzyViewPager implements AdsRequestListener {
         mAdapter.setAds(mImageUrls);
     }
 
-    @Override
-    public void onAdsRequestFail() {
-        this.post(new Runnable() {
-            @Override
-            public void run() {
-                setBackgroundResource(mPlaceholder);
-            }
-        });
-    }
-
-    @Override
-    public void onAdsRequestSuccess(final Ad ad) {
-        this.post(new Runnable() {
-            @Override
-            public void run() {
-                if (ad != null) {
-                    if (mLsAds.size() > MAX_IMG_COUNT) {
-                        mLsAds.clear();
-                        mImageUrls.clear();
-                    }
-                    mLsAds.add(ad);
-                    Uri uri = ServerFileUtil.getImageUrl(ad.ADContent);
-                    mImageUrls.add(uri);
-                    mAdapter.setAds(mImageUrls);
-                    setCurrentItem(mAdapter.getCount() - 1);
-                }
-            }
-        });
-    }
+//    @Override
+//    public void onAdsRequestFail() {
+//        this.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                setBackgroundResource(mPlaceholder);
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void onAdsRequestSuccess(final Ad ad) {
+//        this.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (ad != null) {
+//                    if (mLsAds.size() > MAX_IMG_COUNT) {
+//                        mLsAds.clear();
+//                        mImageUrls.clear();
+//                    }
+//                    mLsAds.add(ad);
+//                    Uri uri = ServerFileUtil.getImageUrl(ad.ADContent);
+//                    mImageUrls.add(uri);
+//                    mAdapter.setAds(mImageUrls);
+//                    setCurrentItem(mAdapter.getCount() - 1);
+//                }
+//            }
+//        });
+//    }
 
 
     private ScheduledExecutorService mScheduledExecutorService;
 
-    public void startPlayer() {
-        if (mIsPlaying || (mScheduledExecutorService != null && !mScheduledExecutorService.isShutdown()))
-            return;
-        if (!mIsPlaying && !TextUtils.isEmpty(mAdPosition)) {
-            mScheduledExecutorService = Executors.newScheduledThreadPool(1);
-            scheduleAtFixedRate(mScheduledExecutorService);
-            mIsPlaying = true;
-        }
-    }
+//    public void startPlayer() {
+//        if (mIsPlaying || (mScheduledExecutorService != null && !mScheduledExecutorService.isShutdown()))
+//            return;
+//        if (!mIsPlaying) {
+//            mScheduledExecutorService = Executors.newScheduledThreadPool(1);
+//            scheduleAtFixedRate(mScheduledExecutorService);
+//            mIsPlaying = true;
+//        }
+//    }
 
-    public void stopPlayer() {
-        if (mScheduledExecutorService != null) {
-            mScheduledExecutorService.shutdownNow();
-            mScheduledExecutorService = null;
-            mIsPlaying = false;
-        }
-    }
+//    public void stopPlayer() {
+//        if (mScheduledExecutorService != null) {
+//            mScheduledExecutorService.shutdownNow();
+//            mScheduledExecutorService = null;
+//            mIsPlaying = false;
+//        }
+//    }
 
-    private void scheduleAtFixedRate(ScheduledExecutorService service) {
-        service.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                BannerPlayer.this.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        requestAds();
-                    }
-                });
-            }
-        }, 0, 10, TimeUnit.SECONDS);
-    }
+//    private void scheduleAtFixedRate(ScheduledExecutorService service) {
+//        service.scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                BannerPlayer.this.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        requestAds();
+//                    }
+//                });
+//            }
+//        }, 0, 1, TimeUnit.HOURS);
+//    }
 
 
 

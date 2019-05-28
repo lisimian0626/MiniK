@@ -47,6 +47,15 @@
             android:layout_width="380dp"
             android:layout_height="380dp"
             android:layout_above="@+id/riv_reflection"
+            android:layout_toRightOf="@+id/wm_top"
+            />
+
+        <SurfaceView
+            android:id="@+id/main_surf"
+            android:layout_width="380dp"
+            android:layout_height="380dp"
+            android:layout_above="@+id/riv_reflection"
+            android:visibility="gone"
             android:layout_toRightOf="@+id/wm_top" />
 
         <com.beidousat.karaoke.widget.WidgetMaterial

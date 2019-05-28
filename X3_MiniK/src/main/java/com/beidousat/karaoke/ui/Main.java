@@ -323,6 +323,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 //获取配置文件成功后检测外接硬盘，检测USB接入等
                 hideTips();
                 if (suceed) {
+                    //获取配置完成发出消息
+                    EventBusUtil.postSticky(EventBusId.id.GET_CONFIG_SUCCESS, "");
                     KboxConfig kboxConfig = (KboxConfig) obj;
                     if(!TextUtils.isEmpty(kboxConfig.getSn())){
                         PrefData.setSNCode(Main.this,kboxConfig.getSn());

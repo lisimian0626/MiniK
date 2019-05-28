@@ -21,12 +21,10 @@ public class BannerGetter extends AdGetter {
         super(context, listener);
     }
 
-    public void getBanner(String position, String area) {
+    public void getBanner(String position, String sn) {
         HttpRequest r = initRequest(RequestMethod.GET_BANNER);
-        r.addParam("RoomCode", PrefData.getRoomCode(mContext));
-        r.addParam("ADPosition", position);
-        if (!TextUtils.isEmpty(area))
-            r.addParam("region", area);
+        r.addParam("device_sn", sn);
+        r.addParam("pcode", position);
         r.setConvert2Class(Ad.class);
         r.doPost(0);
     }
