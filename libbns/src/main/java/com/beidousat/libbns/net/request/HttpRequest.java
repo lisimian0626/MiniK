@@ -107,6 +107,17 @@ public class HttpRequest {
         }
     }
 
+    public void doGet() {
+        if (NetWorkUtils.isNetworkAvailable(mContext)) {
+            doGetOk();
+        } else {
+            String url = httpGet(mMethod);
+            LogRecorder.addString2File("/sdcard/net_conn.txt", "网络不可用：" + url);
+            if (mHttpRequestListener != null) {
+                mHttpRequestListener.onFailed(mMethod, mContext.getString(R.string.network_failure));
+            }
+        }
+    }
     private String getUrl(int index, String urlMethod) {
         StringBuilder builder = new StringBuilder();
 
@@ -130,6 +141,25 @@ public class HttpRequest {
         return url;
     }
 
+    private String httpGet(String urlMethod) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(urlMethod).append("?");
+        int i = 0;
+        if (mParams != null && mParams.size() > 0) {
+            Iterator iterator = mParams.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                String key = entry.getKey().toString();
+                String val = entry.getValue() == null ? "" : entry.getValue().toString();
+                if (i > 0)
+                    builder.append("&");
+                builder.append(key).append("=").append(val);
+                i++;
+            }
+        }
+        String url = ServerConfigData.getInstance().getServerConfig()==null?builder.toString():ServerConfigData.getInstance().getServerConfig().getVod_url()+builder.toString();
+        return url;
+    }
     public void setRequestModel(StringBuilder builder) {
         builder.append("m=index");
     }
@@ -269,6 +299,46 @@ public class HttpRequest {
         }
     }
 
+
+    private void doGetOk() {
+        try {
+            String url = httpGet(mMethod);
+            Logger.i(TAG, "url:" + url);
+            Request request = new Request.Builder().url(url).build();
+
+            if (mHttpRequestListener != null) {
+                mHttpRequestListener.onStart(mMethod);
+            }
+            OkHttpUtil.enqueue(request, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    sendFailMessage(mContext.getString(R.string.request_fail, parseErrorMsg(e)));
+                    Logger.e(TAG, "onFailure:" + e.toString());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    Logger.d(TAG,  "onResponse body :" + response);
+                    try {
+                        ResponseBody body = response.body();
+                        if (response.isSuccessful()) {
+                            String responseUrl = body.string();
+                            doResolve(responseUrl);
+                        } else {
+                            sendFailMessage(mContext.getString(R.string.request_fail, response.message()));
+//                        throw new IOException("Unexpected code " + response);
+                        }
+                        body.close();
+                    } catch (Exception e) {
+                        Logger.e(TAG, "onResponse Exception :" + e.toString());
+                        sendFailMessage(mContext.getString(R.string.network_failure));
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Logger.e(TAG, "doPosOk Exception :" + e.toString());
+        }
+    }
     private String parseErrorMsg(Exception e) {
         String error = mContext.getResources().getString(R.string.network_failure);
         if (e instanceof SocketTimeoutException) {

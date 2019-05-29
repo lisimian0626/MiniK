@@ -14,6 +14,7 @@ import com.beidousat.karaoke.ad.BannerGetter;
 import com.beidousat.libbns.ad.AdsRequestListener;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.karaoke.widget.BannerPlayer;
@@ -77,8 +78,8 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
             wmShow.setVisibility(View.GONE);
         }
 
-        mBannerGetter = new BannerGetter(getActivity(), this);
-        mBannerGetter.getBanner("B1", DeviceUtil.getCupChipID());
+//        mBannerGetter = new BannerGetter(getActivity(), this);
+//        mBannerGetter.getBanner("B1", DeviceUtil.getCupChipID());
 //        //load image
 //        mAdSupporterPlayer = (AdSupporterPlayer) mRootView.findViewById(R.id.ad_supporter);
 //
@@ -157,6 +158,9 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
 //                Logger.d(getClass().getSimpleName(),"收到消息");
                 startBannerGetter();
                 break;
+            case EventBusId.id.GET_BANNER:
+                mBannerGetter.getBanner("B1",DeviceUtil.getCupChipID());
+                break;
             default:
                 break;
         }
@@ -191,11 +195,12 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
             mIsPlaying = false;
         }
     }
+
     private void scheduleAtFixedRate(ScheduledExecutorService service) {
         service.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                mBannerGetter.getBanner("B1", DeviceUtil.getCupChipID());
+                EventBusUtil.postSticky(EventBusId.id.GET_BANNER, "");
             }
         }, 0, 1, TimeUnit.HOURS);
     }

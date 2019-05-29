@@ -1,14 +1,15 @@
 package com.beidousat.karaoke.ad;
 
 import android.content.Context;
-import android.text.TextUtils;
 
-import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.ad.AdsRequestListener;
 import com.beidousat.libbns.model.Ad;
+import com.beidousat.libbns.model.BannerInfo;
 import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.RequestMethod;
-import com.beidousat.libbns.util.BnsConfig;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 
 /**
@@ -25,8 +26,9 @@ public class BannerGetter extends AdGetter {
         HttpRequest r = initRequest(RequestMethod.GET_BANNER);
         r.addParam("device_sn", sn);
         r.addParam("pcode", position);
-        r.setConvert2Class(Ad.class);
-        r.doPost(0);
+        r.setConvert2Token(new TypeToken<List<BannerInfo>>() {
+        });
+        r.doGet();
     }
 
 

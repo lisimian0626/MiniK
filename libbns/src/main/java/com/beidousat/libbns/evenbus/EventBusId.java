@@ -254,6 +254,8 @@ public class EventBusId {
          */
         public static final int GET_CONFIG_SUCCESS = 122;
 
+        public static final int GET_BANNER= 123;
+
         public static final int TOAST=200;
     }
 
