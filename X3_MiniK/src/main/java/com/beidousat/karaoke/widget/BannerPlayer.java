@@ -16,6 +16,7 @@ import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.ui.fragment.FmBannerDetail;
 import com.beidousat.libbns.ad.AdsRequestListener;
 import com.beidousat.libbns.model.Ad;
+import com.beidousat.libbns.model.BannerInfo;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.FragmentUtil;
@@ -47,9 +48,8 @@ public class BannerPlayer extends JazzyViewPager {
     private MainAdapter mAdapter;
     private boolean mIsPlaying = false;
     private static final int MAX_IMG_COUNT = 5;
-    private List<Ad> mLsAds = new ArrayList<Ad>();
     private List<Uri> mImageUrls = new ArrayList<Uri>();
-
+    private BannerInfo bannerInfo;
     public BannerPlayer(Context context) {
         super(context);
         initView(context);
@@ -97,8 +97,9 @@ public class BannerPlayer extends JazzyViewPager {
 //            mBannerGetter.getBanner(mAdPosition, DeviceUtil.getCupChipID());
 //    }
 
-    public void loadImage(String imgUrl, int placeholder) {
-        loadImage(ServerFileUtil.getImageUrl(imgUrl), placeholder);
+    public void setBannerInfo(BannerInfo bannerInfo, int placeholder) {
+        this.bannerInfo=bannerInfo;
+        loadImage(ServerFileUtil.getImageUrl(bannerInfo.getData().getImg_url()), placeholder);
     }
 
     public void loadImage(Uri uri, int placeholder) {
@@ -237,9 +238,15 @@ public class BannerPlayer extends JazzyViewPager {
                 @Override
                 public void onClick(View v) {
                     try {
-                        Ad ad = mLsAds.get(position);
-                        if (!TextUtils.isEmpty(ad.ADContent1)) {
-                            FragmentUtil.addFragment(FmBannerDetail.newInstance(ad));
+                        if (bannerInfo!=null&&!TextUtils.isEmpty(bannerInfo.getData().getAction_type())) {
+                            switch (bannerInfo.getData().getAction_type()){
+                                case "1":
+                                    break;
+                                case "2":
+                                    FragmentUtil.addFragment(FmBannerDetail.newInstance(ad));
+                                    break;
+                            }
+
                         }
                     } catch (Exception e) {
                         Logger.w(getClass().getSimpleName(), "setOnClickListener ex:" + e.toString());
