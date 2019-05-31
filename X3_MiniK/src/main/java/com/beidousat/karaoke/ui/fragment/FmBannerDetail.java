@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.libbns.model.Ad;
+import com.beidousat.libbns.model.BannerInfo;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.bumptech.glide.Glide;
 
@@ -17,7 +18,7 @@ import com.bumptech.glide.Glide;
  */
 public class FmBannerDetail extends BaseFragment {
 
-    private Ad mAdBanner;
+    private BannerInfo mAdBanner;
 
     private View mRootView;
     private ImageView mIvBanner;
@@ -35,7 +36,7 @@ public class FmBannerDetail extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mAdBanner = (Ad) getArguments().getSerializable("banner");
+            mAdBanner = (BannerInfo) getArguments().getSerializable("banner");
         }
     }
 
@@ -47,7 +48,7 @@ public class FmBannerDetail extends BaseFragment {
         mRootView = inflater.inflate(R.layout.fm_banner_detail, null);
         mIvBanner = (ImageView) mRootView.findViewById(R.id.iv_banner);
 
-        Glide.with(this).load(ServerFileUtil.getImageUrl(mAdBanner.ADContent1)).override(1200, 500).centerCrop().skipMemoryCache(true).into(mIvBanner);
+        Glide.with(this).load(ServerFileUtil.getImageUrl(mAdBanner.getData().getImg_url())).override(1200, 500).centerCrop().skipMemoryCache(true).into(mIvBanner);
 
         return mRootView;
     }
