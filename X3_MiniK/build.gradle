@@ -125,5 +125,6 @@ dependencies {
     //    apply from: 'tinker-support.gradle'
     compile files('libs/SerialPort.jar')
     compile 'com.github.lzyzsd:jsbridge:1.0.4'
+    compile 'io.netty:netty-all:4.1.35.Final'
 }
 
