@@ -53,9 +53,9 @@ public class UdpClient extends UdpChannelInboundHandler implements Runnable{
         }
     }
 
-//    public void send(){
-//        new DatagramPacket(Unpooled.copiedBuffer("echo", CharsetUtil.UTF_8),new InetSocketAddress("127.0.0.1",1112));
-//    }
+    public void send(){
+       send(new DatagramPacket(Unpooled.copiedBuffer("1111", CharsetUtil.UTF_8),new InetSocketAddress("39.108.224.58",18811)));
+    }
 
     @Override
     public void receive(String data) {

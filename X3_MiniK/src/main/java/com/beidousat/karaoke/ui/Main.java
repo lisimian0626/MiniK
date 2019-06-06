@@ -363,7 +363,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
                     UdpClient udpClient=new UdpClient();
-                    udpClient.send("data");
+                    udpClient.send();
 //                    startService(new Intent(getApplicationContext(), OctopusService.class));
                     if (TextUtils.isEmpty(PrefData.getRoomCode(Main.this))) {
                         ToastUtils.toast(Main.this, getString(R.string.room_num_error));
