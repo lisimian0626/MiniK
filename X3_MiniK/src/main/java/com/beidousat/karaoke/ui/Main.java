@@ -69,6 +69,7 @@ import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
 import com.beidousat.karaoke.model.downLoadInfo;
+import com.beidousat.karaoke.netty.UdpClient;
 import com.beidousat.karaoke.player.BeidouPlayerListener;
 import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
@@ -361,6 +362,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     checkUsbKey();
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
+                    UdpClient udpClient=new UdpClient();
+                    udpClient.send("data");
 //                    startService(new Intent(getApplicationContext(), OctopusService.class));
                     if (TextUtils.isEmpty(PrefData.getRoomCode(Main.this))) {
                         ToastUtils.toast(Main.this, getString(R.string.room_num_error));
