@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface BannerRequestListener {
 
-    void onRequestSuccess(List<BannerInfo> bannerInfos);
+    void onRequestSuccess(BannerInfo bannerInfo);
 
     void onRequestFail();
 

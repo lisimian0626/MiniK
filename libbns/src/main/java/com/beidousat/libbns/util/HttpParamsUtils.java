@@ -122,4 +122,11 @@ public class HttpParamsUtils {
         params.put("file_path",savePath);
         return params;
     }
+
+    public static Map<String, String> initGetBannerParams(String position,String sn) {
+        Map<String, String> params = new HashMap<>();
+        params.put("device_sn", sn);
+        params.put("pcode",position);
+        return params;
+    }
 }

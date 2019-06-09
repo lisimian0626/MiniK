@@ -4,9 +4,11 @@ import android.content.Context;
 
 import com.beidousat.libbns.ad.BannerRequestListener;
 import com.beidousat.libbns.model.BannerInfo;
+import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.HttpRequestListener;
 import com.beidousat.libbns.net.request.RequestMethod;
+import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -28,11 +30,19 @@ public class BannerGetter implements HttpRequestListener {
         HttpRequest r = initRequest(RequestMethod.GET_BANNER);
         r.addParam("device_sn", sn);
         r.addParam("pcode", position);
-        r.setConvert2Token(new TypeToken<List<BannerInfo>>() {
-        });
+        r.setConvert2Class(BannerInfo.class);
         r.doGet();
     }
 
+//    public void getBanner(String position, String sn) {
+//        if(ServerConfigData.getInstance().getServerConfig()==null)
+//            return;
+//        StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.GET_BANNER);
+//        request.addParam("device_sn", sn);
+//        request.addParam("pcode", position);
+//        request.setConvert2Class(BannerInfo.class);
+//        request.get();
+//    }
     HttpRequest initRequest(String method) {
         HttpRequest request = new HttpRequest(mContext.getApplicationContext(), method);
         request.setHttpRequestListener(this);
@@ -46,9 +56,9 @@ public class BannerGetter implements HttpRequestListener {
     @Override
     public void onSuccess(String method, Object object) {
         if (RequestMethod.GET_BANNER.equals(method)) {
-            List<BannerInfo> bannerInfos = (List<BannerInfo>) object;
-            if (bannerInfos != null&&bannerInfos.size()>0)
-                mBannerRequestListener.onRequestSuccess(bannerInfos);
+            BannerInfo bannerInfo = (BannerInfo) object;
+            if (bannerInfo != null)
+                mBannerRequestListener.onRequestSuccess(bannerInfo);
         }
     }
 

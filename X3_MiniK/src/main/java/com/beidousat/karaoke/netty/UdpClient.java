@@ -44,7 +44,7 @@ public class UdpClient extends UdpChannelInboundHandler implements Runnable{
     @Override
     public void run() {
         try {
-            ChannelFuture channelFuture = bootstrap.bind(0).sync();
+            ChannelFuture channelFuture = bootstrap.bind(18811).sync();
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

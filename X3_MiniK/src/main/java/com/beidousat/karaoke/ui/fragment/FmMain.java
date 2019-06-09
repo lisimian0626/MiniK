@@ -23,6 +23,7 @@ import com.beidousat.karaoke.widget.BannerPlayer;
 import com.beidousat.karaoke.widget.WidgetMaterial;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.FragmentUtil;
+import com.beidousat.libbns.util.Logger;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -197,8 +198,15 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
     }
 
     @Override
-    public void onRequestSuccess(List<BannerInfo> bannerInfos) {
+    public void onRequestSuccess(BannerInfo bannerInfo) {
+        Logger.d(FmMain.class.getSimpleName(),"banner:"+bannerInfo.getImg_url());
+        if(bannerInfo!=null){
+            if(bannerInfo.getMedia_type().equals("1")){
+                mBannerPlayer.setBannerInfo(bannerInfo);
+            }else if(bannerInfo.getMedia_type().equals("2")){
 
+            }
+        }
     }
 
     @Override

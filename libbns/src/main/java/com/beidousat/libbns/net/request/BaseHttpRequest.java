@@ -1,5 +1,7 @@
 package com.beidousat.libbns.net.request;
 
+import com.beidousat.libbns.R;
+import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.util.Logger;
 
 import java.io.IOException;
@@ -64,9 +66,51 @@ public class BaseHttpRequest implements BaseHttpRequestListener {
         post(mUrl, request);
     }
 
-    public void get(String url){
-        mUrl = url;
+    public void httpGet(String url) {
+        mUrl = getUrl(url);
+        Request request = new Request.Builder().url(url).build();
+        OkHttpUtil.enqueue(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Logger.e(TAG, "onFailure:" + e.toString());
+                onRequestFail(mUrl, e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResponseBody body = response.body();
+                if (response.isSuccessful()) {
+                    String respBody = body.string();
+                    Logger.d(TAG, "Url:" + mUrl + "  onResponse body :" + respBody);
+                    onRequestCompletion(mUrl, respBody);
+                } else {
+                    onRequestFail(mUrl, response.message());
+                }
+                body.close();
+            }
+        });
+
     }
+
+    public String getUrl(String url) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(url).append("?");
+        int i = 0;
+        if (mParams != null && mParams.size() > 0) {
+            Iterator iterator = mParams.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                String key = entry.getKey().toString();
+                String val = entry.getValue() == null ? "" : entry.getValue().toString();
+                if (i > 0)
+                    builder.append("&");
+                builder.append(key).append("=").append(val);
+                i++;
+            }
+        }
+        return builder.toString();
+    }
+
     void post(String url, Request request) {
         Logger.d(TAG, "post url :" + url);
         mUrl = url;
@@ -91,7 +135,34 @@ public class BaseHttpRequest implements BaseHttpRequestListener {
             }
         });
     }
+    private void doGet(String url, Request request) {
+        try {
+            Logger.d(TAG, "get url :" + url);
+            mUrl = url;
+            OkHttpUtil.enqueue(request, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Logger.e(TAG, "onFailure:" + e.toString());
+                    onRequestFail(mUrl, e.toString());
+                }
 
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    ResponseBody body = response.body();
+                    if (response.isSuccessful()) {
+                        String respBody = body.string();
+                        Logger.d(TAG, "Url:" + mUrl + "  onResponse body :" + respBody);
+                        onRequestCompletion(mUrl, respBody);
+                    } else {
+                        onRequestFail(mUrl, response.message());
+                    }
+                    body.close();
+                }
+            });
+        } catch (Exception e) {
+            Logger.e(TAG, "get Exception :" + e.toString());
+        }
+    }
     @Override
     public void onRequestCompletion(String url, String body) {
         if (mListener != null) {

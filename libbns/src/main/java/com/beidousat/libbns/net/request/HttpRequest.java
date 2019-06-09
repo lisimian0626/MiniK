@@ -10,6 +10,7 @@ import com.beidousat.libbns.R;
 import com.beidousat.libbns.model.BaseModel;
 import com.beidousat.libbns.model.ServerConfig;
 import com.beidousat.libbns.model.ServerConfigData;
+import com.beidousat.libbns.model.StoreBaseModel;
 import com.beidousat.libbns.net.NetWorkUtils;
 import com.beidousat.libbns.net.request.HttpRequestListener;
 import com.beidousat.libbns.net.request.OkHttpUtil;
@@ -157,7 +158,7 @@ public class HttpRequest {
                 i++;
             }
         }
-        String url = ServerConfigData.getInstance().getServerConfig()==null?builder.toString():ServerConfigData.getInstance().getServerConfig().getVod_url()+builder.toString();
+        String url = ServerConfigData.getInstance().getServerConfig().getStore_web()==null?builder.toString():ServerConfigData.getInstance().getServerConfig().getStore_web()+builder.toString();
         return url;
     }
     public void setRequestModel(StringBuilder builder) {
@@ -188,6 +189,31 @@ public class HttpRequest {
         }
     }
 
+    private void doResolveStore(String response) {
+        if (response != null) {
+            Logger.d(TAG, mMethod + " : " + response);
+            StoreBaseModel baseModel = convert2StoreBaseModel(response);
+            if (baseModel != null) {
+                if ("0".equals(baseModel.error)) {
+                    Logger.d(TAG, "baseModel.error == 0");
+                    Object result = baseModel.data;
+                    if (mConvert2Object != null) {
+                        result = convert2Object(baseModel.data);
+                    } else if (mConvert2Token != null) {
+                        result = convert2Token(baseModel.data);
+                    }
+                    sendSuccessMessage(result);
+                } else {
+                    sendFailMessage(baseModel.message);
+                }
+            } else {
+                Logger.d(TAG, "baseModel == null");
+                sendFailMessage("数据错误");
+            }
+        } else {
+            sendFailMessage("返回空数据");
+        }
+    }
     private BaseModel convert2BaseModel(String response) {
         BaseModel baseModel = null;
         try {
@@ -200,6 +226,16 @@ public class HttpRequest {
     }
 
 
+    private StoreBaseModel convert2StoreBaseModel(String response) {
+        StoreBaseModel baseModel = null;
+        try {
+            Gson gson = new Gson();
+            baseModel = gson.fromJson(response, StoreBaseModel.class);
+        } catch (Exception e) {
+            Logger.e(TAG, "convert2StoreBaseModel ex:" + e.toString());
+        }
+        return baseModel;
+    }
     private Object convert2Object(Object object) {
         Object obj = null;
         if (object != null) {
@@ -323,7 +359,7 @@ public class HttpRequest {
                         ResponseBody body = response.body();
                         if (response.isSuccessful()) {
                             String responseUrl = body.string();
-                            doResolve(responseUrl);
+                            doResolveStore(responseUrl);
                         } else {
                             sendFailMessage(mContext.getString(R.string.request_fail, response.message()));
 //                        throw new IOException("Unexpected code " + response);

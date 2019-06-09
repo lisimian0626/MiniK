@@ -33,7 +33,12 @@ public class StoreHttpRequest extends BaseHttpRequest {
             mStoreHttpRequestListener.onStoreStart(mMethod);
         }
     }
-
+    public void get(){
+         httpGet(mUrlHost + mMethod);
+        if (mStoreHttpRequestListener != null) {
+            mStoreHttpRequestListener.onStoreStart(mMethod);
+        }
+    }
     public StoreHttpRequest setUrlHost(String urlHost) {
         mUrlHost = urlHost;
         return this;

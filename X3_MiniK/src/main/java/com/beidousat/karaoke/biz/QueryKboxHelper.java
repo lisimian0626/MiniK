@@ -76,6 +76,9 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
     }
 
     public void getPayment() {
+        if (ServerConfigData.getInstance().getServerConfig() == null) {
+            return;
+        }
         StoreHttpRequest storeHttpRequest = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_PAYMENT);
         storeHttpRequest.setStoreHttpRequestListener(this);
         storeHttpRequest.setConvert2Token(new TypeToken<List<PayMent>>() {
@@ -91,6 +94,13 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         storeHttpRequest.post();
     }
 
+    public void getBanner(String position,String sn) {
+        StoreHttpRequest storeHttpRequest = new StoreHttpRequest(KBoxInfo.STORE_WEB, RequestMethod.GET_BANNER);
+        storeHttpRequest.addParam(HttpParamsUtils.initGetBannerParams(position,sn));
+        storeHttpRequest.setStoreHttpRequestListener(this);
+        storeHttpRequest.setConvert2Class(KboxConfig.class);
+        storeHttpRequest.post();
+    }
     @Override
     public void onStoreStart(String method) {
         if (mQueryKboxFeedback != null) {

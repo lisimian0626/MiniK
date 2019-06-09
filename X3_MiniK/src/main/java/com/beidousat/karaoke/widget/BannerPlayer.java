@@ -97,13 +97,12 @@ public class BannerPlayer extends JazzyViewPager {
 //            mBannerGetter.getBanner(mAdPosition, DeviceUtil.getCupChipID());
 //    }
 
-    public void setBannerInfo(BannerInfo bannerInfo, int placeholder) {
+    public void setBannerInfo(BannerInfo bannerInfo) {
         this.bannerInfo=bannerInfo;
-        loadImage(ServerFileUtil.getImageUrl(bannerInfo.getData().getImg_url()), placeholder);
+        loadImage(ServerFileUtil.getImageUrl(bannerInfo.getImg_url()));
     }
 
-    public void loadImage(Uri uri, int placeholder) {
-        this.mPlaceholder = placeholder;
+    public void loadImage(Uri uri) {
         mImageUrls.add(uri);
         mAdapter.setAds(mImageUrls);
     }
@@ -237,20 +236,20 @@ public class BannerPlayer extends JazzyViewPager {
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        if (bannerInfo!=null&&!TextUtils.isEmpty(bannerInfo.getData().getAction_type())) {
-                            switch (bannerInfo.getData().getAction_type()){
-                                case "1":
-                                    break;
-                                case "2":
-                                    FragmentUtil.addFragment(FmBannerDetail.newInstance(ad));
-                                    break;
-                            }
-
-                        }
-                    } catch (Exception e) {
-                        Logger.w(getClass().getSimpleName(), "setOnClickListener ex:" + e.toString());
-                    }
+//                    try {
+//                        if (bannerInfo!=null&&!TextUtils.isEmpty(bannerInfo.getData().getAction_type())) {
+//                            switch (bannerInfo.getData().getAction_type()){
+//                                case "1":
+//                                    break;
+//                                case "2":
+//                                    FragmentUtil.addFragment(FmBannerDetail.newInstance(ad));
+//                                    break;
+//                            }
+//
+//                        }
+//                    } catch (Exception e) {
+//                        Logger.w(getClass().getSimpleName(), "setOnClickListener ex:" + e.toString());
+//                    }
                 }
             });
 

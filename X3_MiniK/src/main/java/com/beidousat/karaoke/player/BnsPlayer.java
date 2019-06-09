@@ -136,7 +136,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     if (mMinor != null)
                         mMediaPlayer.setMinorDisplay(mMinor.getHolder());
                     mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                    mMediaPlayer.prepare();
+                    mMediaPlayer.prepareAsync();
                     isPlaying = true;
                     getTrack(mMediaPlayer);
                 } else {//本地文件不存在
@@ -150,7 +150,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                         if (mMinor != null)
                             mMediaPlayer.setMinorDisplay(mMinor.getHolder());
                         mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                        mMediaPlayer.prepare();
+                        mMediaPlayer.prepareAsync();
                         isPlaying = true;
                         getTrack(mMediaPlayer);
                     } else {
@@ -185,7 +185,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     if (mMinor != null)
                         mMediaPlayer.setMinorDisplay(mMinor.getHolder());
                     mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                    mMediaPlayer.prepare();
+                    mMediaPlayer.prepareAsync();
                     isPlaying = true;
                     getTrack(mMediaPlayer);
                 } else {//本地文件不存在
