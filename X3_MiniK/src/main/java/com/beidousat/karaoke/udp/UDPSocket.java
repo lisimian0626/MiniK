@@ -163,6 +163,7 @@ public class UDPSocket {
                     }else{
                         SignUp sign=new SignUp();
                         sign.setSign(mContext,sendhsn);
+                        sendMessage("VH2.0"+sign.toString()+"\r\n");
                     }
                     heartbeatcount=0;
                 }
