@@ -3,12 +3,18 @@ package com.beidousat.karaoke.udp;
 import android.content.Context;
 import android.util.Log;
 
+import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -45,8 +51,6 @@ public class UDPSocket {
     private Thread clientThread;
     private HeartbeatTimer timer;
     private int heartbeatcount=20;
-    private int sendhsn=1;
-    private boolean isSign=false;
     public UDPSocket(Context context) {
 
         this.mContext = context;
@@ -121,6 +125,19 @@ public class UDPSocket {
 
             String strReceive = new String(receivePacket.getData(), 0, receivePacket.getLength());
             Log.d(TAG, strReceive + " from " + receivePacket.getAddress().getHostAddress() + ":" + receivePacket.getPort());
+            try {
+                int indexOf = strReceive.indexOf("VH2.0");
+                String json = strReceive.substring(indexOf, strReceive.length());
+                Gson gson = new Gson();
+                SignDown signDown = gson.fromJson(json,new TypeToken<List<SignDown>>(){}.getType());
+                if(signDown.getStatus().toUpperCase().equals("OK")){
+                    EventBusUtil.postSticky(EventBusId.Udp.SUCCESS,signDown);
+                }else {
+                    EventBusUtil.postSticky(EventBusId.Udp.ERROR,signDown);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
             //解析接收到的 json 信息
 
@@ -156,29 +173,28 @@ public class UDPSocket {
             public void onSchedule() {
                 heartbeatcount++;
                 if(heartbeatcount>=20){
-                    if(isSign){
+                    if(UDPComment.isSign){
                         HeatbeatUp heatbeatUp=new HeatbeatUp();
-                        heatbeatUp.token="";
-                        heatbeatUp.setHeartbeat("",sendhsn);
+                        heatbeatUp.setHeartbeat(UDPComment.token,UDPComment.sendhsn);
+                        sendMessage("VH2.0"+heatbeatUp.toString()+"\r\n");
                     }else{
                         SignUp sign=new SignUp();
-                        sign.setSign(mContext,sendhsn);
+                        sign.setSign(mContext,UDPComment.sendhsn);
                         sendMessage("VH2.0"+sign.toString()+"\r\n");
                     }
                     heartbeatcount=0;
                 }
-
-                Log.d(TAG, "timer is onSchedule...");
-                long duration = System.currentTimeMillis() - lastReceiveTime;
-                Log.d(TAG, "duration:" + duration);
-                if (duration > TIME_OUT) {//若超过两分钟都没收到我的心跳包，则认为对方不在线。
-                    Log.d(TAG, "超时，对方已经下线");
-                    // 刷新时间，重新进入下一个心跳周期
-                    lastReceiveTime = System.currentTimeMillis();
-                } else if (duration > HEARTBEAT_MESSAGE_DURATION) {//若超过十秒他没收到我的心跳包，则重新发一个。
-                    String string = "VH2.0{\"event\":\"sign\",\"eventkey\":1,\"kbox_sn\":\"B00010408\",\"device_sn\":\"6432760a68cad942\",\"os_version\":\"432\",\"version\":\"110\",\"hsn\":\"1\"}\r\n";
-                    sendMessage(string);
-                }
+//                Log.d(TAG, "timer is onSchedule...");
+//                long duration = System.currentTimeMillis() - lastReceiveTime;
+//                Log.d(TAG, "duration:" + duration);
+//                if (duration > TIME_OUT) {//若超过两分钟都没收到我的心跳包，则认为对方不在线。
+//                    Log.d(TAG, "超时，对方已经下线");
+//                    // 刷新时间，重新进入下一个心跳周期
+//                    lastReceiveTime = System.currentTimeMillis();
+//                } else if (duration > HEARTBEAT_MESSAGE_DURATION) {//若超过十秒他没收到我的心跳包，则重新发一个。
+//                    String string = "VH2.0{\"event\":\"sign\",\"eventkey\":1,\"kbox_sn\":\"B00010408\",\"device_sn\":\"6432760a68cad942\",\"os_version\":\"432\",\"version\":\"110\",\"hsn\":\"1\"}\r\n";
+//                    sendMessage(string);
+//                }
             }
 
         });
@@ -200,9 +216,9 @@ public class UDPSocket {
                     DatagramPacket packet = new DatagramPacket(message.getBytes(), message.length(), targetAddress, SERVER_PORT);
 
                     client.send(packet);
-                    sendhsn+=2;
+                    UDPComment.sendhsn+=2;
                     // 数据发送事件
-                    Log.d(TAG, "数据发送成功:   "+"hsn:"+sendhsn);
+                    Log.d(TAG, "数据发送成功  "+message);
 
                 } catch (UnknownHostException e) {
                     e.printStackTrace();

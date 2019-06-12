@@ -74,6 +74,8 @@ import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.player.KaraokeController;
 import com.beidousat.karaoke.player.chenxin.OriginPlayer;
+import com.beidousat.karaoke.udp.SignDown;
+import com.beidousat.karaoke.udp.UDPComment;
 import com.beidousat.karaoke.udp.UDPSocket;
 import com.beidousat.karaoke.ui.dlg.CommonDialog;
 import com.beidousat.karaoke.ui.dlg.DeviceStore;
@@ -1137,6 +1139,63 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.id.TOAST:
                 ToastUtils.toast(this,event.data.toString());
 //                Logger.d(TAG, "Main:" + event.data + "");
+                break;
+            case EventBusId.Udp.SUCCESS:
+                SignDown signDown= (SignDown) event.data;
+                if(signDown.getEvent().toLowerCase().equals("sign.ok")){
+                    UDPComment.isSign=true;
+                    UDPComment.token=signDown.getToken();
+                }
+                break;
+            case EventBusId.Udp.ERROR:
+                SignDown signDownERROR= (SignDown) event.data;
+                if (signDownERROR.getCode().equals("2003")) {
+                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+//                                Log.e("test", "心跳检测没交服务费，清空套餐");
+                        ChooseSongs.getInstance(Main.this).cleanChoose();
+                        BoughtMeal.getInstance().clearMealInfoSharePreference();
+                        BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
+                    }
+                    mDialogAuth = new PromptDialog(Main.mMainActivity);
+                    mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showPayService();
+                        }
+                    });
+                    mDialogAuth.setCanceledOnTouchOutside(false);
+                    mDialogAuth.setClose(true);
+                    mDialogAuth.setMessage(signDownERROR.getMessage());
+                    mDialogAuth.show();
+                } else if (signDownERROR.getCode().equals("2001")) {
+                    mDialogAuth = new PromptDialog(Main.mMainActivity);
+                    mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showMngPass(0);
+                        }
+                    });
+                    mDialogAuth.setCanceledOnTouchOutside(false);
+                    mDialogAuth.setClose(true);
+                    mDialogAuth.setMessage(signDownERROR.getMessage());
+                    mDialogAuth.show();
+                } else if (signDownERROR.getCode().equals("00301")) {
+                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                        PromptDialog promptDialog = new PromptDialog(this);
+                        promptDialog.setMessage(getResources().getString(R.string.auth_fail));
+                        promptDialog.show();
+                        ChooseSongs.getInstance(Main.this).cleanChoose();
+                        BoughtMeal.getInstance().clearMealInfoSharePreference();
+                        BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
+                    }
+                } else if(signDownERROR.getCode().equals("X4000")){
+                    UDPComment.sendhsn=1;
+                    UDPComment.isSign=false;
+                }else {
+                    if (getApplicationContext() != null) {
+                        ToastUtils.toast(getApplicationContext(), signDownERROR.getMessage());
+                    }
+                }
                 break;
         }
     }
