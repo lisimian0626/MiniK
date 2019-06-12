@@ -126,10 +126,10 @@ public class UDPSocket {
             String strReceive = new String(receivePacket.getData(), 0, receivePacket.getLength());
             Log.d(TAG, strReceive + " from " + receivePacket.getAddress().getHostAddress() + ":" + receivePacket.getPort());
             try {
-                int indexOf = strReceive.indexOf("VH2.0");
-                String json = strReceive.substring(indexOf, strReceive.length());
+                int end=strReceive.indexOf("\r\n");
+                String json = strReceive.substring(0, end).replace("VH2.0","");
                 Gson gson = new Gson();
-                SignDown signDown = gson.fromJson(json,new TypeToken<List<SignDown>>(){}.getType());
+                SignDown signDown = gson.fromJson(json,SignDown.class);
                 if(signDown.getStatus().toUpperCase().equals("OK")){
                     EventBusUtil.postSticky(EventBusId.Udp.SUCCESS,signDown);
                 }else {
@@ -184,17 +184,6 @@ public class UDPSocket {
                     }
                     heartbeatcount=0;
                 }
-//                Log.d(TAG, "timer is onSchedule...");
-//                long duration = System.currentTimeMillis() - lastReceiveTime;
-//                Log.d(TAG, "duration:" + duration);
-//                if (duration > TIME_OUT) {//若超过两分钟都没收到我的心跳包，则认为对方不在线。
-//                    Log.d(TAG, "超时，对方已经下线");
-//                    // 刷新时间，重新进入下一个心跳周期
-//                    lastReceiveTime = System.currentTimeMillis();
-//                } else if (duration > HEARTBEAT_MESSAGE_DURATION) {//若超过十秒他没收到我的心跳包，则重新发一个。
-//                    String string = "VH2.0{\"event\":\"sign\",\"eventkey\":1,\"kbox_sn\":\"B00010408\",\"device_sn\":\"6432760a68cad942\",\"os_version\":\"432\",\"version\":\"110\",\"hsn\":\"1\"}\r\n";
-//                    sendMessage(string);
-//                }
             }
 
         });

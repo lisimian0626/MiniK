@@ -37,9 +37,6 @@ public class UDPComment {
             case "X5000":
                 msg="无法签到，芯片串号不存在";
                 break;
-            case "X1007":
-                msg="缺少os_version";
-                break;
         }
         return msg;
     }
