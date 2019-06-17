@@ -329,9 +329,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     //获取配置完成发出消息
                     EventBusUtil.postSticky(EventBusId.id.GET_CONFIG_SUCCESS, "");
                     KboxConfig kboxConfig = (KboxConfig) obj;
-                    if(!TextUtils.isEmpty(kboxConfig.getSn())){
-                        PrefData.setSNCode(Main.this,kboxConfig.getSn());
-                        PrefData.setRoomCode(Main.this,kboxConfig.getSn());
+                    if (!TextUtils.isEmpty(kboxConfig.getSn())) {
+                        PrefData.setSNCode(Main.this, kboxConfig.getSn());
+                        PrefData.setRoomCode(Main.this, kboxConfig.getSn());
                     }
                     String language = kboxConfig.getLanguage().toLowerCase();
                     if (!TextUtils.isEmpty(language)) {
@@ -364,7 +364,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     checkUsbKey();
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
-                    UDPSocket udpSocket=new UDPSocket(getApplicationContext());
+                    UDPSocket udpSocket = new UDPSocket(getApplicationContext());
                     udpSocket.startUDPSocket();
 //                    udpClient.send();
 //                    startService(new Intent(getApplicationContext(), OctopusService.class));
@@ -393,7 +393,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 hideTips();
                 if (suceed) {
                     if (object != null && object instanceof KBox) {
-                        KBox kBox= (KBox) object;
+                        KBox kBox = (KBox) object;
                         if (TextUtils.isEmpty(((KBox) object).getLabel())) {
                             lable.setVisibility(View.INVISIBLE);
                         } else {
@@ -411,16 +411,16 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             }
                             mTvBuy.setVisibility(View.VISIBLE);
                         }
-                        if(kBox != null && !TextUtils.isEmpty(kBox.getCoin_unit())){
+                        if (kBox != null && !TextUtils.isEmpty(kBox.getCoin_unit())) {
                             Common.isICT = true;
                             SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
-                        }else{
+                        } else {
                             Common.isICT = false;
                         }
-                        if(kBox!=null&&kBox.getUse_pos()==1){
+                        if (kBox != null && kBox.getUse_pos() == 1) {
                             Common.isOCT = true;
                             SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-                        }else{
+                        } else {
                             Common.isOCT = false;
                         }
                         getBoughtMeal();
@@ -1137,18 +1137,71 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 break;
 
             case EventBusId.id.TOAST:
-                ToastUtils.toast(this,event.data.toString());
+                ToastUtils.toast(this, event.data.toString());
 //                Logger.d(TAG, "Main:" + event.data + "");
                 break;
             case EventBusId.Udp.SUCCESS:
-                SignDown signDown= (SignDown) event.data;
-                if(signDown.getEvent().toLowerCase().equals("sign.ok")){
-                    UDPComment.isSign=true;
-                    UDPComment.token=signDown.getToken();
+                SignDown signDown = (SignDown) event.data;
+                if (signDown.getEvent().toLowerCase().equals("sign.ok")) {
+                    UDPComment.isSign = true;
+                    UDPComment.token = signDown.getToken();
+                } else if (signDown.getEvent().toLowerCase().equals("mute")) {
+                    if (signDown.getEventkey().equals("1")) {
+                        //静音
+                        mKaraokeController.mute(true);
+                    } else if (signDown.getEventkey().equals("2")) {
+                        //取消静音
+                        mKaraokeController.mute(false);
+                    }
+                } else if (signDown.getEvent().toLowerCase().equals("cut")) {
+                    //切歌
+                    next();
+                } else if (signDown.getEvent().toLowerCase().equals("music")) {
+                    if (signDown.getEventkey().equals("1")) {
+                        //原唱
+                        mKaraokeController.originalAccom(true);
+                    } else if (signDown.getEventkey().equals("2")) {
+                        //伴唱
+                        mKaraokeController.originalAccom(false);
+                    }
+                } else if (signDown.getEvent().toLowerCase().equals("status")) {
+                    if (signDown.getEventkey().equals("1")) {
+                        //播放
+                        mKaraokeController.play();
+                    } else if (signDown.getEventkey().equals("2")) {
+                        //暂停
+                        mKaraokeController.pause();
+                    }
+                } else if (signDown.getEvent().toLowerCase().equals("replay")) {
+                        mKaraokeController.replay();
+                } else if (signDown.getEvent().toLowerCase().equals("score")) {
+                    if (signDown.getEventkey().equals("1")) {
+                        //开启
+                        mKaraokeController.setScoreMode(1);
+                    } else if (signDown.getEventkey().equals("2")) {
+                        //关闭
+                        mKaraokeController.setScoreMode(0);
+                    }
+                } else if (signDown.getEvent().toLowerCase().equals("sound")) {
+                    //设置声音
+                } else if (signDown.getEvent().toLowerCase().equals("mic")) {
+                    //设置声音
+                } else if (signDown.getEvent().toLowerCase().equals("tone")) {
+                    //设置声音
+                } else if (signDown.getEvent().toLowerCase().equals("reverberation")) {
+                    //设置声音
+                } else if (signDown.getEvent().toLowerCase().equals("songs")) {
+                    //已点列表 "eventkey":"11390:1,11391:2,11392:2,11393:2,11394:2,11395:2,11396:2,11397:3,11398:3",
+                } else if (signDown.getEvent().toLowerCase().equals("songfirist")) {
+                    //优先 eventkey":18390
+                } else if (signDown.getEvent().toLowerCase().equals("songrm")) {
+                    //删除 "eventkey":18390
+                } else if (signDown.getEvent().toLowerCase().equals("songsel")) {
+                    //点歌 "eventkey":18390
                 }
                 break;
             case EventBusId.Udp.ERROR:
-                SignDown signDownERROR= (SignDown) event.data;
+                SignDown signDownERROR = (SignDown) event.data;
                 if (signDownERROR.getCode().equals("2003")) {
                     if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
 //                                Log.e("test", "心跳检测没交服务费，清空套餐");
@@ -1188,10 +1241,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         BoughtMeal.getInstance().clearMealInfoSharePreference();
                         BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                     }
-                } else if(signDownERROR.getCode().equals("X4000")){
-                    UDPComment.sendhsn=1;
-                    UDPComment.isSign=false;
-                }else {
+                } else if (signDownERROR.getCode().equals("X4000")) {
+                    UDPComment.sendhsn = 1;
+                    UDPComment.isSign = false;
+                } else {
                     if (getApplicationContext() != null) {
                         ToastUtils.toast(getApplicationContext(), signDownERROR.getMessage());
                     }
@@ -1721,6 +1774,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mPresentation.mAdCorner = null;
         if (mPresentation != null)
             mPresentation.cleanScreen();
+        mPresentation.showQrCode();
         if (DiskFileUtil.is901()) {
             if (player == null)
                 return;
@@ -1874,7 +1928,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onPlayerCompletion() {
-        Logger.d("test","completion");
+        Logger.d("test", "completion");
         if (UpLoadDataUtil.getInstance().getmUploadSongData() != null && !TextUtils.isEmpty(UpLoadDataUtil.getInstance().getmUploadSongData().getSongId())) {
             String order_sn = "";
             if (BoughtMeal.getInstance().getTheLastPaystatus() != null) {
@@ -1980,7 +2034,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mAdVideo.ADContent = path;
         } else {
             List<BasePlay> basePlayList = BasePlay.arrayBasePlayFromData(str);
-            Logger.d("def_play",basePlayList.toString());
+            Logger.d("def_play", basePlayList.toString());
             if (basePlayList != null && basePlayList.size() > 0) {
                 int index = -1;
                 if (KBoxInfo.getInstance().getKBox() == null || TextUtils.isEmpty(KBoxInfo.getInstance().getKBox().getBaseplay_type())) {
@@ -2046,7 +2100,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mPlayingSong = null;
         Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
 
-            playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
+        playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
 
     }
 

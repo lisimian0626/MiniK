@@ -123,7 +123,20 @@ public class KaraokeController {
         return mPlayerStatus.originOn;
     }
 
-
+    public boolean originalAccom(boolean original) {
+        if (mPlayerStatus.playingType == 1) {//歌曲才可以切换原伴唱
+            if (original) {
+                mPlayerStatus.originOn =true;
+                EventBusUtil.postSticky(EventBusId.id.PLAYER_ORIGINAL, "");
+            } else {
+                mPlayerStatus.originOn =false;
+                EventBusUtil.postSticky(EventBusId.id.PLAYER_ACCOM, "");
+            }
+//            broadcastPlayerStatus();
+            EventBusUtil.postSticky(EventBusId.id.PLAYER_STATUS_CHANGED, mPlayerStatus);
+        }
+        return mPlayerStatus.originOn;
+    }
     public void micVolUp() {
         EventBusUtil.postSticky(EventBusId.id.MIC_UP, "");
         SerialController.getInstance(mContext).onMicUp();

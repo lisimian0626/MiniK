@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.player.ChooseSongs;
+import com.beidousat.karaoke.udp.UDPComment;
 import com.beidousat.karaoke.widget.MarqueePlayer;
 import com.beidousat.karaoke.widget.WidgetScore;
 import com.beidousat.libbns.ad.AdBillHelper;
@@ -40,6 +42,7 @@ import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.QrCodeUtil;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libwidget.image.RecyclerImageView;
 import com.beidousat.libwidget.progress.NumberProgressBar;
@@ -105,6 +108,8 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     private RelativeLayout mRootView;
     private CountDownTimer countDownTimer;
 
+    private ImageView qr_code;
+
     public PlayerPresentation(Context outerContext, Display display) {
         super(outerContext, display);
         Point realSize = new Point();
@@ -157,6 +162,9 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         //片尾广告
 //        mAdEndGetter = new AdStartEndGetter(getContext().getApplicationContext(), mAdEndListener);
 
+        //手机点歌二维码
+
+        qr_code= (ImageView) findViewById(R.id.player_qr_code);
 
         setContentView(R.layout.player_presentation_stb);
         mRootView = (RelativeLayout) findViewById(R.id.root);
@@ -349,6 +357,16 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         ivImage.postDelayed(runnableImageDismiss, 10 * 1000);
     }
 
+    public void showQrCode(){
+        if(!TextUtils.isEmpty(UDPComment.token)){
+            qr_code.setVisibility(View.VISIBLE);
+            qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.token));
+        }else{
+            qr_code.setVisibility(View.GONE);
+        }
+
+    }
+
     private Runnable runnableVolDismiss = new Runnable() {
         @Override
         public void run() {
@@ -378,7 +396,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
     public void onEventMainThread(BusEvent event) {
         switch (event.id) {
-            case EventBusId.id.SHOW_IMG:
+            case EventBusId.id.SHOW_QR_CODE:
                 showImage(event.data.toString());
                 break;
             case EventBusId.id.TV_AD_CORNER_SHOW:

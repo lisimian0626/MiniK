@@ -154,7 +154,7 @@ public class EventBusId {
 
         public static final int SHOW_EMOJI = 55;
 
-        public static final int SHOW_IMG = 56;
+        public static final int SHOW_QR_CODE = 56;
 
         public static final int GAME_LEVEL_PASS_CHANGED = 57;
 
