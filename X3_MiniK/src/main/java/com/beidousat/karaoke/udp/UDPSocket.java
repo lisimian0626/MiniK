@@ -1,6 +1,7 @@
 package com.beidousat.karaoke.udp;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.beidousat.libbns.evenbus.EventBusId;
@@ -126,14 +127,17 @@ public class UDPSocket {
             String strReceive = new String(receivePacket.getData(), 0, receivePacket.getLength());
             Log.d(TAG, strReceive + " from " + receivePacket.getAddress().getHostAddress() + ":" + receivePacket.getPort());
             try {
-                int end=strReceive.indexOf("\r\n");
-                String json = strReceive.substring(0, end).replace("VH2.0","");
+                String json = strReceive.replace("VH2.0","").replace("\r\n","");
                 Gson gson = new Gson();
                 SignDown signDown = gson.fromJson(json,SignDown.class);
-                if(signDown.getStatus().toUpperCase().equals("OK")){
+                if(TextUtils.isEmpty(signDown.getStatus())){
                     EventBusUtil.postSticky(EventBusId.Udp.SUCCESS,signDown);
-                }else {
-                    EventBusUtil.postSticky(EventBusId.Udp.ERROR,signDown);
+                }else{
+                    if(signDown.getStatus().toUpperCase().equals("OK")){
+                        EventBusUtil.postSticky(EventBusId.Udp.SUCCESS,signDown);
+                    }else {
+                        EventBusUtil.postSticky(EventBusId.Udp.ERROR,signDown);
+                    }
                 }
             }catch (Exception e){
                 e.printStackTrace();

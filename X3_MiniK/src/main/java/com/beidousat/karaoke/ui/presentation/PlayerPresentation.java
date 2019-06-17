@@ -161,14 +161,10 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 //        mAdStartGetter = new AdStartEndGetter(getContext().getApplicationContext(), mAdStartListener);
         //片尾广告
 //        mAdEndGetter = new AdStartEndGetter(getContext().getApplicationContext(), mAdEndListener);
-
-        //手机点歌二维码
-
-        qr_code= (ImageView) findViewById(R.id.player_qr_code);
-
         setContentView(R.layout.player_presentation_stb);
         mRootView = (RelativeLayout) findViewById(R.id.root);
-
+        //手机点歌二维码
+        qr_code= (ImageView)findViewById(R.id.player_qr_code);
         FrameLayout.LayoutParams linearParams = (FrameLayout.LayoutParams) mRootView.getLayoutParams();
         linearParams.height = mHdmiH;
         linearParams.width = mHdmiW;
@@ -358,9 +354,9 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     }
 
     public void showQrCode(){
-        if(!TextUtils.isEmpty(UDPComment.token)){
+        if(!TextUtils.isEmpty(UDPComment.QRcode)){
             qr_code.setVisibility(View.VISIBLE);
-            qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.token));
+            qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.QRcode));
         }else{
             qr_code.setVisibility(View.GONE);
         }

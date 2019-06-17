@@ -4,6 +4,7 @@ public class UDPComment {
     public static boolean isSign=false;
     public static String token="";
     public static int sendhsn=1;
+    public static String QRcode="";
 
     public static String getUDPErrorMsg(String errorCode){
         String msg="";

@@ -22,7 +22,7 @@ public class SignDown {
     private String token;
     private String qrcode;
     private String event;
-    private String eventkey;
+    private int eventkey;
     private String code;
     private int hsn;
     private String status;
@@ -68,11 +68,11 @@ public class SignDown {
         this.event = event;
     }
 
-    public String getEventkey() {
+    public int getEventkey() {
         return eventkey;
     }
 
-    public void setEventkey(String eventkey) {
+    public void setEventkey(int eventkey) {
         this.eventkey = eventkey;
     }
 
