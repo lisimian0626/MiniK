@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 public class UDPSocket {
 
     private static final String TAG = "UDPSocket";
-
+    private static UDPSocket mUdpSocket;
     // 单个CPU线程池大小
     private static final int POOL_SIZE = 5;
 
@@ -37,7 +37,7 @@ public class UDPSocket {
     private static final String BROADCAST_IP = "39.108.224.58";
 
     public static final int CLIENT_PORT = 18811;
-    public static final int SERVER_PORT=8960;
+    public static final int SERVER_PORT = 8960;
     private boolean isThreadRunning = false;
 
     private Context mContext;
@@ -51,7 +51,15 @@ public class UDPSocket {
     private ExecutorService mThreadPool;
     private Thread clientThread;
     private HeartbeatTimer timer;
-    private int heartbeatcount=20;
+    private int heartbeatcount = 20;
+
+    public static UDPSocket getIntance(Context context) {
+        if (mUdpSocket == null) {
+            mUdpSocket = new UDPSocket(context);
+        }
+        return mUdpSocket;
+    }
+
     public UDPSocket(Context context) {
 
         this.mContext = context;
@@ -126,20 +134,21 @@ public class UDPSocket {
 
             String strReceive = new String(receivePacket.getData(), 0, receivePacket.getLength());
             Log.d(TAG, strReceive + " from " + receivePacket.getAddress().getHostAddress() + ":" + receivePacket.getPort());
+            heartbeatcount = 0;
             try {
-                String json = strReceive.replace("VH2.0","").replace("\r\n","");
+                String json = strReceive.replace("VH2.0", "").replace("\r\n", "");
                 Gson gson = new Gson();
-                SignDown signDown = gson.fromJson(json,SignDown.class);
-                if(TextUtils.isEmpty(signDown.getStatus())){
-                    EventBusUtil.postSticky(EventBusId.Udp.SUCCESS,signDown);
-                }else{
-                    if(signDown.getStatus().toUpperCase().equals("OK")){
-                        EventBusUtil.postSticky(EventBusId.Udp.SUCCESS,signDown);
-                    }else {
-                        EventBusUtil.postSticky(EventBusId.Udp.ERROR,signDown);
+                SignDown signDown = gson.fromJson(json, SignDown.class);
+                if (TextUtils.isEmpty(signDown.getStatus())) {
+                    EventBusUtil.postSticky(EventBusId.Udp.SUCCESS, signDown);
+                } else {
+                    if (signDown.getStatus().toUpperCase().equals("OK")) {
+                        EventBusUtil.postSticky(EventBusId.Udp.SUCCESS, signDown);
+                    } else {
+                        EventBusUtil.postSticky(EventBusId.Udp.ERROR, signDown);
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -176,17 +185,16 @@ public class UDPSocket {
             @Override
             public void onSchedule() {
                 heartbeatcount++;
-                if(heartbeatcount>=20){
-                    if(UDPComment.isSign){
-                        HeatbeatUp heatbeatUp=new HeatbeatUp();
-                        heatbeatUp.setHeartbeat(UDPComment.token,UDPComment.sendhsn);
-                        sendMessage("VH2.0"+heatbeatUp.toString()+"\r\n");
-                    }else{
-                        SignUp sign=new SignUp();
-                        sign.setSign(mContext,UDPComment.sendhsn);
-                        sendMessage("VH2.0"+sign.toString()+"\r\n");
+                if (heartbeatcount >= 20) {
+                    if (UDPComment.isSign) {
+                        HeatbeatUp heatbeatUp = new HeatbeatUp();
+                        heatbeatUp.setHeartbeat(UDPComment.token, UDPComment.sendhsn);
+                        sendMessage("VH2.0" + heatbeatUp.toString() + "\r\n");
+                    } else {
+                        SignUp sign = new SignUp();
+                        sign.setSign(mContext, UDPComment.sendhsn);
+                        sendMessage("VH2.0" + sign.toString() + "\r\n");
                     }
-                    heartbeatcount=0;
                 }
             }
 
@@ -209,9 +217,10 @@ public class UDPSocket {
                     DatagramPacket packet = new DatagramPacket(message.getBytes(), message.length(), targetAddress, SERVER_PORT);
 
                     client.send(packet);
-                    UDPComment.sendhsn+=2;
+                    UDPComment.sendhsn += 2;
+                    heartbeatcount = 0;
                     // 数据发送事件
-                    Log.d(TAG, "数据发送成功  "+message);
+                    Log.d(TAG, "数据发送成功  " + message);
 
                 } catch (UnknownHostException e) {
                     e.printStackTrace();

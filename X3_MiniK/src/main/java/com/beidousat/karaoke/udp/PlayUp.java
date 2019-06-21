@@ -14,6 +14,19 @@ public class PlayUp {
     public String hsn;
     public String token;
 
+    public PlayUp(String event, int eventkey, int sound, int music, int mic, int tone, int reverberation, int score, String hsn, String token) {
+        this.event = event;
+        this.eventkey = eventkey;
+        this.sound = sound;
+        this.music = music;
+        this.mic = mic;
+        this.tone = tone;
+        this.reverberation = reverberation;
+        this.score = score;
+        this.hsn = hsn;
+        this.token = token;
+    }
+
     @Override
     public String toString() {
         return toJson();

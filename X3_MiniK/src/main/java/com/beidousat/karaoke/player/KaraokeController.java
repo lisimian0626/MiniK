@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Handler;
 
+import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.model.PlayerStatus;
 import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.libbns.evenbus.EventBusId;
@@ -237,6 +238,21 @@ public class KaraokeController {
         return mPlayerStatus.volMusic;
     }
 
+    /**
+     * @return
+     */
+    public int setMusicVol(int value) {
+        if(value>15||value<0){
+            EventBusUtil.postSticky(EventBusId.id.TOAST, mContext.getString(R.string.text_upd_error));
+        }else{
+            AudioManager mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, value, 0);
+            EventBusUtil.postSticky(EventBusId.id.VOL_DOWN, "");
+            mPlayerStatus.volMusic = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        }
+//        broadcastPlayerStatus();
+        return mPlayerStatus.volMusic;
+    }
 
     public float toneDefault() {
         mPlayerStatus.tone = 100;

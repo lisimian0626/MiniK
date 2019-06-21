@@ -74,6 +74,7 @@ import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.player.KaraokeController;
 import com.beidousat.karaoke.player.chenxin.OriginPlayer;
+import com.beidousat.karaoke.udp.PlayUp;
 import com.beidousat.karaoke.udp.SignDown;
 import com.beidousat.karaoke.udp.UDPComment;
 import com.beidousat.karaoke.udp.UDPSocket;
@@ -364,7 +365,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     checkUsbKey();
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
-                    UDPSocket udpSocket = new UDPSocket(getApplicationContext());
+                    UDPSocket udpSocket = UDPSocket.getIntance(getApplicationContext());
                     udpSocket.startUDPSocket();
 //                    udpClient.send();
 //                    startService(new Intent(getApplicationContext(), OctopusService.class));
@@ -913,7 +914,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 mKaraokeController.getPlayerStatus().effVol = effVol;
                 break;
 
-            case EventBusId.SERIAL.SERIAL_MIC_VOL:
+            case EventBusId.SERIAL. SERIAL_MIC_VOL:
                 int micVol = Integer.valueOf(event.data.toString());
                 Logger.d(TAG, "SERIAL_MIC_VOL :" + micVol);
                 mKaraokeController.getPlayerStatus().micVol = micVol;
@@ -1145,16 +1146,20 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 if (signDown.getEvent().toLowerCase().equals("sign.ok")) {
                     UDPComment.isSign = true;
                     UDPComment.token = signDown.getToken();
-                    UDPComment.QRcode=signDown.getQrcode();
+                    UDPComment.QRcode = signDown.getQrcode();
                 } else if (signDown.getEvent().toLowerCase().equals("player")) {
-                    if (signDown.getEventkey()==1) {
+                    if (signDown.getEventkey() == 1) {
                         //发播放器状态
+                        PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
+                                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone, mKaraokeController.getPlayerStatus().effVol,
+                                mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
+
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("mute")) {
-                    if (signDown.getEventkey()==1) {
+                    if (signDown.getEventkey() == 1) {
                         //静音
                         mKaraokeController.mute(true);
-                    } else if (signDown.getEventkey()==2) {
+                    } else if (signDown.getEventkey() == 2) {
                         //取消静音
                         mKaraokeController.mute(false);
                     }
@@ -1162,33 +1167,34 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     //切歌
                     next();
                 } else if (signDown.getEvent().toLowerCase().equals("music")) {
-                    if (signDown.getEventkey()==1) {
+                    if (signDown.getEventkey() == 1) {
                         //原唱
                         mKaraokeController.originalAccom(true);
-                    } else if (signDown.getEventkey()==2) {
+                    } else if (signDown.getEventkey() == 2) {
                         //伴唱
                         mKaraokeController.originalAccom(false);
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("status")) {
-                    if (signDown.getEventkey()==1) {
+                    if (signDown.getEventkey() == 1) {
                         //播放
                         mKaraokeController.play();
-                    } else if (signDown.getEventkey()==2) {
+                    } else if (signDown.getEventkey() == 2) {
                         //暂停
                         mKaraokeController.pause();
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("replay")) {
-                        mKaraokeController.replay();
+                    mKaraokeController.replay();
                 } else if (signDown.getEvent().toLowerCase().equals("score")) {
-                    if (signDown.getEventkey()==1) {
+                    if (signDown.getEventkey() == 1) {
                         //开启
                         mKaraokeController.setScoreMode(1);
-                    } else if (signDown.getEventkey()==2) {
+                    } else if (signDown.getEventkey() == 2) {
                         //关闭
                         mKaraokeController.setScoreMode(0);
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("sound")) {
                     //设置声音
+                    mKaraokeController.setMusicVol(signDown.getEventkey());
                 } else if (signDown.getEvent().toLowerCase().equals("mic")) {
                     //设置声音
                 } else if (signDown.getEvent().toLowerCase().equals("tone")) {
