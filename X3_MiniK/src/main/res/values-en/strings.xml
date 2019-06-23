@@ -472,4 +472,6 @@
     <string name="octo_paysucced">Successful payment.</string>
     <string name="octo_payfail">Payment Failed.</string>
     <string name="octo_canclepay">Cancel payment...</string>
+      //upd
+    <string name="error_setting">Error setting</string>
 </resources>

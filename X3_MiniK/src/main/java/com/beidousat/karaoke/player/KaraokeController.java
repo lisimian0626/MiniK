@@ -243,7 +243,7 @@ public class KaraokeController {
      */
     public int setMusicVol(int value) {
         if(value>15||value<0){
-            EventBusUtil.postSticky(EventBusId.id.TOAST, mContext.getString(R.string.text_upd_error));
+            EventBusUtil.postSticky(EventBusId.id.TOAST, mContext.getString(R.string.error_setting));
         }else{
             AudioManager mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, value, 0);
@@ -272,7 +272,20 @@ public class KaraokeController {
         EventBusUtil.postSticky(EventBusId.id.TONE_UP, mPlayerStatus.tone);
         return mPlayerStatus.tone;
     }
-
+    public float setTone(int value) {
+        int vol = mPlayerStatus.tone;
+        int tone=value+100;
+        if(tone>vol){
+            //升调
+            mPlayerStatus.tone=tone;
+            EventBusUtil.postSticky(EventBusId.id.TONE_UP, mPlayerStatus.tone);
+        }else if(tone<vol){
+            //降调
+            mPlayerStatus.tone=tone;
+            EventBusUtil.postSticky(EventBusId.id.TONE_DOWN, mPlayerStatus.tone);
+        }
+        return mPlayerStatus.tone;
+    }
 
     /**
      * @return

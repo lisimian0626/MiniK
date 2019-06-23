@@ -13,7 +13,7 @@ android {
         applicationId "com.beidousat.karaoke"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 500
+        versionCode 456
         versionName "V2.4.0"
         multiDexEnabled true
         ndk {

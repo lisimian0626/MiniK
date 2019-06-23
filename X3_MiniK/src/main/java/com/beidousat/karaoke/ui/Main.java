@@ -911,12 +911,36 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.SERIAL.SERIAL_EFF_VOL:
                 int effVol = Integer.valueOf(event.data.toString());
                 Logger.d(TAG, "SERIAL_EFF_VOL :" + effVol);
+                UDPComment.effType=UDPComment.effVoice>=effVol?1:2;
+                if(UDPComment.effVoice!=-1){
+                    if(UDPComment.effType==1&&UDPComment.effVoice>effVol){
+                        //音量加
+                        mKaraokeController.reverbUp();
+                        mKaraokeController.readEffVol(200);
+                    }else if(UDPComment.effType==2&&UDPComment.effVoice<effVol){
+                        //音量减
+                        mKaraokeController.reverbDown();
+                        mKaraokeController.readEffVol(200);
+                    }
+                }
                 mKaraokeController.getPlayerStatus().effVol = effVol;
                 break;
 
             case EventBusId.SERIAL. SERIAL_MIC_VOL:
                 int micVol = Integer.valueOf(event.data.toString());
                 Logger.d(TAG, "SERIAL_MIC_VOL :" + micVol);
+                UDPComment.micType=UDPComment.micVoice>=micVol?1:2;
+                if(UDPComment.micVoice!=-1){
+                    if(UDPComment.micType==1&&UDPComment.micVoice>micVol){
+                        //音量加
+                        mKaraokeController.micVolUp();
+                        mKaraokeController.readMicVol(200);
+                    }else if(UDPComment.micType==2&&UDPComment.micVoice<micVol){
+                        //音量减
+                        mKaraokeController.micVolDown();
+                        mKaraokeController.readMicVol(200);
+                    }
+                }
                 mKaraokeController.getPlayerStatus().micVol = micVol;
                 break;
 
@@ -1150,10 +1174,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else if (signDown.getEvent().toLowerCase().equals("player")) {
                     if (signDown.getEventkey() == 1) {
                         //发播放器状态
+                        int vol=mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                        mKaraokeController.getPlayerStatus().volMusic=vol;
                         PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
-                                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone, mKaraokeController.getPlayerStatus().effVol,
+                                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone-100, mKaraokeController.getPlayerStatus().effVol,
                                 mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
-
+                        UDPSocket.getIntance(this).sendMessage("VH2.0" + playUp.toString() + "\r\n");
+                        Logger.d(UDPSocket.TAG,"playUp:"+playUp.toString());
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("mute")) {
                     if (signDown.getEventkey() == 1) {
@@ -1193,13 +1220,18 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         mKaraokeController.setScoreMode(0);
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("sound")) {
-                    //设置声音
+                    //设置麦克风
                     mKaraokeController.setMusicVol(signDown.getEventkey());
                 } else if (signDown.getEvent().toLowerCase().equals("mic")) {
-                    //设置声音
+                    UDPComment.micVoice=signDown.getEventkey();
+                    mKaraokeController.readMicVol(10);
+                    //设置音调
                 } else if (signDown.getEvent().toLowerCase().equals("tone")) {
-                    //设置声音
+                    mKaraokeController.setTone(signDown.getEventkey());
+                    //设置混响
                 } else if (signDown.getEvent().toLowerCase().equals("reverberation")) {
+                    UDPComment.effVoice=signDown.getEventkey();
+                    mKaraokeController.readEffVol(10);
                     //设置声音
                 } else if (signDown.getEvent().toLowerCase().equals("songs")) {
                     //已点列表 "eventkey":"11390:1,11391:2,11392:2,11393:2,11394:2,11395:2,11396:2,11397:3,11398:3",

@@ -484,5 +484,6 @@
     <string name="octo_payfail">支付失败.</string>
     <string name="octo_canclepay">取消支付...</string>
     //upd
-    <string name="text_upd_error">设置超出范围</string>
+
+    <string name="error_setting">设置有误</string>
 </resources>

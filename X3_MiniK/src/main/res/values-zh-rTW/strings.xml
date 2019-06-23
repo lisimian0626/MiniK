@@ -482,4 +482,7 @@
     <string name="octo_paysucced">支付成功.</string>
     <string name="octo_payfail">支付失敗.</string>
     <string name="octo_canclepay">取消支付...</string>
+
+    //upd
+    <string name="error_setting">设置有误</string>
 </resources>
