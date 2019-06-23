@@ -540,6 +540,19 @@ public class ChooseSongs {
         return mSongInfos;
     }
 
+
+    public String getSongsforPhone() {
+        StringBuilder stringBuilder=new StringBuilder();
+        for(int i=0;i<mSongInfos.size();i++){
+            if(i==0){
+                stringBuilder.append(mSongInfos.get(i).ID).append(":").append("1").append(",");
+            }else{
+                stringBuilder.append(mSongInfos.get(i).ID).append(":").append("2").append(",");
+            }
+        }
+        return stringBuilder.toString().substring(0,stringBuilder.length()-1);
+    }
+
     public void setSongs(List<Song> songs) {
         try {
             mSongInfos = songs;

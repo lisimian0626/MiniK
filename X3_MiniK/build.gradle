@@ -13,8 +13,8 @@ android {
         applicationId "com.beidousat.karaoke"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 456
-        versionName "V2.4.0"
+        versionCode 457
+        versionName "V2.4.1"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
@@ -125,6 +125,5 @@ dependencies {
     //    apply from: 'tinker-support.gradle'
     compile files('libs/SerialPort.jar')
     compile 'com.github.lzyzsd:jsbridge:1.0.4'
-    compile 'io.netty:netty-all:4.1.35.Final'
 }
 

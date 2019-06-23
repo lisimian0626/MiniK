@@ -8,6 +8,17 @@ public class HeatbeatUp {
     public String token;
     public String hsn;
 
+
+    public HeatbeatUp() {
+    }
+
+    public HeatbeatUp(String event, String eventkey, String token, String hsn) {
+        this.event = event;
+        this.eventkey = eventkey;
+        this.token = token;
+        this.hsn = hsn;
+    }
+
     @Override
     public String toString() {
         return toJson();

@@ -74,6 +74,7 @@ import com.beidousat.karaoke.player.BnsPlayer;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.player.KaraokeController;
 import com.beidousat.karaoke.player.chenxin.OriginPlayer;
+import com.beidousat.karaoke.udp.HeatbeatUp;
 import com.beidousat.karaoke.udp.PlayUp;
 import com.beidousat.karaoke.udp.SignDown;
 import com.beidousat.karaoke.udp.UDPComment;
@@ -1234,6 +1235,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mKaraokeController.readEffVol(10);
                     //设置声音
                 } else if (signDown.getEvent().toLowerCase().equals("songs")) {
+                    String songs=ChooseSongs.getInstance(this).getSongsforPhone();
+                    Logger.d(UDPSocket.TAG,"songs:"+songs);
+                    HeatbeatUp songdata=new HeatbeatUp("songs",songs,UDPComment.token,String.valueOf(UDPComment.sendhsn));
+                    UDPSocket.getIntance(this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                     //已点列表 "eventkey":"11390:1,11391:2,11392:2,11393:2,11394:2,11395:2,11396:2,11397:3,11398:3",
                 } else if (signDown.getEvent().toLowerCase().equals("songfirist")) {
                     //优先 eventkey":18390
