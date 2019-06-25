@@ -57,7 +57,11 @@ public class HttpRequest {
         this.mContext = context.getApplicationContext();
         this.mMethod = method;
     }
-
+    public HttpRequest(Context context, String method,HttpRequestListener listener) {
+        this.mContext = context.getApplicationContext();
+        this.mMethod = method;
+        this.mHttpRequestListener=listener;
+    }
     public HttpRequest setHttpRequestListener(HttpRequestListener listener) {
         this.mHttpRequestListener = listener;
         return this;

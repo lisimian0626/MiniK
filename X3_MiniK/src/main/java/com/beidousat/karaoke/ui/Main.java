@@ -1241,10 +1241,30 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     UDPSocket.getIntance(this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                     //已点列表 "eventkey":"11390:1,11391:2,11392:2,11393:2,11394:2,11395:2,11396:2,11397:3,11398:3",
                 } else if (signDown.getEvent().toLowerCase().equals("songfirist")) {
+//                    getSongInfo();
+//                    ChooseSongs.getInstance(this).add2Top(info)
                     //优先 eventkey":18390
                 } else if (signDown.getEvent().toLowerCase().equals("songrm")) {
                     //删除 "eventkey":18390
+//                    ChooseSongs.getInstance(this).remove(song)
                 } else if (signDown.getEvent().toLowerCase().equals("songsel")) {
+                    HttpRequest httpRequest=new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
+                        @Override
+                        public void onStart(String method) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(String method, Object object) {
+                            ChooseSongs.getInstance(Main.mMainActivity).addSong(info)
+                        }
+
+                        @Override
+                        public void onFailed(String method, String error) {
+
+                        }
+                    });
+
                     //点歌 "eventkey":18390
                 }
                 break;
@@ -3281,5 +3301,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
             }
         }.start();
     }
+    private void getSongInfo(int songID,String event) {
+        HttpRequest r = initRequest(RequestMethod.GET_SONGINFO);
+        r.addParam("SongId", songID+"");
+//        r.setConvert2Class(Ad.class);
+        r.doPost(0);
+    }
+    @Override
+    public void onSuccess(String method, Object object) {
+        super.onSuccess(method, object);
+    }
 
+    @Override
+    public void onFailed(String method, String error) {
+        super.onFailed(method, error);
+    }
 }

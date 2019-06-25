@@ -17,6 +17,10 @@ public class RequestMethod {
 
 
     /**
+     * 歌曲详情
+     */
+    public final static String GET_SONGINFO = "getSongInfo";
+    /**
      * 歌星
      */
     public static final String GET_SINGER = "getSinger";

@@ -14,8 +14,8 @@ import com.beidousat.karaoke.util.Utils;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Common;
+import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.HttpRequestListener;
-import com.beidousat.libbns.util.DiskFileUtil;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
@@ -97,6 +97,12 @@ public class BaseActivity extends RxAppCompatActivity implements OnScreenAdListe
         }, 60, 2, TimeUnit.SECONDS);
     }
 
+    HttpRequest initRequest(String method) {
+        HttpRequest request = new HttpRequest(this, method);
+        request.setHttpRequestListener(this);
+        return request;
+    }
+
     @Override
     public void onEnterScreenAd() {
     }
@@ -116,6 +122,7 @@ public class BaseActivity extends RxAppCompatActivity implements OnScreenAdListe
     public void onFailed(String method, String error) {
 
     }
+
     /**
      * 线程调度
      */
@@ -139,38 +146,35 @@ public class BaseActivity extends RxAppCompatActivity implements OnScreenAdListe
             }
         };
     }
+
     /**
-     *
      * <切换语言>
      *
      * @param language
      * @see [类、类#方法、类#成员]
      */
-    protected void switchLanguage(String language)
-    {
+    protected void switchLanguage(String language) {
         // 设置应用语言类型
         Resources resources = getResources();
         Configuration config = resources.getConfiguration();
         DisplayMetrics dm = resources.getDisplayMetrics();
-        if (language.equals("en"))
-        {
+        if (language.equals("en")) {
             config.locale = Locale.ENGLISH;
-            Common.isEn=true;
-        }
-        else if(language.equals("tw")){
+            Common.isEn = true;
+        } else if (language.equals("tw")) {
             config.locale = Locale.TAIWAN;
-            Common.isEn=false;
-        }
-        else {
+            Common.isEn = false;
+        } else {
             // 简体中文
             config.locale = Locale.SIMPLIFIED_CHINESE;
-            Common.isEn=false;
+            Common.isEn = false;
         }
         resources.updateConfiguration(config, dm);
 
         // 保存设置语言的类型
-        PrefData.setLanguage(this,language);
+        PrefData.setLanguage(this, language);
     }
+
     protected void exitApp() {
         EventBusUtil.postSticky(EventBusId.id.MAIN_PLAYER_STOP, null);
         android.os.Process.killProcess(android.os.Process.myPid());//获取PID
