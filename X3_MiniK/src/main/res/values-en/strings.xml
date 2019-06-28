@@ -277,8 +277,8 @@
     <string name="room_no_setting">Room Settings</string>
     <string name="password_setting">Password Settings</string>
     <string name="room_code_x">Room ID：%s</string>
-    <string name="serial_setting">Control Settings</string>
-
+    <string name="control_setting">Control Settings</string>
+    <string name="serial_setting">serial Settings</string>
     <string name="buy">Purchase</string>
     <string name="rule">Guide</string>
 

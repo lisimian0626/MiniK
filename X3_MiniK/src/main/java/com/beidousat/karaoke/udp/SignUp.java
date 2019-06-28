@@ -8,7 +8,9 @@ import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.PackageUtil;
 import com.google.gson.Gson;
 
-public class SignUp {
+import java.io.Serializable;
+
+public class SignUp implements Serializable {
    public String event;
    public String eventkey;
    public String kbox_sn;

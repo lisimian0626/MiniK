@@ -3,11 +3,12 @@ package com.beidousat.karaoke.udp;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignDown {
+public class SignDown implements Serializable {
 
     /**
      * token : 9138a64cf29fd6a40128c53d92b99acd

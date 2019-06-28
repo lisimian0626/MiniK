@@ -277,8 +277,8 @@
     <string name="room_no_setting">房間設置</string>
     <string name="password_setting">密碼設置</string>
     <string name="room_code_x">房間編號：%s</string>
-    <string name="serial_setting">中控設置</string>
-
+    <string name="control_setting">中控設置</string>
+    <string name="serial_setting">串口設置</string>
     <string name="buy">購買套餐</string>
     <string name="rule">K歌流程</string>
 

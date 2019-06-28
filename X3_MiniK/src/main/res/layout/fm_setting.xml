@@ -66,7 +66,7 @@
             android:drawablePadding="14dp"
             android:drawableTop="@drawable/icon_setting_password"
             android:gravity="center"
-            android:text="@string/serial_setting"
+            android:text="@string/control_setting"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -141,7 +141,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="130dp"
-            android:text="@string/back_to_ktv"
+            android:text="@string/ktv_name"
             android:textColor="@android:color/white"
             android:textSize="30sp" />
 
@@ -152,10 +152,21 @@
             android:drawablePadding="14dp"
             android:drawableTop="@drawable/service_setting_backtoktv"
             android:gravity="center"
-            android:text="@string/ktv_name"
+            android:text="@string/back_to_ktv"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
-
+        <TextView
+            android:id="@+id/tv_serial_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:drawablePadding="14dp"
+            android:drawableTop="@drawable/icon_setting_password"
+            android:gravity="center"
+            android:text="@string/serial_setting"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
     </TableRow>
+
 </TableLayout>
 

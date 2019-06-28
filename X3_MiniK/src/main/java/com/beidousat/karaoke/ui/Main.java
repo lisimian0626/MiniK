@@ -66,6 +66,7 @@ import com.beidousat.karaoke.model.PayMent;
 import com.beidousat.karaoke.model.PayStatus;
 import com.beidousat.karaoke.model.PlayerStatus;
 import com.beidousat.karaoke.model.Song;
+import com.beidousat.karaoke.model.SongInfo;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
 import com.beidousat.karaoke.model.downLoadInfo;
@@ -912,13 +913,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.SERIAL.SERIAL_EFF_VOL:
                 int effVol = Integer.valueOf(event.data.toString());
                 Logger.d(TAG, "SERIAL_EFF_VOL :" + effVol);
-                UDPComment.effType=UDPComment.effVoice>=effVol?1:2;
-                if(UDPComment.effVoice!=-1){
-                    if(UDPComment.effType==1&&UDPComment.effVoice>effVol){
+                UDPComment.effType = UDPComment.effVoice >= effVol ? 1 : 2;
+                if (UDPComment.effVoice != -1) {
+                    if (UDPComment.effType == 1 && UDPComment.effVoice > effVol) {
                         //音量加
                         mKaraokeController.reverbUp();
                         mKaraokeController.readEffVol(200);
-                    }else if(UDPComment.effType==2&&UDPComment.effVoice<effVol){
+                    } else if (UDPComment.effType == 2 && UDPComment.effVoice < effVol) {
                         //音量减
                         mKaraokeController.reverbDown();
                         mKaraokeController.readEffVol(200);
@@ -927,16 +928,16 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 mKaraokeController.getPlayerStatus().effVol = effVol;
                 break;
 
-            case EventBusId.SERIAL. SERIAL_MIC_VOL:
+            case EventBusId.SERIAL.SERIAL_MIC_VOL:
                 int micVol = Integer.valueOf(event.data.toString());
                 Logger.d(TAG, "SERIAL_MIC_VOL :" + micVol);
-                UDPComment.micType=UDPComment.micVoice>=micVol?1:2;
-                if(UDPComment.micVoice!=-1){
-                    if(UDPComment.micType==1&&UDPComment.micVoice>micVol){
+                UDPComment.micType = UDPComment.micVoice >= micVol ? 1 : 2;
+                if (UDPComment.micVoice != -1) {
+                    if (UDPComment.micType == 1 && UDPComment.micVoice > micVol) {
                         //音量加
                         mKaraokeController.micVolUp();
                         mKaraokeController.readMicVol(200);
-                    }else if(UDPComment.micType==2&&UDPComment.micVoice<micVol){
+                    } else if (UDPComment.micType == 2 && UDPComment.micVoice < micVol) {
                         //音量减
                         mKaraokeController.micVolDown();
                         mKaraokeController.readMicVol(200);
@@ -1175,13 +1176,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else if (signDown.getEvent().toLowerCase().equals("player")) {
                     if (signDown.getEventkey() == 1) {
                         //发播放器状态
-                        int vol=mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                        mKaraokeController.getPlayerStatus().volMusic=vol;
+                        int vol = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                        mKaraokeController.getPlayerStatus().volMusic = vol;
                         PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
-                                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone-100, mKaraokeController.getPlayerStatus().effVol,
+                                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
                                 mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
                         UDPSocket.getIntance(this).sendMessage("VH2.0" + playUp.toString() + "\r\n");
-                        Logger.d(UDPSocket.TAG,"playUp:"+playUp.toString());
+                        Logger.d(UDPSocket.TAG, "playUp:" + playUp.toString());
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("mute")) {
                     if (signDown.getEventkey() == 1) {
@@ -1224,31 +1225,25 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     //设置麦克风
                     mKaraokeController.setMusicVol(signDown.getEventkey());
                 } else if (signDown.getEvent().toLowerCase().equals("mic")) {
-                    UDPComment.micVoice=signDown.getEventkey();
+                    UDPComment.micVoice = signDown.getEventkey();
                     mKaraokeController.readMicVol(10);
                     //设置音调
                 } else if (signDown.getEvent().toLowerCase().equals("tone")) {
                     mKaraokeController.setTone(signDown.getEventkey());
                     //设置混响
                 } else if (signDown.getEvent().toLowerCase().equals("reverberation")) {
-                    UDPComment.effVoice=signDown.getEventkey();
+                    UDPComment.effVoice = signDown.getEventkey();
                     mKaraokeController.readEffVol(10);
                     //设置声音
                 } else if (signDown.getEvent().toLowerCase().equals("songs")) {
-                    String songs=ChooseSongs.getInstance(this).getSongsforPhone();
-                    Logger.d(UDPSocket.TAG,"songs:"+songs);
-                    HeatbeatUp songdata=new HeatbeatUp("songs",songs,UDPComment.token,String.valueOf(UDPComment.sendhsn));
+                    String songs = ChooseSongs.getInstance(this).getSongsforPhone();
+                    Logger.d(UDPSocket.TAG, "songs:" + songs);
+                    HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
                     UDPSocket.getIntance(this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                     //已点列表 "eventkey":"11390:1,11391:2,11392:2,11393:2,11394:2,11395:2,11396:2,11397:3,11398:3",
                 } else if (signDown.getEvent().toLowerCase().equals("songfirist")) {
-//                    getSongInfo();
-//                    ChooseSongs.getInstance(this).add2Top(info)
                     //优先 eventkey":18390
-                } else if (signDown.getEvent().toLowerCase().equals("songrm")) {
-                    //删除 "eventkey":18390
-//                    ChooseSongs.getInstance(this).remove(song)
-                } else if (signDown.getEvent().toLowerCase().equals("songsel")) {
-                    HttpRequest httpRequest=new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
+                    HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
                         @Override
                         public void onStart(String method) {
 
@@ -1256,15 +1251,66 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                         @Override
                         public void onSuccess(String method, Object object) {
-                            ChooseSongs.getInstance(Main.mMainActivity).addSong(info)
+                            if (object != null && object instanceof SongInfo) {
+                                SongInfo songInfo = (SongInfo) object;
+                                ChooseSongs.getInstance(Main.mMainActivity).add2Top(songInfo.toSong());
+                            }
                         }
 
                         @Override
                         public void onFailed(String method, String error) {
-
+                            EventBusUtil.postSticky(EventBusId.id.TOAST, error);
                         }
                     });
+                    httpRequest.setConvert2Class(SongInfo.class);
+                    httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
+                    httpRequest.doPost(0);
+                } else if (signDown.getEvent().toLowerCase().equals("songrm")) {
+                    HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
+                        @Override
+                        public void onStart(String method) {
 
+                        }
+
+                        @Override
+                        public void onSuccess(String method, Object object) {
+                            if (object != null && object instanceof SongInfo) {
+                                SongInfo songInfo = (SongInfo) object;
+                                ChooseSongs.getInstance(Main.mMainActivity).remove(songInfo.toSong());
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(String method, String error) {
+                            EventBusUtil.postSticky(EventBusId.id.TOAST, error);
+                        }
+                    });
+                    httpRequest.setConvert2Class(SongInfo.class);
+                    httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
+                    httpRequest.doPost(0);
+                } else if (signDown.getEvent().toLowerCase().equals("songsel")) {
+                    HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
+                        @Override
+                        public void onStart(String method) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(String method, Object object) {
+                            if (object != null && object instanceof SongInfo) {
+                                SongInfo songInfo = (SongInfo) object;
+                                ChooseSongs.getInstance(Main.mMainActivity).addSong(songInfo.toSong());
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(String method, String error) {
+                            EventBusUtil.postSticky(EventBusId.id.TOAST, error);
+                        }
+                    });
+                    httpRequest.setConvert2Class(SongInfo.class);
+                    httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
+                    httpRequest.doPost(0);
                     //点歌 "eventkey":18390
                 }
                 break;
@@ -3301,12 +3347,14 @@ public class Main extends BaseActivity implements View.OnClickListener,
             }
         }.start();
     }
-    private void getSongInfo(int songID,String event) {
+
+    private void getSongInfo(int songID, String event) {
         HttpRequest r = initRequest(RequestMethod.GET_SONGINFO);
-        r.addParam("SongId", songID+"");
+        r.addParam("SongId", songID + "");
 //        r.setConvert2Class(Ad.class);
         r.doPost(0);
     }
+
     @Override
     public void onSuccess(String method, Object object) {
         super.onSuccess(method, object);

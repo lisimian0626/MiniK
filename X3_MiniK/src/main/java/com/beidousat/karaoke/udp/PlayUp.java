@@ -2,7 +2,9 @@ package com.beidousat.karaoke.udp;
 
 import com.google.gson.Gson;
 
-public class PlayUp {
+import java.io.Serializable;
+
+public class PlayUp implements Serializable {
     public String event;
     public int eventkey;
     public int sound;

@@ -175,4 +175,18 @@ public class SongInfo {
     public void setADID(int ADID) {
         this.ADID = ADID;
     }
+
+    public Song toSong(){
+        Song song=new Song();
+        song.SingerID=SingerID;
+        song.SongFilePath=SongFilePath;
+        song.Volume=Integer.valueOf(Volume);
+        song.AudioTrack=Integer.valueOf(AudioTrack);
+        song.IsAdSong=IsAdSong;
+        song.ADID=String.valueOf(ADID);
+        song.PreviewPath=PreviewPath;
+        song.download_url=download_url;
+        song.IsClear=IsClear;
+        return song;
+    }
 }

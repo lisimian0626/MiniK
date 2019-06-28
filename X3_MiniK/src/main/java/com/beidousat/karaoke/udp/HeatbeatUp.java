@@ -2,7 +2,9 @@ package com.beidousat.karaoke.udp;
 
 import com.google.gson.Gson;
 
-public class HeatbeatUp {
+import java.io.Serializable;
+
+public class HeatbeatUp implements Serializable {
     public String event;
     public String eventkey;
     public String token;
