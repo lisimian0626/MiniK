@@ -469,7 +469,13 @@ public class ChooseSongs {
     public void remove(Song song) {
         try {
             if (mSongInfos != null && mSongInfos.size() > 0) {
-                mSongInfos.remove(song);
+                for(int i=0; i<mSongInfos.size();i++){
+                    if(mSongInfos.get(i).ID.equals(song.ID)){
+                      mSongInfos.remove(i);
+                      break;
+                    }
+                }
+//                mSongInfos.remove(song);
                 sendChooseChangedMsg();
             }
         } catch (Exception e) {

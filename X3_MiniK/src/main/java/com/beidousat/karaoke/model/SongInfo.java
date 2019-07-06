@@ -30,7 +30,7 @@ public class SongInfo {
     private String AudioTrack;
     private String SongVersion;
     private String LightingEffect;
-    private Object IsGradeLib;
+    private String IsGradeLib;
     private String SingerName;
     private String SingerID;
     private String PreviewPath;
@@ -108,7 +108,7 @@ public class SongInfo {
         return IsGradeLib;
     }
 
-    public void setIsGradeLib(Object IsGradeLib) {
+    public void setIsGradeLib(String IsGradeLib) {
         this.IsGradeLib = IsGradeLib;
     }
 
@@ -178,6 +178,12 @@ public class SongInfo {
 
     public Song toSong(){
         Song song=new Song();
+        song.ID=ID;
+        song.SimpName=SimpName;
+        song.Volume=Integer.valueOf(Volume);
+        song.AudioTrack=Integer.valueOf(AudioTrack);
+        song.IsGradeLib=IsGradeLib;
+        song.SingerName=SingerName;
         song.SingerID=SingerID;
         song.SongFilePath=SongFilePath;
         song.Volume=Integer.valueOf(Volume);

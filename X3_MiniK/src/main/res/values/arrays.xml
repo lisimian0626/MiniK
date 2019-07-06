@@ -310,4 +310,10 @@
         <item>9</item>
         <item>0</item>
     </string-array>
+
+    <string-array name="spinner_item">
+        <item>@string/serial_control</item>
+        <item>@string/serial_pos</item>
+        <item>@string/serial_oct</item>
+    </string-array>
 </resources>

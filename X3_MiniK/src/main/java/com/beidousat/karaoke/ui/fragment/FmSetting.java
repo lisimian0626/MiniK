@@ -71,6 +71,7 @@ public class FmSetting extends BaseFragment implements View.OnClickListener {
         mRootView.findViewById(R.id.tv_system_setting).setOnClickListener(this);
         mRootView.findViewById(R.id.tv_calibration).setOnClickListener(this);
         mRootView.findViewById(R.id.tv_password).setOnClickListener(this);
+        mRootView.findViewById(R.id.tv_serial_setting).setOnClickListener(this);
         tv_room_no= (TextView) mRootView.findViewById(R.id.tv_room_no);
         tv_room_no.setOnClickListener(this);
         tv_mng= (TextView) mRootView.findViewById(R.id.tv_mng);
@@ -161,6 +162,8 @@ public class FmSetting extends BaseFragment implements View.OnClickListener {
                 } else {
                     Toast.makeText(getContext().getApplicationContext(), "未连接服务器", Toast.LENGTH_SHORT).show();
                 }
+            case R.id.tv_serial_setting:
+                FragmentUtil.addFragment(new FmSerialInfo());
                 break;
         }
     }

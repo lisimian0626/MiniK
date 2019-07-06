@@ -103,6 +103,7 @@ import com.beidousat.karaoke.ui.dlg.StepDialog;
 import com.beidousat.karaoke.ui.fragment.FmChooseList;
 import com.beidousat.karaoke.ui.fragment.FmMain;
 import com.beidousat.karaoke.ui.fragment.FmSearch;
+import com.beidousat.karaoke.ui.fragment.FmSerialInfo;
 import com.beidousat.karaoke.ui.fragment.FmSetting;
 import com.beidousat.karaoke.ui.fragment.FmSettingInfrared;
 import com.beidousat.karaoke.ui.fragment.FmSettingSerail;
@@ -926,6 +927,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     }
                 }
                 mKaraokeController.getPlayerStatus().effVol = effVol;
+                sendPlayerControl();
                 break;
 
             case EventBusId.SERIAL.SERIAL_MIC_VOL:
@@ -944,6 +946,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     }
                 }
                 mKaraokeController.getPlayerStatus().micVol = micVol;
+                sendPlayerControl();
                 break;
 
             case EventBusId.id.PLAYER_VOL_OFF:
@@ -1176,13 +1179,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else if (signDown.getEvent().toLowerCase().equals("player")) {
                     if (signDown.getEventkey() == 1) {
                         //发播放器状态
-                        int vol = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                        mKaraokeController.getPlayerStatus().volMusic = vol;
-                        PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
-                                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
-                                mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
-                        UDPSocket.getIntance(this).sendMessage("VH2.0" + playUp.toString() + "\r\n");
-                        Logger.d(UDPSocket.TAG, "playUp:" + playUp.toString());
+                        sendPlayerControl();
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("mute")) {
                     if (signDown.getEventkey() == 1) {
@@ -1192,6 +1189,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         //取消静音
                         mKaraokeController.mute(false);
                     }
+                    sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("cut")) {
                     //切歌
                     next();
@@ -1203,6 +1201,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         //伴唱
                         mKaraokeController.originalAccom(false);
                     }
+                    sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("status")) {
                     if (signDown.getEventkey() == 1) {
                         //播放
@@ -1211,6 +1210,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         //暂停
                         mKaraokeController.pause();
                     }
+                    sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("replay")) {
                     mKaraokeController.replay();
                 } else if (signDown.getEvent().toLowerCase().equals("score")) {
@@ -1221,15 +1221,18 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         //关闭
                         mKaraokeController.setScoreMode(0);
                     }
+                    sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("sound")) {
                     //设置麦克风
                     mKaraokeController.setMusicVol(signDown.getEventkey());
+                    sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("mic")) {
                     UDPComment.micVoice = signDown.getEventkey();
                     mKaraokeController.readMicVol(10);
                     //设置音调
                 } else if (signDown.getEvent().toLowerCase().equals("tone")) {
                     mKaraokeController.setTone(signDown.getEventkey());
+                    sendPlayerControl();
                     //设置混响
                 } else if (signDown.getEvent().toLowerCase().equals("reverberation")) {
                     UDPComment.effVoice = signDown.getEventkey();
@@ -1254,6 +1257,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.mMainActivity).add2Top(songInfo.toSong());
+                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
+                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                             }
                         }
 
@@ -1277,6 +1283,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.mMainActivity).remove(songInfo.toSong());
+                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
+                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                             }
                         }
 
@@ -1300,6 +1309,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.mMainActivity).addSong(songInfo.toSong());
+                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
+                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                             }
                         }
 
@@ -1365,6 +1377,16 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
         }
+    }
+
+    private void sendPlayerControl() {
+        int vol = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mKaraokeController.getPlayerStatus().volMusic = vol;
+        PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
+                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
+                mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
+        UDPSocket.getIntance(this).sendMessage("VH2.0" + playUp.toString() + "\r\n");
+        Logger.d(UDPSocket.TAG, "playUp:" + playUp.toString());
     }
 
     public void onEventMainThread(ICTEvent event) {
@@ -2684,7 +2706,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mViewBottom.setVisibility(View.VISIBLE);
             mViewTop.setVisibility(View.VISIBLE);
 //            mMarqueePlayer.setVisibility(View.VISIBLE);
-        } else if (FmSetting.class.getName().equals(fragment.tag) || FmSettingSerail.class.getName().equals(fragment.tag) || FmSettingInfrared.class.getName().equals(fragment.tag)) {
+        } else if (FmSetting.class.getName().equals(fragment.tag) || FmSettingSerail.class.getName().equals(fragment.tag) || FmSettingInfrared.class.getName().equals(fragment.tag)|| FmSerialInfo.class.getName().equals(fragment.tag)) {
             mIsSetting = true;
             mViewBottom.setVisibility(View.GONE);
             mViewTop.setVisibility(View.GONE);

@@ -14,9 +14,9 @@ public class Common {
     public static final String mPort = "/dev/ttyS3";
     //红外串口
     public static final String mInfraredPort = "/dev/ttyS0";
-    //八达通串口
+    //八达通串口 左下
     public static final String mOTCPort = "/dev/ttyS1";
-    //纸钞机串口
+    //纸钞机串口 左上
     public static final String mICTPort = "/dev/ttyS4";
     //效果器波特率
     public static final int mBaudRate = 4800;

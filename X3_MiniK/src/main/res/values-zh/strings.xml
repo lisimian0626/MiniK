@@ -486,4 +486,12 @@
     //upd
 
     <string name="error_setting">设置有误</string>
+
+    //Serial
+    <string name="serial_RJ45">RJ45接口</string>
+    <string name="serial_down">左下角耳机</string>
+    <string name="serial_up">左上角耳机</string>
+    <string name="serial_control">中控效果器</string>
+    <string name="serial_pos">pos机</string>
+    <string name="serial_oct">纸钞机</string>
 </resources>

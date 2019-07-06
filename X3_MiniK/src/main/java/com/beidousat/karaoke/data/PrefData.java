@@ -1,7 +1,6 @@
 package com.beidousat.karaoke.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.beidousat.libbns.util.PreferenceUtil;
 
@@ -46,6 +45,31 @@ public class PrefData {
     private final static String CURTEMPVALUE="Curtempvalue";
     private final static String CURWINDVALUE="Curwindvalue";
     private final static String GETAUTOCEPHALOUS="getautocephalous";
+
+    private final static String SERIAL_RJ45="serial_rj45";
+    private final static String SERIAL_UP="serial_rj45";
+    private final static String SERIAL_DOWN="serial_rj45";
+
+    public static String getSERIAL_RJ45(Context context){
+        return PreferenceUtil.getString(context, SERIAL_RJ45, "");
+    }
+    public static void  setSERIAL_RJ45(Context context,String value){
+        PreferenceUtil.setString(context,SERIAL_RJ45,value);
+    }
+
+    public static String getSERIAL_UP(Context context){
+        return PreferenceUtil.getString(context, SERIAL_UP, "");
+    }
+    public static void  setSERIAL_UP(Context context,String value){
+        PreferenceUtil.setString(context,SERIAL_UP,value);
+    }
+    public static String getSERIAL_DOWN(Context context){
+        return PreferenceUtil.getString(context, SERIAL_DOWN, "");
+    }
+    public static void  setSERIAL_DOWN(Context context,String value){
+        PreferenceUtil.setString(context,SERIAL_DOWN,value);
+    }
+
     public static String getAutocephalous(Context context){
         return PreferenceUtil.getString(context, GETAUTOCEPHALOUS, "0");
     }
