@@ -57,4 +57,5 @@
         <item name="android:textColor">@color/dlg_countdown</item>
         <item name="android:textSize">24sp</item>
     </style>
+
 </resources>

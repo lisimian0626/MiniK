@@ -312,8 +312,8 @@
     </string-array>
 
     <string-array name="spinner_item">
-        <item>@string/serial_control</item>
-        <item>@string/serial_pos</item>
-        <item>@string/serial_oct</item>
+        <item>中控效果器</item>
+        <item>pos机</item>
+        <item>纸钞机</item>
     </string-array>
 </resources>

@@ -686,9 +686,35 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
         try {
             int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
-            SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
-//            SerialController.getInstance(getApplicationContext()).openInfrared(Common.mInfraredPort, Common.mInfraredBaudRate);
-//            SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
+            if(PrefData.getSERIAL_RJ45(Main.this)==0){
+                SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
+            }else if(PrefData.getSERIAL_RJ45(Main.this)==1){
+                SerialController.getInstance(getApplicationContext()).open(Common.mOTCPort, baudrate);
+            }else if(PrefData.getSERIAL_RJ45(Main.this)==2){
+                SerialController.getInstance(getApplicationContext()).open(Common.mICTPort, baudrate);
+            }else{
+                SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
+            }
+
+            if(PrefData.getSERIAL_UP(Main.this)==0){
+                SerialController.getInstance(getApplicationContext()).openOst(Common.mPort, Common.mInfraredBaudRate);
+            }else if(PrefData.getSERIAL_UP(Main.this)==1){
+                SerialController.getInstance(getApplicationContext()).open(Common.mOTCPort, baudrate);
+            }else if(PrefData.getSERIAL_UP(Main.this)==2){
+                SerialController.getInstance(getApplicationContext()).open(Common.mICTPort, baudrate);
+            }else{
+                SerialController.getInstance(getApplicationContext()).open(Common.mOTCPort, baudrate);
+            }
+
+            if(PrefData.getSERIAL_DOWN(Main.this)==0){
+                SerialController.getInstance(getApplicationContext()).openOst(Common.mPort, Common.mInfraredBaudRate);
+            }else if(PrefData.getSERIAL_DOWN(Main.this)==1){
+                SerialController.getInstance(getApplicationContext()).open(Common.mOTCPort, baudrate);
+            }else if(PrefData.getSERIAL_DOWN(Main.this)==2){
+                SerialController.getInstance(getApplicationContext()).open(Common.mICTPort, baudrate);
+            }else{
+                SerialController.getInstance(getApplicationContext()).open(Common.mICTPort, baudrate);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1375,6 +1401,17 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         ToastUtils.toast(getApplicationContext(), signDownERROR.getMessage());
                     }
                 }
+                break;
+            case EventBusId.id.UPDATA_SERIAL_SUCCED:
+                PromptDialog promptDialog = new PromptDialog(Main.this);
+                promptDialog.setMessage(R.string.serial_different);
+                promptDialog.setPositiveButton(getString(R.string.reboot), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        exitApp();
+                    }
+                });
+                promptDialog.show();
                 break;
         }
     }
@@ -3311,28 +3348,28 @@ public class Main extends BaseActivity implements View.OnClickListener,
         super.onWindowFocusChanged(hasFocus);
     }
 
-    private void getPayMent() {
-        Observable<BaseEntity<List<PayMent>>> observable = RetrofitFactory.getInstance().getPayment();
-        observable.compose(compose(this.<BaseEntity<List<PayMent>>>bindToLifecycle())).subscribe(new BaseObserver<List<PayMent>>(this) {
-            @Override
-            protected void onHandleSuccess(List<PayMent> payMentList) {
-                Log.e("test", payMentList.get(0).getLogo_url());
-            }
-        });
-    }
-
-    private void getKboxConfig() {
-        Observable<BaseEntity<KboxConfig>> observable = RetrofitFactory.getInstance().getKboxConfig();
-        observable.compose(compose(this.<BaseEntity<KboxConfig>>bindToLifecycle())).subscribe(new BaseObserver<KboxConfig>(this) {
-            @Override
-            protected void onHandleSuccess(KboxConfig kboxConfig) {
-//                Log.e("test", kboxConfig.getKbox_ip());
-
-            }
-
-        });
-
-    }
+//    private void getPayMent() {
+//        Observable<BaseEntity<List<PayMent>>> observable = RetrofitFactory.getInstance().getPayment();
+//        observable.compose(compose(this.<BaseEntity<List<PayMent>>>bindToLifecycle())).subscribe(new BaseObserver<List<PayMent>>(this) {
+//            @Override
+//            protected void onHandleSuccess(List<PayMent> payMentList) {
+//                Log.e("test", payMentList.get(0).getLogo_url());
+//            }
+//        });
+//    }
+//
+//    private void getKboxConfig() {
+//        Observable<BaseEntity<KboxConfig>> observable = RetrofitFactory.getInstance().getKboxConfig();
+//        observable.compose(compose(this.<BaseEntity<KboxConfig>>bindToLifecycle())).subscribe(new BaseObserver<KboxConfig>(this) {
+//            @Override
+//            protected void onHandleSuccess(KboxConfig kboxConfig) {
+////                Log.e("test", kboxConfig.getKbox_ip());
+//
+//            }
+//
+//        });
+//
+//    }
 
     public void download() {
         File fileDes = new File(KaraokeSdHelper.getSdCard(), "testspeed.png");

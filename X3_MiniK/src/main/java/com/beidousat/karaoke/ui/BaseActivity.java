@@ -1,8 +1,10 @@
 package com.beidousat.karaoke.ui;
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,7 +38,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by J Wong on 2015/10/9 08:56.
  */
-public class BaseActivity extends RxAppCompatActivity implements OnScreenAdListener, HttpRequestListener {
+public class BaseActivity extends FragmentActivity implements OnScreenAdListener, HttpRequestListener {
 
     private final static int SYS_UI = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar

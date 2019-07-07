@@ -256,6 +256,7 @@ public class EventBusId {
 
         public static final int GET_BANNER= 123;
 
+        public static final int UPDATA_SERIAL_SUCCED=124;
         public static final int TOAST=200;
     }
 

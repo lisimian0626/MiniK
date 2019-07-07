@@ -61,7 +61,7 @@
                 android:id="@+id/setting_spinner_rj45"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:drawable/spinner_background"
+                style="@style/AppTheme"
                 android:layout_marginLeft="50dp"
                 android:entries="@array/spinner_item"
 
@@ -84,9 +84,11 @@
                 />
             <Spinner
                 android:id="@+id/setting_spinner_down"
+                style="@style/AppTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
+                android:entries="@array/spinner_item"
                 />
         </LinearLayout>
 
@@ -105,16 +107,18 @@
                 />
             <Spinner
                 android:id="@+id/setting_spinner_up"
+                style="@style/AppTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
+                android:entries="@array/spinner_item"
                />
         </LinearLayout>
 
     </LinearLayout>
 
       <TextView
-          android:id="@+id/setting_spinner_btn"
+          android:id="@+id/setting_spinner_tv_save"
           android:layout_marginBottom="50dp"
           android:layout_centerHorizontal="true"
           android:paddingTop="15dp"

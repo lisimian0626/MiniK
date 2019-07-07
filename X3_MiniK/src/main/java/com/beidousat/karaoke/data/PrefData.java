@@ -47,27 +47,27 @@ public class PrefData {
     private final static String GETAUTOCEPHALOUS="getautocephalous";
 
     private final static String SERIAL_RJ45="serial_rj45";
-    private final static String SERIAL_UP="serial_rj45";
-    private final static String SERIAL_DOWN="serial_rj45";
+    private final static String SERIAL_UP="serial_up";
+    private final static String SERIAL_DOWN="serial_down";
 
-    public static String getSERIAL_RJ45(Context context){
-        return PreferenceUtil.getString(context, SERIAL_RJ45, "");
+    public static int getSERIAL_RJ45(Context context){
+        return PreferenceUtil.getInt(context, SERIAL_RJ45, 0);
     }
-    public static void  setSERIAL_RJ45(Context context,String value){
-        PreferenceUtil.setString(context,SERIAL_RJ45,value);
+    public static void  setSERIAL_RJ45(Context context,int mode){
+        PreferenceUtil.setInt(context,SERIAL_RJ45,mode);
     }
 
-    public static String getSERIAL_UP(Context context){
-        return PreferenceUtil.getString(context, SERIAL_UP, "");
+    public static int getSERIAL_UP(Context context){
+        return PreferenceUtil.getInt(context, SERIAL_UP, 2);
     }
-    public static void  setSERIAL_UP(Context context,String value){
-        PreferenceUtil.setString(context,SERIAL_UP,value);
+    public static void  setSERIAL_UP(Context context,int mode){
+        PreferenceUtil.setInt(context,SERIAL_UP,mode);
     }
-    public static String getSERIAL_DOWN(Context context){
-        return PreferenceUtil.getString(context, SERIAL_DOWN, "");
+    public static int getSERIAL_DOWN(Context context){
+        return PreferenceUtil.getInt(context, SERIAL_DOWN, 1);
     }
-    public static void  setSERIAL_DOWN(Context context,String value){
-        PreferenceUtil.setString(context,SERIAL_DOWN,value);
+    public static void  setSERIAL_DOWN(Context context,int mode){
+        PreferenceUtil.setInt(context,SERIAL_DOWN,mode);
     }
 
     public static String getAutocephalous(Context context){

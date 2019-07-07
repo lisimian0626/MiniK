@@ -356,6 +356,7 @@
     <string name="change_baudrate_tip">修改波特率需重啟應用才可生效</string>
     <string name="change_room_tip">修改房間號需重啟應用才可生效</string>
     <string name="language_different">語言包設置成功需重啟應用才可生效</string>
+    <string name="serial_different">修改串口需重启应用才可生效</string>
     <string name="reboot">重啟</string>
     <string name="device_failed">当前設備已被禁用!</string>
     <string name="baudrate_format">波特率應為數字</string>
