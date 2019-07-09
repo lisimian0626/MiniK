@@ -33,8 +33,8 @@ public class Meal implements Serializable {
     private int Price;
 
     @Expose
-    @SerializedName("qrcode_data")
-    private String Url; //支付地址
+    @SerializedName("qrcode")
+    private String qrcode; //支付地址
     @Expose
     @SerializedName("order_sn")
     private String OrderSn;
@@ -125,16 +125,20 @@ public class Meal implements Serializable {
         return realPrice / 100; //分->元
     }
 
-    public String getUrl() {
-        return Url;
-    }
-
     public String getOrderSn() {
         return OrderSn;
     }
 
     public void setOrderSn(String orderSn) {
         OrderSn = orderSn;
+    }
+
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
     }
 
     public String getUnit() {
@@ -226,10 +230,6 @@ public class Meal implements Serializable {
 
     public void setPrice(int price) {
         Price = price;
-    }
-
-    public void setUrl(String url) {
-        Url = url;
     }
 
     public int getUse_online() {

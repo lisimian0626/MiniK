@@ -26,17 +26,6 @@ public class TestDataFactory {
         return songs;
     }
 
-    public static Meal createTestMeal() {
-        Meal meal = new Meal();
-        meal.setUrl("https://172.30.4.230/?m=netbar&a=CreateOrder&store_sn=&pay_count=30&device_sn=1829ce617d8587d6%20&pay_type=1");
-        meal.setPrice(3000);
-        meal.setAmount(15);
-        meal.setID(121350);
-        meal.setType(2);
-
-        return meal;
-    }
-
     public static PayStatus createPayStatus() {
         PayStatus payStatus = new PayStatus();
 
