@@ -65,9 +65,11 @@ public class DlgShare extends BaseDialog implements View.OnClickListener, Record
     }
 
     private void init() {
-        String url = ServerConfigData.getInstance().getServerConfig().getStore_web() + RequestMethod.RECORD_UPLOAD;
-        RecordFileUploader2.getInstance(url).addRecordUploadListener(this);
-        setRecordUploadStatus();
+        if(ServerConfigData.getInstance().getServerConfig()!=null&&ServerConfigData.getInstance().getServerConfig().getStore_web()!=null){
+            String url = ServerConfigData.getInstance().getServerConfig().getStore_web() + RequestMethod.RECORD_UPLOAD;
+            RecordFileUploader2.getInstance(url).addRecordUploadListener(this);
+            setRecordUploadStatus();
+        }
     }
 
     private String mRecordFilePath = "";
