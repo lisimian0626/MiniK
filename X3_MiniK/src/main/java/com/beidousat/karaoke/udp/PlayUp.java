@@ -9,6 +9,7 @@ public class PlayUp implements Serializable {
     public int eventkey;
     public int sound;
     public int music;
+    public int status;
     public int mic;
     public int tone;
     public int reverberation;
@@ -16,10 +17,11 @@ public class PlayUp implements Serializable {
     public String hsn;
     public String token;
 
-    public PlayUp(String event, int eventkey, int sound, int music, int mic, int tone, int reverberation, int score, String hsn, String token) {
+    public PlayUp(String event, int eventkey, int sound, int status,int music, int mic, int tone, int reverberation, int score, String hsn, String token) {
         this.event = event;
         this.eventkey = eventkey;
         this.sound = sound;
+        this.status=status;
         this.music = music;
         this.mic = mic;
         this.tone = tone;

@@ -37,6 +37,7 @@ import com.beidousat.libbns.ad.AdsRequestListener;
 import com.beidousat.libbns.amin.CubeAnimation;
 import com.beidousat.libbns.amin.MoveAnimation;
 import com.beidousat.libbns.evenbus.BusEvent;
+import com.beidousat.libbns.evenbus.DownloadBusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Ad;
@@ -65,12 +66,13 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     MyWebChromeClient mWebChromeClient;
     private SurfaceView surfaceView;
     private TextView mTvCenter;
+    private Context mContext;
 //    private MarqueePlayer mMarqueePlayer;
     private RecyclerImageView mIvAdCorner;
 
     public TextView mTvPasterTimer;
 
-    private TextView mTvNextSong, mTvCurrent;
+    private TextView mTvNextSong, mTvCurrent,mTvTips;
 
     private CornerGetter mCornerGetter;
 
@@ -112,6 +114,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
     public PlayerPresentation(Context outerContext, Display display) {
         super(outerContext, display);
+        mContext=outerContext;
         Point realSize = new Point();
         display.getRealSize(realSize);
         mHdmiW = realSize.x;
@@ -195,6 +198,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         mIvAdCorner = (RecyclerImageView) findViewById(R.id.iv_ads);
         mTvCenter = (TextView) findViewById(R.id.tv_player_center);
         mTvPasterTimer = (TextView) findViewById(R.id.tv_timer);
+        mTvTips= (TextView) findViewById(R.id.player_tv_tips);
         EventBus.getDefault().register(this);
 
 //        mMarqueePlayer.loadAds("Z2");
@@ -357,8 +361,10 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         if(!TextUtils.isEmpty(UDPComment.QRcode)){
             qr_code.setVisibility(View.VISIBLE);
             qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.QRcode));
+            mTvTips.setText(R.string.qrcode_tips);
         }else{
             qr_code.setVisibility(View.GONE);
+            mTvTips.setText("");
         }
 
     }
@@ -397,6 +403,16 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
                 break;
             case EventBusId.id.TV_AD_CORNER_SHOW:
                 mViewAdCorner.setVisibility(Boolean.valueOf(event.data.toString()).booleanValue() ? View.VISIBLE : View.GONE);
+                break;
+            case EventBusId.Download.FINISH:
+                mTvTips.setText(mContext.getString(R.string.qrcode_tips));
+                break;
+            case EventBusId.Download.PROGRESS:
+                 if(event instanceof DownloadBusEvent){
+                     DownloadBusEvent downloadBusEvent= (DownloadBusEvent) event;
+                     mTvTips.setText(mContext.getString(R.string.download_tips,downloadBusEvent.songName)+"   "+(int)(downloadBusEvent.percent)+"%");
+                 }
+
                 break;
         }
     }

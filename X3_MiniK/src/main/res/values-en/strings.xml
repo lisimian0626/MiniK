@@ -475,4 +475,6 @@
     <string name="octo_canclepay">Cancel payment...</string>
       //upd
     <string name="error_setting">Error setting</string>
+    <string name="download_tips">Downloading:%s</string>
+    <string name="qrcode_tips">Scan QR code with Wechat</string>
 </resources>

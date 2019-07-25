@@ -1420,7 +1420,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         int vol = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         mKaraokeController.getPlayerStatus().volMusic = vol;
         PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
-                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
+                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2,mKaraokeController.getPlayerStatus().originOn==true?1:2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
                 mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
         UDPSocket.getIntance(this).sendMessage("VH2.0" + playUp.toString() + "\r\n");
         Logger.d(UDPSocket.TAG, "playUp:" + playUp.toString());

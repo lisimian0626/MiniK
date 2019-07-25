@@ -53,12 +53,12 @@ public class LanService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!TextUtils.isEmpty(PrefData.getRoomCode(getApplicationContext())) && ServerConfigData.getInstance().getServerConfig() != null) {
-            KBoxSocketHeart kBoxSocketHeart = KBoxSocketHeart.getInstance(ServerConfigData.getInstance().getServerConfig().getStore_ip(),
-                    ServerConfigData.getInstance().getServerConfig().getStore_port());
-            kBoxSocketHeart.setKBoxId(PrefData.getRoomCode(getApplicationContext()));
-            kBoxSocketHeart.check();
-        }
+//        if (!TextUtils.isEmpty(PrefData.getRoomCode(getApplicationContext())) && ServerConfigData.getInstance().getServerConfig() != null) {
+//            KBoxSocketHeart kBoxSocketHeart = KBoxSocketHeart.getInstance(ServerConfigData.getInstance().getServerConfig().getStore_ip(),
+//                    ServerConfigData.getInstance().getServerConfig().getStore_port());
+//            kBoxSocketHeart.setKBoxId(PrefData.getRoomCode(getApplicationContext()));
+//            kBoxSocketHeart.check();
+//        }
 
         return START_STICKY;
     }

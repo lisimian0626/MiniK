@@ -495,4 +495,6 @@
     <string name="serial_control">中控效果器</string>
     <string name="serial_pos">pos机</string>
     <string name="serial_oct">纸钞机</string>
+    <string name="download_tips">正在下载:%s</string>
+    <string name="qrcode_tips">微信扫码点歌</string>
 </resources>

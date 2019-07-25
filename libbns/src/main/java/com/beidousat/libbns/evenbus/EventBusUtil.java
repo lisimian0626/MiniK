@@ -37,20 +37,20 @@ public class EventBusUtil {
         EventBus.getDefault().post(BusEvent.getEvent(EventBusId.id.REQUEST_MEAL));
     }
 
-    public static void postDownloadStart(String url, String path) {
-        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.START, url, path, 0));
+    public static void postDownloadStart(String url, String path,String songName) {
+        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.START, url, path, songName,0));
     }
 
-    public static void postDownloadFinish(String url, String path) {
-        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.FINISH, url, path, 100));
+    public static void postDownloadFinish(String url, String path,String songName) {
+        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.FINISH, url, path, songName,100));
     }
 
-    public static void postDownloadProgress(String url, String path, float percent) {
-        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.PROGRESS, url, path, percent));
+    public static void postDownloadProgress(String url, String path,String songName, float percent) {
+        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.PROGRESS, url, path, songName,percent));
     }
 
-    public static void postDownloadSpaceNotEnough(String url, String path) {
-        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.SPACE_NOT_ENOUGH, url, path, 0));
+    public static void postDownloadSpaceNotEnough(String url, String path,String songName) {
+        EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.SPACE_NOT_ENOUGH, url, path,songName, 0));
     }
     public static void postDownloadError(String url, String path, String msg) {
         EventBus.getDefault().post(DownloadBusEvent.getEvent(EventBusId.Download.ERROR, url, path, msg));

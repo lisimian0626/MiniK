@@ -72,15 +72,15 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
     @Override
     void initView() {
 
-        mZhiFuBaoBtn = (LinearLayout) findViewById(R.id.zhifubao_btn);
-        mWeiXinBtn = (LinearLayout) findViewById(R.id.weixin_btn);
-        mBackBtn = (ImageView) findViewById(R.id.dlg_fm_pay_back);
-        mTouBiBtn = (LinearLayout) findViewById(R.id.toubi_btn);
-        mCardBtn = (LinearLayout) findViewById(R.id.card_btn);
-        mIv_zhifubao = (ImageView) findViewById(R.id.iv_zhifubao);
-        mIv_wechat = (ImageView) findViewById(R.id.iv_wechat);
-        mIv_toubi = (ImageView) findViewById(R.id.iv_toubi);
-        mOctBtn=(LinearLayout)findViewById(R.id.lin_ost);
+        mZhiFuBaoBtn =  findViewById(R.id.zhifubao_btn);
+        mWeiXinBtn =  findViewById(R.id.weixin_btn);
+        mBackBtn =  findViewById(R.id.dlg_fm_pay_back);
+        mTouBiBtn =  findViewById(R.id.toubi_btn);
+        mCardBtn = findViewById(R.id.card_btn);
+        mIv_zhifubao =  findViewById(R.id.iv_zhifubao);
+        mIv_wechat =  findViewById(R.id.iv_wechat);
+        mIv_toubi =  findViewById(R.id.iv_toubi);
+        mOctBtn=findViewById(R.id.lin_ost);
 
         List<PayMent> payMentList = KBoxInfo.getInstance().getmPayMentlist();
         if (payMentList != null && payMentList.size() > 0) {

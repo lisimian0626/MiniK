@@ -47,7 +47,7 @@ public class MyDownloader {
 
     private DownloaderHelper mDownloadHelper;
     private boolean isFinishAll = false;
-
+    private String  cur_songName;
     private FileDownloadListener mFinishListener = new FileDownloadLargeFileListener() {
         @Override
         protected void pending(BaseDownloadTask task, long soFarBytes, long totalBytes) {
@@ -57,18 +57,18 @@ public class MyDownloader {
             //检测磁盘空间是否充足
 
             if (!StorageUtil.isUsbDiskHasAvailableSpace()) {
-                EventBusUtil.postDownloadSpaceNotEnough(task.getUrl(), task.getPath());
+                EventBusUtil.postDownloadSpaceNotEnough(task.getUrl(), task.getPath(),cur_songName);
                 Logger.d(TAG, "空间不足，删除歌曲");
                 new freeDiskSpaceTask().execute();
             }
-            EventBusUtil.postDownloadProgress(task.getUrl(), task.getPath(), 0);
+            EventBusUtil.postDownloadProgress(task.getUrl(), task.getPath(), cur_songName,0);
         }
 
         @Override
         protected void progress(BaseDownloadTask task, long soFarBytes, long totalBytes) {
             Logger.i(TAG, String.format("%.2f", (float) soFarBytes / totalBytes));
             if (totalBytes != 0) {
-                EventBusUtil.postDownloadProgress(task.getUrl(), task.getPath(), (float) soFarBytes / totalBytes * 100);
+                EventBusUtil.postDownloadProgress(task.getUrl(), task.getPath(), cur_songName,(float) soFarBytes / totalBytes * 100);
             }
         }
 
@@ -82,8 +82,8 @@ public class MyDownloader {
 
             //是否是最后一个任务
             isFinishAll = mSongCache.size() == 1;
-            EventBusUtil.postDownloadProgress(task.getUrl(), task.getPath(), 100);
-            EventBusUtil.postDownloadFinish(task.getUrl(), task.getPath());
+            EventBusUtil.postDownloadProgress(task.getUrl(), task.getPath(),cur_songName, 100);
+            EventBusUtil.postDownloadFinish(task.getUrl(), task.getPath(),cur_songName);
 
             startNextDownload(task.getUrl());
 
@@ -135,7 +135,7 @@ public class MyDownloader {
      * 将歌曲添加到本地数据库缓存
      *
      * @param path 文件路径，于服务器路径一致
-     *             (完整的文件路径需要调用 {@link DiskFileUtil#getFileSavedPath(String)}})
+     *             (完整的文件路径需要调用
      */
     private void addSongToSongCache(String path) {
         SongDao songDao = LanApp.getInstance().getDataBaseHelper().getSongDao();
@@ -199,7 +199,8 @@ public class MyDownloader {
         if(mSongCache.get(url)!=null){
             return;
         }
-        EventBusUtil.postDownloadStart(url, savedPath);
+        cur_songName=song.SimpName;
+        EventBusUtil.postDownloadStart(url, savedPath,song.SimpName);
         mSongCache.put(url, song);
         mSongErro.remove(url);
         mDownloadHelper.startDownload(url, savedPath);
