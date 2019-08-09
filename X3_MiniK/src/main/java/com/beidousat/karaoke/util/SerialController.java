@@ -12,13 +12,14 @@ import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libserial.ICTRecvHelper;
 import com.beidousat.libserial.InfraredSerialSendRecvHelper;
+import com.beidousat.libserial.McuRecvHelper;
 import com.beidousat.libserial.OSTSendRecvHelper;
 import com.beidousat.libserial.SerialSendRecvHelper;
 
 /**
  * Created by J Wong on 2015/11/5 10:18.
  */
-public class SerialController implements SerialSendRecvHelper.OnSerialReceiveListener, InfraredSerialSendRecvHelper.OnInfraredSerialReceiveListener, OSTSendRecvHelper.OnOstSerialReceiveListener,ICTRecvHelper.OnICTSerialReceiveListener {
+public class SerialController implements SerialSendRecvHelper.OnSerialReceiveListener, InfraredSerialSendRecvHelper.OnInfraredSerialReceiveListener, OSTSendRecvHelper.OnOstSerialReceiveListener,ICTRecvHelper.OnICTSerialReceiveListener, McuRecvHelper.OnMcuSerialReceiveListener {
 
     private static SerialController mSerialController;
     private Context mContext;
@@ -26,10 +27,12 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     private InfraredSerialSendRecvHelper mInfraredHelper;
     private OSTSendRecvHelper mOSTHelper;
     private ICTRecvHelper mICTHelper;
+    private McuRecvHelper mcuRecvHelper;
     private final int Serial = 1;
     private final int InfraredSerial = 2;
     private final int ostSerial=3;
     private final int ictSerial=4;
+    private final int McuSerial=5;
     private boolean mIsOpened, mIsfraredOpened, mOSTOpened,mICTOpened;
 
     private final static String TAG = "SerialController";
@@ -111,6 +114,17 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
             e.printStackTrace();
         }
     }
+    public void openMcu(String port, int baudrate) {
+
+        try {
+            mcuRecvHelper = McuRecvHelper.getInstance().getInstance();
+            Logger.i(TAG, "Mcu open");
+            mcuRecvHelper.open(port, baudrate);
+            mcuRecvHelper.setOnMcuSerialReceiveListener(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void OnSerialReceive(String data) {
         Logger.d(TAG, "OnSerialReceive :" + data + "");
@@ -154,6 +168,35 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
             switch (msg.what) {
                 case Serial:
                     Logger.d(TAG, "OnSerialReceive handler:" + data + "");
+                    if (!TextUtils.isEmpty(data)) {
+                        if (data.startsWith("A2 06 B0 0A 0D ")) {//mic音量
+                            try {
+                                String str = data.replace("A2 06 B0 0A 0D ", "");
+                                String hex = str.substring(0, 2);
+                                Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
+                                int micVol = Integer.parseInt(hex, 16);
+                                Logger.d(TAG, "OnSerialReceive handle mic vol :" + micVol + "");
+                                EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (data.startsWith("A2 06 B0 0A 0E ")) {//效果音量
+                            try {
+                                String str = data.replace("A2 06 B0 0A 0E ", "");
+                                String hex = str.substring(0, 2);
+                                Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
+                                int effVol = Integer.parseInt(hex, 16);
+                                Logger.d(TAG, "OnSerialReceive handle eff vol :" + effVol + "");
+                                EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    super.handleMessage(msg);
+                    break;
+                case McuSerial:
+                    Logger.d(TAG, "OnMcuSerialReceive handler:" + data + "");
                     if (!TextUtils.isEmpty(data)) {
                         if (data.startsWith("A2 06 B0 0A 0D ")) {//mic音量
                             try {
@@ -345,4 +388,8 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     }
 
 
+    @Override
+    public void OnMcuReceive(String data) {
+
+    }
 }
