@@ -152,6 +152,7 @@ import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.PreferenceUtil;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libbns.util.UsbFileUtil;
+import com.beidousat.libserial.McuRecvHelper;
 import com.beidousat.score.KeyInfo;
 import com.beidousat.score.NoteInfo;
 import com.beidousat.score.OnKeyInfoListener;
@@ -687,33 +688,39 @@ public class Main extends BaseActivity implements View.OnClickListener,
         try {
             int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
             if(PrefData.getSERIAL_RJ45(Main.this)==0){
-                SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
             }else if(PrefData.getSERIAL_RJ45(Main.this)==1){
-                SerialController.getInstance(getApplicationContext()).open(Common.mOTCPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
             }else if(PrefData.getSERIAL_RJ45(Main.this)==2){
-                SerialController.getInstance(getApplicationContext()).open(Common.mICTPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
+            } else if(PrefData.getSERIAL_RJ45(Main.this)==3){
+                SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
             }else{
                 SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
             }
 
             if(PrefData.getSERIAL_UP(Main.this)==0){
-                SerialController.getInstance(getApplicationContext()).openOst(Common.mPort, Common.mInfraredBaudRate);
+                SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
             }else if(PrefData.getSERIAL_UP(Main.this)==1){
-                SerialController.getInstance(getApplicationContext()).open(Common.mOTCPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
             }else if(PrefData.getSERIAL_UP(Main.this)==2){
-                SerialController.getInstance(getApplicationContext()).open(Common.mICTPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
+            } else if(PrefData.getSERIAL_RJ45(Main.this)==3){
+                SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
             }else{
-                SerialController.getInstance(getApplicationContext()).open(Common.mOTCPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, baudrate);
             }
 
             if(PrefData.getSERIAL_DOWN(Main.this)==0){
-                SerialController.getInstance(getApplicationContext()).openOst(Common.mPort, Common.mInfraredBaudRate);
+                SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
             }else if(PrefData.getSERIAL_DOWN(Main.this)==1){
-                SerialController.getInstance(getApplicationContext()).open(Common.mOTCPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
             }else if(PrefData.getSERIAL_DOWN(Main.this)==2){
-                SerialController.getInstance(getApplicationContext()).open(Common.mICTPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
+            } else if(PrefData.getSERIAL_RJ45(Main.this)==3){
+                SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
             }else{
-                SerialController.getInstance(getApplicationContext()).open(Common.mICTPort, baudrate);
+                SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, baudrate);
             }
 
         } catch (Exception e) {
@@ -1191,7 +1198,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.INFARAED.RECEIVE_CODE:
                 Logger.i(TAG, "OnSerialReceive Main:" + event.data + "");
                 break;
-
+            case EventBusId.MCU.RECEIVE_CODE:
+                Logger.i(TAG, "OnMCUReceive Main:" + event.data + "");
+                break;
             case EventBusId.id.TOAST:
                 ToastUtils.toast(this, event.data.toString());
 //                Logger.d(TAG, "Main:" + event.data + "");
@@ -2728,8 +2737,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
     public boolean onLongClick(View v) {
         switch (v.getId()) {
             case R.id.iv_logo:
-                PopVersionInfo versionInfo = new PopVersionInfo(Main.this);
-                versionInfo.show();
+                SerialController.getInstance(this).sendMCU(McuRecvHelper.str_check);
+//                PopVersionInfo versionInfo = new PopVersionInfo(Main.this);
+//                versionInfo.show();
                 break;
         }
         return false;

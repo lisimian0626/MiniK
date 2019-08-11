@@ -12,7 +12,8 @@ public class McuRecvHelper {
     private StringBuffer data = new StringBuffer();
     private SerialHelper mSerialHelper;
     private static McuRecvHelper mSerialSendRecvHelper;
-
+    public  static final byte cmdCheck[] = {(byte)0x55, (byte)0xaa, (byte)0xff, (byte)0x01};
+    public  static final String str_check="55aaff01";
     public static McuRecvHelper getInstance() {
         if (mSerialSendRecvHelper == null) {
             mSerialSendRecvHelper = new McuRecvHelper();

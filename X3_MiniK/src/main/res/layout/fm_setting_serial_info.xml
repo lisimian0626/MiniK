@@ -38,7 +38,7 @@
 
     <LinearLayout
         android:layout_below="@+id/rl_top_bar"
-        android:layout_above="@+id/setting_spinner_btn"
+        android:layout_above="@+id/setting_spinner_tv_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
