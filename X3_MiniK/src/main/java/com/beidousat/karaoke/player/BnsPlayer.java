@@ -129,7 +129,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         switch (playmode) {
             case BnsConfig.PREVIEW:
             case BnsConfig.NORMAL:
-                if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().isHard==0){
+                if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().noDisk==1){
                     if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                         return;
                     }
@@ -179,7 +179,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 }
                 break;
             case BnsConfig.PUBLIC:
-                if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().isHard==0){
+                if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().noDisk==1){
                     if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                         return;
                     }

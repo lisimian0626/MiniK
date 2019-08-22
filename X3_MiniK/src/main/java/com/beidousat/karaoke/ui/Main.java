@@ -2741,9 +2741,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
     public boolean onLongClick(View v) {
         switch (v.getId()) {
             case R.id.iv_logo:
-                SerialController.getInstance(this).sendMCU(McuRecvHelper.str_check);
-//                PopVersionInfo versionInfo = new PopVersionInfo(Main.this);
-//                versionInfo.show();
+                PopVersionInfo versionInfo = new PopVersionInfo(Main.this);
+                versionInfo.show();
                 break;
         }
         return false;

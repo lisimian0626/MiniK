@@ -401,6 +401,10 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     }
     @Override
     public void OnMcuReceive(String data) {
-
+        Logger.d(TAG, "OnMcuReceive :" + data + "");
+        Message msg = new Message();
+        msg.what = McuSerial;
+        msg.obj = data;
+        handler.sendMessage(msg);
     }
 }

@@ -22,10 +22,10 @@ public class KboxConfig implements Serializable {
     private String language;
     @SerializedName("personal_sn")
     private String sn;
-    @SerializedName("mobile_qrcode")
+    @SerializedName("control_qrcode")
     public int mobileQrcode;
-    @SerializedName("is_hard")
-    public int isHard;
+    @SerializedName("no_disk")
+    public int noDisk;
     public String getLanguage() {
         return language;
     }

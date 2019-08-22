@@ -12,8 +12,13 @@ public class McuRecvHelper {
     private StringBuffer data = new StringBuffer();
     private SerialHelper mSerialHelper;
     private static McuRecvHelper mSerialSendRecvHelper;
-    public  static final byte cmdCheck[] = {(byte)0x55, (byte)0xaa, (byte)0xff, (byte)0x01};
-    public  static final String str_check="55aaff01";
+    public  static final byte byte_up[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x02};
+    public  static final byte byte_down[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x03};
+    public  static final byte byte_query_mic[] = {(byte)0x55, (byte)0xAA, (byte)0xff, (byte)0x0a};
+    public  static final byte byte_test[] = {(byte)0x11};
+    public  static final String str_up="55AA1302";
+    public  static final String str_down="55AA1303";
+    public  static final String str_query_mic="55AAff0a";
     public static McuRecvHelper getInstance() {
         if (mSerialSendRecvHelper == null) {
             mSerialSendRecvHelper = new McuRecvHelper();
@@ -26,12 +31,12 @@ public class McuRecvHelper {
             @Override
             protected void onReceive(final byte[] btData) {
                 data = new StringBuffer();
-//                Log.i(Tag, "onReceive");
+                Log.i(Tag, "onReceive");
                 // int i=0;
                 for (byte b : btData) {
                     data.append(DataTransition.byte2Hex(b) + " ");
                 }
-//                Log.i(Tag, data.tICTring());
+                Log.d(Tag, data.toString());
                 if (mOnMcuReceiveListener != null && data.length() > 0) {
                     mOnMcuReceiveListener.OnMcuReceive(data.toString().trim());
                 }
