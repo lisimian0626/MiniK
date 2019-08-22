@@ -197,7 +197,31 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     break;
                 case McuSerial:
                     Logger.d(TAG, "OnMcuSerialReceive handler:" + data + "");
-                    EventBusUtil.postSticky(EventBusId.MCU.RECEIVE_CODE, data);
+                    if (!TextUtils.isEmpty(data)) {
+                        if (data.startsWith("A2 06 B0 0A 0D ")) {//mic音量
+                            try {
+                                String str = data.replace("A2 06 B0 0A 0D ", "");
+                                String hex = str.substring(0, 2);
+                                Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
+                                int micVol = Integer.parseInt(hex, 16);
+                                Logger.d(TAG, "OnSerialReceive handle mic vol :" + micVol + "");
+                                EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (data.startsWith("A2 06 B0 0A 0E ")) {//效果音量
+                            try {
+                                String str = data.replace("A2 06 B0 0A 0E ", "");
+                                String hex = str.substring(0, 2);
+                                Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
+                                int effVol = Integer.parseInt(hex, 16);
+                                Logger.d(TAG, "OnSerialReceive handle eff vol :" + effVol + "");
+                                EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     break;
                 case InfraredSerial:
                     EventBusUtil.postSticky(EventBusId.INFARAED.RECEIVE_CODE, data);

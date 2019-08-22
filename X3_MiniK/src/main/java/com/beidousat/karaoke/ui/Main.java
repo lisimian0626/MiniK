@@ -1956,6 +1956,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mPresentation.mAdCorner = null;
         if (mPresentation != null)
             mPresentation.cleanScreen();
+
         mPresentation.showQrCode();
         if (DiskFileUtil.is901()) {
             if (player == null)

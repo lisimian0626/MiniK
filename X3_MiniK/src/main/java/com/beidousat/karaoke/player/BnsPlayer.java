@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 
 import com.beidousat.karaoke.LanApp;
+import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.ui.Main;
@@ -128,76 +129,91 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         switch (playmode) {
             case BnsConfig.PREVIEW:
             case BnsConfig.NORMAL:
-                Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
-                File file = DiskFileUtil.getDiskFileByUrl(savePath);
-                if (file != null) {//存在本地文件
-                    Logger.d(TAG, "open local file:" + file.getAbsolutePath());
-                    mMediaPlayer.setDataSource(file.getAbsolutePath());
+                if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().isHard==0){
+                    if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
+                        return;
+                    }
+                    Logger.d(TAG, "open net file:" + uri);
+                    mMediaPlayer.setDataSource(uri);
                     if (mMinor != null)
                         mMediaPlayer.setMinorDisplay(mMinor.getHolder());
                     mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
                     mMediaPlayer.prepare();
                     isPlaying = true;
                     getTrack(mMediaPlayer);
-                } else {//本地文件不存在
-                    if (playmode == BnsConfig.PREVIEW) {
-                        if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
-                            return;
-                        }
-                        Logger.d(TAG, "open net file:" + uri);
-
-                        mMediaPlayer.setDataSource(uri);
+                }else{
+                    Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
+                    File file = DiskFileUtil.getDiskFileByUrl(savePath);
+                    if (file != null) {//存在本地文件
+                        Logger.d(TAG, "open local file:" + file.getAbsolutePath());
+                        mMediaPlayer.setDataSource(file.getAbsolutePath());
                         if (mMinor != null)
                             mMediaPlayer.setMinorDisplay(mMinor.getHolder());
                         mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
                         mMediaPlayer.prepare();
                         isPlaying = true;
                         getTrack(mMediaPlayer);
-                    } else {
-                        Logger.w(TAG, "onError  =========================> 歌曲不存在");
-                        if (mBeidouPlayerListener != null) {
-                            mBeidouPlayerListener.onPlayerCompletion();
+                    } else {//本地文件不存在
+                        if (playmode == BnsConfig.PREVIEW) {
+                            if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
+                                return;
+                            }
+                            Logger.d(TAG, "open net file:" + uri);
+
+                            mMediaPlayer.setDataSource(uri);
+                            if (mMinor != null)
+                                mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                            mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                            mMediaPlayer.prepare();
+                            isPlaying = true;
+                            getTrack(mMediaPlayer);
+                        } else {
+                            Logger.w(TAG, "onError  =========================> 歌曲不存在");
+                            if (mBeidouPlayerListener != null) {
+                                mBeidouPlayerListener.onPlayerCompletion();
+                            }
+                            BnsAudioRecorder.getInstance().release();
+                            NativeScoreRunner.getInstance().stop();
                         }
-                        BnsAudioRecorder.getInstance().release();
-                        NativeScoreRunner.getInstance().stop();
                     }
-//                    else{
-//                        Log.e("test", "文件不存在");
-//                        try {
-//                            downLoadInfo downLoadInfo = new downLoadInfo();
-//                            downLoadInfo.setDownUrl(uri);
-//                            downLoadInfo.setSavePath(savePath);
-//                            downLoadInfo.setPlayMode(playmode);
-//                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                            Log.e("test", "下载失败");
-//                        }
-//                    }
                 }
                 break;
             case BnsConfig.PUBLIC:
-                Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
-                File public_file = DiskFileUtil.getDiskFileByUrl(savePath);
-                if (public_file != null) {//存在本地文件
-                    Logger.d(TAG, "open local file:" + public_file.getAbsolutePath());
-                    mMediaPlayer.setDataSource(public_file.getAbsolutePath());
+                if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().isHard==0){
+                    if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
+                        return;
+                    }
+                    Logger.d(TAG, "open net file:" + uri);
+                    mMediaPlayer.setDataSource(uri);
                     if (mMinor != null)
                         mMediaPlayer.setMinorDisplay(mMinor.getHolder());
                     mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                    mMediaPlayer.prepareAsync();
+                    mMediaPlayer.prepare();
                     isPlaying = true;
                     getTrack(mMediaPlayer);
-                } else {//本地文件不存在
-                    try {
-                        downLoadInfo downLoadInfo = new downLoadInfo();
-                        downLoadInfo.setDownUrl(uri);
-                        downLoadInfo.setSavePath(savePath);
-                        downLoadInfo.setPlayMode(playmode);
-                        EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("test", "下载失败");
+                }else{
+                    Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
+                    File public_file = DiskFileUtil.getDiskFileByUrl(savePath);
+                    if (public_file != null) {//存在本地文件
+                        Logger.d(TAG, "open local file:" + public_file.getAbsolutePath());
+                        mMediaPlayer.setDataSource(public_file.getAbsolutePath());
+                        if (mMinor != null)
+                            mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+                        mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+                        mMediaPlayer.prepareAsync();
+                        isPlaying = true;
+                        getTrack(mMediaPlayer);
+                    } else {//本地文件不存在
+                        try {
+                            downLoadInfo downLoadInfo = new downLoadInfo();
+                            downLoadInfo.setDownUrl(uri);
+                            downLoadInfo.setSavePath(savePath);
+                            downLoadInfo.setPlayMode(playmode);
+                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e("test", "下载失败");
+                        }
                     }
                 }
                 break;

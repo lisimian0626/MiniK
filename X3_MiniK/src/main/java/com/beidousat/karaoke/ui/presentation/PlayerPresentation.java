@@ -358,7 +358,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     }
 
     public void showQrCode(){
-        if(!TextUtils.isEmpty(UDPComment.QRcode)){
+        if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().mobileQrcode==1&&!TextUtils.isEmpty(UDPComment.QRcode)){
             qr_code.setVisibility(View.VISIBLE);
             qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.QRcode));
             mTvTips.setText(R.string.qrcode_tips);
