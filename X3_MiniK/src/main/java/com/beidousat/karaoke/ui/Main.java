@@ -1272,7 +1272,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else if (signDown.getEvent().toLowerCase().equals("reverberation")) {
                     UDPComment.effVoice = signDown.getEventkey();
                     mKaraokeController.readEffVol(10);
-                    //设置声音
+                    //已点
                 } else if (signDown.getEvent().toLowerCase().equals("songs")) {
                     String songs = ChooseSongs.getInstance(this).getSongsforPhone();
                     Logger.d(UDPSocket.TAG, "songs:" + songs);
@@ -1291,10 +1291,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         public void onSuccess(String method, Object object) {
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
-                                ChooseSongs.getInstance(Main.mMainActivity).add2Top(songInfo.toSong());
-                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
-                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
-                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                                ChooseSongs.getInstance(Main.this).add2Top(songInfo.toSong());
+                                ToastUtils.toast(Main.this,0,"优先："+songInfo.getSimpName());
+//                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
+//                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+//                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                             }
                         }
 
@@ -1317,10 +1318,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         public void onSuccess(String method, Object object) {
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
-                                ChooseSongs.getInstance(Main.mMainActivity).remove(songInfo.toSong());
-                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
-                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
-                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                                ChooseSongs.getInstance(Main.this).remove(songInfo.toSong());
+                                ToastUtils.toast(Main.this,0,"删除："+songInfo.getSimpName());
+//                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
+//                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+//                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                             }
                         }
 
@@ -1343,10 +1345,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         public void onSuccess(String method, Object object) {
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
-                                ChooseSongs.getInstance(Main.mMainActivity).addSong(songInfo.toSong());
-                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
-                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
-                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                                ChooseSongs.getInstance(Main.this).addSong(songInfo.toSong());
+                                ToastUtils.toast(Main.this,0,"点歌："+songInfo.getSimpName());
+//                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
+//                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+//                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                             }
                         }
 
@@ -1364,13 +1367,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.Udp.ERROR:
                 SignDown signDownERROR = (SignDown) event.data;
                 if (signDownERROR.getCode().equals("2003")) {
-                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                    if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
 //                                Log.e("test", "心跳检测没交服务费，清空套餐");
                         ChooseSongs.getInstance(Main.this).cleanChoose();
                         BoughtMeal.getInstance().clearMealInfoSharePreference();
                         BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                     }
-                    mDialogAuth = new PromptDialog(Main.mMainActivity);
+                    mDialogAuth = new PromptDialog(Main.this);
                     mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -1382,7 +1385,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mDialogAuth.setMessage(signDownERROR.getMessage());
                     mDialogAuth.show();
                 } else if (signDownERROR.getCode().equals("2001")) {
-                    mDialogAuth = new PromptDialog(Main.mMainActivity);
+                    mDialogAuth = new PromptDialog(Main.this);
                     mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -1394,7 +1397,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mDialogAuth.setMessage(signDownERROR.getMessage());
                     mDialogAuth.show();
                 } else if (signDownERROR.getCode().equals("00301")) {
-                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                    if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
                         PromptDialog promptDialog = new PromptDialog(this);
                         promptDialog.setMessage(getResources().getString(R.string.auth_fail));
                         promptDialog.show();
