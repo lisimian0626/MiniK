@@ -1,6 +1,7 @@
 package com.beidousat.karaoke.util;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.Toast;
 
 
@@ -18,11 +19,11 @@ public class ToastUtils {
         }
         toast.show();
     }
-//    public static void toast(Context context, String content){
-//            makeText = Toast.makeText(context, "", Toast.LENGTH_SHORT);
-//            makeText.setText(content);
-//            makeText.show();
-//    }
+    public static void toast(Context context,int position, String content){
+        Toast toast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP|Gravity.RIGHT, 0, 0);
+        toast.show();
+    }
 
     public static void toast2(Context context, String content){
         Toast makeText = Toast.makeText(context, content, Toast.LENGTH_SHORT);
