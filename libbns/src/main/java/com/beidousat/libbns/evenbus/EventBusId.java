@@ -307,6 +307,7 @@ public class EventBusId {
     public static final class Udp{
         public static final int SUCCESS = 70000;
         public static final int ERROR = 70001;
+        public static final int TOAST=70002;
     }
     public static final class MCU{
         public static final int RECEIVE_CODE = 80000;

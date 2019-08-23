@@ -21,8 +21,8 @@
 
         android:visibility="gone"
         />
-<LinearLayout
-    android:layout_width="wrap_content"
+<RelativeLayout
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="50dp"
     android:layout_marginTop="20dp"
@@ -40,10 +40,19 @@
          android:layout_marginLeft="30dp"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
+         android:layout_toRightOf="@+id/player_qr_code"
          android:textSize="22sp"
          android:textStyle="bold"
          />
-</LinearLayout>
+    <TextView
+        android:id="@+id/player_tv_toast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="150dp"
+        android:textSize="18sp"
+        />
+</RelativeLayout>
 
     <FrameLayout
         android:id="@+id/fl_content"

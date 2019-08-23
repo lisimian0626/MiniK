@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,13 +23,10 @@ import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.ad.AdPauseGetter;
 import com.beidousat.karaoke.ad.CornerGetter;
 import com.beidousat.karaoke.data.KBoxInfo;
-import com.beidousat.karaoke.data.PayUserInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.Song;
-import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.udp.UDPComment;
-import com.beidousat.karaoke.widget.MarqueePlayer;
 import com.beidousat.karaoke.widget.WidgetScore;
 import com.beidousat.libbns.ad.AdBillHelper;
 import com.beidousat.libbns.ad.AdsRequestListener;
@@ -67,12 +63,12 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     private SurfaceView surfaceView;
     private TextView mTvCenter;
     private Context mContext;
-//    private MarqueePlayer mMarqueePlayer;
+    //    private MarqueePlayer mMarqueePlayer;
     private RecyclerImageView mIvAdCorner;
 
     public TextView mTvPasterTimer;
 
-    private TextView mTvNextSong, mTvCurrent,mTvTips;
+    private TextView mTvNextSong, mTvCurrent, mTvTips;
 
     private CornerGetter mCornerGetter;
 
@@ -111,10 +107,12 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     private CountDownTimer countDownTimer;
 
     private ImageView qr_code;
+    private TextView tv_toast;
+    private boolean isToast = false;
 
     public PlayerPresentation(Context outerContext, Display display) {
         super(outerContext, display);
-        mContext=outerContext;
+        mContext = outerContext;
         Point realSize = new Point();
         display.getRealSize(realSize);
         mHdmiW = realSize.x;
@@ -122,12 +120,14 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 //        PayUserInfo.getInstance().setHdmi_width(mHdmiW);
 //        PayUserInfo.getInstance().setHdmi_width(mHdmiH);
     }
-    public void setScreenSize(int with,int high){
+
+    public void setScreenSize(int with, int high) {
         ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
         params.width = with;
         params.height = high;
         surfaceView.setLayoutParams(params);
     }
+
     public SurfaceView getSurfaceView() {
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         return surfaceView;
@@ -167,12 +167,13 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         setContentView(R.layout.player_presentation_stb);
         mRootView = (RelativeLayout) findViewById(R.id.root);
         //手机点歌二维码
-        qr_code= (ImageView)findViewById(R.id.player_qr_code);
+        qr_code = (ImageView) findViewById(R.id.player_qr_code);
+        tv_toast = (TextView) findViewById(R.id.player_tv_toast);
         FrameLayout.LayoutParams linearParams = (FrameLayout.LayoutParams) mRootView.getLayoutParams();
         linearParams.height = mHdmiH;
         linearParams.width = mHdmiW;
         mRootView.setLayoutParams(linearParams);
-        mWebView= (BridgeWebView) findViewById(R.id.webview);
+        mWebView = (BridgeWebView) findViewById(R.id.webview);
         mViewAdCorner = findViewById(R.id.ll_next);
         mTvResultScore = (TextView) findViewById(R.id.tv_result_score);
         mTvResultSong = (TextView) findViewById(R.id.tv_result_song_name);
@@ -198,7 +199,8 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         mIvAdCorner = (RecyclerImageView) findViewById(R.id.iv_ads);
         mTvCenter = (TextView) findViewById(R.id.tv_player_center);
         mTvPasterTimer = (TextView) findViewById(R.id.tv_timer);
-        mTvTips= (TextView) findViewById(R.id.player_tv_tips);
+        mTvTips = (TextView) findViewById(R.id.player_tv_tips);
+        initCountDownTimer();
         EventBus.getDefault().register(this);
 
 //        mMarqueePlayer.loadAds("Z2");
@@ -206,7 +208,8 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
         initWebView();
     }
-    public void PlayWebView(String url){
+
+    public void PlayWebView(String url) {
         ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
         params.width = 1;
         params.height = 1;
@@ -217,6 +220,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         mWebView.setVisibility(View.VISIBLE);
         Function();
     }
+
     private void initWebView() {
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mWebView.setVerticalScrollBarEnabled(false);
@@ -231,8 +235,9 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         webSettings.setUseWideViewPort(true);
     }
+
     private void initJsBridge() {
-        mWebChromeClient = new MyWebChromeClient(mWebView) ;
+        mWebChromeClient = new MyWebChromeClient(mWebView);
         mWebView.setWebViewClient(mWebChromeClient);
         mWebView.setDefaultHandler(new DefaultHandler());
     }
@@ -241,8 +246,8 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         mWebView.registerHandler(Common.INTERFACE_CLOSEWINDOWS, new BridgeHandler() {
             @Override
             public void handler(String s, CallBackFunction callBackFunction) {
-                Logger.d("test","close:"+s);
-                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT,"");
+                Logger.d("test", "close:" + s);
+                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT, "");
             }
 
         });
@@ -357,12 +362,13 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         ivImage.postDelayed(runnableImageDismiss, 10 * 1000);
     }
 
-    public void showQrCode(){
-        if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().mobileQrcode==1&&!TextUtils.isEmpty(UDPComment.QRcode)){
+    public void showQrCode() {
+        KBoxInfo.getInstance().getKboxConfig().mobileQrcode = 1;
+        if (KBoxInfo.getInstance().getKboxConfig() != null && KBoxInfo.getInstance().getKboxConfig().mobileQrcode == 1 && !TextUtils.isEmpty(UDPComment.QRcode)) {
             qr_code.setVisibility(View.VISIBLE);
             qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.QRcode));
             mTvTips.setText(R.string.qrcode_tips);
-        }else{
+        } else {
             qr_code.setVisibility(View.GONE);
             mTvTips.setText("");
         }
@@ -408,11 +414,17 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
                 mTvTips.setText(mContext.getString(R.string.qrcode_tips));
                 break;
             case EventBusId.Download.PROGRESS:
-                 if(event instanceof DownloadBusEvent){
-                     DownloadBusEvent downloadBusEvent= (DownloadBusEvent) event;
-                     mTvTips.setText(mContext.getString(R.string.download_tips,downloadBusEvent.songName)+"   "+(int)(downloadBusEvent.percent)+"%");
-                 }
-
+                if (event instanceof DownloadBusEvent) {
+                    DownloadBusEvent downloadBusEvent = (DownloadBusEvent) event;
+                    mTvTips.setText(mContext.getString(R.string.download_tips, downloadBusEvent.songName) + "   " + (int) (downloadBusEvent.percent) + "%");
+                }
+            case EventBusId.Udp.TOAST:
+                if(countDownTimer==null){
+                    initCountDownTimer();
+                }
+                countDownTimer.cancel();
+                tv_toast.setText(event.data.toString());
+                countDownTimer.start();
                 break;
         }
     }
@@ -456,12 +468,12 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
 
     public void cleanScreen() {
-        if(mWebView.getVisibility()==View.VISIBLE){
+        if (mWebView.getVisibility() == View.VISIBLE) {
             mWebView.setVisibility(View.GONE);
             mWebView.registerHandler(Common.INTERFACE_CLOSEWINDOWS, new BridgeHandler() {
                 @Override
                 public void handler(String s, CallBackFunction callBackFunction) {
-                    Logger.d("test","close:"+s);
+                    Logger.d("test", "close:" + s);
                 }
             });
             ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
@@ -486,11 +498,11 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
             return;
         }
         Uri uri = ServerFileUtil.getImageUrl(mAdCorner.ADContent);
-        if(Common.isEn){
+        if (Common.isEn) {
             Glide.with(getContext()).load(uri)
                     .override(300, 500).centerCrop().error(R.drawable.ad_corner_default_en)
                     .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 0, RoundedCornersTransformation.CornerType.ALL)).skipMemoryCache(true).into(mIvAdCorner);
-        }else{
+        } else {
             Glide.with(getContext()).load(uri)
                     .override(300, 500).centerCrop().error(R.drawable.ad_corner_default)
                     .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 0, RoundedCornersTransformation.CornerType.ALL)).skipMemoryCache(true).into(mIvAdCorner);
@@ -643,6 +655,18 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         }
     };
 
+    private void initCountDownTimer() {
+        countDownTimer = new CountDownTimer(3 * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+            @Override
+            public void onFinish() {
+               tv_toast.setText("");
+            }
+        };
+    }
 
 //    public void showStartAd(boolean show) {
 //        if (show && !mIvAdLast.isShown()) {

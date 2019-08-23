@@ -1292,7 +1292,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.this).add2Top(songInfo.toSong());
-                                ToastUtils.toast(Main.this,0,"优先："+songInfo.getSimpName());
+                                EventBusUtil.postSticky(EventBusId.Udp.TOAST,"优先："+songInfo.getSimpName());
 //                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
 //                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
 //                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
@@ -1319,7 +1319,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.this).remove(songInfo.toSong());
-                                ToastUtils.toast(Main.this,0,"删除："+songInfo.getSimpName());
+                                EventBusUtil.postSticky(EventBusId.Udp.TOAST,"删除："+songInfo.getSimpName());
 //                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
 //                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
 //                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
@@ -1346,7 +1346,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             if (object != null && object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.this).addSong(songInfo.toSong());
-                                ToastUtils.toast(Main.this,0,"点歌："+songInfo.getSimpName());
+                                EventBusUtil.postSticky(EventBusId.Udp.TOAST,"点歌："+songInfo.getSimpName());
 //                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
 //                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
 //                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
