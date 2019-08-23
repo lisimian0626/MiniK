@@ -162,7 +162,7 @@ public class FmSettingSerail extends BaseFragment implements View.OnClickListene
                     promptDialog.show();
                     return;
                 }
-                try {//麦克风-
+                try {//麦克风+
                     PrefData.setSerilMicUp(getContext().getApplicationContext(), mEtMicUp.getText().toString());
                 } catch (Exception e) {
                     e.printStackTrace();

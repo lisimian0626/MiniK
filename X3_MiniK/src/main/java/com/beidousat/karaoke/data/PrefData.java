@@ -2,6 +2,7 @@ package com.beidousat.karaoke.data;
 
 import android.content.Context;
 
+import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.libbns.util.PreferenceUtil;
 
 /**
@@ -290,7 +291,13 @@ public class PrefData {
      * @return
      */
     public static String getSerilMicUp(Context context) {
-        return PreferenceUtil.getString(context, SERIAL_MIC_UP, "E0A206B70A0D0202B2");
+        String defValue="E0A206B70A0D0202B2";
+        if(SerialController.getInstance(context).ismIsOpened()){
+            defValue="E0A206B70A0D0202B2";
+        }else if(SerialController.getInstance(context).ismMCUOpen()){
+            defValue="55AA1302";
+        }
+        return PreferenceUtil.getString(context, SERIAL_MIC_UP, defValue);
     }
 
     /**
@@ -311,7 +318,13 @@ public class PrefData {
      * @return
      */
     public static String getSerilMicDown(Context context) {
-        return PreferenceUtil.getString(context, SERIAL_MIC_DOWN, "E0A206B70A0D0201B1");
+        String defValue="E0A206B70A0D0201B1";
+        if(SerialController.getInstance(context).ismIsOpened()){
+            defValue="E0A206B70A0D0201B1";
+        }else if(SerialController.getInstance(context).ismMCUOpen()){
+            defValue="55AA1303";
+        }
+        return PreferenceUtil.getString(context, SERIAL_MIC_DOWN, defValue);
     }
 
     /**
@@ -331,7 +344,13 @@ public class PrefData {
      * @return
      */
     public static String getSerilReverbDown(Context context) {
-        return PreferenceUtil.getString(context, SERIAL_REVERB_DOWN, "E0A206B70A0E0201B2");
+        String defValue="E0A206B70A0E0201B2";
+        if(SerialController.getInstance(context).ismIsOpened()){
+            defValue="E0A206B70A0E0201B2";
+        }else if(SerialController.getInstance(context).ismMCUOpen()){
+            defValue="55AA1305";
+        }
+        return PreferenceUtil.getString(context, SERIAL_REVERB_DOWN, defValue);
     }
 
     /**
@@ -352,7 +371,13 @@ public class PrefData {
      * @return
      */
     public static String getSerilReverbUp(Context context) {
-        return PreferenceUtil.getString(context, SERIAL_REVERB_UP, "E0A206B70A0E0202B3");
+        String defValue="E0A206B70A0E0202B3";
+        if(SerialController.getInstance(context).ismIsOpened()){
+            defValue="E0A206B70A0E0202B3";
+        }else if(SerialController.getInstance(context).ismMCUOpen()){
+            defValue="55AA1304";
+        }
+        return PreferenceUtil.getString(context, SERIAL_REVERB_UP, defValue);
     }
 
     /**
@@ -362,6 +387,7 @@ public class PrefData {
      * @param code
      */
     public static void setSerilReverbUp(Context context, String code) {
+
         PreferenceUtil.setString(context, SERIAL_REVERB_UP, code);
     }
 
