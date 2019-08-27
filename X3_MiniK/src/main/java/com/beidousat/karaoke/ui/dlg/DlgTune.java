@@ -120,24 +120,24 @@ public class DlgTune extends BaseDialog implements OnClickListener {
                 break;
 
             case R.id.iv_default:
-//                if (mOnTuneListener != null)
-//                    mOnTuneListener.onReset();
-                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_test);
+                if (mOnTuneListener != null)
+                    mOnTuneListener.onReset();
+//                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_test);
                 break;
             case R.id.iv_mute:
-//                if (mOnTuneListener != null)
-//                    mOnTuneListener.onMute();
-                SerialController.getInstance(getContext()).sendMCU(McuRecvHelper.str_query_mic);
+                if (mOnTuneListener != null)
+                    mOnTuneListener.onMute();
+//                SerialController.getInstance(getContext()).sendMCU(McuRecvHelper.str_query_mic);
                 break;
             case R.id.iv_reverb_down:
-                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_down);
-//                if (mOnTuneListener != null)
-//                    mOnTuneListener.onReverbDown();
+//                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_down);
+                if (mOnTuneListener != null)
+                    mOnTuneListener.onReverbDown();
                 break;
             case R.id.iv_reverb_up:
-                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_up);
-//                if (mOnTuneListener != null)
-//                    mOnTuneListener.onReverbUp();
+//                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_up);
+                if (mOnTuneListener != null)
+                    mOnTuneListener.onReverbUp();
                 break;
         }
     }
