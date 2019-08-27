@@ -248,6 +248,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     public void onMicUp() {
         try {
             String code = PrefData.getSerilMicUp(mContext);
+            Logger.d(TAG,"onMicUp:"+code);
             if (!TextUtils.isEmpty(code))
                 mSerialHelper.send(code);
         } catch (Exception e) {
@@ -258,6 +259,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     public void onMicDown() {
         try {
             String code = PrefData.getSerilMicDown(mContext);
+            Logger.d(TAG,"onMicDown:"+code);
             if (!TextUtils.isEmpty(code))
                 mSerialHelper.send(code);
         } catch (Exception e) {
