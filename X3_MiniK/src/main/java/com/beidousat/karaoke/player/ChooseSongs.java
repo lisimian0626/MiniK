@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.data.BoughtMeal;
+import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.KBoxStatusInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.Song;
@@ -124,7 +125,7 @@ public class ChooseSongs {
             }
         } else {
             if (PrefData.getLastAuth(mContext)) {
-                if (!DiskFileUtil.hasDiskStorage()) {
+                if (!DiskFileUtil.hasDiskStorage()&& KBoxInfo.getInstance().getKboxConfig().noDisk!=1) {
                     tipMessage(R.string.hand_disk);
                     return false;
                 }

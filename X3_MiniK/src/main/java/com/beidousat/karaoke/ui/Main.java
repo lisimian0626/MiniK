@@ -838,20 +838,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         }
                     });
                     countDownTimer.start();
-//                    mRoot.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (downLoadInfo.getSavePath().equals(Common.curSongPath)) {
-//                                if (player != null || player_cx != null) {
-//                                    mKaraokeController.getPlayerStatus().isMute = false;
-//                                    closePauseTipView();
-//                                    next();
-//                                    if (mPresentation != null && ChooseSongs.getInstance(Main.this).getSongs().size() > 0)
-//                                        mPresentation.tipOperation(R.drawable.tv_next, R.string.switch_song, true);
-//                                }
-//                            }
-//                        }
-//                    }, 180 * 1000);
+/
                 }
                 break;
             case EventBusId.id.PLAYER_STATUS_CHANGED:
@@ -1095,9 +1082,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             mDialogAuth.show();
                         } else if (kBoxStatus.code == 00301) {
                             if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-                                PromptDialog promptDialog = new PromptDialog(this);
-                                promptDialog.setMessage(getResources().getString(R.string.auth_fail));
-                                promptDialog.show();
+                                mDialogAuth = new PromptDialog(this);
+                                mDialogAuth.setMessage(getResources().getString(R.string.auth_fail));
+                                mDialogAuth.show();
                                 ChooseSongs.getInstance(Main.this).cleanChoose();
                                 BoughtMeal.getInstance().clearMealInfoSharePreference();
                                 BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
@@ -2857,7 +2844,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private PromptDialog mDlgDiskNotExit;
 
     private boolean checkDisk() {
-        if (!DiskFileUtil.hasDiskStorage()) {
+        if (!DiskFileUtil.hasDiskStorage()&&KBoxInfo.getInstance().getKboxConfig().noDisk!=1) {
             if (mDlgDiskNotExit == null || !mDlgDiskNotExit.isShowing()) {
                 mDlgDiskNotExit = new PromptDialog(this);
                 mDlgDiskNotExit.setMessage(getResources().getString(R.string.hand_disk));
