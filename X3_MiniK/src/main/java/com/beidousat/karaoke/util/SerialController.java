@@ -122,10 +122,10 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
 
         try {
             mcuRecvHelper = McuRecvHelper.getInstance().getInstance();
-            Logger.i(TAG, "Mcu open");
             mcuRecvHelper.open(port, baudrate);
             mcuRecvHelper.setOnMcuSerialReceiveListener(this);
             mMCUOpen = true;
+            Logger.i(TAG, "Mcu open");
         } catch (Exception e) {
             e.printStackTrace();
         }
