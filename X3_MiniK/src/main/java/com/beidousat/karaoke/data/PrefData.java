@@ -292,9 +292,9 @@ public class PrefData {
      */
     public static String getSerilMicUp(Context context) {
         String defValue="E0A206B70A0D0202B2";
-        if(SerialController.getInstance(context).ismIsOpened()){
+        if(PrefData.getSERIAL_RJ45(context)==0){
             defValue="E0A206B70A0D0202B2";
-        }else if(SerialController.getInstance(context).ismMCUOpen()){
+        }else if(PrefData.getSERIAL_RJ45(context)==3){
             defValue="55AA1302";
         }
         return PreferenceUtil.getString(context, SERIAL_MIC_UP, defValue);
@@ -319,9 +319,9 @@ public class PrefData {
      */
     public static String getSerilMicDown(Context context) {
         String defValue="E0A206B70A0D0201B1";
-        if(SerialController.getInstance(context).ismIsOpened()){
+        if(PrefData.getSERIAL_RJ45(context)==0){
             defValue="E0A206B70A0D0201B1";
-        }else if(SerialController.getInstance(context).ismMCUOpen()){
+        }else if(PrefData.getSERIAL_RJ45(context)==3){
             defValue="55AA1303";
         }
         return PreferenceUtil.getString(context, SERIAL_MIC_DOWN, defValue);
@@ -345,9 +345,9 @@ public class PrefData {
      */
     public static String getSerilReverbDown(Context context) {
         String defValue="E0A206B70A0E0201B2";
-        if(SerialController.getInstance(context).ismIsOpened()){
+        if(PrefData.getSERIAL_RJ45(context)==0){
             defValue="E0A206B70A0E0201B2";
-        }else if(SerialController.getInstance(context).ismMCUOpen()){
+        }else if(PrefData.getSERIAL_RJ45(context)==3){
             defValue="55AA1305";
         }
         return PreferenceUtil.getString(context, SERIAL_REVERB_DOWN, defValue);
@@ -372,9 +372,9 @@ public class PrefData {
      */
     public static String getSerilReverbUp(Context context) {
         String defValue="E0A206B70A0E0202B3";
-        if(SerialController.getInstance(context).ismIsOpened()){
+        if(PrefData.getSERIAL_RJ45(context)==0){
             defValue="E0A206B70A0E0202B3";
-        }else if(SerialController.getInstance(context).ismMCUOpen()){
+        }else if(PrefData.getSERIAL_RJ45(context)==3){
             defValue="55AA1304";
         }
         return PreferenceUtil.getString(context, SERIAL_REVERB_UP, defValue);

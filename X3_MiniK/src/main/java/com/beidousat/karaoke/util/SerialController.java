@@ -33,7 +33,6 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     private final int ostSerial = 3;
     private final int ictSerial = 4;
     private final int McuSerial = 5;
-    private boolean mIsOpened, mMCUOpen;
     private String codeCache = "";
     private final static String TAG = "SerialController";
 
@@ -43,18 +42,6 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         return mSerialController;
     }
 
-    public boolean ismIsOpened() {
-        return mIsOpened;
-    }
-
-
-    public void setmIsOpened(boolean mIsOpened) {
-        this.mIsOpened = mIsOpened;
-    }
-
-    public boolean ismMCUOpen() {
-        return mMCUOpen;
-    }
 
     private SerialController(Context context) {
         this.mContext = context;
@@ -69,7 +56,6 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
             Logger.i(TAG, "open");
 //            Toast.makeText(mContext,"open",Toast.LENGTH_SHORT);
             mSerialHelper.open(port, baudrate);
-            mIsOpened = true;
             mSerialHelper.setOnSerialReceiveListener(this);
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,7 +110,6 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
             mcuRecvHelper = McuRecvHelper.getInstance().getInstance();
             mcuRecvHelper.open(port, baudrate);
             mcuRecvHelper.setOnMcuSerialReceiveListener(this);
-            mMCUOpen = true;
             Logger.i(TAG, "Mcu open");
         } catch (Exception e) {
             e.printStackTrace();
