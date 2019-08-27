@@ -838,7 +838,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         }
                     });
                     countDownTimer.start();
-/
                 }
                 break;
             case EventBusId.id.PLAYER_STATUS_CHANGED:
