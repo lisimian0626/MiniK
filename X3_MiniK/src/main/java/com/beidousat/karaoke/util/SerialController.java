@@ -231,44 +231,60 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     };
 
     public void onMicUp() {
-        try {
-            String code = PrefData.getSerilMicUp(mContext);
-            Logger.d(TAG,"onMicUp:"+code);
-            if (!TextUtils.isEmpty(code))
-                mSerialHelper.send(code);
-        } catch (Exception e) {
-            Logger.w(TAG, e.toString());
+        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+            mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_up);
+        } else {
+            try {
+                String code = PrefData.getSerilMicUp(mContext);
+                Logger.d(TAG, "onMicUp:" + code);
+                if (!TextUtils.isEmpty(code))
+                    mSerialHelper.send(code);
+            } catch (Exception e) {
+                Logger.w(TAG, e.toString());
+            }
         }
     }
 
     public void onMicDown() {
-        try {
-            String code = PrefData.getSerilMicDown(mContext);
-            Logger.d(TAG,"onMicDown:"+code);
-            if (!TextUtils.isEmpty(code))
-                mSerialHelper.send(code);
-        } catch (Exception e) {
-            Logger.w(TAG, e.toString());
+        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+            mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_down);
+        } else {
+            try {
+                String code = PrefData.getSerilMicDown(mContext);
+                Logger.d(TAG, "onMicDown:" + code);
+                if (!TextUtils.isEmpty(code))
+                    mSerialHelper.send(code);
+            } catch (Exception e) {
+                Logger.w(TAG, e.toString());
+            }
         }
     }
 
     public void onReverbUp() {
-        try {
-            String code = PrefData.getSerilReverbUp(mContext);
-            if (!TextUtils.isEmpty(code))
-                mSerialHelper.send(code);
-        } catch (Exception e) {
-            Logger.w(TAG, e.toString());
+        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+            mcuRecvHelper.sendbyte(McuRecvHelper.byte_effect_up);
+        } else {
+            try {
+                String code = PrefData.getSerilReverbUp(mContext);
+                if (!TextUtils.isEmpty(code))
+                    mSerialHelper.send(code);
+            } catch (Exception e) {
+                Logger.w(TAG, e.toString());
+            }
         }
     }
 
     public void onReverbDown() {
-        try {
-            String code = PrefData.getSerilReverbDown(mContext);
-            if (!TextUtils.isEmpty(code))
-                mSerialHelper.send(code);
-        } catch (Exception e) {
-            Logger.w(TAG, e.toString());
+        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+            mcuRecvHelper.sendbyte(McuRecvHelper.byte_effect_down);
+        } else {
+            try {
+                String code = PrefData.getSerilReverbDown(mContext);
+                if (!TextUtils.isEmpty(code))
+                    mSerialHelper.send(code);
+            } catch (Exception e) {
+                Logger.w(TAG, e.toString());
+            }
         }
     }
 

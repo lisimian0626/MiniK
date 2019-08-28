@@ -12,13 +12,10 @@ public class McuRecvHelper {
     private StringBuffer data = new StringBuffer();
     private SerialHelper mSerialHelper;
     private static McuRecvHelper mSerialSendRecvHelper;
-    public  static final byte byte_up[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x02};
-    public  static final byte byte_down[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x03};
-    public  static final byte byte_query_mic[] = {(byte)0x55, (byte)0xAA, (byte)0xff, (byte)0x0a};
-    public  static final byte byte_test[] = {(byte)0x11};
-    public  static final String str_up="55AA1302";
-    public  static final String str_down="55AA1303";
-    public  static final String str_query_mic="55AAff0a";
+    public  static final byte byte_mic_up[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x02};
+    public  static final byte byte_mic_down[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x03};
+    public  static final byte byte_effect_up[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x04};
+    public  static final byte byte_effect_down[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x05};
     public static McuRecvHelper getInstance() {
         if (mSerialSendRecvHelper == null) {
             mSerialSendRecvHelper = new McuRecvHelper();

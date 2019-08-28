@@ -291,13 +291,7 @@ public class PrefData {
      * @return
      */
     public static String getSerilMicUp(Context context) {
-        String defValue="E0A206B70A0D0202B2";
-        if(PrefData.getSERIAL_RJ45(context)==0){
-            defValue="E0A206B70A0D0202B2";
-        }else if(PrefData.getSERIAL_RJ45(context)==3){
-            defValue="55AA1302";
-        }
-        return PreferenceUtil.getString(context, SERIAL_MIC_UP, defValue);
+        return PreferenceUtil.getString(context, SERIAL_MIC_UP, "E0A206B70A0D0202B2");
     }
 
     /**
