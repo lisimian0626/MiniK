@@ -476,7 +476,7 @@
     <string name="downloan_time_out">网络超时!</string>
     <string name="download_fail">下载失败</string>
     <string name="download_waiting">等待下载</string>
-
+    <string name="download_error_waiting">下载歌曲过多，请等待下载完成再试</string>
     //Octo
     <string name="octo_check">请稍候,正在连接八达通主机...</string>
     <string name="octo_error">八达通故障</string>

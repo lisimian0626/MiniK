@@ -228,7 +228,7 @@ public class ChooseSongs {
 //                promptDialog.setMessage(e.getMessage());
 //                promptDialog.show();
                 if(mContext!=null) {
-                    ToastUtils.toast(mContext, mContext.getString(R.string.download_fail));
+                    ToastUtils.toast(mContext, mContext.getString(R.string.download_error_waiting));
                 }
 
 /*
