@@ -207,7 +207,7 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                             String hex = codeCache.replace("44BB08","");
                             Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
                             int effVol = Integer.parseInt(hex, 16);
-                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, effVol);
+                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
                             codeCache = "";
                         } catch (Exception e) {
                             e.printStackTrace();
