@@ -23,7 +23,7 @@ public class SignDown implements Serializable {
     private String token;
     private String qrcode;
     private String event;
-    private int eventkey;
+    private String eventkey;
     private String code;
     private int hsn;
     private String status;
@@ -69,11 +69,11 @@ public class SignDown implements Serializable {
         this.event = event;
     }
 
-    public int getEventkey() {
+    public String getEventkey() {
         return eventkey;
     }
 
-    public void setEventkey(int eventkey) {
+    public void setEventkey(String eventkey) {
         this.eventkey = eventkey;
     }
 

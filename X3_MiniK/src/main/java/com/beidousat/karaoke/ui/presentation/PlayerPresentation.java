@@ -367,10 +367,8 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         if (KBoxInfo.getInstance().getKboxConfig() != null && KBoxInfo.getInstance().getKboxConfig().mobileQrcode == 1 && !TextUtils.isEmpty(UDPComment.QRcode)) {
             qr_code.setVisibility(View.VISIBLE);
             qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.QRcode));
-            mTvTips.setText(R.string.qrcode_tips);
         } else {
             qr_code.setVisibility(View.GONE);
-            mTvTips.setText("");
         }
 
     }
@@ -411,7 +409,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
                 mViewAdCorner.setVisibility(Boolean.valueOf(event.data.toString()).booleanValue() ? View.VISIBLE : View.GONE);
                 break;
             case EventBusId.Download.FINISH:
-                mTvTips.setText(mContext.getString(R.string.qrcode_tips));
+                mTvTips.setText("");
                 break;
             case EventBusId.Download.PROGRESS:
                 if (event instanceof DownloadBusEvent) {

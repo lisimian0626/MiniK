@@ -933,39 +933,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.SERIAL.SERIAL_EFF_VOL:
                 int effVol = Integer.valueOf(event.data.toString());
                 Logger.d(TAG, "SERIAL_EFF_VOL :" + effVol);
-                UDPComment.effType = UDPComment.effVoice >= effVol ? 1 : 2;
-                if (UDPComment.effVoice != -1) {
-                    if (UDPComment.effType == 1 && UDPComment.effVoice > effVol) {
-                        //音量加
-                        mKaraokeController.reverbUp();
-                        mKaraokeController.readEffVol(200);
-                    } else if (UDPComment.effType == 2 && UDPComment.effVoice < effVol) {
-                        //音量减
-                        mKaraokeController.reverbDown();
-                        mKaraokeController.readEffVol(200);
-                    }
-                }
                 mKaraokeController.getPlayerStatus().effVol = effVol;
-                sendPlayerControl();
                 break;
 
             case EventBusId.SERIAL.SERIAL_MIC_VOL:
                 int micVol = Integer.valueOf(event.data.toString());
                 Logger.d(TAG, "SERIAL_MIC_VOL :" + micVol);
-                UDPComment.micType = UDPComment.micVoice >= micVol ? 1 : 2;
-                if (UDPComment.micVoice != -1) {
-                    if (UDPComment.micType == 1 && UDPComment.micVoice > micVol) {
-                        //音量加
-                        mKaraokeController.micVolUp();
-                        mKaraokeController.readMicVol(200);
-                    } else if (UDPComment.micType == 2 && UDPComment.micVoice < micVol) {
-                        //音量减
-                        mKaraokeController.micVolDown();
-                        mKaraokeController.readMicVol(200);
-                    }
-                }
                 mKaraokeController.getPlayerStatus().micVol = micVol;
-                sendPlayerControl();
                 break;
 
             case EventBusId.id.PLAYER_VOL_OFF:
@@ -990,7 +964,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case EventBusId.id.ROOM_CLOSE:
-                //TODO 停止播放
                 Log.e("test", "停止播放");
                 BoughtMeal.getInstance().clearMealInfo();
                 PayUserInfo.getInstance().removeAllUser();
@@ -1198,15 +1171,15 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     UDPComment.token = signDown.getToken();
                     UDPComment.QRcode = signDown.getQrcode();
                 } else if (signDown.getEvent().toLowerCase().equals("player")) {
-                    if (signDown.getEventkey() == 1) {
+                    if (signDown.getEventkey().equals("1")) {
                         //发播放器状态
                         sendPlayerControl();
                     }
                 } else if (signDown.getEvent().toLowerCase().equals("mute")) {
-                    if (signDown.getEventkey() == 1) {
+                    if (signDown.getEventkey().equals("1")) {
                         //静音
                         mKaraokeController.mute(true);
-                    } else if (signDown.getEventkey() == 2) {
+                    } else if (signDown.getEventkey().equals("2")) {
                         //取消静音
                         mKaraokeController.mute(false);
                     }
@@ -1215,19 +1188,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     //切歌
                     next();
                 } else if (signDown.getEvent().toLowerCase().equals("music")) {
-                    if (signDown.getEventkey() == 1) {
+                    if (signDown.getEventkey().equals("1")) {
                         //原唱
                         mKaraokeController.originalAccom(true);
-                    } else if (signDown.getEventkey() == 2) {
+                    } else if (signDown.getEventkey().equals("2")) {
                         //伴唱
                         mKaraokeController.originalAccom(false);
                     }
                     sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("status")) {
-                    if (signDown.getEventkey() == 1) {
+                    if (signDown.getEventkey().equals("1")) {
                         //播放
                         mKaraokeController.play();
-                    } else if (signDown.getEventkey() == 2) {
+                    } else if (signDown.getEventkey().equals("2")) {
                         //暂停
                         mKaraokeController.pause();
                     }
@@ -1235,29 +1208,37 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else if (signDown.getEvent().toLowerCase().equals("replay")) {
                     mKaraokeController.replay();
                 } else if (signDown.getEvent().toLowerCase().equals("score")) {
-                    if (signDown.getEventkey() == 1) {
+                    if (signDown.getEventkey().equals("1")) {
                         //开启
                         mKaraokeController.setScoreMode(1);
-                    } else if (signDown.getEventkey() == 2) {
+                    } else if (signDown.getEventkey().equals("2")) {
                         //关闭
                         mKaraokeController.setScoreMode(0);
                     }
                     sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("sound")) {
                     //设置麦克风
-                    mKaraokeController.setMusicVol(signDown.getEventkey());
+                    mKaraokeController.setMusicVol(Integer.valueOf(signDown.getEventkey()));
                     sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("mic")) {
-                    UDPComment.micVoice = signDown.getEventkey();
-                    mKaraokeController.readMicVol(10);
+                    if(signDown.getEventkey().equals("add")){
+                        mKaraokeController.micVolUp();
+                    }else if(signDown.getEventkey().equals("mv")){
+                        mKaraokeController.micVolDown();
+                    }
+//                    mKaraokeController.readMicVol(100);
                     //设置音调
                 } else if (signDown.getEvent().toLowerCase().equals("tone")) {
-                    mKaraokeController.setTone(signDown.getEventkey());
+                    mKaraokeController.setTone(Integer.valueOf(signDown.getEventkey()));
                     sendPlayerControl();
                     //设置混响
                 } else if (signDown.getEvent().toLowerCase().equals("reverberation")) {
-                    UDPComment.effVoice = signDown.getEventkey();
-                    mKaraokeController.readEffVol(10);
+                    if(signDown.getEventkey().equals("add")){
+                        mKaraokeController.reverbUp();
+                    }else if(signDown.getEventkey().equals("mv")){
+                        mKaraokeController.reverbDown();
+                    }
+//                    mKaraokeController.readEffVol(10);
                     //已点
                 } else if (signDown.getEvent().toLowerCase().equals("songs")) {
                     String songs = ChooseSongs.getInstance(this).getSongsforPhone();
@@ -1275,7 +1256,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                         @Override
                         public void onSuccess(String method, Object object) {
-                            if (object != null && object instanceof SongInfo) {
+                            if (object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.this).add2Top(songInfo.toSong());
                                 EventBusUtil.postSticky(EventBusId.Udp.TOAST,"优先："+songInfo.getSimpName());
@@ -1302,7 +1283,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                         @Override
                         public void onSuccess(String method, Object object) {
-                            if (object != null && object instanceof SongInfo) {
+                            if (object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.this).remove(songInfo.toSong());
                                 EventBusUtil.postSticky(EventBusId.Udp.TOAST,"删除："+songInfo.getSimpName());
@@ -1329,7 +1310,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                         @Override
                         public void onSuccess(String method, Object object) {
-                            if (object != null && object instanceof SongInfo) {
+                            if (object instanceof SongInfo) {
                                 SongInfo songInfo = (SongInfo) object;
                                 ChooseSongs.getInstance(Main.this).addSong(songInfo.toSong());
                                 EventBusUtil.postSticky(EventBusId.Udp.TOAST,"点歌："+songInfo.getSimpName());
@@ -1352,52 +1333,58 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 break;
             case EventBusId.Udp.ERROR:
                 SignDown signDownERROR = (SignDown) event.data;
-                if (signDownERROR.getCode().equals("2003")) {
-                    if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+                switch (signDownERROR.getCode()) {
+                    case "2003":
+                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
 //                                Log.e("test", "心跳检测没交服务费，清空套餐");
-                        ChooseSongs.getInstance(Main.this).cleanChoose();
-                        BoughtMeal.getInstance().clearMealInfoSharePreference();
-                        BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
-                    }
-                    mDialogAuth = new PromptDialog(Main.this);
-                    mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            showPayService();
+                            ChooseSongs.getInstance(Main.this).cleanChoose();
+                            BoughtMeal.getInstance().clearMealInfoSharePreference();
+                            BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                         }
-                    });
-                    mDialogAuth.setCanceledOnTouchOutside(false);
-                    mDialogAuth.setClose(true);
-                    mDialogAuth.setMessage(signDownERROR.getMessage());
-                    mDialogAuth.show();
-                } else if (signDownERROR.getCode().equals("2001")) {
-                    mDialogAuth = new PromptDialog(Main.this);
-                    mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            showMngPass(0);
+                        mDialogAuth = new PromptDialog(Main.this);
+                        mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showPayService();
+                            }
+                        });
+                        mDialogAuth.setCanceledOnTouchOutside(false);
+                        mDialogAuth.setClose(true);
+                        mDialogAuth.setMessage(signDownERROR.getMessage());
+                        mDialogAuth.show();
+                        break;
+                    case "2001":
+                        mDialogAuth = new PromptDialog(Main.this);
+                        mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showMngPass(0);
+                            }
+                        });
+                        mDialogAuth.setCanceledOnTouchOutside(false);
+                        mDialogAuth.setClose(true);
+                        mDialogAuth.setMessage(signDownERROR.getMessage());
+                        mDialogAuth.show();
+                        break;
+                    case "00301":
+                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+                            PromptDialog promptDialog = new PromptDialog(this);
+                            promptDialog.setMessage(getResources().getString(R.string.auth_fail));
+                            promptDialog.show();
+                            ChooseSongs.getInstance(Main.this).cleanChoose();
+                            BoughtMeal.getInstance().clearMealInfoSharePreference();
+                            BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                         }
-                    });
-                    mDialogAuth.setCanceledOnTouchOutside(false);
-                    mDialogAuth.setClose(true);
-                    mDialogAuth.setMessage(signDownERROR.getMessage());
-                    mDialogAuth.show();
-                } else if (signDownERROR.getCode().equals("00301")) {
-                    if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
-                        PromptDialog promptDialog = new PromptDialog(this);
-                        promptDialog.setMessage(getResources().getString(R.string.auth_fail));
-                        promptDialog.show();
-                        ChooseSongs.getInstance(Main.this).cleanChoose();
-                        BoughtMeal.getInstance().clearMealInfoSharePreference();
-                        BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
-                    }
-                } else if (signDownERROR.getCode().equals("X4000")) {
-                    UDPComment.sendhsn = 1;
-                    UDPComment.isSign = false;
-                } else {
-                    if (getApplicationContext() != null) {
-                        ToastUtils.toast(getApplicationContext(), signDownERROR.getMessage());
-                    }
+                        break;
+                    case "X4000":
+                        UDPComment.sendhsn = 1;
+                        UDPComment.isSign = false;
+                        break;
+                    default:
+                        if (getApplicationContext() != null) {
+                            ToastUtils.toast(getApplicationContext(), signDownERROR.getMessage());
+                        }
+                        break;
                 }
                 break;
             case EventBusId.id.UPDATA_SERIAL_SUCCED:

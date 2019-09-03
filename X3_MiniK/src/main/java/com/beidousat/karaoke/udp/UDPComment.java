@@ -5,10 +5,6 @@ public class UDPComment {
     public static String token="";
     public static int sendhsn=1;
     public static String QRcode="";
-    public static int micType=-1;  //1 音量加 2音量键
-    public static int effType=-1;  //1 音量加 2音量键
-    public static int micVoice=-1;
-    public static int effVoice=-1;
 
     public static String getUDPErrorMsg(String errorCode){
         String msg="";
