@@ -925,9 +925,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 break;
 
             case EventBusId.id.SERIAL_REVERB_DOWN:
+                if (mPresentation != null)
+                    mPresentation.tipOperation(R.drawable.tv_mic_down, getString(R.string.reverb), true);
                 break;
 
             case EventBusId.id.SERIAL_REVERB_UP:
+                if (mPresentation != null)
+                    mPresentation.tipOperation(R.drawable.tv_mic_up, getString(R.string.reverb), true);
                 break;
 
             case EventBusId.SERIAL.SERIAL_EFF_VOL:
@@ -1221,9 +1225,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mKaraokeController.setMusicVol(Integer.valueOf(signDown.getEventkey()));
                     sendPlayerControl();
                 } else if (signDown.getEvent().toLowerCase().equals("mic")) {
-                    if(signDown.getEventkey().equals("add")){
+                    if(signDown.getEventkey().toLowerCase().equals("add")){
                         mKaraokeController.micVolUp();
-                    }else if(signDown.getEventkey().equals("mv")){
+                    }else if(signDown.getEventkey().toLowerCase().equals("mv")){
                         mKaraokeController.micVolDown();
                     }
 //                    mKaraokeController.readMicVol(100);
@@ -1233,9 +1237,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     sendPlayerControl();
                     //设置混响
                 } else if (signDown.getEvent().toLowerCase().equals("reverberation")) {
-                    if(signDown.getEventkey().equals("add")){
+                    if(signDown.getEventkey().toLowerCase().equals("add")){
                         mKaraokeController.reverbUp();
-                    }else if(signDown.getEventkey().equals("mv")){
+                    }else if(signDown.getEventkey().toLowerCase().equals("mv")){
                         mKaraokeController.reverbDown();
                     }
 //                    mKaraokeController.readEffVol(10);
