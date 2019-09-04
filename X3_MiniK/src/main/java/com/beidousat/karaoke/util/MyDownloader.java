@@ -163,7 +163,7 @@ public class MyDownloader {
         List<String> paths = dbHelper.getSongDao().deleteLessHotSongs();
         if (paths != null && paths.size() > 0) {
             for (String str : paths) {
-                Logger.d(TAG,"要删除歌曲的初始path:"+str.toString());
+                Logger.d(TAG,"要删除歌曲的初始path:"+str);
                 String diskPath = DiskFileUtil.getFileSavedPath(str);
                 if (TextUtils.isEmpty(diskPath)) {
                     continue;
@@ -172,7 +172,7 @@ public class MyDownloader {
                 File file = new File(diskPath);
                 if (file.exists() && file.isFile()) {
                     file.delete();
-                    Logger.d(TAG,"执行删除路径:"+str.toString());
+                    Logger.d(TAG,"执行删除路径:"+str);
                 }
             }
             if(!StorageUtil.isUsbDiskHasAvailableSpace()){

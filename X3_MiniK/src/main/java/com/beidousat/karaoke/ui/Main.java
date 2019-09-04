@@ -44,11 +44,8 @@ import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.ad.AdDefault;
 import com.beidousat.karaoke.biz.QueryKboxHelper;
 import com.beidousat.karaoke.biz.QueryOrderHelper;
-import com.beidousat.karaoke.biz.RetrofitFactory;
 import com.beidousat.karaoke.biz.SongHelper;
 import com.beidousat.karaoke.biz.SupportQueryOrder;
-import com.beidousat.karaoke.biz.base.BaseEntity;
-import com.beidousat.karaoke.biz.base.BaseObserver;
 import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.KBoxStatusInfo;
@@ -62,7 +59,6 @@ import com.beidousat.karaoke.model.GiftDetail;
 import com.beidousat.karaoke.model.KBox;
 import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.Meal;
-import com.beidousat.karaoke.model.PayMent;
 import com.beidousat.karaoke.model.PayStatus;
 import com.beidousat.karaoke.model.PlayerStatus;
 import com.beidousat.karaoke.model.Song;
@@ -116,7 +112,6 @@ import com.beidousat.karaoke.util.DownloadQueueHelper;
 import com.beidousat.karaoke.util.MyDownloader;
 import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.karaoke.util.SystemBroadcastSender;
-import com.beidousat.karaoke.util.TipsUtil;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.karaoke.util.UIUtils;
 import com.beidousat.karaoke.widget.ChooseSongTipView;
@@ -132,7 +127,6 @@ import com.beidousat.libbns.evenbus.ICTEvent;
 import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.FragmentModel;
-import com.beidousat.libbns.model.KBoxStatus;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.NetChecker;
 import com.beidousat.libbns.net.NetWorkUtils;
@@ -152,7 +146,6 @@ import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.PreferenceUtil;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libbns.util.UsbFileUtil;
-import com.beidousat.libserial.McuRecvHelper;
 import com.beidousat.score.KeyInfo;
 import com.beidousat.score.NoteInfo;
 import com.beidousat.score.OnKeyInfoListener;
@@ -172,7 +165,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import io.reactivex.Observable;
 
 import static com.beidousat.karaoke.ui.dlg.FmTBPayNumber.closebyte;
 
@@ -687,39 +679,39 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
         try {
             int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
-            if(PrefData.getSERIAL_RJ45(Main.this)==0){
+            if (PrefData.getSERIAL_RJ45(Main.this) == 0) {
                 SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
-            }else if(PrefData.getSERIAL_RJ45(Main.this)==1){
+            } else if (PrefData.getSERIAL_RJ45(Main.this) == 1) {
                 SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-            }else if(PrefData.getSERIAL_RJ45(Main.this)==2){
+            } else if (PrefData.getSERIAL_RJ45(Main.this) == 2) {
                 SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
-            } else if(PrefData.getSERIAL_RJ45(Main.this)==3){
+            } else if (PrefData.getSERIAL_RJ45(Main.this) == 3) {
                 SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
-            }else{
+            } else {
                 SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
             }
 
-            if(PrefData.getSERIAL_UP(Main.this)==0){
+            if (PrefData.getSERIAL_UP(Main.this) == 0) {
                 SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
-            }else if(PrefData.getSERIAL_UP(Main.this)==1){
+            } else if (PrefData.getSERIAL_UP(Main.this) == 1) {
                 SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-            }else if(PrefData.getSERIAL_UP(Main.this)==2){
+            } else if (PrefData.getSERIAL_UP(Main.this) == 2) {
                 SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
-            } else if(PrefData.getSERIAL_RJ45(Main.this)==3){
+            } else if (PrefData.getSERIAL_RJ45(Main.this) == 3) {
                 SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
-            }else{
+            } else {
                 SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, baudrate);
             }
 
-            if(PrefData.getSERIAL_DOWN(Main.this)==0){
+            if (PrefData.getSERIAL_DOWN(Main.this) == 0) {
                 SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
-            }else if(PrefData.getSERIAL_DOWN(Main.this)==1){
+            } else if (PrefData.getSERIAL_DOWN(Main.this) == 1) {
                 SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-            }else if(PrefData.getSERIAL_DOWN(Main.this)==2){
+            } else if (PrefData.getSERIAL_DOWN(Main.this) == 2) {
                 SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
-            } else if(PrefData.getSERIAL_RJ45(Main.this)==3){
+            } else if (PrefData.getSERIAL_RJ45(Main.this) == 3) {
                 SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
-            }else{
+            } else {
                 SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, baudrate);
             }
 
@@ -1002,12 +994,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo(PrefData.getRoomCode(Main.this.getApplicationContext()), DeviceUtil.getCupChipID());
                 break;
 
-            case EventBusId.SOCKET.KBOX_STATUS_CHECKING:
-                if (!mIsSetting && KBoxInfo.getInstance().getKBox() == null) {
-//                    LoadingUtil.showLoadingDialog(this, getString(R.string.init_system));
-//                    showKboxInitDialog(getString(R.string.getting_box_info), getString(R.string.checking_kbox_error));
-                }
-                break;
+//            case EventBusId.SOCKET.KBOX_STATUS_CHECKING:
+//                if (!mIsSetting && KBoxInfo.getInstance().getKBox() == null) {
+////                    LoadingUtil.showLoadingDialog(this, getString(R.string.init_system));
+////                    showKboxInitDialog(getString(R.string.getting_box_info), getString(R.string.checking_kbox_error));
+//                }
+//                break;
 
             case EventBusId.id.CURRENT_SCREEN_AD:
                 mCurScreenAd = (Ad) event.data;
@@ -1016,93 +1008,93 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
 
-            case EventBusId.SOCKET.KBOX_STATUS:
-                KBoxStatus kBoxStatus = (KBoxStatus) event.data;
-                KBoxStatusInfo.getInstance().setKBoxStatus(kBoxStatus);
-                dismissInitLoading();
-                Logger.d(TAG, "onEventMainThread: " + "kbox staut:" + kBoxStatus.status + "kbox code:" + kBoxStatus.code);
-                if (kBoxStatus.status != 1) {//授权未通过
-                    PrefData.setAuth(Main.this, false);
-                    TipsUtil tipsUtil = new TipsUtil(Main.this);
-                    if (!mIsSetting && (mDlgPass == null || !mDlgPass.isShowing())
-                            && (mDialogAuth == null || !mDialogAuth.isShowing())) {
-                        if (kBoxStatus.code == 2003) {
-                            if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-//                                Log.e("test", "心跳检测没交服务费，清空套餐");
-                                ChooseSongs.getInstance(Main.this).cleanChoose();
-                                BoughtMeal.getInstance().clearMealInfoSharePreference();
-                                BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
-                            }
-                            mDialogAuth = new PromptDialog(Main.mMainActivity);
-                            mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    showPayService();
-                                }
-                            });
-                            mDialogAuth.setCanceledOnTouchOutside(false);
-                            mDialogAuth.setClose(true);
-                            mDialogAuth.setMessage(tipsUtil.getErrMsg(kBoxStatus.code));
-                            mDialogAuth.show();
-                        } else if (kBoxStatus.code == 2001) {
-                            mDialogAuth = new PromptDialog(Main.mMainActivity);
-                            mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    showMngPass(0);
-                                }
-                            });
-                            mDialogAuth.setCanceledOnTouchOutside(false);
-                            mDialogAuth.setClose(true);
-                            mDialogAuth.setMessage(tipsUtil.getErrMsg(kBoxStatus.code));
-                            mDialogAuth.show();
-                        } else if (kBoxStatus.code == 00301) {
-                            if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-                                mDialogAuth = new PromptDialog(this);
-                                mDialogAuth.setMessage(getResources().getString(R.string.auth_fail));
-                                mDialogAuth.show();
-                                ChooseSongs.getInstance(Main.this).cleanChoose();
-                                BoughtMeal.getInstance().clearMealInfoSharePreference();
-                                BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
-                            }
-                        } else {
-                            if (getApplicationContext() != null) {
-                                ToastUtils.toast(getApplicationContext(), tipsUtil.getErrMsg(kBoxStatus.code));
-                            }
-                        }
-                    }
-                } else {
-                    PrefData.setAuth(Main.this, true);
-                    PrefData.setLastTime(this.getApplicationContext(), System.currentTimeMillis());
-                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-                        if (BoughtMeal.getInstance().isMealExpire()) {
-//                            Log.e("test", "心跳检测，初始化套餐");
-                            Meal meal = new Meal();
-                            meal.setType(2);
-                            meal.setAmount(43200);
-                            PayStatus payStatus = new PayStatus();
-                            payStatus.setPayStatus(1);
-                            payStatus.setPayTime((int) System.currentTimeMillis());
-                            payStatus.setOrderSn(meal.getOrderSn());
-                            payStatus.setDeviceSn(DeviceUtil.getCupChipID());
-                            payStatus.setType(meal.getType());
-                            payStatus.setAmount(meal.getAmount());
-                            //设置当前购买的套餐
-                            BoughtMeal.getInstance().setBoughtMeal(meal, payStatus);
-                        }
-
-                    }
-                    if (KBoxInfo.getInstance().getmPayMentlist() == null) {
-                        new QueryKboxHelper(getApplicationContext(), null, null).getPayment();
-                    }
-                    if (CommonDialog.mInstance != null && CommonDialog.mInstance.getTag() != null && CommonDialog.mInstance.getTag().equals("pay_service")) {
-                        CommonDialog.mInstance.dismiss();
-                        if (getApplicationContext() != null) {
-                            ToastUtils.toast(getApplicationContext(), getString(R.string.pay_service_succed));
-                        }
-                    }
-                }
-                break;
+//            case EventBusId.SOCKET.KBOX_STATUS:
+//                KBoxStatus kBoxStatus = (KBoxStatus) event.data;
+//                KBoxStatusInfo.getInstance().setKBoxStatus(kBoxStatus);
+//                dismissInitLoading();
+//                Logger.d(TAG, "onEventMainThread: " + "kbox staut:" + kBoxStatus.status + "kbox code:" + kBoxStatus.code);
+//                if (kBoxStatus.status != 1) {//授权未通过
+//                    PrefData.setAuth(Main.this, false);
+//                    TipsUtil tipsUtil = new TipsUtil(Main.this);
+//                    if (!mIsSetting && (mDlgPass == null || !mDlgPass.isShowing())
+//                            && (mDialogAuth == null || !mDialogAuth.isShowing())) {
+//                        if (kBoxStatus.code == 2003) {
+//                            if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+////                                Log.e("test", "心跳检测没交服务费，清空套餐");
+//                                ChooseSongs.getInstance(Main.this).cleanChoose();
+//                                BoughtMeal.getInstance().clearMealInfoSharePreference();
+//                                BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
+//                            }
+//                            mDialogAuth = new PromptDialog(Main.mMainActivity);
+//                            mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    showPayService();
+//                                }
+//                            });
+//                            mDialogAuth.setCanceledOnTouchOutside(false);
+//                            mDialogAuth.setClose(true);
+//                            mDialogAuth.setMessage(tipsUtil.getErrMsg(kBoxStatus.code));
+//                            mDialogAuth.show();
+//                        } else if (kBoxStatus.code == 2001) {
+//                            mDialogAuth = new PromptDialog(Main.mMainActivity);
+//                            mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    showMngPass(0);
+//                                }
+//                            });
+//                            mDialogAuth.setCanceledOnTouchOutside(false);
+//                            mDialogAuth.setClose(true);
+//                            mDialogAuth.setMessage(tipsUtil.getErrMsg(kBoxStatus.code));
+//                            mDialogAuth.show();
+//                        } else if (kBoxStatus.code == 00301) {
+//                            if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+//                                mDialogAuth = new PromptDialog(this);
+//                                mDialogAuth.setMessage(getResources().getString(R.string.auth_fail));
+//                                mDialogAuth.show();
+//                                ChooseSongs.getInstance(Main.this).cleanChoose();
+//                                BoughtMeal.getInstance().clearMealInfoSharePreference();
+//                                BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
+//                            }
+//                        } else {
+//                            if (getApplicationContext() != null) {
+//                                ToastUtils.toast(getApplicationContext(), tipsUtil.getErrMsg(kBoxStatus.code));
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    PrefData.setAuth(Main.this, true);
+//                    PrefData.setLastTime(this.getApplicationContext(), System.currentTimeMillis());
+//                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+//                        if (BoughtMeal.getInstance().isMealExpire()) {
+////                            Log.e("test", "心跳检测，初始化套餐");
+//                            Meal meal = new Meal();
+//                            meal.setType(2);
+//                            meal.setAmount(43200);
+//                            PayStatus payStatus = new PayStatus();
+//                            payStatus.setPayStatus(1);
+//                            payStatus.setPayTime((int) System.currentTimeMillis());
+//                            payStatus.setOrderSn(meal.getOrderSn());
+//                            payStatus.setDeviceSn(DeviceUtil.getCupChipID());
+//                            payStatus.setType(meal.getType());
+//                            payStatus.setAmount(meal.getAmount());
+//                            //设置当前购买的套餐
+//                            BoughtMeal.getInstance().setBoughtMeal(meal, payStatus);
+//                        }
+//
+//                    }
+//                    if (KBoxInfo.getInstance().getmPayMentlist() == null) {
+//                        new QueryKboxHelper(getApplicationContext(), null, null).getPayment();
+//                    }
+//                    if (CommonDialog.mInstance != null && CommonDialog.mInstance.getTag() != null && CommonDialog.mInstance.getTag().equals("pay_service")) {
+//                        CommonDialog.mInstance.dismiss();
+//                        if (getApplicationContext() != null) {
+//                            ToastUtils.toast(getApplicationContext(), getString(R.string.pay_service_succed));
+//                        }
+//                    }
+//                }
+//                break;
             case EventBusId.id.GIFT_DETAIL:
                 CouponDetail couponDetail = (CouponDetail) event.data;
 //                Log.e("test", "card_code:" + couponDetail.getCard_code());
@@ -1170,211 +1162,276 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 break;
             case EventBusId.Udp.SUCCESS:
                 SignDown signDown = (SignDown) event.data;
-                if (signDown.getEvent().toLowerCase().equals("sign.ok")) {
-                    UDPComment.isSign = true;
-                    UDPComment.token = signDown.getToken();
-                    UDPComment.QRcode = signDown.getQrcode();
-                } else if (signDown.getEvent().toLowerCase().equals("player")) {
-                    if (signDown.getEventkey().equals("1")) {
-                        //发播放器状态
+                switch (signDown.getEvent().toLowerCase()) {
+                    case "sign.ok":
+                        PrefData.setAuth(Main.this, true);
+                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+                            if (BoughtMeal.getInstance().isMealExpire()) {
+//                            Log.e("test", "心跳检测，初始化套餐");
+                                Meal defMeal = new Meal();
+                                defMeal.setType(2);
+                                defMeal.setAmount(43200);
+                                PayStatus defPayStatus = new PayStatus();
+                                defPayStatus.setPayStatus(1);
+                                defPayStatus.setPayTime((int) System.currentTimeMillis());
+                                defPayStatus.setOrderSn(defMeal.getOrderSn());
+                                defPayStatus.setDeviceSn(DeviceUtil.getCupChipID());
+                                defPayStatus.setType(defMeal.getType());
+                                defPayStatus.setAmount(defMeal.getAmount());
+                                //设置当前购买的套餐
+                                BoughtMeal.getInstance().setBoughtMeal(defMeal, defPayStatus);
+                            }
+
+                        }
+                        if (KBoxInfo.getInstance().getmPayMentlist() == null) {
+                            new QueryKboxHelper(getApplicationContext(), null, null).getPayment();
+                        }
+                        if (CommonDialog.mInstance != null && CommonDialog.mInstance.getTag() != null && CommonDialog.mInstance.getTag().equals("pay_service")) {
+                            CommonDialog.mInstance.dismiss();
+                            if (getApplicationContext() != null) {
+                                ToastUtils.toast(getApplicationContext(), getString(R.string.pay_service_succed));
+                            }
+                        }
+                        UDPComment.isSign = true;
+                        UDPComment.token = signDown.getToken();
+                        UDPComment.QRcode = signDown.getQrcode();
+                        break;
+                    case "hearbeat.ok":
+                        PrefData.setLastTime(Main.this, System.currentTimeMillis());
+                        break;
+                    case "player":
+                        if (signDown.getEventkey().equals("1")) {
+                            //发播放器状态
+                            sendPlayerControl();
+                        }
+                        break;
+                    case "mute":
+                        if (signDown.getEventkey().equals("1")) {
+                            //静音
+                            mKaraokeController.mute(true);
+                        } else if (signDown.getEventkey().equals("2")) {
+                            //取消静音
+                            mKaraokeController.mute(false);
+                        }
                         sendPlayerControl();
-                    }
-                } else if (signDown.getEvent().toLowerCase().equals("mute")) {
-                    if (signDown.getEventkey().equals("1")) {
-                        //静音
-                        mKaraokeController.mute(true);
-                    } else if (signDown.getEventkey().equals("2")) {
-                        //取消静音
-                        mKaraokeController.mute(false);
-                    }
-                    sendPlayerControl();
-                } else if (signDown.getEvent().toLowerCase().equals("cut")) {
-                    //切歌
-                    next();
-                } else if (signDown.getEvent().toLowerCase().equals("music")) {
-                    if (signDown.getEventkey().equals("1")) {
-                        //原唱
-                        mKaraokeController.originalAccom(true);
-                    } else if (signDown.getEventkey().equals("2")) {
-                        //伴唱
-                        mKaraokeController.originalAccom(false);
-                    }
-                    sendPlayerControl();
-                } else if (signDown.getEvent().toLowerCase().equals("status")) {
-                    if (signDown.getEventkey().equals("1")) {
-                        //播放
-                        mKaraokeController.play();
-                    } else if (signDown.getEventkey().equals("2")) {
-                        //暂停
-                        mKaraokeController.pause();
-                    }
-                    sendPlayerControl();
-                } else if (signDown.getEvent().toLowerCase().equals("replay")) {
-                    mKaraokeController.replay();
-                } else if (signDown.getEvent().toLowerCase().equals("score")) {
-                    if (signDown.getEventkey().equals("1")) {
-                        //开启
-                        mKaraokeController.setScoreMode(1);
-                    } else if (signDown.getEventkey().equals("2")) {
-                        //关闭
-                        mKaraokeController.setScoreMode(0);
-                    }
-                    sendPlayerControl();
-                } else if (signDown.getEvent().toLowerCase().equals("sound")) {
-                    //设置麦克风
-                    mKaraokeController.setMusicVol(Integer.valueOf(signDown.getEventkey()));
-                    sendPlayerControl();
-                } else if (signDown.getEvent().toLowerCase().equals("mic")) {
-                    if(signDown.getEventkey().toLowerCase().equals("add")){
-                        mKaraokeController.micVolUp();
-                    }else if(signDown.getEventkey().toLowerCase().equals("mv")){
-                        mKaraokeController.micVolDown();
-                    }
+                        break;
+                    case "cut":
+                        //切歌
+                        next();
+                        break;
+                    case "music":
+                        if (signDown.getEventkey().equals("1")) {
+                            //原唱
+                            mKaraokeController.originalAccom(true);
+                        } else if (signDown.getEventkey().equals("2")) {
+                            //伴唱
+                            mKaraokeController.originalAccom(false);
+                        }
+                        sendPlayerControl();
+                        break;
+                    case "status":
+                        if (signDown.getEventkey().equals("1")) {
+                            //播放
+                            mKaraokeController.play();
+                        } else if (signDown.getEventkey().equals("2")) {
+                            //暂停
+                            mKaraokeController.pause();
+                        }
+                        sendPlayerControl();
+                        break;
+                    case "replay":
+                        mKaraokeController.replay();
+                        break;
+                    case "score":
+                        if (signDown.getEventkey().equals("1")) {
+                            //开启
+                            mKaraokeController.setScoreMode(1);
+                        } else if (signDown.getEventkey().equals("2")) {
+                            //关闭
+                            mKaraokeController.setScoreMode(0);
+                        }
+                        sendPlayerControl();
+                        break;
+                    case "sound":
+                        //设置麦克风
+                        mKaraokeController.setMusicVol(Integer.valueOf(signDown.getEventkey()));
+                        sendPlayerControl();
+                        break;
+                    case "mic":
+                        if (signDown.getEventkey().toLowerCase().equals("add")) {
+                            mKaraokeController.micVolUp();
+                        } else if (signDown.getEventkey().toLowerCase().equals("mv")) {
+                            mKaraokeController.micVolDown();
+                        }
 //                    mKaraokeController.readMicVol(100);
-                    //设置音调
-                } else if (signDown.getEvent().toLowerCase().equals("tone")) {
-                    mKaraokeController.setTone(Integer.valueOf(signDown.getEventkey()));
-                    sendPlayerControl();
-                    //设置混响
-                } else if (signDown.getEvent().toLowerCase().equals("reverberation")) {
-                    if(signDown.getEventkey().toLowerCase().equals("add")){
-                        mKaraokeController.reverbUp();
-                    }else if(signDown.getEventkey().toLowerCase().equals("mv")){
-                        mKaraokeController.reverbDown();
-                    }
+                        //设置音调
+                        break;
+                    case "tone":
+                        mKaraokeController.setTone(Integer.valueOf(signDown.getEventkey()));
+                        sendPlayerControl();
+                        //设置混响
+                        break;
+                    case "reverberation":
+                        if (signDown.getEventkey().toLowerCase().equals("add")) {
+                            mKaraokeController.reverbUp();
+                        } else if (signDown.getEventkey().toLowerCase().equals("mv")) {
+                            mKaraokeController.reverbDown();
+                        }
 //                    mKaraokeController.readEffVol(10);
-                    //已点
-                } else if (signDown.getEvent().toLowerCase().equals("songs")) {
-                    String songs = ChooseSongs.getInstance(this).getSongsforPhone();
-                    Logger.d(UDPSocket.TAG, "songs:" + songs);
-                    HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
-                    UDPSocket.getIntance(this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
-                    //已点列表 "eventkey":"11390:1,11391:2,11392:2,11393:2,11394:2,11395:2,11396:2,11397:3,11398:3",
-                } else if (signDown.getEvent().toLowerCase().equals("songfirist")) {
-                    //优先 eventkey":18390
-                    HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
-                        @Override
-                        public void onStart(String method) {
+                        //已点
+                        break;
+                    case "songs":
+                        String songs = ChooseSongs.getInstance(this).getSongsforPhone();
+                        Logger.d(UDPSocket.TAG, "songs:" + songs);
+                        HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+                        UDPSocket.getIntance(this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                        //已点列表 "eventkey":"11390:1,11391:2,11392:2,11393:2,11394:2,11395:2,11396:2,11397:3,11398:3",
+                        break;
+                    case "songfirist": {
+                        //优先 eventkey":18390
+                        HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
+                            @Override
+                            public void onStart(String method) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onSuccess(String method, Object object) {
-                            if (object instanceof SongInfo) {
-                                SongInfo songInfo = (SongInfo) object;
-                                ChooseSongs.getInstance(Main.this).add2Top(songInfo.toSong());
-                                EventBusUtil.postSticky(EventBusId.Udp.TOAST,"优先："+songInfo.getSimpName());
+                            @Override
+                            public void onSuccess(String method, Object object) {
+                                if (object instanceof SongInfo) {
+                                    SongInfo songInfo = (SongInfo) object;
+                                    ChooseSongs.getInstance(Main.this).add2Top(songInfo.toSong());
+                                    EventBusUtil.postSticky(EventBusId.Udp.TOAST, "优先：" + songInfo.getSimpName());
 //                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
 //                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
 //                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailed(String method, String error) {
-                            EventBusUtil.postSticky(EventBusId.id.TOAST, error);
-                        }
-                    });
-                    httpRequest.setConvert2Class(SongInfo.class);
-                    httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
-                    httpRequest.doPost(0);
-                } else if (signDown.getEvent().toLowerCase().equals("songrm")) {
-                    HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
-                        @Override
-                        public void onStart(String method) {
+                            @Override
+                            public void onFailed(String method, String error) {
+                                EventBusUtil.postSticky(EventBusId.id.TOAST, error);
+                            }
+                        });
+                        httpRequest.setConvert2Class(SongInfo.class);
+                        httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
+                        httpRequest.doPost(0);
+                        break;
+                    }
+                    case "songrm": {
+                        HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
+                            @Override
+                            public void onStart(String method) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onSuccess(String method, Object object) {
-                            if (object instanceof SongInfo) {
-                                SongInfo songInfo = (SongInfo) object;
-                                ChooseSongs.getInstance(Main.this).remove(songInfo.toSong());
-                                EventBusUtil.postSticky(EventBusId.Udp.TOAST,"删除："+songInfo.getSimpName());
+                            @Override
+                            public void onSuccess(String method, Object object) {
+                                if (object instanceof SongInfo) {
+                                    SongInfo songInfo = (SongInfo) object;
+                                    ChooseSongs.getInstance(Main.this).remove(songInfo.toSong());
+                                    EventBusUtil.postSticky(EventBusId.Udp.TOAST, "删除：" + songInfo.getSimpName());
 //                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
 //                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
 //                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailed(String method, String error) {
-                            EventBusUtil.postSticky(EventBusId.id.TOAST, error);
-                        }
-                    });
-                    httpRequest.setConvert2Class(SongInfo.class);
-                    httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
-                    httpRequest.doPost(0);
-                } else if (signDown.getEvent().toLowerCase().equals("songsel")) {
-                    HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
-                        @Override
-                        public void onStart(String method) {
+                            @Override
+                            public void onFailed(String method, String error) {
+                                EventBusUtil.postSticky(EventBusId.id.TOAST, error);
+                            }
+                        });
+                        httpRequest.setConvert2Class(SongInfo.class);
+                        httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
+                        httpRequest.doPost(0);
+                        break;
+                    }
+                    case "songsel": {
+                        HttpRequest httpRequest = new HttpRequest(this, RequestMethod.GET_SONGINFO, new HttpRequestListener() {
+                            @Override
+                            public void onStart(String method) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onSuccess(String method, Object object) {
-                            if (object instanceof SongInfo) {
-                                SongInfo songInfo = (SongInfo) object;
-                                ChooseSongs.getInstance(Main.this).addSong(songInfo.toSong());
-                                EventBusUtil.postSticky(EventBusId.Udp.TOAST,"点歌："+songInfo.getSimpName());
+                            @Override
+                            public void onSuccess(String method, Object object) {
+                                if (object instanceof SongInfo) {
+                                    SongInfo songInfo = (SongInfo) object;
+                                    ChooseSongs.getInstance(Main.this).addSong(songInfo.toSong());
+                                    EventBusUtil.postSticky(EventBusId.Udp.TOAST, "点歌：" + songInfo.getSimpName());
 //                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
 //                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
 //                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailed(String method, String error) {
-                            EventBusUtil.postSticky(EventBusId.id.TOAST, error);
-                        }
-                    });
-                    httpRequest.setConvert2Class(SongInfo.class);
-                    httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
-                    httpRequest.doPost(0);
-                    //点歌 "eventkey":18390
+                            @Override
+                            public void onFailed(String method, String error) {
+                                EventBusUtil.postSticky(EventBusId.id.TOAST, error);
+                            }
+                        });
+                        httpRequest.setConvert2Class(SongInfo.class);
+                        httpRequest.addParam("SongID", String.valueOf(signDown.getEventkey()));
+                        httpRequest.doPost(0);
+                        //点歌 "eventkey":18390
+                        break;
+                    }
                 }
                 break;
             case EventBusId.Udp.ERROR:
+                PrefData.setAuth(Main.this, false);
                 SignDown signDownERROR = (SignDown) event.data;
                 switch (signDownERROR.getCode()) {
                     case "2003":
                         if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
-//                                Log.e("test", "心跳检测没交服务费，清空套餐");
+                            Logger.e("test", "心跳检测没交服务费，清空套餐");
                             ChooseSongs.getInstance(Main.this).cleanChoose();
                             BoughtMeal.getInstance().clearMealInfoSharePreference();
                             BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
                         }
-                        mDialogAuth = new PromptDialog(Main.this);
-                        mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                showPayService();
-                            }
-                        });
-                        mDialogAuth.setCanceledOnTouchOutside(false);
-                        mDialogAuth.setClose(true);
-                        mDialogAuth.setMessage(signDownERROR.getMessage());
-                        mDialogAuth.show();
+                        if (mDialogAuth != null && mDialogAuth.isShowing()) {
+
+                        } else {
+                            mDialogAuth = new PromptDialog(Main.this);
+                            mDialogAuth.setPositiveButton(getString(R.string.pay_for_service), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    showPayService();
+                                }
+                            });
+                            mDialogAuth.setCanceledOnTouchOutside(false);
+                            mDialogAuth.setClose(true);
+                            mDialogAuth.setMessage(signDownERROR.getMessage());
+                            mDialogAuth.show();
+                        }
                         break;
                     case "2001":
-                        mDialogAuth = new PromptDialog(Main.this);
-                        mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                showMngPass(0);
-                            }
-                        });
-                        mDialogAuth.setCanceledOnTouchOutside(false);
-                        mDialogAuth.setClose(true);
-                        mDialogAuth.setMessage(signDownERROR.getMessage());
-                        mDialogAuth.show();
+                        if (mDialogAuth != null && mDialogAuth.isShowing()) {
+
+                        } else {
+                            mDialogAuth = new PromptDialog(Main.this);
+                            mDialogAuth.setPositiveButton(getString(R.string.setting), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    showMngPass(0);
+                                }
+                            });
+                            mDialogAuth.setCanceledOnTouchOutside(false);
+                            mDialogAuth.setClose(true);
+                            mDialogAuth.setMessage(signDownERROR.getMessage());
+                            mDialogAuth.show();
+                        }
                         break;
                     case "00301":
+                        if (mDialogAuth != null && mDialogAuth.isShowing()) {
+
+                        } else {
+                            mDialogAuth = new PromptDialog(Main.this);
+                            mDialogAuth.setMessage(getResources().getString(R.string.auth_fail));
+                            mDialogAuth.show();
+                        }
                         if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
-                            PromptDialog promptDialog = new PromptDialog(this);
-                            promptDialog.setMessage(getResources().getString(R.string.auth_fail));
-                            promptDialog.show();
+                            Logger.d(TAG, "单机版授权终止,清空套餐");
                             ChooseSongs.getInstance(Main.this).cleanChoose();
                             BoughtMeal.getInstance().clearMealInfoSharePreference();
                             BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
@@ -1409,7 +1466,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         int vol = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         mKaraokeController.getPlayerStatus().volMusic = vol;
         PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
-                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2,mKaraokeController.getPlayerStatus().originOn==true?1:2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
+                mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().originOn == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
                 mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
         UDPSocket.getIntance(this).sendMessage("VH2.0" + playUp.toString() + "\r\n");
         Logger.d(UDPSocket.TAG, "playUp:" + playUp.toString());
@@ -2733,7 +2790,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mViewBottom.setVisibility(View.VISIBLE);
             mViewTop.setVisibility(View.VISIBLE);
 //            mMarqueePlayer.setVisibility(View.VISIBLE);
-        } else if (FmSetting.class.getName().equals(fragment.tag) || FmSettingSerail.class.getName().equals(fragment.tag) || FmSettingInfrared.class.getName().equals(fragment.tag)|| FmSerialInfo.class.getName().equals(fragment.tag)) {
+        } else if (FmSetting.class.getName().equals(fragment.tag) || FmSettingSerail.class.getName().equals(fragment.tag) || FmSettingInfrared.class.getName().equals(fragment.tag) || FmSerialInfo.class.getName().equals(fragment.tag)) {
             mIsSetting = true;
             mViewBottom.setVisibility(View.GONE);
             mViewTop.setVisibility(View.GONE);
@@ -2834,7 +2891,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private PromptDialog mDlgDiskNotExit;
 
     private boolean checkDisk() {
-        if (!DiskFileUtil.hasDiskStorage()&&KBoxInfo.getInstance().getKboxConfig().noDisk!=1) {
+        if (!DiskFileUtil.hasDiskStorage() && KBoxInfo.getInstance().getKboxConfig().noDisk != 1) {
             if (mDlgDiskNotExit == null || !mDlgDiskNotExit.isShowing()) {
                 mDlgDiskNotExit = new PromptDialog(this);
                 mDlgDiskNotExit.setMessage(getResources().getString(R.string.hand_disk));
@@ -3281,9 +3338,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
             handler.sendEmptyMessage(HandlerSystem.MSG_RESET);
             handler.sendEmptyMessageDelayed(HandlerSystem.MSG_UPDATE_TIME, 100);
         }
-        if (!PrefData.getLastAuth(Main.this)) {
-            restartHeat();
-        }
+//        if (!PrefData.getLastAuth(Main.this)) {
+//            restartHeat();
+//        }
 //        Log.e("test","curTime:"+System.currentTimeMillis()+"|lastTime:"+PrefData.getLastTime(Main.this)+"|相差:"+String.valueOf(System.currentTimeMillis()-PrefData.getLastTime(Main.this)));
         if (NetWorkUtils.isNetworkAvailable(Main.this)) {
             if (System.currentTimeMillis() - PrefData.getLastTime(Main.this) > 10 * 60 * 60 * 1000) {
