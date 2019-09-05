@@ -364,7 +364,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
     public void showQrCode() {
         KBoxInfo.getInstance().getKboxConfig().mobileQrcode = 1;
-        if (KBoxInfo.getInstance().getKboxConfig() != null && KBoxInfo.getInstance().getKboxConfig().mobileQrcode == 1 && !TextUtils.isEmpty(UDPComment.QRcode)) {
+        if (KBoxInfo.getInstance().getKboxConfig() != null && KBoxInfo.getInstance().getKboxConfig().mobileQrcode == 1 &&UDPComment.isSign&&!TextUtils.isEmpty(UDPComment.QRcode)) {
             qr_code.setVisibility(View.VISIBLE);
             qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.QRcode));
         } else {
@@ -424,6 +424,9 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
                 countDownTimer.cancel();
                 tv_toast.setText(event.data.toString());
                 countDownTimer.start();
+                break;
+            case EventBusId.Udp.SHOW_QRCODE:
+                 showQrCode();
                 break;
         }
     }
@@ -684,7 +687,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         }
         int curPorgress = Math.max(hisProgress, (int) event.percent);
         mTvTips.setTag(curPorgress);
-        mTvTips.setText(mContext.getString(R.string.download_tips, event.songName) + "   " + (int) (event.percent) + "%");
+        mTvTips.setText(curPorgress + "%");
     }
 }
 

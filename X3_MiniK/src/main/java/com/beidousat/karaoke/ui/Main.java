@@ -1195,6 +1195,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         UDPComment.isSign = true;
                         UDPComment.token = signDown.getToken();
                         UDPComment.QRcode = signDown.getQrcode();
+
                         break;
                     case "hearbeat.ok":
                         PrefData.setLastTime(Main.this, System.currentTimeMillis());
@@ -1440,6 +1441,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     case "X4000":
                         UDPComment.sendhsn = 1;
                         UDPComment.isSign = false;
+                        EventBusUtil.postSticky(EventBusId.Udp.SHOW_QRCODE,"");
                         break;
                     default:
                         if (getApplicationContext() != null) {
