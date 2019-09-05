@@ -311,20 +311,28 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     }
 
     public void readMicVol() {
-        try {
-            mSerialHelper.send("E0A204B00A0DA7");
-            //mSerialHelper.send("E0A204B00A0CA6");
-        } catch (Exception e) {
-            Logger.w(TAG, e.toString());
+        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+            mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_query);
+        } else {
+            try {
+                mSerialHelper.send("E0A204B00A0DA7");
+                //mSerialHelper.send("E0A204B00A0CA6");
+            } catch (Exception e) {
+                Logger.w(TAG, e.toString());
+            }
         }
     }
 
     public void readEffVol() {
-        try {
-            mSerialHelper.send("E0A204B00A0EA8");
-            //mSerialHelper.send("E0A204B00A0CA6");
-        } catch (Exception e) {
-            Logger.w(TAG, e.toString());
+        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+            mcuRecvHelper.sendbyte(McuRecvHelper.byte_effect_query);
+        } else {
+            try {
+                mSerialHelper.send("E0A204B00A0EA8");
+                //mSerialHelper.send("E0A204B00A0CA6");
+            } catch (Exception e) {
+                Logger.w(TAG, e.toString());
+            }
         }
     }
 

@@ -414,10 +414,11 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
             case EventBusId.Download.PROGRESS:
                 if (event instanceof DownloadBusEvent) {
                     DownloadBusEvent downloadBusEvent = (DownloadBusEvent) event;
-                    mTvTips.setText(mContext.getString(R.string.download_tips, downloadBusEvent.songName) + "   " + (int) (downloadBusEvent.percent) + "%");
+                    performDownloadUpdate(downloadBusEvent);
+
                 }
             case EventBusId.Udp.TOAST:
-                if(countDownTimer==null){
+                if (countDownTimer == null) {
                     initCountDownTimer();
                 }
                 countDownTimer.cancel();
@@ -659,14 +660,15 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
             public void onTick(long millisUntilFinished) {
 
             }
+
             @Override
             public void onFinish() {
-               tv_toast.setText("");
+                tv_toast.setText("");
             }
         };
     }
 
-//    public void showStartAd(boolean show) {
+    //    public void showStartAd(boolean show) {
 //        if (show && !mIvAdLast.isShown()) {
 //            Song song = ChooseSongs.getInstance(getContext().getApplicationContext()).getFirstSong();
 //            mAdStartGetter.getStart(song != null ? song.ID : "", KBoxInfo.getInstance().getKBox() != null ? KBoxInfo.getInstance().getKBox().getArea() : null);
@@ -674,6 +676,15 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 //            mIvAdLast.setVisibility(View.GONE);
 //        }
 //    }
-
+    private void performDownloadUpdate(DownloadBusEvent event) {
+        int hisProgress = 0;
+        if (mTvTips.getTag() != null) {
+            hisProgress = (int) mTvTips.getTag();
+            hisProgress = hisProgress == 100 ? 0 : hisProgress;
+        }
+        int curPorgress = Math.max(hisProgress, (int) event.percent);
+        mTvTips.setTag(curPorgress);
+        mTvTips.setText(mContext.getString(R.string.download_tips, event.songName) + "   " + (int) (event.percent) + "%");
+    }
 }
 

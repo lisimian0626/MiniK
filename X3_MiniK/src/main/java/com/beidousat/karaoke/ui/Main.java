@@ -1301,9 +1301,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                     SongInfo songInfo = (SongInfo) object;
                                     ChooseSongs.getInstance(Main.this).add2Top(songInfo.toSong());
                                     EventBusUtil.postSticky(EventBusId.Udp.TOAST, "优先：" + songInfo.getSimpName());
-//                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
-//                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
-//                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                                    String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
+                                    HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+                                    UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                                 }
                             }
 
@@ -1330,9 +1330,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                     SongInfo songInfo = (SongInfo) object;
                                     ChooseSongs.getInstance(Main.this).remove(songInfo.toSong());
                                     EventBusUtil.postSticky(EventBusId.Udp.TOAST, "删除：" + songInfo.getSimpName());
-//                                String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
-//                                HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
-//                                UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
+                                    String songs = ChooseSongs.getInstance(Main.this).getSongsforPhone();
+                                    HeatbeatUp songdata = new HeatbeatUp("songs", songs, UDPComment.token, String.valueOf(UDPComment.sendhsn));
+                                    UDPSocket.getIntance(Main.this).sendMessage("VH2.0" + songdata.toString() + "\r\n");
                                 }
                             }
 

@@ -100,11 +100,11 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
         switch (method) {
             case RequestMethod.ORDER_QUERY:
                 PayStatus payStatus = (PayStatus) object;
+                Logger.d("pay", "接口返回查询订单结果,payStatus="+payStatus.getPayStatus());
                 //防止多次触发导致套餐叠加
                 if (order_sn==null&&payStatus.getPayStatus() == PayStatus.PAY_SUCESS) {
                     order_sn=payStatus.getOrderSn();
                     boolean isMealExpire = BoughtMeal.getInstance().isMealExpire();
-                    Logger.d("QueryOrderHelper", "onStoreSuccess PAY_SUCESS isMealExpire:" + isMealExpire);
                     if(!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)){
                         CommonDialog dialog = CommonDialog.getInstance();
                         dialog.setShowClose(true);
@@ -113,6 +113,7 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
                             dialog.show(mSupporter.getSupportedFragmentManager(), "commonDialog");
                         }
                     }
+                    Logger.d("pay", "支付成功");
                     //确保支付的套餐是正确的
                     mMeal.setAmount(payStatus.getAmount());
                     mMeal.setType(payStatus.getType());

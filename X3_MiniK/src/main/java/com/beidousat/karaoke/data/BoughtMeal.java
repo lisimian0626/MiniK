@@ -75,6 +75,7 @@ public class BoughtMeal extends Observable {
      * @param bought
      */
     public void setBoughtMeal(Meal bought, PayStatus payStatus) {
+
         if (bought == null || payStatus == null) return;
 
         if (!isExpire && getMealType() != bought.getType()) {

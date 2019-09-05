@@ -16,6 +16,8 @@ public class McuRecvHelper {
     public  static final byte byte_mic_down[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x03};
     public  static final byte byte_effect_up[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x04};
     public  static final byte byte_effect_down[] = {(byte)0x55, (byte)0xAA, (byte)0x13, (byte)0x05};
+    public  static final byte byte_effect_query[] = {(byte)0x55, (byte)0xAA, (byte)0xFF, (byte)0x08};
+    public  static final byte byte_mic_query[] = {(byte)0x55, (byte)0xAA, (byte)0xFF, (byte)0x0A};
     public static McuRecvHelper getInstance() {
         if (mSerialSendRecvHelper == null) {
             mSerialSendRecvHelper = new McuRecvHelper();

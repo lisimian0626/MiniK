@@ -24,6 +24,7 @@ import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
+import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.QrCodeUtil;
 
 import java.text.DecimalFormat;
@@ -56,6 +57,7 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case HTTP_REQUEST_MSG:
+                    Logger.d("pay","查询订单支付结果");
                     mQueryOrderHelper.queryOrder(mSelectedMeal).post();
                     break;
                 case CLOSE_DIALOG:
