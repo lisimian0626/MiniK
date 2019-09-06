@@ -687,7 +687,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         }
         int curPorgress = Math.max(hisProgress, (int) event.percent);
         mTvTips.setTag(curPorgress);
-        mTvTips.setText(curPorgress + "%");
+        mTvTips.setText("正在下载...  "+curPorgress + "%");
     }
 }
 

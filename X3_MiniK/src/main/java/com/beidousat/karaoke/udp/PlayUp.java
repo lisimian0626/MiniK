@@ -16,8 +16,8 @@ public class PlayUp implements Serializable {
     public int score;
     public String hsn;
     public String token;
-
-    public PlayUp(String event, int eventkey, int sound, int status,int music, int mic, int tone, int reverberation, int score, String hsn, String token) {
+    public int mute;
+    public PlayUp(String event, int eventkey, int sound, int status,int music, int mic, int tone, int reverberation, int score,int mute,String hsn, String token) {
         this.event = event;
         this.eventkey = eventkey;
         this.sound = sound;
@@ -27,6 +27,7 @@ public class PlayUp implements Serializable {
         this.tone = tone;
         this.reverberation = reverberation;
         this.score = score;
+        this.mute=mute;
         this.hsn = hsn;
         this.token = token;
     }

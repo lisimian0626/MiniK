@@ -346,7 +346,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             });
                             promptDialog.show();
                         }
-                        PreferenceUtil.setString(Main.this, "mode", kboxConfig.getLanguage());
+                        PreferenceUtil.setString(Main.this, "mode", language);
                     }
                     if (TextUtils.isEmpty(kboxConfig.getSn())) {
 //                        PreferenceUtil.setBoolean(Main.this, "isSingle", false);
@@ -1469,7 +1469,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mKaraokeController.getPlayerStatus().volMusic = vol;
         PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
                 mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().originOn == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
-                mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
+                mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, mKaraokeController.getPlayerStatus().isMute?1:2,String.valueOf(UDPComment.sendhsn), UDPComment.token);
         UDPSocket.getIntance(this).sendMessage("VH2.0" + playUp.toString() + "\r\n");
         Logger.d(UDPSocket.TAG, "playUp:" + playUp.toString());
     }
@@ -1607,8 +1607,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
                     @Override
                     public void onMute() {
-                        mKaraokeController.mute();
-                        dlgTune.setCurrentMusicVol(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+                        if(mKaraokeController.getPlayerStatus().isMute){
+                            mKaraokeController.mute(false);
+                        }else{
+                            mKaraokeController.mute(true);
+                        }
                     }
 
                     @Override
