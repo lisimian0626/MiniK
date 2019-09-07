@@ -121,6 +121,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             KboxConfig kboxConfig = (KboxConfig) object;
             ServerConfig config = new ServerConfig();
             PrefData.setNodisk(mContext,kboxConfig.noDisk);
+//            PrefData.setNodisk(mContext,1);
             EventBusUtil.postSticky(EventBusId.id.NODISK,kboxConfig.noDisk);
             config.setAd_web(kboxConfig.getAd_web());
 //            config.setKbox_ip(kboxConfig.getKbox_ip());

@@ -99,7 +99,7 @@ public class ChooseSongs {
     }
 
     private boolean canAddSong() {
-        if (PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)) {
+        if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
             if (PrefData.getLastAuth(mContext)) {
                 return true;
             } else {
@@ -109,12 +109,12 @@ public class ChooseSongs {
                     } else if (KBoxStatusInfo.getInstance().getKBoxStatus().code == 2003) {
                         tipMessage(R.string.no_pay_service);
                     } else {
-                        if(mContext!=null){
+                        if (mContext != null) {
                             ToastUtils.toast(mContext, KBoxStatusInfo.getInstance().getKBoxStatus().msg);
                         }
                     }
                 } else {
-                    if(mContext!=null) {
+                    if (mContext != null) {
                         ToastUtils.toast(mContext, mContext.getApplicationContext().getString(R.string.device_auth_fail));
                     }
                 }
@@ -122,7 +122,7 @@ public class ChooseSongs {
             }
         } else {
             if (PrefData.getLastAuth(mContext)) {
-                if (!DiskFileUtil.hasDiskStorage()&& PrefData.Nodisk(mContext)!=1) {
+                if (!DiskFileUtil.hasDiskStorage() && PrefData.Nodisk(mContext) != 1) {
                     tipMessage(R.string.hand_disk);
                     return false;
                 }
@@ -145,13 +145,12 @@ public class ChooseSongs {
                         tipMessage(R.string.tip_used_up);
                         return false;
                     }
-                }
-                else {
+                } else {
                     tipMessage(R.string.tip_pay);
                     return false;
                 }
             } else {
-                if(mContext!=null) {
+                if (mContext != null) {
                     ToastUtils.toast(mContext, mContext.getApplicationContext().getString(R.string.device_auth_fail));
                 }
             }
@@ -166,41 +165,41 @@ public class ChooseSongs {
             if (mPromptDialog == null || !mPromptDialog.isShowing()) {
                 mPromptDialog = new PromptDialog(Main.mMainActivity);
             }
-            if(PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)){
-                     if(R.string.no_pay_service==resId){
-                         mPromptDialog.setPositiveButton(mContext.getString(R.string.pay_for_service), new View.OnClickListener() {
-                             @Override
-                             public void onClick(View view) {
-                                 showPayService();
-                             }
-                         });
-                         mPromptDialog.setMessage(mContext.getString(R.string.no_pay_service));
-                         mPromptDialog.setClose(true);
-                     }
-            }else{
+            if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                if (R.string.no_pay_service == resId) {
+                    mPromptDialog.setPositiveButton(mContext.getString(R.string.pay_for_service), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showPayService();
+                        }
+                    });
+                    mPromptDialog.setMessage(mContext.getString(R.string.no_pay_service));
+                    mPromptDialog.setClose(true);
+                }
+            } else {
                 mPromptDialog.setMessage(mContext.getString(resId));
-                    if(R.string.hand_disk==resId){
-                        mPromptDialog.setPositiveButton(mContext.getString(R.string.close), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                             mPromptDialog.dismiss();
+                if (R.string.hand_disk == resId) {
+                    mPromptDialog.setPositiveButton(mContext.getString(R.string.close), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mPromptDialog.dismiss();
+                        }
+                    });
+                } else {
+                    mPromptDialog.setPositiveButton(mContext.getString(R.string.buy), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            CommonDialog dialog = CommonDialog.getInstance();
+                            dialog.setShowClose(true);
+                            int pageType = BoughtMeal.getInstance().isMealExpire() ?
+                                    FmPayMeal.TYPE_NORMAL : FmPayMeal.TYPE_NORMAL_RENEW;
+                            dialog.setContent(FmPayMeal.createMealFragment(pageType, null));
+                            if (!dialog.isAdded()) {
+                                dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
                             }
-                        });
-                    }else{
-                        mPromptDialog.setPositiveButton(mContext.getString(R.string.buy), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                CommonDialog dialog = CommonDialog.getInstance();
-                                dialog.setShowClose(true);
-                                int pageType = BoughtMeal.getInstance().isMealExpire() ?
-                                        FmPayMeal.TYPE_NORMAL : FmPayMeal.TYPE_NORMAL_RENEW;
-                                dialog.setContent(FmPayMeal.createMealFragment(pageType,null));
-                                if (!dialog.isAdded()) {
-                                    dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
-                                }
-                            }
-                        });
-                    }
+                        }
+                    });
+                }
 
 
             }
@@ -224,7 +223,7 @@ public class ChooseSongs {
 //                PromptDialog promptDialog = new PromptDialog(Main.mMainActivity);
 //                promptDialog.setMessage(e.getMessage());
 //                promptDialog.show();
-                if(mContext!=null) {
+                if (mContext != null) {
                     ToastUtils.toast(mContext, mContext.getString(R.string.download_error_waiting));
                 }
 
@@ -240,7 +239,7 @@ public class ChooseSongs {
             }
         } else {
 //            Toast.makeText(mContext, "检测到没有硬盘，请插入硬盘！", Toast.LENGTH_SHORT).show();
-            if(mContext!=null) {
+            if (mContext != null) {
                 ToastUtils.toast(mContext.getApplicationContext(), mContext.getApplicationContext().getString(R.string.hand_disk));
             }
         }
@@ -303,6 +302,7 @@ public class ChooseSongs {
 //            }
 //        });
     }
+
     private void showPayService() {
         CommonDialog dialog = CommonDialog.getInstance();
         dialog.setContent(FmPaySevice.createPaySeviceFragment());
@@ -310,6 +310,7 @@ public class ChooseSongs {
             dialog.show(Main.mMainActivity.getSupportFragmentManager(), "pay_service");
         }
     }
+
     private void showRoomSet() {
         CommonDialog dialog = CommonDialog.getInstance();
         dialog.setShowClose(true);
@@ -318,6 +319,7 @@ public class ChooseSongs {
             dialog.show(Main.mMainActivity.getSupportFragmentManager(), "commonDialog");
         }
     }
+
     public boolean addSong(final Song songInfo) {
         try {
             if (canAddSong()) {
@@ -328,58 +330,43 @@ public class ChooseSongs {
 
                 if (mSongInfos.isEmpty() && BoughtMeal.getInstance().isBuySong()) {
                     Logger.d("ChooseSongs", "addSong isBuySong isEmpty");
-                    final File file = DiskFileUtil.getDiskFileByUrl(songInfo.SongFilePath);
-                    if (file == null) {//下载
-                        download(songInfo);
-                        return false;
-                    } else {
-                        //包曲第一首播放提示
-                        songInfo.RecordFile = songInfo.ID + "_" + System.currentTimeMillis();
-                        mSongInfos.add(songInfo);
-                        Logger.d(getClass().getSimpleName(), "add song IsGradeLib:" + songInfo.IsGradeLib + "");
-                        new ScoreNoteDownloader().downloadNote(songInfo);
-                        if (mSongInfos.size() == 1) {
-                            EventBusUtil.postSticky(EventBusId.id.PLAYER_PLAY_SONG, songInfo);
+                    if (PrefData.Nodisk(mContext) != 1) {
+                        final File file = DiskFileUtil.getDiskFileByUrl(songInfo.SongFilePath);
+                        if (file == null) {//下载
+                            download(songInfo);
+                            return false;
                         }
-                        sendChooseChangedMsg();
-//                        if (mPromptDialog == null || !mPromptDialog.isShowing()) {
-//                            mPromptDialog = new PromptDialog(Main.mMainActivity);
-//                            mPromptDialog.setMessage(mContext.getString(R.string.tip_add_first_song));
-//                            mPromptDialog.setPositiveButton(mContext.getString(R.string.ok), new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//                                    songInfo.RecordFile = songInfo.ID + "_" + System.currentTimeMillis();
-//                                    mSongInfos.add(songInfo);
-//                                    Logger.d(getClass().getSimpleName(), "add song IsGradeLib:" + songInfo.IsGradeLib + "");
-//                                    new ScoreNoteDownloader().downloadNote(songInfo);
-//                                    if (mSongInfos.size() == 1) {
-//                                        EventBusUtil.postSticky(EventBusId.id.PLAYER_PLAY_SONG, songInfo);
-//                                    }
-//                                    sendChooseChangedMsg();
-//                                }
-//                            });
-//                            mPromptDialog.setShowButton2(true);
-//                            mPromptDialog.show();
-//                        }
-                        return true;
                     }
+                    //包曲第一首播放提示
+                    songInfo.RecordFile = songInfo.ID + "_" + System.currentTimeMillis();
+                    mSongInfos.add(songInfo);
+                    Logger.d(getClass().getSimpleName(), "add song IsGradeLib:" + songInfo.IsGradeLib + "");
+                    new ScoreNoteDownloader().downloadNote(songInfo);
+                    if (mSongInfos.size() == 1) {
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_PLAY_SONG, songInfo);
+                    }
+                    sendChooseChangedMsg();
+                    return true;
+
                 } else {
                     Logger.d("ChooseSongs", "addSong isBuySong not empty");
-                    final File file = DiskFileUtil.getDiskFileByUrl(songInfo.SongFilePath);
-                    if (file == null) {
-                        Logger.d("ChooseSongs", "addSong isBuySong not empty disk file not exit");
-                        download(songInfo);
-                    } else {
-                        Logger.d("ChooseSongs", "addSong isBuySong not empty disk file is exit");
-                        songInfo.RecordFile = songInfo.ID + "_" + System.currentTimeMillis();
-                        mSongInfos.add(songInfo);
-                        Logger.d(getClass().getSimpleName(), "add song IsGradeLib:" + songInfo.IsGradeLib + "");
-                        new ScoreNoteDownloader().downloadNote(songInfo);
-                        if (mSongInfos.size() == 1) {
-                            EventBusUtil.postSticky(EventBusId.id.PLAYER_PLAY_SONG, songInfo);
+                    if (PrefData.Nodisk(mContext) != 1) {
+                        final File file = DiskFileUtil.getDiskFileByUrl(songInfo.SongFilePath);
+                        if (file == null) {
+                            Logger.d("ChooseSongs", "addSong isBuySong not empty disk file not exit");
+                            download(songInfo);
+                            return false;
                         }
-                        sendChooseChangedMsg();
                     }
+                    Logger.d("ChooseSongs", "addSong isBuySong not empty disk file is exit");
+                    songInfo.RecordFile = songInfo.ID + "_" + System.currentTimeMillis();
+                    mSongInfos.add(songInfo);
+                    Logger.d(getClass().getSimpleName(), "add song IsGradeLib:" + songInfo.IsGradeLib + "");
+                    new ScoreNoteDownloader().downloadNote(songInfo);
+                    if (mSongInfos.size() == 1) {
+                        EventBusUtil.postSticky(EventBusId.id.PLAYER_PLAY_SONG, songInfo);
+                    }
+                    sendChooseChangedMsg();
                     return true;
                 }
             } else {
@@ -467,9 +454,9 @@ public class ChooseSongs {
     public void remove(Song song) {
         try {
             if (mSongInfos != null && mSongInfos.size() > 1) {
-                for(int i=0; i<mSongInfos.size();i++){
-                    if(i!=0){
-                        if(mSongInfos.get(i).ID.equals(song.ID)){
+                for (int i = 0; i < mSongInfos.size(); i++) {
+                    if (i != 0) {
+                        if (mSongInfos.get(i).ID.equals(song.ID)) {
                             mSongInfos.remove(i);
                             break;
                         }
@@ -548,18 +535,18 @@ public class ChooseSongs {
 
 
     public String getSongsforPhone() {
-        if(mSongInfos!=null&&mSongInfos.size()>0){
-            StringBuilder stringBuilder=new StringBuilder();
-            for(int i=0;i<mSongInfos.size();i++){
-                if(i==0){
+        if (mSongInfos != null && mSongInfos.size() > 0) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < mSongInfos.size(); i++) {
+                if (i == 0) {
                     stringBuilder.append(mSongInfos.get(i).ID).append(":").append("1").append(",");
-                }else{
+                } else {
                     stringBuilder.append(mSongInfos.get(i).ID).append(":").append("2").append(",");
                 }
             }
-            return stringBuilder.toString().substring(0,stringBuilder.length()-1);
-        }else {
-         return "";
+            return stringBuilder.toString().substring(0, stringBuilder.length() - 1);
+        } else {
+            return "";
         }
     }
 
