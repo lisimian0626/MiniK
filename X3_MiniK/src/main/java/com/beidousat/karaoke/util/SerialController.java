@@ -339,19 +339,27 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     }
 
     public void resetMic() {
-        try {
-            mSerialHelper.send("E0A206B70A0D3200E0");
-        } catch (Exception e) {
-            Logger.w(TAG, e.toString());
+        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+            mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_reset);
+        } else {
+            try {
+                mSerialHelper.send("E0A206B70A0D3200E0");
+            } catch (Exception e) {
+                Logger.w(TAG, e.toString());
+            }
         }
     }
 
 
     public void resetEff() {
-        try {
-            mSerialHelper.send("E0A206B70A0E1600C5");
-        } catch (Exception e) {
-            Logger.w(TAG, e.toString());
+        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+            mcuRecvHelper.sendbyte(McuRecvHelper.byte_effect_reset);
+        } else {
+            try {
+                mSerialHelper.send("E0A206B70A0E1600C5");
+            } catch (Exception e) {
+                Logger.w(TAG, e.toString());
+            }
         }
     }
 
