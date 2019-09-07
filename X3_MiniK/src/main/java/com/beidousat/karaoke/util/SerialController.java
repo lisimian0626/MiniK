@@ -303,9 +303,17 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     public void setMicMute(boolean mute) {
         try {
             if (mute) {
-                mSerialHelper.send("E0A206B70A0D0000AE");
+                if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+                    mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_mute);
+                } else {
+                    mSerialHelper.send("E0A206B70A0D0000AE");
+                }
             } else {
-                mSerialHelper.send("E0A206B70A0D3200E0");
+                if (PrefData.getSERIAL_RJ45(mContext) == 3) {
+                    mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_reset);
+                } else {
+                    mSerialHelper.send("E0A206B70A0D3200E0");
+                }
             }
         } catch (Exception e) {
             Logger.w(TAG, e.toString());
