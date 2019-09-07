@@ -1,6 +1,5 @@
 package com.beidousat.karaoke.ui.dlg;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,40 +7,25 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.biz.QueryKboxHelper;
 import com.beidousat.karaoke.data.BoughtMeal;
-import com.beidousat.karaoke.data.KBoxStatusInfo;
 import com.beidousat.karaoke.data.PrefData;
-import com.beidousat.libbns.model.ServerConfigData;
-import com.beidousat.karaoke.model.RoomInfo;
 import com.beidousat.karaoke.player.ChooseSongs;
-import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.ui.OnDlgListener;
 import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.karaoke.widget.EditTextEx;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.net.request.RequestMethod;
-import com.beidousat.libbns.net.request.StoreHttpRequest;
-import com.beidousat.libbns.net.request.StoreHttpRequestListener;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.ListUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libwidget.recycler.HorizontalDividerItemDecoration;
 import com.beidousat.libwidget.recycler.VerticalDividerItemDecoration;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,23 +1,13 @@
 package com.beidousat.karaoke.ui.dlg;
 
 import android.app.DialogFragment;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.beidousat.karaoke.R;
-import com.beidousat.karaoke.data.PrefData;
-import com.beidousat.karaoke.ui.BaseActivity;
-import com.beidousat.libbns.ad.AdBillHelper;
-import com.beidousat.libbns.amin.MoveAnimation;
-import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.Common;
-import com.beidousat.libbns.util.Logger;
-import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libwidget.image.RecyclerImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;

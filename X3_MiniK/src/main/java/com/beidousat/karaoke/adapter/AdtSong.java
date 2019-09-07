@@ -3,20 +3,19 @@ package com.beidousat.karaoke.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
+import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.interf.OnPreviewSongListener;
 import com.beidousat.karaoke.interf.OnSongSelectListener;
 import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.StarInfo;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.ui.fragment.FmSingerDetail;
-import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.Logger;
@@ -107,17 +106,19 @@ public class AdtSong extends RecyclerView.Adapter<AdtSong.ViewHolder> {
         holder.tvScoreTag.setVisibility(isScore || isHd ? View.VISIBLE : View.GONE);
         int tagImg = 0;
         if (isScore && isHd) {
-            tagImg = Common.isEn?R.drawable.ic_song_list_hdscore_tag_en:R.drawable.ic_song_list_hdscore_tag;
+            tagImg = Common.isEn ? R.drawable.ic_song_list_hdscore_tag_en : R.drawable.ic_song_list_hdscore_tag;
         } else if (isScore && !isHd) {
-            tagImg = Common.isEn?R.drawable.ic_song_list_score_tag_en:R.drawable.ic_song_list_score_tag;
+            tagImg = Common.isEn ? R.drawable.ic_song_list_score_tag_en : R.drawable.ic_song_list_score_tag;
         } else if (isHd && !isScore) {
-            tagImg = Common.isEn?R.drawable.ic_song_list_hd_tag_en:R.drawable.ic_song_list_hd_tag;
+            tagImg = Common.isEn ? R.drawable.ic_song_list_hd_tag_en : R.drawable.ic_song_list_hd_tag;
         }
         holder.tvScoreTag.setBackgroundResource(tagImg);
-
-        File file = com.beidousat.libbns.util.DiskFileUtil.getDiskFileByUrl(song.SongFilePath);
-        holder.ivTop.setText(mContext.getString(file == null ? R.string.download : R.string.priority));
-
+        if (PrefData.Nodisk(mContext) == 1) {
+            holder.ivTop.setText(R.string.priority);
+        } else {
+            File file = com.beidousat.libbns.util.DiskFileUtil.getDiskFileByUrl(song.SongFilePath);
+            holder.ivTop.setText(mContext.getString(file == null ? R.string.download : R.string.priority));
+        }
         String sort = mChooseSongs.getSongPriorities(song);
         holder.tvSort.setText(sort);
         holder.tvSort.setVisibility(TextUtils.isEmpty(sort) ? View.GONE : View.VISIBLE);

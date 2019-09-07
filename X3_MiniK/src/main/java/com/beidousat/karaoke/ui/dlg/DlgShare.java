@@ -1,6 +1,5 @@
 package com.beidousat.karaoke.ui.dlg;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.data.BoughtMeal;
-import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.Meal;

@@ -1,7 +1,6 @@
 package com.beidousat.karaoke.ui.dlg;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.graphics.Color;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;

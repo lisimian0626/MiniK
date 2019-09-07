@@ -76,6 +76,7 @@ import com.beidousat.karaoke.udp.PlayUp;
 import com.beidousat.karaoke.udp.SignDown;
 import com.beidousat.karaoke.udp.UDPComment;
 import com.beidousat.karaoke.udp.UDPSocket;
+import com.beidousat.karaoke.udp.UdpError;
 import com.beidousat.karaoke.ui.dlg.CommonDialog;
 import com.beidousat.karaoke.ui.dlg.DeviceStore;
 import com.beidousat.karaoke.ui.dlg.DlgAdScreen;
@@ -331,6 +332,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         PrefData.setRoomCode(Main.this, kboxConfig.getSn());
                     }
                     String language = kboxConfig.getLanguage().toLowerCase();
+                    Logger.d(TAG,"language:"+language+"     Preference language:"+PreferenceUtil.getString(Main.this, "mode", "zh"));
                     if (!TextUtils.isEmpty(language)) {
                         if (!language.equals(PreferenceUtil.getString(Main.this, "mode", "zh"))) {
                             showReboot();
@@ -1457,7 +1459,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         break;
                     default:
                         if (getApplicationContext() != null) {
-                            ToastUtils.toast(getApplicationContext(), signDownERROR.getMessage());
+                            ToastUtils.toast(getApplicationContext(), UdpError.translate(signDownERROR.getCode()));
                         }
                         break;
                 }

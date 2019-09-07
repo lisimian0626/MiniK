@@ -2,7 +2,6 @@ package com.beidousat.karaoke.data;
 
 import android.content.Context;
 
-import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.libbns.util.PreferenceUtil;
 
 /**
@@ -23,9 +22,9 @@ public class PrefData {
     private final static String SERIAL_REVERB_UP = "serial_reverb_up";
 
     private final static String SERIAL_RESET = "serial_reset";
-    private final static String LAST_TIME="last_time";
-    private final static String LANGUAGE="language";
-    private final static String AUTH="auth";
+    private final static String LAST_TIME = "last_time";
+    private final static String LANGUAGE = "language";
+    private final static String AUTH = "auth";
     //Infrared
     private final static String ISOPEN = "isopen";
     private final static String INFRARED_OPEN = "infrared_open";
@@ -43,59 +42,71 @@ public class PrefData {
     private final static String INFRARED_WIND_HIGH = "infrared_wind_high";
     private final static String INFRARED_WIND_MID = "infrared_wind_mid";
     private final static String INFRARED_WIND_LOW = "infrared_wind_low";
-    private final static String CURTEMPVALUE="Curtempvalue";
-    private final static String CURWINDVALUE="Curwindvalue";
-    private final static String GETAUTOCEPHALOUS="getautocephalous";
+    private final static String CURTEMPVALUE = "Curtempvalue";
+    private final static String CURWINDVALUE = "Curwindvalue";
+    private final static String GETAUTOCEPHALOUS = "getautocephalous";
 
-    private final static String SERIAL_RJ45="serial_rj45";
-    private final static String SERIAL_UP="serial_up";
-    private final static String SERIAL_DOWN="serial_down";
-    private final static String NODISK="nodisk";
-    public static int Nodisk(Context context){
+    private final static String SERIAL_RJ45 = "serial_rj45";
+    private final static String SERIAL_UP = "serial_up";
+    private final static String SERIAL_DOWN = "serial_down";
+    private final static String NODISK = "nodisk";
+
+    public static int Nodisk(Context context) {
         return PreferenceUtil.getInt(context, NODISK, 0);
     }
-    public static void setNodisk(Context context,int nodisk){
-        PreferenceUtil.setInt(context,NODISK,nodisk);
+
+    public static void setNodisk(Context context, int nodisk) {
+        PreferenceUtil.setInt(context, NODISK, nodisk);
     }
 
-    public static int getSERIAL_RJ45(Context context){
+    public static int getSERIAL_RJ45(Context context) {
         return PreferenceUtil.getInt(context, SERIAL_RJ45, 0);
     }
-    public static void  setSERIAL_RJ45(Context context,int mode){
-        PreferenceUtil.setInt(context,SERIAL_RJ45,mode);
+
+    public static void setSERIAL_RJ45(Context context, int mode) {
+        PreferenceUtil.setInt(context, SERIAL_RJ45, mode);
     }
 
-    public static int getSERIAL_UP(Context context){
+    public static int getSERIAL_UP(Context context) {
         return PreferenceUtil.getInt(context, SERIAL_UP, 2);
     }
-    public static void  setSERIAL_UP(Context context,int mode){
-        PreferenceUtil.setInt(context,SERIAL_UP,mode);
-    }
-    public static int getSERIAL_DOWN(Context context){
-        return PreferenceUtil.getInt(context, SERIAL_DOWN, 1);
-    }
-    public static void  setSERIAL_DOWN(Context context,int mode){
-        PreferenceUtil.setInt(context,SERIAL_DOWN,mode);
+
+    public static void setSERIAL_UP(Context context, int mode) {
+        PreferenceUtil.setInt(context, SERIAL_UP, mode);
     }
 
-    public static String getAutocephalous(Context context){
+    public static int getSERIAL_DOWN(Context context) {
+        return PreferenceUtil.getInt(context, SERIAL_DOWN, 1);
+    }
+
+    public static void setSERIAL_DOWN(Context context, int mode) {
+        PreferenceUtil.setInt(context, SERIAL_DOWN, mode);
+    }
+
+    public static String getAutocephalous(Context context) {
         return PreferenceUtil.getString(context, GETAUTOCEPHALOUS, "0");
     }
-    public static void  setAutocephalous(Context context,String temp){
-        PreferenceUtil.setString(context,GETAUTOCEPHALOUS,temp);
+
+    public static void setAutocephalous(Context context, String temp) {
+        PreferenceUtil.setString(context, GETAUTOCEPHALOUS, temp);
     }
-    public static int getCurTemp(Context context){
+
+    public static int getCurTemp(Context context) {
         return PreferenceUtil.getInt(context, CURTEMPVALUE, 25);
     }
-    public static void  setCurTemp(Context context,int temp){
-        PreferenceUtil.setInt(context,CURTEMPVALUE,temp);
+
+    public static void setCurTemp(Context context, int temp) {
+        PreferenceUtil.setInt(context, CURTEMPVALUE, temp);
     }
-    public static int getCurWind(Context context){
+
+    public static int getCurWind(Context context) {
         return PreferenceUtil.getInt(context, CURWINDVALUE, -2);
     }
-    public static void  setCurWind(Context context,int wind){
-        PreferenceUtil.setInt(context,CURWINDVALUE,wind);
+
+    public static void setCurWind(Context context, int wind) {
+        PreferenceUtil.setInt(context, CURWINDVALUE, wind);
     }
+
     public static boolean Is_INFRARED_OPEN(Context context) {
         return PreferenceUtil.getBoolean(context, ISOPEN, false);
     }
@@ -119,6 +130,7 @@ public class PrefData {
     public static void setIs_TEMP21_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP21, isopen);
     }
+
     public static boolean Is_TEMP22_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_TEMP22, false);
     }
@@ -126,6 +138,7 @@ public class PrefData {
     public static void setIs_TEMP22_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP22, isopen);
     }
+
     public static boolean Is_TEMP23_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_TEMP23, false);
     }
@@ -133,6 +146,7 @@ public class PrefData {
     public static void setIs_TEMP23_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP23, isopen);
     }
+
     public static boolean Is_TEMP24_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_TEMP24, false);
     }
@@ -140,6 +154,7 @@ public class PrefData {
     public static void setIs_TEMP24_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP24, isopen);
     }
+
     public static boolean Is_TEMP25_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_TEMP25, false);
     }
@@ -147,6 +162,7 @@ public class PrefData {
     public static void setIs_TEMP25_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP25, isopen);
     }
+
     public static boolean Is_TEMP26_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_TEMP26, false);
     }
@@ -154,6 +170,7 @@ public class PrefData {
     public static void setIs_TEMP26_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP26, isopen);
     }
+
     public static boolean Is_TEMP27_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_TEMP27, false);
     }
@@ -161,6 +178,7 @@ public class PrefData {
     public static void setIs_TEMP27_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP27, isopen);
     }
+
     public static boolean Is_TEMP28_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_TEMP28, false);
     }
@@ -168,6 +186,7 @@ public class PrefData {
     public static void setIs_TEMP28_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP28, isopen);
     }
+
     public static boolean Is_TEMP29_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_TEMP29, false);
     }
@@ -175,6 +194,7 @@ public class PrefData {
     public static void setIs_TEMP29_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_TEMP29, isopen);
     }
+
     public static boolean Is_WINDHIGH_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_WIND_HIGH, false);
     }
@@ -182,6 +202,7 @@ public class PrefData {
     public static void setIs_WINDHIGH_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_WIND_HIGH, isopen);
     }
+
     public static boolean Is_WINDMID_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_WIND_MID, false);
     }
@@ -189,13 +210,15 @@ public class PrefData {
     public static void setIs_WINDMID_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_WIND_MID, isopen);
     }
+
     public static boolean Is_WINDLOW_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_WIND_LOW, false);
     }
 
     public static void setIs_WINDLOW_Set(Context context, boolean isopen) {
-        PreferenceUtil.setBoolean(context, INFRARED_WIND_LOW ,isopen);
+        PreferenceUtil.setBoolean(context, INFRARED_WIND_LOW, isopen);
     }
+
     public static boolean Is_WINDAuto_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_WIND_AUTO, false);
     }
@@ -203,6 +226,7 @@ public class PrefData {
     public static void setIs_WINDAuto_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_WIND_AUTO, isopen);
     }
+
     public static boolean Is_Open_Set(Context context) {
         return PreferenceUtil.getBoolean(context, INFRARED_OPEN, false);
     }
@@ -210,6 +234,7 @@ public class PrefData {
     public static void setIs_Open_Set(Context context, boolean isopen) {
         PreferenceUtil.setBoolean(context, INFRARED_OPEN, isopen);
     }
+
     /**
      * 获取房间编号
      *
@@ -249,6 +274,7 @@ public class PrefData {
     public static void setSNCode(Context context, String roomCode) {
         PreferenceUtil.setString(context, KEY_SN_CODE, roomCode);
     }
+
     /**
      * 获取管理密码，默认值666888
      *
@@ -319,11 +345,11 @@ public class PrefData {
      * @return
      */
     public static String getSerilMicDown(Context context) {
-        String defValue="E0A206B70A0D0201B1";
-        if(PrefData.getSERIAL_RJ45(context)==0){
-            defValue="E0A206B70A0D0201B1";
-        }else if(PrefData.getSERIAL_RJ45(context)==3){
-            defValue="55AA1303";
+        String defValue = "E0A206B70A0D0201B1";
+        if (PrefData.getSERIAL_RJ45(context) == 0) {
+            defValue = "E0A206B70A0D0201B1";
+        } else if (PrefData.getSERIAL_RJ45(context) == 3) {
+            defValue = "55AA1303";
         }
         return PreferenceUtil.getString(context, SERIAL_MIC_DOWN, defValue);
     }
@@ -345,11 +371,11 @@ public class PrefData {
      * @return
      */
     public static String getSerilReverbDown(Context context) {
-        String defValue="E0A206B70A0E0201B2";
-        if(PrefData.getSERIAL_RJ45(context)==0){
-            defValue="E0A206B70A0E0201B2";
-        }else if(PrefData.getSERIAL_RJ45(context)==3){
-            defValue="55AA1305";
+        String defValue = "E0A206B70A0E0201B2";
+        if (PrefData.getSERIAL_RJ45(context) == 0) {
+            defValue = "E0A206B70A0E0201B2";
+        } else if (PrefData.getSERIAL_RJ45(context) == 3) {
+            defValue = "55AA1305";
         }
         return PreferenceUtil.getString(context, SERIAL_REVERB_DOWN, defValue);
     }
@@ -372,11 +398,11 @@ public class PrefData {
      * @return
      */
     public static String getSerilReverbUp(Context context) {
-        String defValue="E0A206B70A0E0202B3";
-        if(PrefData.getSERIAL_RJ45(context)==0){
-            defValue="E0A206B70A0E0202B3";
-        }else if(PrefData.getSERIAL_RJ45(context)==3){
-            defValue="55AA1304";
+        String defValue = "E0A206B70A0E0202B3";
+        if (PrefData.getSERIAL_RJ45(context) == 0) {
+            defValue = "E0A206B70A0E0202B3";
+        } else if (PrefData.getSERIAL_RJ45(context) == 3) {
+            defValue = "55AA1304";
         }
         return PreferenceUtil.getString(context, SERIAL_REVERB_UP, defValue);
     }
@@ -432,6 +458,7 @@ public class PrefData {
     public static void setLastTime(Context context, long time) {
         PreferenceUtil.setLong(context, LAST_TIME, time);
     }
+
     /**
      * 获取上次语言
      *
@@ -451,6 +478,7 @@ public class PrefData {
     public static void setLanguage(Context context, String language) {
         PreferenceUtil.setString(context, LANGUAGE, language);
     }
+
     /**
      * 获取上次授权
      *

@@ -1,36 +1,20 @@
 package com.beidousat.karaoke.ui.dlg;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.adapter.StripViewPagerAdapter;
-import com.beidousat.karaoke.biz.QueryKboxHelper;
-import com.beidousat.karaoke.data.BoughtMeal;
-import com.beidousat.karaoke.data.KBoxStatusInfo;
-import com.beidousat.karaoke.data.PrefData;
-import com.beidousat.libbns.model.ServerConfigData;
-import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.ui.OnDlgListener;
-import com.beidousat.karaoke.widget.CountDownTextView;
 import com.beidousat.karaoke.widget.PagerSlidingTabStrip;
-import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;

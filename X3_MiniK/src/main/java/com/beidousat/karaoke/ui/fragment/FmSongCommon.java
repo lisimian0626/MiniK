@@ -3,18 +3,16 @@ package com.beidousat.karaoke.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.beidousat.karaoke.R;
-import com.beidousat.libbns.model.Common;
 import com.beidousat.karaoke.model.Songs;
 import com.beidousat.karaoke.util.ToastUtils;
+import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.RequestMethod;
-import com.beidousat.libbns.util.Logger;
 
 import java.util.Map;
 
@@ -54,12 +52,12 @@ public class FmSongCommon extends FmSongBase {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        if(Common.isEn){
+        if (Common.isEn) {
             mSongLanguagesId = getResources().getStringArray(R.array.api_song_language_id_en);
             mSongLanguagesText = getResources().getStringArray(R.array.api_song_language_text_en);
             mLanguagesId = mSongLanguagesId[0];
             mWidgetTopTabs.setLeftTabs(mSongLanguagesText);
-        }else{
+        } else {
             mSongLanguagesId = getResources().getStringArray(R.array.api_song_language_id);
             mSongLanguagesText = getResources().getStringArray(R.array.api_song_language_text);
             mLanguagesId = mSongLanguagesId[0];
@@ -142,7 +140,7 @@ public class FmSongCommon extends FmSongBase {
         if (RequestMethod.GET_SONG.equalsIgnoreCase(method)) {
 //            Logger.d("FmSongCommon", "GET_SONG onFailed ");
 //            initSongPager(0, null, mRequestParam);
-            if(getContext()!=null) {
+            if (getContext() != null) {
                 ToastUtils.toast(getContext(), error);
             }
         }

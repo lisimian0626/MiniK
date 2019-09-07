@@ -1,42 +1,24 @@
 package com.beidousat.karaoke.ui.fragment;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.ui.dlg.DialogFactory;
 import com.beidousat.karaoke.ui.dlg.DlgInfraredLoading;
-import com.beidousat.karaoke.ui.dlg.PromptDialog;
 import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.karaoke.util.ToastUtils;
-import com.beidousat.karaoke.widget.EditTextEx;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.util.DensityUtil;
-import com.beidousat.libbns.util.ListUtil;
 import com.beidousat.libbns.util.Logger;
-import com.beidousat.libwidget.recycler.VerticalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;

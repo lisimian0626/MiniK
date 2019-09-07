@@ -3,9 +3,7 @@ package com.beidousat.karaoke.widget;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.beidousat.karaoke.adapter.AdtSong;
 import com.beidousat.karaoke.interf.OnPreviewSongListener;
@@ -23,8 +21,6 @@ import com.beidousat.libwidget.recycler.VerticalDividerItemDecoration2;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.security.auth.login.LoginException;
 
 /**
  * Created by J Wong on 2015/12/17 18:01.

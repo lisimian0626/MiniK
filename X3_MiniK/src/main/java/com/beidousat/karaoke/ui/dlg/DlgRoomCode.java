@@ -1,7 +1,6 @@
 package com.beidousat.karaoke.ui.dlg;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.graphics.Color;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.widget.EditTextEx;
-import com.beidousat.libbns.net.socket.KBoxSocketHeart;
 import com.beidousat.libbns.util.ListUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libwidget.recycler.HorizontalDividerItemDecoration;

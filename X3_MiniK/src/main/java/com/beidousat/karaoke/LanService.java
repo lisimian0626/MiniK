@@ -4,15 +4,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.beidousat.karaoke.ad.ScreenAdSyncTimer;
-import com.beidousat.karaoke.data.PrefData;
-import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.ui.dlg.DlgProgress;
-import com.beidousat.libbns.net.socket.KBoxSocketHeart;
 import com.beidousat.libbns.security.PrivateKeyUpdater;
 import com.beidousat.libbns.upgrade.AppUpgrader;
 import com.beidousat.libbns.upgrade.SystemUpgrader;

@@ -1,7 +1,6 @@
 package com.beidousat.karaoke.ui.fragment;
 
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,14 +22,10 @@ import com.beidousat.karaoke.ui.dlg.DlgPassword;
 import com.beidousat.karaoke.ui.dlg.DlgRoomCode;
 import com.beidousat.karaoke.ui.dlg.FmRoomSet;
 import com.beidousat.karaoke.ui.dlg.PromptDialog;
-import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.karaoke.util.UIUtils;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.model.KBoxStatus;
-import com.beidousat.libbns.net.socket.KBoxSocketHeart;
 import com.beidousat.libbns.util.FragmentUtil;
-import com.beidousat.libbns.util.PreferenceUtil;
 
 /**
  * Created by J Wong on 2017/5/8.

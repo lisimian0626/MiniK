@@ -3,7 +3,6 @@ package com.beidousat.karaoke.ad;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 
 
 import com.beidousat.karaoke.data.PrefData;

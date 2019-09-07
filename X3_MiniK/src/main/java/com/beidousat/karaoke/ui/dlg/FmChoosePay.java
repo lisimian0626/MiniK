@@ -5,34 +5,27 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.biz.QueryOrderHelper;
 import com.beidousat.karaoke.biz.SupportQueryOrder;
 import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
-import com.beidousat.karaoke.data.PrefData;
-import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.PayResult;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.model.PayMent;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.util.GlideUtils;
-import com.beidousat.karaoke.util.ToastUtils;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
-import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 

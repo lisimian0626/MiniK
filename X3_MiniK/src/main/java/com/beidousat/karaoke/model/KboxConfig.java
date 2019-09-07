@@ -26,6 +26,8 @@ public class KboxConfig implements Serializable {
     public int mobileQrcode;
     @SerializedName("no_disk")
     public int noDisk;
+    @SerializedName("download_server")
+    public String downloadServer;
     public String getLanguage() {
         return language;
     }

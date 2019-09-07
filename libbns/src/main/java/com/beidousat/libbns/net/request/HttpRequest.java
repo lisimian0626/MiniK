@@ -3,18 +3,12 @@ package com.beidousat.libbns.net.request;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.beidousat.libbns.R;
 import com.beidousat.libbns.model.BaseModel;
-import com.beidousat.libbns.model.ServerConfig;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.model.StoreBaseModel;
 import com.beidousat.libbns.net.NetWorkUtils;
-import com.beidousat.libbns.net.request.HttpRequestListener;
-import com.beidousat.libbns.net.request.OkHttpUtil;
-import com.beidousat.libbns.util.BnsConfig;
 import com.beidousat.libbns.util.LogRecorder;
 import com.beidousat.libbns.util.Logger;
 import com.google.gson.Gson;
@@ -57,11 +51,13 @@ public class HttpRequest {
         this.mContext = context.getApplicationContext();
         this.mMethod = method;
     }
-    public HttpRequest(Context context, String method,HttpRequestListener listener) {
+
+    public HttpRequest(Context context, String method, HttpRequestListener listener) {
         this.mContext = context.getApplicationContext();
         this.mMethod = method;
-        this.mHttpRequestListener=listener;
+        this.mHttpRequestListener = listener;
     }
+
     public HttpRequest setHttpRequestListener(HttpRequestListener listener) {
         this.mHttpRequestListener = listener;
         return this;
@@ -123,6 +119,7 @@ public class HttpRequest {
             }
         }
     }
+
     private String getUrl(int index, String urlMethod) {
         StringBuilder builder = new StringBuilder();
 
@@ -140,7 +137,7 @@ public class HttpRequest {
             }
         }
 
-        String url = ServerConfigData.getInstance().getServerConfig()==null?builder.toString():ServerConfigData.getInstance().getServerConfig().getVod_url()+builder.toString();
+        String url = ServerConfigData.getInstance().getServerConfig() == null ? builder.toString() : ServerConfigData.getInstance().getServerConfig().getVod_url() + builder.toString();
 //        Log.e("test","mDomainUrl:"+mDomainUrl);
 //        Log.e("test","BnsConfig:"+BnsConfig.DOMAIN_IP);
         return url;
@@ -162,9 +159,10 @@ public class HttpRequest {
                 i++;
             }
         }
-        String url = ServerConfigData.getInstance().getServerConfig().getStore_web()==null?builder.toString():ServerConfigData.getInstance().getServerConfig().getStore_web()+builder.toString();
+        String url = ServerConfigData.getInstance().getServerConfig().getStore_web() == null ? builder.toString() : ServerConfigData.getInstance().getServerConfig().getStore_web() + builder.toString();
         return url;
     }
+
     public void setRequestModel(StringBuilder builder) {
         builder.append("m=index");
     }
@@ -218,6 +216,7 @@ public class HttpRequest {
             sendFailMessage("返回空数据");
         }
     }
+
     private BaseModel convert2BaseModel(String response) {
         BaseModel baseModel = null;
         try {
@@ -240,6 +239,7 @@ public class HttpRequest {
         }
         return baseModel;
     }
+
     private Object convert2Object(Object object) {
         Object obj = null;
         if (object != null) {
@@ -317,7 +317,7 @@ public class HttpRequest {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    Logger.d(TAG,  "onResponse body :" + response);
+                    Logger.d(TAG, "onResponse body :" + response);
                     try {
                         ResponseBody body = response.body();
                         if (response.isSuccessful()) {
@@ -358,7 +358,7 @@ public class HttpRequest {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    Logger.d(TAG,  "onResponse body :" + response);
+                    Logger.d(TAG, "onResponse body :" + response);
                     try {
                         ResponseBody body = response.body();
                         if (response.isSuccessful()) {
@@ -379,6 +379,7 @@ public class HttpRequest {
             Logger.e(TAG, "doPosOk Exception :" + e.toString());
         }
     }
+
     private String parseErrorMsg(Exception e) {
         String error = mContext.getResources().getString(R.string.network_failure);
         if (e instanceof SocketTimeoutException) {

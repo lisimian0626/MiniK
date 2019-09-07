@@ -1,6 +1,5 @@
 package com.beidousat.karaoke.ui;
 
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.HttpRequestListener;
 import com.trello.rxlifecycle2.LifecycleTransformer;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.Locale;
 import java.util.concurrent.Executors;

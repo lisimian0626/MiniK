@@ -26,7 +26,6 @@ import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.CouponDetail;
 import com.beidousat.karaoke.model.GiftDetail;
 import com.beidousat.karaoke.util.DateUtil;
-import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;

@@ -9,7 +9,6 @@ import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.net.request.StoreHttpRequestListener;
-import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
 

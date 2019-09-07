@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
@@ -18,7 +17,6 @@ import com.beidousat.karaoke.ui.dlg.DlgPreview;
 import com.beidousat.karaoke.widget.WidgetKeyboard;
 import com.beidousat.karaoke.widget.WidgetSongPager;
 import com.beidousat.karaoke.widget.WidgetTopTabs;
-import com.beidousat.libbns.amin.MoveAnimation;
 import com.beidousat.libbns.util.Logger;
 
 import java.util.List;

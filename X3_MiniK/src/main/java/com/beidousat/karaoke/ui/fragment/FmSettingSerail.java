@@ -1,7 +1,5 @@
 package com.beidousat.karaoke.ui.fragment;
 
-import android.content.ComponentName;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,15 +10,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.ui.dlg.PromptDialog;
-import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.karaoke.widget.EditTextEx;
-import com.beidousat.libbns.amin.MoveAnimation;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.util.DensityUtil;

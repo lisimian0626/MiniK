@@ -1,10 +1,7 @@
 package com.beidousat.karaoke.ui.dlg;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,10 +22,8 @@ import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.biz.QueryKboxHelper;
 import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.KBoxInfo;
-import com.beidousat.karaoke.data.KBoxStatusInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.ui.Main;
-import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.RoomInfo;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.ui.OnDlgListener;

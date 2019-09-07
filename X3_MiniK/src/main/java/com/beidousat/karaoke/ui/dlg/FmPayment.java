@@ -3,7 +3,6 @@ package com.beidousat.karaoke.ui.dlg;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,24 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
-import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.model.ServerConfigData;
-import com.beidousat.karaoke.model.Meal;
-import com.beidousat.karaoke.model.PayMent;
 import com.beidousat.karaoke.model.PaySevice;
-import com.beidousat.karaoke.util.GlideUtils;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
-import com.beidousat.libbns.net.request.StoreHttpRequestListener;
-import com.beidousat.libbns.util.DeviceUtil;
-import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.QrCodeUtil;
-import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2018/4/20.

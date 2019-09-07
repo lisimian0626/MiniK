@@ -6,13 +6,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
-import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.data.KBoxInfo;
-import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.ui.Main;
-import com.beidousat.karaoke.util.ToastUtils;
+import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
@@ -130,7 +128,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         switch (playmode) {
             case BnsConfig.PREVIEW:
             case BnsConfig.NORMAL:
-                if(KBoxInfo.getInstance().getKboxConfig()!=null&& PrefData.Nodisk(Main.mMainActivity.getApplicationContext())==1){
+                if (KBoxInfo.getInstance().getKboxConfig() != null && PrefData.Nodisk(Main.mMainActivity.getApplicationContext()) == 1) {
                     if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                         return;
                     }
@@ -142,7 +140,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     mMediaPlayer.prepare();
                     isPlaying = true;
                     getTrack(mMediaPlayer);
-                }else{
+                } else {
                     Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
                     File file = DiskFileUtil.getDiskFileByUrl(savePath);
                     if (file != null) {//存在本地文件
@@ -180,7 +178,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 }
                 break;
             case BnsConfig.PUBLIC:
-                if(KBoxInfo.getInstance().getKboxConfig()!=null&&PrefData.Nodisk(Main.mMainActivity.getApplicationContext())==1){
+                if (KBoxInfo.getInstance().getKboxConfig() != null && PrefData.Nodisk(Main.mMainActivity.getApplicationContext()) == 1) {
                     if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                         return;
                     }
@@ -192,7 +190,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                     mMediaPlayer.prepare();
                     isPlaying = true;
                     getTrack(mMediaPlayer);
-                }else{
+                } else {
                     Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
                     File public_file = DiskFileUtil.getDiskFileByUrl(savePath);
                     if (public_file != null) {//存在本地文件

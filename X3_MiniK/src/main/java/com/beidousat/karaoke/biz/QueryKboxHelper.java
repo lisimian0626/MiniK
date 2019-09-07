@@ -1,41 +1,28 @@
 package com.beidousat.karaoke.biz;
 
 import android.content.Context;
-import android.os.Environment;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.BasePlay;
 import com.beidousat.karaoke.model.KBox;
 import com.beidousat.karaoke.model.KboxConfig;
 import com.beidousat.karaoke.model.PayMent;
-import com.beidousat.karaoke.ui.Main;
-import com.beidousat.karaoke.util.BasePlayFitter;
-import com.beidousat.karaoke.util.DownloadQueueHelper;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.ServerConfig;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.net.request.RequestMethod;
 import com.beidousat.libbns.net.request.StoreHttpRequest;
 import com.beidousat.libbns.net.request.StoreHttpRequestListener;
-import com.beidousat.libbns.util.DeviceUtil;
-import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.FileUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.PreferenceUtil;
 import com.google.gson.reflect.TypeToken;
-import com.liulishuo.filedownloader.BaseDownloadTask;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -148,6 +135,7 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             }
             config.setStore_web(KBoxInfo.STORE_WEB);
             config.setVod_server(kboxConfig.getVod_server());
+            config.setDownload_server(kboxConfig.downloadServer);
             ServerConfigData.getInstance().setConfigData(config);
             KBoxInfo.getInstance().setKboxConfig(kboxConfig);
 

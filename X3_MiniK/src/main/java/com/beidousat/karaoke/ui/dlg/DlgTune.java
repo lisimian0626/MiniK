@@ -8,13 +8,9 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
-import com.beidousat.karaoke.data.PrefData;
-import com.beidousat.karaoke.ui.Main;
-import com.beidousat.karaoke.util.SerialController;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.model.Common;
-import com.beidousat.libserial.McuRecvHelper;
 import com.beidousat.libwidget.image.RecyclerImageView;
 
 import de.greenrobot.event.EventBus;

@@ -31,6 +31,9 @@ public class ServerConfig implements Serializable {
 
     private String vod_url;
 
+    private String download_server;
+
+
     public String getStore_web() {
         return store_web;
     }
@@ -84,5 +87,13 @@ public class ServerConfig implements Serializable {
 
     public String getVod_url() {
         return getVod_server() + "?";
+    }
+
+    public String getDownload_server() {
+        return download_server;
+    }
+
+    public void setDownload_server(String download_server) {
+        this.download_server = download_server;
     }
 }
