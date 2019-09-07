@@ -194,7 +194,8 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     Logger.d(TAG, "dealCode codeCache >>>>>>>>>> " + codeCache);
                     if (codeCache.contains("44BB0A")) {
                         try {
-                            String hex = codeCache.replace("44BB0A","");
+                            String str = codeCache.replace("44BB0A","");
+                            String hex = str.substring(0, 2);
                             Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
                             int micVol = Integer.parseInt(hex, 16);
                             EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
@@ -204,7 +205,8 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                         }
                     } else if (codeCache.contains("44BB08")) {
                         try {
-                            String hex = codeCache.replace("44BB08","");
+                            String str = codeCache.replace("44BB08","");
+                            String hex = str.substring(0, 2);
                             Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
                             int effVol = Integer.parseInt(hex, 16);
                             EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);

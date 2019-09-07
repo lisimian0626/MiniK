@@ -48,6 +48,7 @@
             android:layout_height="380dp"
             android:layout_above="@+id/riv_reflection"
             android:layout_toRightOf="@+id/wm_top"
+
             />
 
         <SurfaceView

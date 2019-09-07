@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.ad.BannerGetter;
 import com.beidousat.karaoke.data.KBoxInfo;
+import com.beidousat.karaoke.ui.Main;
+import com.beidousat.karaoke.ui.dlg.DlgWebView;
 import com.beidousat.karaoke.ui.fragment.FmBannerDetail;
 import com.beidousat.libbns.ad.AdsRequestListener;
 import com.beidousat.libbns.model.Ad;
@@ -218,7 +220,7 @@ public class BannerPlayer extends JazzyViewPager {
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
             RecyclerImageView imageView = new RecyclerImageView(mContext);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             setObjectForPosition(imageView, position);
 
@@ -227,29 +229,33 @@ public class BannerPlayer extends JazzyViewPager {
                 imageView.setImageResource(mPlaceholder);
             } else {
                 if (mIsCorner) {
-                    Glide.with(mContext).load(imageUrl).override(380, 380).centerCrop().error(mPlaceholder)
+                    Glide.with(mContext).load(imageUrl).override(380, 380).fitCenter().error(mPlaceholder)
                             .bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 0, RoundedCornersTransformation.CornerType.ALL)).into(imageView);
                 } else {
-                    Glide.with(mContext).load(imageUrl).override(380, 380).centerCrop().placeholder(mPlaceholder).into(imageView);
+                    Glide.with(mContext).load(imageUrl).override(380, 380).fitCenter().placeholder(mPlaceholder).into(imageView);
                 }
             }
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    try {
-//                        if (bannerInfo!=null&&!TextUtils.isEmpty(bannerInfo.getData().getAction_type())) {
-//                            switch (bannerInfo.getData().getAction_type()){
-//                                case "1":
-//                                    break;
-//                                case "2":
+                    try {
+                        if (bannerInfo!=null&&!TextUtils.isEmpty(bannerInfo.getAction_type())) {
+                            switch (bannerInfo.getAction_type()){
+                                case "1":
+                                    //打开网页
+                                    DlgWebView dlgWebView=new DlgWebView(mContext,bannerInfo.getAction_url());
+                                    dlgWebView.show();
+                                    break;
+                                case "2":
+                                    //打开歌单
 //                                    FragmentUtil.addFragment(FmBannerDetail.newInstance(ad));
-//                                    break;
-//                            }
-//
-//                        }
-//                    } catch (Exception e) {
-//                        Logger.w(getClass().getSimpleName(), "setOnClickListener ex:" + e.toString());
-//                    }
+                                    break;
+                            }
+
+                        }
+                    } catch (Exception e) {
+                        Logger.w(getClass().getSimpleName(), "setOnClickListener ex:" + e.toString());
+                    }
                 }
             });
 

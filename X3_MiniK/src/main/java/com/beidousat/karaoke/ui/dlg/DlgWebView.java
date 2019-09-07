@@ -2,6 +2,7 @@ package com.beidousat.karaoke.ui.dlg;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,10 +23,12 @@ public class DlgWebView extends BaseDialog implements OnClickListener {
     private final String TAG = DlgWebView.class.getSimpleName();
     private ProgressWebView mWebView;
     private String mUrl;
+    private Context mContext;
 
-    public DlgWebView(Activity context, String url) {
+    public DlgWebView(Context context, String url) {
         super(context, R.style.MyDialog);
         mUrl = url;
+        this.mContext=context;
         init();
     }
 

@@ -273,7 +273,7 @@ public class FmPayMeal extends FmBaseDialog {
                 return;
             }
             if (dlgWebView == null || !dlgWebView.isShowing()) {
-                dlgWebView = new DlgWebView(Main.mMainActivity,
+                dlgWebView = new DlgWebView(getContext(),
                         ServerConfigData.getInstance().getServerConfig().getStore_web() + "package/?kbox_sn=" + PrefData.getRoomCode(getContext())
                 );
                 dlgWebView.show();
