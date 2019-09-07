@@ -50,6 +50,13 @@ public class PrefData {
     private final static String SERIAL_RJ45="serial_rj45";
     private final static String SERIAL_UP="serial_up";
     private final static String SERIAL_DOWN="serial_down";
+    private final static String NODISK="nodisk";
+    public static int Nodisk(Context context){
+        return PreferenceUtil.getInt(context, NODISK, 0);
+    }
+    public static void setNodisk(Context context,int nodisk){
+        PreferenceUtil.setInt(context,NODISK,nodisk);
+    }
 
     public static int getSERIAL_RJ45(Context context){
         return PreferenceUtil.getInt(context, SERIAL_RJ45, 0);

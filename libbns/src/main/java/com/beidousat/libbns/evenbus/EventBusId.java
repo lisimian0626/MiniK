@@ -258,6 +258,7 @@ public class EventBusId {
 
         public static final int UPDATA_SERIAL_SUCCED=124;
         public static final int TOAST=200;
+        public static final int NODISK=201;
     }
 
 

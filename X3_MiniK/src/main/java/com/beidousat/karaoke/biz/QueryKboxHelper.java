@@ -16,6 +16,8 @@ import com.beidousat.karaoke.model.PayMent;
 import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.util.BasePlayFitter;
 import com.beidousat.karaoke.util.DownloadQueueHelper;
+import com.beidousat.libbns.evenbus.EventBusId;
+import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.ServerConfig;
 import com.beidousat.libbns.model.ServerConfigData;
@@ -131,6 +133,8 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         } else if (object != null && object instanceof KboxConfig) {
             KboxConfig kboxConfig = (KboxConfig) object;
             ServerConfig config = new ServerConfig();
+            PrefData.setNodisk(mContext,kboxConfig.noDisk);
+            EventBusUtil.postSticky(EventBusId.id.NODISK,kboxConfig.noDisk);
             config.setAd_web(kboxConfig.getAd_web());
 //            config.setKbox_ip(kboxConfig.getKbox_ip());
             String kbox_url = kboxConfig.getStore_ip_port();

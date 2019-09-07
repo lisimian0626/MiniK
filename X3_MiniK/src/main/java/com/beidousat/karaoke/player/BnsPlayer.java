@@ -8,6 +8,7 @@ import android.view.SurfaceView;
 
 import com.beidousat.karaoke.LanApp;
 import com.beidousat.karaoke.data.KBoxInfo;
+import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.downLoadInfo;
 import com.beidousat.karaoke.ui.Main;
@@ -129,7 +130,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         switch (playmode) {
             case BnsConfig.PREVIEW:
             case BnsConfig.NORMAL:
-                if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().noDisk==1){
+                if(KBoxInfo.getInstance().getKboxConfig()!=null&& PrefData.Nodisk(Main.mMainActivity.getApplicationContext())==1){
                     if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                         return;
                     }
@@ -179,7 +180,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
                 }
                 break;
             case BnsConfig.PUBLIC:
-                if(KBoxInfo.getInstance().getKboxConfig()!=null&&KBoxInfo.getInstance().getKboxConfig().noDisk==1){
+                if(KBoxInfo.getInstance().getKboxConfig()!=null&&PrefData.Nodisk(Main.mMainActivity.getApplicationContext())==1){
                     if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                         return;
                     }

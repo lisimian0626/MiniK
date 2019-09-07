@@ -333,18 +333,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     String language = kboxConfig.getLanguage().toLowerCase();
                     if (!TextUtils.isEmpty(language)) {
                         if (!language.equals(PreferenceUtil.getString(Main.this, "mode", "zh"))) {
-                            PromptDialog promptDialog = new PromptDialog(Main.this);
-                            promptDialog.setMessage(R.string.language_different);
-                            promptDialog.setPositiveButton(getString(R.string.reboot), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    ChooseSongs.getInstance(Main.this).cleanChoose();
-                                    BoughtMeal.getInstance().clearMealInfo();
-                                    BoughtMeal.getInstance().clearMealInfoSharePreference();
-                                    exitApp();
-                                }
-                            });
-                            promptDialog.show();
+                            showReboot();
                         }
                         PreferenceUtil.setString(Main.this, "mode", language);
                     }
@@ -376,6 +365,21 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
             }
         }).getConfig(DeviceUtil.getCupChipID());
+    }
+
+    private void showReboot() {
+        PromptDialog promptDialog = new PromptDialog(Main.this);
+        promptDialog.setMessage(R.string.language_different);
+        promptDialog.setPositiveButton(getString(R.string.reboot), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChooseSongs.getInstance(Main.this).cleanChoose();
+                BoughtMeal.getInstance().clearMealInfo();
+                BoughtMeal.getInstance().clearMealInfoSharePreference();
+                exitApp();
+            }
+        });
+        promptDialog.show();
     }
 
     private void getKboxDetail() {
@@ -1007,7 +1011,15 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mDlgAdScreen.showAdScreen(mCurScreenAd);
                 }
                 break;
-
+            case EventBusId.id.NODISK:
+                int nodisk= (int) event.data;
+                if(nodisk==1){
+                    if(mDlgDiskNotExit!=null&&mDlgDiskNotExit.isShowing()){
+                        mDlgDiskNotExit.dismiss();
+                        showReboot();
+                    }
+                }
+                break;
 //            case EventBusId.SOCKET.KBOX_STATUS:
 //                KBoxStatus kBoxStatus = (KBoxStatus) event.data;
 //                KBoxStatusInfo.getInstance().setKBoxStatus(kBoxStatus);
@@ -2896,7 +2908,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private PromptDialog mDlgDiskNotExit;
 
     private boolean checkDisk() {
-        if (!DiskFileUtil.hasDiskStorage() && KBoxInfo.getInstance().getKboxConfig().noDisk != 1) {
+        if (!DiskFileUtil.hasDiskStorage() && PrefData.Nodisk(this)!= 1) {
             if (mDlgDiskNotExit == null || !mDlgDiskNotExit.isShowing()) {
                 mDlgDiskNotExit = new PromptDialog(this);
                 mDlgDiskNotExit.setMessage(getResources().getString(R.string.hand_disk));

@@ -125,7 +125,7 @@ public class ChooseSongs {
             }
         } else {
             if (PrefData.getLastAuth(mContext)) {
-                if (!DiskFileUtil.hasDiskStorage()&& KBoxInfo.getInstance().getKboxConfig().noDisk!=1) {
+                if (!DiskFileUtil.hasDiskStorage()&& PrefData.Nodisk(mContext)!=1) {
                     tipMessage(R.string.hand_disk);
                     return false;
                 }
