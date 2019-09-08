@@ -393,27 +393,30 @@ public class ChooseSongs {
                     }
 
                     songInfo.isPrior = true;
-                    final File file = DiskFileUtil.getDiskFileByUrl(songInfo.SongFilePath);
-                    if (file == null) {
-                        Logger.d("AdtSong", "onSongClick  file  not exist:");
-                        download(songInfo);
-                        return false;
-                    } else {
-                        if (mSongInfos.get(0).ID.equals(songInfo.ID)) {
+                    if (PrefData.Nodisk(mContext) != 1) {
+                        final File file = DiskFileUtil.getDiskFileByUrl(songInfo.SongFilePath);
+                        if (file == null) {
+                            Logger.d("AdtSong", "onSongClick  file  not exist:");
+                            download(songInfo);
                             return false;
                         }
-                        for (Song song1 : mSongInfos) {
-                            if (song1.ID.equals(songInfo.ID)) {
-                                mSongInfos.remove(song1);
-                                break;
-                            }
-                        }
-                        songInfo.RecordFile = songInfo.ID + "_" + System.currentTimeMillis();
-                        mSongInfos.add(1, songInfo);
-                        new ScoreNoteDownloader().downloadNote(songInfo);
-                        sendChooseChangedMsg();
-                        return true;
                     }
+
+                    if (mSongInfos.get(0).ID.equals(songInfo.ID)) {
+                        return false;
+                    }
+                    for (Song song1 : mSongInfos) {
+                        if (song1.ID.equals(songInfo.ID)) {
+                            mSongInfos.remove(song1);
+                            break;
+                        }
+                    }
+                    songInfo.RecordFile = songInfo.ID + "_" + System.currentTimeMillis();
+                    mSongInfos.add(1, songInfo);
+                    new ScoreNoteDownloader().downloadNote(songInfo);
+                    sendChooseChangedMsg();
+                    return true;
+
                 }
             } else {
                 return false;

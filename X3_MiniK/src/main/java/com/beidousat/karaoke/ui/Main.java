@@ -2381,7 +2381,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mScoreSong = song;
         requestResult(song, score);
 
-        mTvPlayerPause.postDelayed(runShowScoreResult, 5500);
+        mTvPlayerPause.postDelayed(runShowScoreResult, 3000);
 
         mPlayingSong = null;
     }
