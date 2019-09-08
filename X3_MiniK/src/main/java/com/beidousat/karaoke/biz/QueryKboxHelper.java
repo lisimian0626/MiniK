@@ -83,13 +83,14 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         storeHttpRequest.post();
     }
 
-    public void getBanner(String position,String sn) {
+    public void getBanner(String position, String sn) {
         StoreHttpRequest storeHttpRequest = new StoreHttpRequest(KBoxInfo.STORE_WEB, RequestMethod.GET_BANNER);
-        storeHttpRequest.addParam(HttpParamsUtils.initGetBannerParams(position,sn));
+        storeHttpRequest.addParam(HttpParamsUtils.initGetBannerParams(position, sn));
         storeHttpRequest.setStoreHttpRequestListener(this);
         storeHttpRequest.setConvert2Class(KboxConfig.class);
         storeHttpRequest.post();
     }
+
     @Override
     public void onStoreStart(String method) {
         if (mQueryKboxFeedback != null) {
@@ -120,9 +121,9 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         } else if (object != null && object instanceof KboxConfig) {
             KboxConfig kboxConfig = (KboxConfig) object;
             ServerConfig config = new ServerConfig();
-            PrefData.setNodisk(mContext,kboxConfig.noDisk);
-//            PrefData.setNodisk(mContext,1);
-            EventBusUtil.postSticky(EventBusId.id.NODISK,kboxConfig.noDisk);
+//            PrefData.setNodisk(mContext, kboxConfig.noDisk);
+            PrefData.setNodisk(mContext,1);
+            EventBusUtil.postSticky(EventBusId.id.NODISK, kboxConfig.noDisk);
             config.setAd_web(kboxConfig.getAd_web());
 //            config.setKbox_ip(kboxConfig.getKbox_ip());
             String kbox_url = kboxConfig.getStore_ip_port();

@@ -1620,15 +1620,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     }
 
                     @Override
-                    public void onMute() {
-                        if(mKaraokeController.getPlayerStatus().isMute){
-                            mKaraokeController.mute(false);
-                        }else{
-                            mKaraokeController.mute(true);
-                        }
-                    }
-
-                    @Override
                     public void onToneDown() {
                         mKaraokeController.toneDown();
                         dlgTune.setCurrentTone(mKaraokeController.getPlayerStatus().tone);
@@ -2371,7 +2362,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 if (DiskFileUtil.is901()) {
                     if (player != null) {
                         try {
-                            player.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null, BnsConfig.NORMAL);
+                            player.playUrl(ServerFileUtil.getFileUrl(AdDefault.getScoreResultVideo()), AdDefault.getScoreResultVideo(), null, BnsConfig.NORMAL);
                         } catch (IOException e) {
                             ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
                             Logger.w(TAG, "playSong ex:" + e.toString());
@@ -2380,7 +2371,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 } else {
                     if (player_cx != null) {
 //                        Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
-                        player_cx.playUrl(AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), AdDefault.getScoreResultVideo(), null, BnsConfig.NORMAL);
+                        player_cx.playUrl(ServerFileUtil.getFileUrl(AdDefault.getScoreResultVideo()), AdDefault.getScoreResultVideo(), ServerFileUtil.getFileUrl(AdDefault.getScoreResultVideo()), null, BnsConfig.NORMAL);
                     }
                 }
             }

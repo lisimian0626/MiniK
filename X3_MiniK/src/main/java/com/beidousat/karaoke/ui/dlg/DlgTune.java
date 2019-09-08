@@ -8,9 +8,11 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
+import com.beidousat.karaoke.player.KaraokeController;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.model.Common;
+import com.beidousat.libbns.util.Logger;
 import com.beidousat.libwidget.image.RecyclerImageView;
 
 import de.greenrobot.event.EventBus;
@@ -20,9 +22,11 @@ public class DlgTune extends BaseDialog implements OnClickListener {
     private TextView mTvMusic, mTvTone, mTvMic, mTvEff;
     private OnTuneListener mOnTuneListener;
     private RecyclerImageView ry_default,ry_mute;
+    private KaraokeController mKaraokeController;
     public DlgTune(Context context) {
         super(context, R.style.MyDialog);
         init();
+        mKaraokeController=KaraokeController.getInstance(context);
         EventBus.getDefault().register(this);
     }
 
@@ -82,6 +86,13 @@ public class DlgTune extends BaseDialog implements OnClickListener {
         findViewById(R.id.iv_reverb_down).setOnClickListener(this);
         findViewById(R.id.iv_default).setOnClickListener(this);
         findViewById(R.id.iv_mute).setOnClickListener(this);
+        if(mKaraokeController!=null){
+            if(mKaraokeController.getPlayerStatus().isMute){
+                ry_mute.setSelected(true);
+            }else{
+                ry_mute.setSelected(false);
+            }
+        }
     }
 
     @Override
@@ -118,20 +129,23 @@ public class DlgTune extends BaseDialog implements OnClickListener {
             case R.id.iv_default:
                 if (mOnTuneListener != null)
                     mOnTuneListener.onReset();
-//                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_test);
                 break;
             case R.id.iv_mute:
-                if (mOnTuneListener != null)
-                    mOnTuneListener.onMute();
-//                SerialController.getInstance(getContext()).sendMCU(McuRecvHelper.str_query_mic);
+                 if(ry_mute.isSelected()){
+                     ry_mute.setSelected(false);
+                     Logger.d("test","pressed false");
+                     mKaraokeController.mute(false);
+                 }else{
+                     ry_mute.setSelected(true);
+                     Logger.d("test","pressed true");
+                     mKaraokeController.mute(true);
+                 }
                 break;
             case R.id.iv_reverb_down:
-//                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_down);
                 if (mOnTuneListener != null)
                     mOnTuneListener.onReverbDown();
                 break;
             case R.id.iv_reverb_up:
-//                SerialController.getInstance(getContext()).sendbyteMCU(McuRecvHelper.byte_up);
                 if (mOnTuneListener != null)
                     mOnTuneListener.onReverbUp();
                 break;
@@ -165,8 +179,6 @@ public class DlgTune extends BaseDialog implements OnClickListener {
         void onMusicDown();
 
         void onMusicUp();
-
-        void onMute();
 
         void onToneDown();
 
