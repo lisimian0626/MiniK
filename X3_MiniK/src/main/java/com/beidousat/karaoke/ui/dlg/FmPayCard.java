@@ -39,7 +39,7 @@ import java.util.TimerTask;
 
 public class FmPayCard extends FmBaseDialog implements View.OnClickListener,SupportQueryOrder{
 //    private TextView mTvMoney;
-    private TextView mTvMeal;
+    private TextView mTvMeal,mTvMoney;
     private ImageView iv_qrcode;
     private ImageView mIvback;
     private AlertDialog mConfirmDlg;
@@ -107,6 +107,9 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
 //        lin_paycard_succed=findViewById(R.id.lin_paycard_succed);
+        mTvMoney=findViewById(R.id.tv_money);
+        mTvMoney.setText(String.valueOf(mSelectedMeal.getPrice()));
+
     }
 
 
