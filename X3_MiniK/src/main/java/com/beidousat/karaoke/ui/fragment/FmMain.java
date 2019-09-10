@@ -11,21 +11,18 @@ import android.widget.ImageView;
 import com.andexert.library.RippleView;
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.ad.BannerGetter;
-import com.beidousat.libbns.ad.AdsRequestListener;
+import com.beidousat.karaoke.widget.BannerPlayer;
+import com.beidousat.karaoke.widget.WidgetMaterial;
 import com.beidousat.libbns.ad.BannerRequestListener;
 import com.beidousat.libbns.evenbus.BusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
-import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.BannerInfo;
 import com.beidousat.libbns.model.Common;
-import com.beidousat.karaoke.widget.BannerPlayer;
-import com.beidousat.karaoke.widget.WidgetMaterial;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.Logger;
 
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +33,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by J Wong on 2015/12/16 16:13.
  */
-public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteListener,BannerRequestListener{
+public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteListener, BannerRequestListener {
 
     private View mRootView;
     //    private AdSupporterPlayer mAdSupporterPlayer;
@@ -47,6 +44,7 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
     private SurfaceView surfaceView;
     private boolean mIsPlaying = false;
     private ScheduledExecutorService mScheduledExecutorService;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -156,6 +154,7 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
                 break;
         }
     }
+
     public void onEventMainThread(BusEvent event) {
         switch (event.id) {
             case EventBusId.id.GET_CONFIG_SUCCESS:
@@ -163,7 +162,7 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
                 startBannerGetter();
                 break;
             case EventBusId.id.GET_BANNER:
-                mBannerGetter.getBanner("B1",DeviceUtil.getCupChipID());
+                mBannerGetter.getBanner("B1", DeviceUtil.getCupChipID());
                 break;
             default:
                 break;
@@ -199,11 +198,11 @@ public class FmMain extends BaseFragment implements RippleView.OnRippleCompleteL
 
     @Override
     public void onRequestSuccess(BannerInfo bannerInfo) {
-        Logger.d(FmMain.class.getSimpleName(),"banner:"+bannerInfo.getImg_url());
-        if(bannerInfo!=null){
-            if(bannerInfo.getMedia_type().equals("1")){
+        Logger.d(FmMain.class.getSimpleName(), "banner:" + bannerInfo.getImg_url());
+        if (bannerInfo != null) {
+            if (bannerInfo.getMedia_type().equals("1")) {
                 mBannerPlayer.setBannerInfo(bannerInfo);
-            }else if(bannerInfo.getMedia_type().equals("2")){
+            } else if (bannerInfo.getMedia_type().equals("2")) {
 
             }
         }

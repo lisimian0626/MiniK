@@ -11,17 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.beidousat.karaoke.R;
-import com.beidousat.karaoke.ad.BannerGetter;
-import com.beidousat.karaoke.data.KBoxInfo;
-import com.beidousat.karaoke.ui.Main;
 import com.beidousat.karaoke.ui.dlg.DlgWebView;
-import com.beidousat.karaoke.ui.fragment.FmBannerDetail;
-import com.beidousat.libbns.ad.AdsRequestListener;
-import com.beidousat.libbns.model.Ad;
 import com.beidousat.libbns.model.BannerInfo;
 import com.beidousat.libbns.model.Common;
-import com.beidousat.libbns.util.DeviceUtil;
-import com.beidousat.libbns.util.FragmentUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.ServerFileUtil;
 import com.beidousat.libwidget.image.RecyclerImageView;
@@ -30,9 +22,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -44,7 +34,7 @@ public class BannerPlayer extends JazzyViewPager {
     private static final int VIEW_PAGER_SCROLL_DURATION = 1000;
 
     private Context mContext;
-//    private BannerGetter mBannerGetter;
+    //    private BannerGetter mBannerGetter;
     private String mAdPosition;
     private int mPlaceholder;
     private MainAdapter mAdapter;
@@ -52,6 +42,7 @@ public class BannerPlayer extends JazzyViewPager {
     private static final int MAX_IMG_COUNT = 5;
     private List<Uri> mImageUrls = new ArrayList<Uri>();
     private BannerInfo bannerInfo;
+
     public BannerPlayer(Context context) {
         super(context);
         initView(context);
@@ -68,9 +59,9 @@ public class BannerPlayer extends JazzyViewPager {
 
     private void initView(Context context) {
         mContext = context;
-        if(Common.isEn){
+        if (Common.isEn) {
             this.mPlaceholder = R.drawable.ad_banner_default_en;
-        }else{
+        } else {
             this.mPlaceholder = R.drawable.ad_banner_default;
         }
         ViewPagerScroller.setViewPagerScrollDuration(this, VIEW_PAGER_SCROLL_DURATION);
@@ -100,7 +91,7 @@ public class BannerPlayer extends JazzyViewPager {
 //    }
 
     public void setBannerInfo(BannerInfo bannerInfo) {
-        this.bannerInfo=bannerInfo;
+        this.bannerInfo = bannerInfo;
         loadImage(ServerFileUtil.getImageUrl(bannerInfo.getImg_url()));
     }
 
@@ -175,7 +166,6 @@ public class BannerPlayer extends JazzyViewPager {
 //    }
 
 
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 //        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -185,6 +175,7 @@ public class BannerPlayer extends JazzyViewPager {
 //        }
         return true;
     }
+
     private boolean mIsCorner = true;
 
 
@@ -229,21 +220,21 @@ public class BannerPlayer extends JazzyViewPager {
                 imageView.setImageResource(mPlaceholder);
             } else {
                 if (mIsCorner) {
-                    Glide.with(mContext).load(imageUrl).override(380, 380).fitCenter().error(mPlaceholder)
+                    Glide.with(mContext).load(imageUrl).placeholder(mPlaceholder).override(380, 380).fitCenter().error(mPlaceholder)
                             .bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 0, RoundedCornersTransformation.CornerType.ALL)).into(imageView);
                 } else {
-                    Glide.with(mContext).load(imageUrl).override(380, 380).fitCenter().placeholder(mPlaceholder).into(imageView);
+                    Glide.with(mContext).load(imageUrl).override(380, 380).fitCenter().placeholder(mPlaceholder).error(mPlaceholder).into(imageView);
                 }
             }
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
-                        if (bannerInfo!=null&&!TextUtils.isEmpty(bannerInfo.getAction_type())) {
-                            switch (bannerInfo.getAction_type()){
+                        if (bannerInfo != null && !TextUtils.isEmpty(bannerInfo.getAction_type())) {
+                            switch (bannerInfo.getAction_type()) {
                                 case "1":
                                     //打开网页
-                                    DlgWebView dlgWebView=new DlgWebView(mContext,bannerInfo.getAction_url());
+                                    DlgWebView dlgWebView = new DlgWebView(mContext, bannerInfo.getAction_url());
                                     dlgWebView.show();
                                     break;
                                 case "2":

@@ -332,7 +332,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                         PrefData.setRoomCode(Main.this, kboxConfig.getSn());
                     }
                     String language = kboxConfig.getLanguage().toLowerCase();
-                    Logger.d(TAG,"language:"+language+"     Preference language:"+PreferenceUtil.getString(Main.this, "mode", "zh"));
+                    Logger.d(TAG, "language:" + language + "     Preference language:" + PreferenceUtil.getString(Main.this, "mode", "zh"));
                     if (!TextUtils.isEmpty(language)) {
                         if (!language.equals(PreferenceUtil.getString(Main.this, "mode", "zh"))) {
                             showReboot();
@@ -1014,9 +1014,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 }
                 break;
             case EventBusId.id.NODISK:
-                int nodisk= (int) event.data;
-                if(nodisk==1){
-                    if(mDlgDiskNotExit!=null&&mDlgDiskNotExit.isShowing()){
+                int nodisk = (int) event.data;
+                if (nodisk == 1) {
+                    if (mDlgDiskNotExit != null && mDlgDiskNotExit.isShowing()) {
                         mDlgDiskNotExit.dismiss();
                         showReboot();
                     }
@@ -1455,7 +1455,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     case "X4000":
                         UDPComment.sendhsn = 1;
                         UDPComment.isSign = false;
-                        EventBusUtil.postSticky(EventBusId.Udp.SHOW_QRCODE,"");
+                        EventBusUtil.postSticky(EventBusId.Udp.SHOW_QRCODE, "");
                         break;
                     default:
                         if (getApplicationContext() != null) {
@@ -1483,7 +1483,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         mKaraokeController.getPlayerStatus().volMusic = vol;
         PlayUp playUp = new PlayUp("player", 1, mKaraokeController.getPlayerStatus().volMusic,
                 mKaraokeController.getPlayerStatus().isPlaying == true ? 1 : 2, mKaraokeController.getPlayerStatus().originOn == true ? 1 : 2, mKaraokeController.getPlayerStatus().micVol, mKaraokeController.getPlayerStatus().tone - 100, mKaraokeController.getPlayerStatus().effVol,
-                mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, mKaraokeController.getPlayerStatus().isMute?1:2,String.valueOf(UDPComment.sendhsn), UDPComment.token);
+                mKaraokeController.getPlayerStatus().scoreMode == 1 ? 1 : 2, mKaraokeController.getPlayerStatus().isMute ? 1 : 2, String.valueOf(UDPComment.sendhsn), UDPComment.token);
         UDPSocket.getIntance(this).sendMessage("VH2.0" + playUp.toString() + "\r\n");
         Logger.d(UDPSocket.TAG, "playUp:" + playUp.toString());
     }
@@ -2901,7 +2901,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private PromptDialog mDlgDiskNotExit;
 
     private boolean checkDisk() {
-        if (!DiskFileUtil.hasDiskStorage() && PrefData.Nodisk(this)!= 1) {
+        if (!DiskFileUtil.hasDiskStorage() && PrefData.Nodisk(this) != 1) {
             if (mDlgDiskNotExit == null || !mDlgDiskNotExit.isShowing()) {
                 mDlgDiskNotExit = new PromptDialog(this);
                 mDlgDiskNotExit.setMessage(getResources().getString(R.string.hand_disk));
@@ -3480,4 +3480,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
     public void onFailed(String method, String error) {
         super.onFailed(method, error);
     }
+
+
 }
