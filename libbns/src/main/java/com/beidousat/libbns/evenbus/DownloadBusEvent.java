@@ -11,9 +11,8 @@ public class DownloadBusEvent extends BusEvent {
     public String path;
     public float percent;
     public String msg;
-    public String songName;
-    public static DownloadBusEvent getEvent(int id, String url, String path,String songName, float percent) {
-        return new DownloadBusEvent(id, url, path, songName,percent);
+    public static DownloadBusEvent getEvent(int id, String url, String path, float percent) {
+        return new DownloadBusEvent(id, url, path,percent);
     }
 
     public static DownloadBusEvent getEvent(int id, String url, String path, String msg) {
@@ -24,11 +23,10 @@ public class DownloadBusEvent extends BusEvent {
 
     }
 
-    private DownloadBusEvent(int id, String url, String path,String SongName,float percent) {
+    private DownloadBusEvent(int id, String url, String path,float percent) {
         this.id = id;
         this.url = url;
         this.path = path;
-        this.songName=SongName;
         this.percent = percent;
     }
 

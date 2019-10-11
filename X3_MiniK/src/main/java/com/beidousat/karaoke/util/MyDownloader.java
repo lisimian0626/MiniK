@@ -200,7 +200,7 @@ public class MyDownloader {
             return;
         }
         cur_songName=song.SimpName;
-        EventBusUtil.postDownloadStart(url, savedPath,song.SimpName);
+        EventBusUtil.postDownloadStart(url, savedPath);
         mSongCache.put(url, song);
         mSongErro.remove(url);
         mDownloadHelper.startDownload(url, savedPath);

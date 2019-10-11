@@ -57,8 +57,7 @@ public class LanApp extends Application {
         mKaraokeController = KaraokeController.getInstance(getApplicationContext());
 
         FileDownloadLog.NEED_LOG = true;
-        FileDownloader.init(this, new DownloadMgrInitialParams.InitCustomMaker()
-                .connectionCreator(new OkHttp3Connection.Creator(OkHttpUtil.mSSLOkHttpClient)));
+        FileDownloader.setup(this);
         mDbHelper = new DatabaseHelper(this);
         //Facebook stetho 初始化
         Stetho.initializeWithDefaults(this);
