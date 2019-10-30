@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.data.BoughtMeal;
 import com.beidousat.karaoke.data.PrefData;
+import com.beidousat.karaoke.ui.Main;
+import com.beidousat.libbns.model.Common;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.Meal;
 import com.beidousat.karaoke.model.Song;
@@ -81,8 +83,15 @@ public class DlgShare extends BaseDialog implements View.OnClickListener, Record
         mTvSongName.setText(mSong.SimpName != null ? mSong.SimpName : "");
         mTvSinger.setText(mSong.SingerName != null ? mSong.SingerName : "");
         if (fileUploadInfo != null && fileUploadInfo.isSuccess && !TextUtils.isEmpty(fileUploadInfo.decPath)) {//已经上传
-            mRivQrcode.setImageBitmap(QrCodeUtil.createQRCode(fileUploadInfo.decPath));
-            mTvStatus.setText(R.string.wechat_scan_share);
+            if(Common.isEn){
+                dismiss();
+                //打开网页
+                DlgWebView dlgWebView = new DlgWebView(Main.mMainActivity, fileUploadInfo.decPath);
+                dlgWebView.show();
+            }else{
+                mRivQrcode.setImageBitmap(QrCodeUtil.createQRCode(fileUploadInfo.decPath));
+                mTvStatus.setText(R.string.wechat_scan_share);
+            }
         } else if (fileUploadInfo != null && TextUtils.isEmpty(fileUploadInfo.decPath) && fileUploadInfo.isUploading) {//正在上传
             mRivQrcode.setImageResource(R.drawable.ic_upload_success);
             mTvStatus.setText(R.string.upload_hard);

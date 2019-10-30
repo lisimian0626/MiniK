@@ -35,17 +35,14 @@ public class RequestMethod {
      */
     public final static String GET_PASTER = "getAdPaster";
     /**
-     * 角标广告
-     */
-    public final static String GET_CORNER = "getAdCorner";
-    /**
      * 走马灯广告
      */
     public final static String GET_MARQUEE = "getAdTrot";
     /**
      * banner广告
      */
-    public final static String GET_BANNER = "ad/pdetail";
+    public final static String GET_BANNER = "ad/pdetail";   //B1 Banner广告 J1角标广告
+
     /**
      * 广告计费
      */

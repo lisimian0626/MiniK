@@ -1,5 +1,9 @@
 package com.beidousat.libbns.util;
 
+import android.content.Context;
+import android.os.Build;
+import android.webkit.WebSettings;
+
 /**
  * Created by J Wong on 2015/9/30.
  */
@@ -28,7 +32,7 @@ public class BnsConfig {
     /**
      * 是否开启LOG
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * 普通倒计时(结束、续费)
@@ -53,5 +57,28 @@ public class BnsConfig {
     public static final int PREVIEW = 1;
     public static final int NORMAL = 2;
     public static final int PUBLIC = 3;
+
+    public static String getUserAgent(Context context) {
+        String userAgent = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            try {
+                userAgent = WebSettings.getDefaultUserAgent(context);
+            } catch (Exception e) {
+                userAgent = System.getProperty("http.agent");
+            }
+        } else {
+            userAgent = System.getProperty("http.agent");
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0, length = userAgent.length(); i < length; i++) {
+            char c = userAgent.charAt(i);
+            if (c <= '\u001f' || c >= '\u007f') {
+                sb.append(String.format("\\u%04x", (int) c));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
 }
 

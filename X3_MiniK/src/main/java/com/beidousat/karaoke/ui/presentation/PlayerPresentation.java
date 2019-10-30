@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.ad.AdPauseGetter;
-import com.beidousat.karaoke.ad.CornerGetter;
+import com.beidousat.karaoke.ad.BannerGetter;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.Song;
@@ -30,6 +30,7 @@ import com.beidousat.karaoke.udp.UDPComment;
 import com.beidousat.karaoke.widget.WidgetScore;
 import com.beidousat.libbns.ad.AdBillHelper;
 import com.beidousat.libbns.ad.AdsRequestListener;
+import com.beidousat.libbns.ad.BannerRequestListener;
 import com.beidousat.libbns.amin.CubeAnimation;
 import com.beidousat.libbns.amin.MoveAnimation;
 import com.beidousat.libbns.evenbus.BusEvent;
@@ -37,7 +38,9 @@ import com.beidousat.libbns.evenbus.DownloadBusEvent;
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.model.Ad;
+import com.beidousat.libbns.model.BannerInfo;
 import com.beidousat.libbns.model.Common;
+import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libbns.util.QrCodeUtil;
 import com.beidousat.libbns.util.ServerFileUtil;
@@ -55,7 +58,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 /**
  * Created by J Wong on 2015/10/9 17:19.
  */
-public class PlayerPresentation extends Presentation implements AdsRequestListener {
+public class PlayerPresentation extends Presentation implements BannerRequestListener {
 
     private static final String TAG = "PlayerPresentation";
     private BridgeWebView mWebView;
@@ -70,13 +73,13 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
     private TextView mTvNextSong, mTvCurrent, mTvTips;
 
-    private CornerGetter mCornerGetter;
+    private BannerGetter mBannerGetter;
 
     private static final int AD_CORNER_INTERVAL = 15 * 1000;
 
     private AdBillHelper mAdBillHelper;
 
-    public Ad mAdCorner;
+    public BannerInfo mAdCorner;
 
 //    private VoiceGradeView voiceGradeView;
 //    private ReceiveMicData receiveMicData;
@@ -157,7 +160,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         mAnimCornerOut = MoveAnimation.create(MoveAnimation.RIGHT, false, 1000);
         mAnimCornerIn = MoveAnimation.create(MoveAnimation.LEFT, true, 1000);
         //角标
-        mCornerGetter = new CornerGetter(getContext().getApplicationContext(), this);
+        mBannerGetter = new BannerGetter(getContext().getApplicationContext(), this);
         //暂停广告
         mAdPauseGetter = new AdPauseGetter(getContext().getApplicationContext(), mAdPauseListener);
         //片头广告
@@ -363,7 +366,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
     }
 
     public void showQrCode() {
-        if (KBoxInfo.getInstance().getKboxConfig() != null && KBoxInfo.getInstance().getKboxConfig().mobileQrcode == 1 &&UDPComment.isSign&&!TextUtils.isEmpty(UDPComment.QRcode)) {
+        if (KBoxInfo.getInstance().getKboxConfig() != null && KBoxInfo.getInstance().getKboxConfig().mobileQrcode == 1 && UDPComment.isSign && !TextUtils.isEmpty(UDPComment.QRcode)) {
             qr_code.setVisibility(View.VISIBLE);
             qr_code.setImageBitmap(QrCodeUtil.createQRCode(UDPComment.QRcode));
         } else {
@@ -417,15 +420,17 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
 
                 }
             case EventBusId.Udp.TOAST:
-                if (countDownTimer == null) {
-                    initCountDownTimer();
+                if (event.data != null) {
+                    if (countDownTimer == null) {
+                        initCountDownTimer();
+                    }
+                    countDownTimer.cancel();
+                    tv_toast.setText(event.data.toString());
+                    countDownTimer.start();
                 }
-                countDownTimer.cancel();
-                tv_toast.setText(event.data.toString());
-                countDownTimer.start();
                 break;
             case EventBusId.Udp.SHOW_QRCODE:
-                 showQrCode();
+                showQrCode();
                 break;
         }
     }
@@ -457,9 +462,7 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
             if (mAdCorner != null) {
                 showCorner();
             } else {
-                Song song = ChooseSongs.getInstance(getContext().getApplicationContext()).getFirstSong();
-                mCornerGetter.getCorner("J1", song != null ? song.ID : "", KBoxInfo.getInstance().getKBox() != null ?
-                        KBoxInfo.getInstance().getKBox().getArea() : null);
+                mBannerGetter.getBanner("J1", DeviceUtil.getCupChipID());
             }
         } else {
             mViewAdCorner.setVisibility(View.GONE);
@@ -498,16 +501,10 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         if (mAdCorner == null) {
             return;
         }
-        Uri uri = ServerFileUtil.getImageUrl(mAdCorner.ADContent);
-        if (Common.isEn) {
-            Glide.with(getContext()).load(uri)
-                    .override(300, 500).centerCrop().error(R.drawable.ad_corner_default_en)
-                    .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 0, RoundedCornersTransformation.CornerType.ALL)).skipMemoryCache(true).into(mIvAdCorner);
-        } else {
-            Glide.with(getContext()).load(uri)
-                    .override(300, 500).centerCrop().error(R.drawable.ad_corner_default)
-                    .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 0, RoundedCornersTransformation.CornerType.ALL)).skipMemoryCache(true).into(mIvAdCorner);
-        }
+        Uri uri = ServerFileUtil.getImageUrl(mAdCorner.getImg_url());
+        Glide.with(getContext()).load(uri)
+                .override(300, 500).centerCrop().error(Common.isEn ? R.drawable.ad_corner_default_en : R.drawable.ad_corner_default)
+                .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 0, RoundedCornersTransformation.CornerType.ALL)).skipMemoryCache(false).into(mIvAdCorner);
 
 
         mViewAdCorner.postDelayed(new Runnable() {
@@ -516,21 +513,8 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
                 showAds(false);
             }
         }, AD_CORNER_INTERVAL);
-        mAdBillHelper.billAd(mAdCorner, "J1", PrefData.getRoomCode(getContext().getApplicationContext()));
+//        mAdBillHelper.billAd(mAdCorner, "J1", PrefData.getRoomCode(getContext().getApplicationContext()));
     }
-
-    @Override
-    public void onAdsRequestSuccess(Ad ad) {
-        if (ad != null) {
-            mAdCorner = ad;
-            showCorner();
-        }
-    }
-
-    @Override
-    public void onAdsRequestFail() {
-    }
-
 
 //    public void setScoreNotes(ArrayList<NoteInfo> infos) {
 //        if (infos != null) {
@@ -686,7 +670,19 @@ public class PlayerPresentation extends Presentation implements AdsRequestListen
         }
         int curPorgress = Math.max(hisProgress, (int) event.percent);
         mTvTips.setTag(curPorgress);
-        mTvTips.setText("正在下载...  "+curPorgress + "%");
+        mTvTips.setText("正在下载...  " + curPorgress + "%");
+    }
+
+    @Override
+    public void onRequestSuccess(BannerInfo bannerInfo) {
+        mAdCorner = bannerInfo;
+        showCorner();
+
+    }
+
+    @Override
+    public void onRequestFail() {
+
     }
 }
 

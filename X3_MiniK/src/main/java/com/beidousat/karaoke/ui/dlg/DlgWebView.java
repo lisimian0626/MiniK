@@ -17,6 +17,9 @@ import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.widget.ProgressWebView;
 import com.beidousat.libbns.util.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class DlgWebView extends BaseDialog implements OnClickListener {
 
@@ -24,7 +27,7 @@ public class DlgWebView extends BaseDialog implements OnClickListener {
     private ProgressWebView mWebView;
     private String mUrl;
     private Context mContext;
-
+    private Map<String, String> Headers;
     public DlgWebView(Context context, String url) {
         super(context, R.style.MyDialog);
         mUrl = url;
@@ -42,18 +45,20 @@ public class DlgWebView extends BaseDialog implements OnClickListener {
         findViewById(R.id.riv_close).setOnClickListener(this);
         mWebView = (ProgressWebView) findViewById(R.id.webview);
 
+        Headers = new HashMap<String, String>();
+        Headers.put("minik", "minikbox");//设备标识(前面是key，后面是value)
         WebSettings settings = mWebView.getSettings();
         settings.setJavaScriptEnabled(true);
 
 
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-
+        mWebView.getSettings().setUserAgentString("minikbox");
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // TODO Auto-generated method stub
                 //返回值是true的时候控制去WebView打开，为false调用系统浏览器或第三方浏览器
-                view.loadUrl(url);
+                view.loadUrl(url,Headers);
                 return true;
             }
         });
@@ -63,7 +68,7 @@ public class DlgWebView extends BaseDialog implements OnClickListener {
     public void show() {
         super.show();
         Logger.d(TAG, "WebView loadUrl:" + mUrl);
-        mWebView.loadUrl(mUrl);
+        mWebView.loadUrl(mUrl,Headers);
     }
 
     @Override

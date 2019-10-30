@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao' // apply plugin
 def releaseTime() {
     return new Date().format("yyyyMMddhhmm", TimeZone.getTimeZone("UTC"))
 }
@@ -13,8 +12,8 @@ android {
         applicationId "com.beidousat.karaoke"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 458
-        versionName "V2.4.2"
+        versionCode 459
+        versionName "V2.4.3"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
@@ -78,11 +77,6 @@ android {
 
 }
 
-greendao {
-    schemaVersion 1
-    daoPackage 'com.greendao.gen'
-    targetGenDir 'src/main/java'
-}
 
 dependencies {
     provided files('lib/framework.jar')
@@ -98,7 +92,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
-    compile 'org.greenrobot:greendao:3.2.2'
     // add library
     compile 'io.reactivex.rxjava2:rxjava:2.1.1'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
