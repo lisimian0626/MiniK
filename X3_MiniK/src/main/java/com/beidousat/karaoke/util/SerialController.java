@@ -192,29 +192,42 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     data = data.replace(" ", "").toUpperCase();
                     codeCache += data;
                     Logger.d(TAG, "dealCode codeCache >>>>>>>>>> " + codeCache);
-                    if (codeCache.contains("44BB0A")) {
-                        try {
-                            String str = codeCache.replace("44BB0A","");
-                            String hex = str.substring(0, 2);
+                    try {
+                        if (codeCache.substring(codeCache.indexOf("44BB0A")).length() >= 8) {
+                            String str = codeCache.substring(codeCache.indexOf("44BB0A"));
+                            String hex = str.substring(6, 8);
                             Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
-                            int micVol = Integer.parseInt(hex, 16);
-                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
-                            codeCache = "";
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else if (codeCache.contains("44BB08")) {
-                        try {
-                            String str = codeCache.replace("44BB08","");
-                            String hex = str.substring(0, 2);
+                        }else if(codeCache.substring(codeCache.indexOf("44BB08")).length() >= 8){
+                            String str = codeCache.substring(codeCache.indexOf("44BB08"));
+                            String hex = str.substring(6, 8);
                             Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
-                            int effVol = Integer.parseInt(hex, 16);
-                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
-                            codeCache = "";
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+//                    if (codeCache.contains("44BB0A")) {
+//                        try {
+//                            String str = codeCache.replace("44BB0A","");
+//                            String hex = str.substring(0, 2);
+//                            Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
+//                            int micVol = Integer.parseInt(hex, 16);
+//                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
+//                            codeCache = "";
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else if (codeCache.contains("44BB08")) {
+//                        try {
+//                            String str = codeCache.replace("44BB08","");
+//                            String hex = str.substring(0, 2);
+//                            Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
+//                            int effVol = Integer.parseInt(hex, 16);
+//                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
+//                            codeCache = "";
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
                     break;
                 case InfraredSerial:
                     EventBusUtil.postSticky(EventBusId.INFARAED.RECEIVE_CODE, data);
