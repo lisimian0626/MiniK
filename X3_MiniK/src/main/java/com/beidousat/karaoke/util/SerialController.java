@@ -196,10 +196,12 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                         if (codeCache.substring(codeCache.indexOf("44BB0A")).length() >= 8) {
                             String str = codeCache.substring(codeCache.indexOf("44BB0A"));
                             String hex = str.substring(6, 8);
+                            codeCache="";
                             Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
                         }else if(codeCache.substring(codeCache.indexOf("44BB08")).length() >= 8){
                             String str = codeCache.substring(codeCache.indexOf("44BB08"));
                             String hex = str.substring(6, 8);
+                            codeCache="";
                             Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
                         }
                     } catch (Exception e) {
