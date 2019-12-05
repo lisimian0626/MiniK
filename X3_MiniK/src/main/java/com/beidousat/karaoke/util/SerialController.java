@@ -192,43 +192,47 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                     data = data.replace(" ", "").toUpperCase();
                     codeCache += data;
                     Logger.d(TAG, "dealCode codeCache >>>>>>>>>> " + codeCache);
-                    try {
-                        if (codeCache.substring(codeCache.indexOf("44BB0A")).length() >= 8) {
-                            String str = codeCache.substring(codeCache.indexOf("44BB0A"));
-                            String hex = str.substring(6, 8);
-                            codeCache="";
+                    if (codeCache.contains("44BB0A")) {
+                        try {
+                            String str = codeCache.replace("44BB0A", "");
+                            String hex = str.substring(0, 2);
                             Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
-                        }else if(codeCache.substring(codeCache.indexOf("44BB08")).length() >= 8){
-                            String str = codeCache.substring(codeCache.indexOf("44BB08"));
-                            String hex = str.substring(6, 8);
-                            codeCache="";
-                            Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
+                            int micVol = Integer.parseInt(hex, 16);
+                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
+                            codeCache = "";
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else if (codeCache.contains("44BB08")) {
+                        try {
+                            String str = codeCache.replace("44BB08", "");
+                            String hex = str.substring(0, 2);
+                            Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
+                            int effVol = Integer.parseInt(hex, 16);
+                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
+                            codeCache = "";
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-//                    if (codeCache.contains("44BB0A")) {
-//                        try {
-//                            String str = codeCache.replace("44BB0A","");
-//                            String hex = str.substring(0, 2);
-//                            Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
+//                    try {
+//                        if (codeCache.contains("44BB0A")&&codeCache.substring(codeCache.indexOf("44BB0A")).length() >= 8) {
+//                            String str = codeCache.substring(codeCache.indexOf("44BB0A"));
+//                            String hex = str.substring(6, 8);
 //                            int micVol = Integer.parseInt(hex, 16);
 //                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
+//                            Logger.d(TAG, "OnMcuReceive handle mic:" + "codeCache:"+codeCache+"       hex:"+hex+"    micVol:"+micVol + "");
 //                            codeCache = "";
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else if (codeCache.contains("44BB08")) {
-//                        try {
-//                            String str = codeCache.replace("44BB08","");
-//                            String hex = str.substring(0, 2);
-//                            Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
-//                            int effVol = Integer.parseInt(hex, 16);
-//                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
+//                        }else if(codeCache.contains("44BB0B")&&codeCache.substring(codeCache.indexOf("44BB08")).length() >= 8){
+//                            String str = codeCache.substring(codeCache.indexOf("44BB08"));
+//                            String hex = str.substring(6, 8);
+//                            int micVol = Integer.parseInt(hex, 16);
+//                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, micVol);
+//                            Logger.d(TAG, "OnMcuReceive handle eff:" + "codeCache:"+codeCache+"       hex:"+hex+"    effVol:"+micVol + "");
 //                            codeCache = "";
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
 //                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
 //                    }
                     break;
                 case InfraredSerial:

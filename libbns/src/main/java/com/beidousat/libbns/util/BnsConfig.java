@@ -32,7 +32,7 @@ public class BnsConfig {
     /**
      * 是否开启LOG
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     /**
      * 普通倒计时(结束、续费)

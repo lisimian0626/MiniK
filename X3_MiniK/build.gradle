@@ -11,8 +11,8 @@ android {
         applicationId "com.beidousat.karaoke"
         minSdkVersion 22
         targetSdkVersion 22
-        versionCode 459
-        versionName "V2.4.3"
+        versionCode 460
+        versionName "V2.4.4"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构

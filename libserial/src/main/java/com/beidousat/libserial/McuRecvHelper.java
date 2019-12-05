@@ -21,6 +21,7 @@ public class McuRecvHelper {
     public  static final byte byte_effect_reset[] = {(byte)0x55, (byte)0xAA, (byte)0x08, (byte)0x05};
     public  static final byte byte_mic_reset[] = {(byte)0x55, (byte)0xAA, (byte)0x0A, (byte)0x07};
     public  static final byte byte_mic_mute[] = {(byte)0x55, (byte)0xAA, (byte)0x0A, (byte)0x00};
+    private String rec_str;
     public static McuRecvHelper getInstance() {
         if (mSerialSendRecvHelper == null) {
             mSerialSendRecvHelper = new McuRecvHelper();
@@ -34,13 +35,20 @@ public class McuRecvHelper {
             protected void onReceive(final byte[] btData) {
                 data = new StringBuffer();
                 Log.i(Tag, "onReceive");
-                // int i=0;
                 for (byte b : btData) {
                     data.append(DataTransition.byte2Hex(b) + " ");
                 }
-                Log.d(Tag, data.toString());
-                if (mOnMcuReceiveListener != null && data.length() > 0) {
-                    mOnMcuReceiveListener.OnMcuReceive(data.toString().trim());
+                rec_str += data.toString();
+                int start_num = rec_str.indexOf("44");
+                int end_num=start_num + 11;
+                Log.d(Tag, "mcu " + rec_str);
+                if (start_num >= 0 && rec_str.length() >= end_num) {
+                    String use_string = rec_str.substring(start_num, end_num);
+                    Log.d(Tag, " use mcu str:" + use_string );
+                    if (mOnMcuReceiveListener != null) {
+                        mOnMcuReceiveListener.OnMcuReceive(use_string.trim());
+                    }
+                    rec_str = rec_str.substring(end_num);
                 }
             }
         };
@@ -75,6 +83,7 @@ public class McuRecvHelper {
     }
     public void sendbyte(byte[] code) {
         try {
+            Log.d(Tag, "send :" + code.toString());
             mSerialHelper.send(code);
         } catch (Exception ex) {
             Log.e(Tag, ex.toString());
