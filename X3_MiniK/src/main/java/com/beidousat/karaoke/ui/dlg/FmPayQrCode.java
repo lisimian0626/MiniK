@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,11 @@ import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
 /**
  * author: Hanson
  * date:   2017/3/30
@@ -52,13 +58,15 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
     private final static int HTTP_REQUEST_MSG = 1;
     private final static int CLOSE_DIALOG = 2;
 
+    private String Tag = "FmPayQrCode";
+
     private Handler mRequestHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case HTTP_REQUEST_MSG:
-                    Logger.d("pay","查询订单支付结果");
-                    mQueryOrderHelper.queryOrder(mSelectedMeal).post();
+                    Logger.d(Tag, "查询订单支付结果");
+                    mQueryOrderHelper.queryOrder(mSelectedMeal);
                     break;
                 case CLOSE_DIALOG:
                     if (mConfirmDlg != null)
@@ -81,7 +89,7 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
 
     public final static String MEAL_TAG = "SelectedMeal";
     public final static String TYPE_TAG = "type";
-    public final static String QR_CODE="Qr_code";
+    public final static String QR_CODE = "Qr_code";
 
     private String mType;
     private String qr_code;
@@ -96,7 +104,7 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
     @Override
     void initData() {
         mSelectedMeal = (Meal) getArguments().getSerializable(MEAL_TAG);
-        qr_code=getArguments().getString(QR_CODE);
+        qr_code = getArguments().getString(QR_CODE);
         mType = getArguments().getString(TYPE_TAG);
         mQueryOrderHelper = new QueryOrderHelper(this);
     }
@@ -108,16 +116,24 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
         mTvMeal = findViewById(R.id.tv_selected_meal);
         mIvQrCode = findViewById(R.id.iv_pay_qrcode);
         mTvPrompt = findViewById(R.id.pay_prompt);
+        Bitmap logoBitmap = null;
+        Log.d(Tag, "mType:" + mType);
         if (mType.equals("alipay")) {
             mTvPrompt.setText(getResources().getString(R.string.text_pay_prompt_zhifubao));
+            logoBitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.alipay)).getBitmap();
+        } else if (mType.equals("joinpay_unionpay")) {
+            mTvPrompt.setText(getResources().getString(R.string.text_pay_prompt_unionpay));
+            logoBitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.unionpay)).getBitmap();
         } else {
             mTvPrompt.setText(getResources().getString(R.string.text_pay_prompt));
+            logoBitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.wechat)).getBitmap();
         }
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
-        mTvMoney.setText(String.valueOf(df.format(mSelectedMeal.getIntPrice()/100f)) );
-        if(!TextUtils.isEmpty(qr_code)){
-            mIvQrCode.setImageBitmap(QrCodeUtil.createQRCode(qr_code));
+        mTvMoney.setText(String.valueOf(df.format(mSelectedMeal.getIntPrice() / 100f)));
+        if (!TextUtils.isEmpty(qr_code)) {
+//            mIvQrCode.setImageBitmap(QrCodeUtil.createQRCode(qr_code));
+            mIvQrCode.setImageBitmap(QrCodeUtil.createLogoQrcode(qr_code, logoBitmap, 0.2F));
         }
 //        Glide.with(getContext()).load(mSelectedMeal.getUrl()).centerCrop().into(mIvQrCode);
 
@@ -137,13 +153,12 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
     }
 
 
-
     private void showConfirmDialog() {
         mConfirmDlg = DialogFactory.showCancelOrderDialog(getContext(),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                        mQueryOrderHelper.cancelOrder(mSelectedMeal);
                     }
                 }, new DialogInterface.OnClickListener() {
                     @Override
@@ -215,14 +230,6 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
                 break;
         }
     }
-    private void pay(String orderSn,String payment) {
-        StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_CREATE);
-        request.setStoreHttpRequestListener(this);
-        request.addParam("order_sn", orderSn);
-        request.addParam("payment", payment);
-        request.setConvert2Class(PayResult.class);
-        request.post();
-    }
 
     @Override
     public void onStoreStart(String method) {
@@ -231,8 +238,8 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
 
     @Override
     public void onStoreSuccess(String url, Object object) {
-        PayResult payResult= (PayResult) object;
-        if(!TextUtils.isEmpty(payResult.getQrcode_data())){
+        PayResult payResult = (PayResult) object;
+        if (!TextUtils.isEmpty(payResult.getQrcode_data())) {
             mIvQrCode.setImageBitmap(QrCodeUtil.createQRCode(payResult.getQrcode_data()));
         }
         super.onStoreSuccess(url, object);
@@ -240,8 +247,8 @@ public class FmPayQrCode extends FmBaseDialog implements SupportQueryOrder {
 
     @Override
     public void onStoreFailed(String url, String error) {
-        if(getContext()!=null){
-            ToastUtils.toast(getContext(),error);
+        if (getContext() != null) {
+            ToastUtils.toast(getContext(), error);
         }
         super.onStoreFailed(url, error);
     }

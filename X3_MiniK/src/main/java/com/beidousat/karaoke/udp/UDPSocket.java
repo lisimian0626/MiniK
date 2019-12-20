@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.beidousat.libbns.evenbus.EventBusId;
 import com.beidousat.libbns.evenbus.EventBusUtil;
+import com.beidousat.libbns.model.ServerConfigData;
+import com.beidousat.libbns.util.Logger;
+import com.beidousat.karaoke.model.KboxConfig;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -34,10 +37,10 @@ public class UDPSocket {
     private static final int BUFFER_LENGTH = 1024;
     private byte[] receiveByte = new byte[BUFFER_LENGTH];
 
-    private static final String BROADCAST_IP = "39.108.224.58";
+    private static final String BROADCAST_IP = "39.108.224.58";//服务器地址
 
-    public static final int CLIENT_PORT = 18811;
-    public static final int SERVER_PORT = 8960;
+    public static final int LOCAL_PORT = 18811;//本地端口
+    public static final int SERVER_PORT = 8960;//远程端口
     private boolean isThreadRunning = false;
 
     private Context mContext;
@@ -78,7 +81,7 @@ public class UDPSocket {
         if (client != null) return;
         try {
             // 表明这个 Socket 在设置的端口上监听数据。
-            client = new DatagramSocket(CLIENT_PORT);
+            client = new DatagramSocket(LOCAL_PORT);
 
             if (receivePacket == null) {
                 // 创建接受数据的 packet
@@ -211,8 +214,12 @@ public class UDPSocket {
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
+                String sendToAddress = BROADCAST_IP;
+                if (ServerConfigData.getInstance().getServerConfig() != null && ServerConfigData.getInstance().getServerConfig().getStore_ip() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getStore_ip())) {
+                    sendToAddress = ServerConfigData.getInstance().getServerConfig().getStore_ip();
+                }
                 try {
-                    InetAddress targetAddress = InetAddress.getByName(BROADCAST_IP);
+                    InetAddress targetAddress = InetAddress.getByName(sendToAddress);
 
                     DatagramPacket packet = new DatagramPacket(message.getBytes(), message.length(), targetAddress, SERVER_PORT);
 

@@ -61,9 +61,13 @@ public class DialogFactory {
         });
     }
 
+    /**
+     * 显示在线支付，取消的对话框
+     * */
     public static AlertDialog showCancelOrderDialog(Context context,
                                                     final DialogInterface.OnClickListener okListener,
                                                     final DialogInterface.OnClickListener cancelListener) {
+        if (context==null) return null;
         final AlertDialog dialog = new AlertDialog(context,
                 DensityUtil.dip2px(context, 450), DensityUtil.dip2px(context, 260));
         dialog.setTitle(R.string.text_cancel_order_title);
@@ -88,6 +92,10 @@ public class DialogFactory {
         return dialog;
     }
 
+
+    /**
+     * 显示出错信息的对话框
+     * */
     public static void showErrorDialog(Context context, String msg, final DialogInterface.OnClickListener listener) {
         final AlertDialog dialog = new AlertDialog(context);
         dialog.setTitle(R.string.text_error_title);
@@ -103,6 +111,10 @@ public class DialogFactory {
         });
     }
 
+
+    /**
+     * 显示取消投币的对话框
+     * */
 
     public static AlertDialog showCancelCoinDialog(Context context,
                                                    final DialogInterface.OnClickListener okListener,
@@ -131,6 +143,11 @@ public class DialogFactory {
         return dialog;
     }
 
+
+    /**
+     * 显示确认的对话框
+     *
+     * */
     public static AlertDialog showConfirmDialog(Context context,
                                                    final DialogInterface.OnClickListener okListener,
                                                    final DialogInterface.OnClickListener cancelListener, String tipMsg) {

@@ -11,7 +11,8 @@ public class AppInstallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_PACKAGE_REPLACED)) {
-            String cmd = "su -c reboot";
+//            String cmd = "su -c reboot";
+            String cmd = "ls /";
             try {
                 Runtime.getRuntime().exec(cmd);
             } catch (IOException e) {

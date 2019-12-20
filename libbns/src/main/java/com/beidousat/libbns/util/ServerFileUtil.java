@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import com.beidousat.libbns.util.BnsConfig;
+
 import com.beidousat.libbns.model.ServerConfigData;
 
 import java.io.File;
@@ -14,79 +16,63 @@ import java.io.File;
 public class ServerFileUtil {
 
 
-    private final static String TAG = ServerFileUtil.class.getSimpleName();
+    private final static String TAG = "ServerFileUtil";
+
+    private static String downloadserver() {
+        String url = null;
+        if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getDownload_server())) {
+            url = ServerConfigData.getInstance().getServerConfig().getDownload_server();
+        }
+        return url;
+    }
 
     public static String SongSecurity(String path) {
-        String url=null;
-        if (!TextUtils.isEmpty(path)) {
-            if(ServerConfigData.getInstance().getServerConfig()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getDownload_server())) {
-                url = ServerConfigData.getInstance().getServerConfig().getDownload_server() + path;
-            }
-        }
-        Logger.d(TAG,TAG+"   "+"SongSecurity:"+url);
+        String px_url = downloadserver();
+        if (!TextUtils.isEmpty(path) || px_url == null) return null;
+        String url = px_url + path;
+        Logger.d(TAG, TAG + "   " + "SongSecurity:" + url);
         return url;
     }
 
     public static String getScoreNoteUrl(String songFilePath) {
-        String url=null;
-        if (!TextUtils.isEmpty(songFilePath)) {
-            if(ServerConfigData.getInstance().getServerConfig()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getDownload_server())) {
-                url = ServerConfigData.getInstance().getServerConfig().getDownload_server() + "data/grade/" + getFileName(songFilePath) + ".txt";
-            }
-        }
-        Logger.d(TAG,TAG+"   "+"getScoreNoteUrl:"+url);
+        String px_url = downloadserver();
+        if (TextUtils.isEmpty(songFilePath) || px_url == null) return null;
+        String url = px_url + "data/grade/" + getFileName(songFilePath) + ".txt";
+        Logger.d(TAG, TAG + "   " + "getScoreNoteUrl:" + url);
         return url;
     }
 
     public static String getScoreNote2Url(String songFilePath) {
-        String url=null;
-        if (!TextUtils.isEmpty(songFilePath)) {
-            if(ServerConfigData.getInstance().getServerConfig()!=null&&!TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getDownload_server())) {
-                url = ServerConfigData.getInstance().getServerConfig().getDownload_server() + "data/grade/" + getFileName(songFilePath) + ".sec.txt";
-            }
-        }
-        Logger.d(TAG,TAG+"   "+"getScoreNote2Url:"+url);
+        String px_url = downloadserver();
+        if (TextUtils.isEmpty(songFilePath) || px_url == null) return null;
+        String url = px_url + "data/grade/" + getFileName(songFilePath) + ".sec.txt";
+        Logger.d(TAG, TAG + "   " + "getScoreNote2Url:" + url);
         return url;
     }
 
 
-
     public static Uri getImageUrl(String filePath) {
-        String url=null;
-        if (!TextUtils.isEmpty(filePath)) {
-            if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getDownload_server())) {
-                url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getDownload_server() + filePath;
-            }
-        }else{
-            return null;
-        }
-        Logger.d(TAG,TAG+"      "+"getImageUrl:"+url);
+        String px_url = downloadserver();
+        if (TextUtils.isEmpty(filePath) || px_url == null) return null;
+        String url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : px_url + filePath;
+        Logger.d(TAG, TAG + "      " + "getImageUrl:" + url);
         return Uri.parse(url);
     }
 
     public static String getFileUrl(String filePath) {
-        String url=null;
-        if (!TextUtils.isEmpty(filePath)) {
-            if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getDownload_server())) {
-                url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getDownload_server() + filePath;
-                if(url.contains("?")){
-                        url=url+"&dev="+(DiskFileUtil.is901()?"YNH":"X3")+"&sn="+DeviceUtil.getCupChipID();
-                }else{
-                    url=url+"?&dev="+(DiskFileUtil.is901()?"YNH":"X3")+"&sn="+DeviceUtil.getCupChipID();
-                }
-            }
-        }
-        Logger.d(TAG,"getFileUrl:"+url);
+        String px_url = downloadserver();
+        if (TextUtils.isEmpty(filePath) || px_url == null) return null;
+        String url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : px_url + filePath;
+        url = url + ((url.contains("?")) ? "&" : "?") + "dev=" + (BnsConfig.is901() ? "YNH" : "X3");
+        Logger.d(TAG, "getFileUrl:" + url);
         return url;
     }
-    public static String getPreviewUrl(String filePath){
-        String url=null;
-        if (!TextUtils.isEmpty(filePath)) {
-            if (ServerConfigData.getInstance().getServerConfig() != null && !TextUtils.isEmpty(ServerConfigData.getInstance().getServerConfig().getDownload_server())) {
-                url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : ServerConfigData.getInstance().getServerConfig().getDownload_server() + filePath;
-            }
-        }
-        Logger.d(TAG,TAG+"      "+"getPreviewUrl:"+url);
+
+    public static String getPreviewUrl(String filePath) {
+        String px_url = downloadserver();
+        if (TextUtils.isEmpty(filePath) || px_url == null) return null;
+        String url = filePath.startsWith("http://") || filePath.startsWith("https://") ? filePath : px_url + filePath;
+        Logger.d(TAG, TAG + "      " + "getPreviewUrl:" + url);
         return url;
     }
 

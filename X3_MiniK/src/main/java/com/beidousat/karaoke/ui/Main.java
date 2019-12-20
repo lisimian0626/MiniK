@@ -63,6 +63,7 @@ import com.beidousat.karaoke.model.PayStatus;
 import com.beidousat.karaoke.model.PlayerStatus;
 import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.SongInfo;
+import com.beidousat.karaoke.model.SongScoreRanking;
 import com.beidousat.karaoke.model.UpLoadDataUtil;
 import com.beidousat.karaoke.model.UploadSongData;
 import com.beidousat.karaoke.model.downLoadInfo;
@@ -200,9 +201,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private Ad mAdVideo;
     private final static int TIMER_INTERVAL = 1000;
     private long mPasterBillProgress;
-    private int mSongScore;
-    private int mScorePercent;
-    private Song mScoreSong;
 
     private final SparseArray<PlayerPresentation> mActivePresentations = new SparseArray<PlayerPresentation>();
     private PlayerPresentation mPresentation;
@@ -241,15 +239,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (PreferenceUtil.getString(this, "mode", "zh").equals("en")) {
-            switchLanguage("en");
-        } else if (PreferenceUtil.getString(this, "mode", "zh").equals("zh")) {
-            switchLanguage("zh");
-        } else if (PreferenceUtil.getString(this, "mode", "zh").equals("tw")) {
-            Logger.d(TAG, "language tw");
-            switchLanguage("tw");
-        } else if (PreferenceUtil.getString(this, "mode", "zh").equals("en_zh")) {
+        Log.d("switchLanguage", "main onCreate");
+        String language = PrefData.getLastLanguage(this);
+        if (language.equals("en_zh")) {
             Common.isAuto = true;
+        } else {
+            switchLanguage(language);
         }
         setContentView(R.layout.act_main);
         mMainActivity = this;
@@ -257,17 +252,14 @@ public class Main extends BaseActivity implements View.OnClickListener,
         init();
         ANRCacheHelper.registerANRReceiver(this);
         EventBus.getDefault().register(this);
-        if (!DiskFileUtil.is901()) {
+        if (!BnsConfig.is901()) {
             FileUtil.chmod777FileSu(KaraokeSdHelper.getSongSecurityKeyFileFor901());
             hideSystemUI(false);
         } else {
             hideSystemUI(true);
         }
-        startMainPlayer();
-        checkNetwork();
-//        new QueryKboxHelper(getApplicationContext(), null, null).getBoxInfo();
-//        newsongDao=LanApp.getInstance().getDaoSession().getNewsongDao();
-//        copyDatabaseFile(this);
+        startMainPlayer();//开启播放器
+        checkNetwork();//查询网络
     }
 
     private void copyDatabaseFile(Context context) {
@@ -316,7 +308,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
             public void onStart() {
                 PrefData.setAuth(Main.this, false);
                 showTips(getString(R.string.getting_config));
-//                showCfgDialog(getString(R.string.getting_config),getString(R.string.getting_config_error));
             }
 
             @Override
@@ -327,35 +318,25 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     //获取配置完成发出消息
                     EventBusUtil.postSticky(EventBusId.id.GET_CONFIG_SUCCESS, "");
                     KboxConfig kboxConfig = (KboxConfig) obj;
+
+                    //取得配置中的单机版本信息，写入记录中
                     if (!TextUtils.isEmpty(kboxConfig.getSn())) {
                         PrefData.setSNCode(Main.this, kboxConfig.getSn());
                         PrefData.setRoomCode(Main.this, kboxConfig.getSn());
+                        PrefData.setIsSingle(Main.this, true);
                     }
                     String language = kboxConfig.getLanguage().toLowerCase();
-                    Logger.d(TAG, "language:" + language + "     Preference language:" + PreferenceUtil.getString(Main.this, "mode", "zh"));
                     if (!TextUtils.isEmpty(language)) {
-                        if (!language.equals(PreferenceUtil.getString(Main.this, "mode", "zh"))) {
+                        if (!language.equals(PrefData.getLastLanguage(Main.this))) {
                             showReboot();
                         }
-                        PreferenceUtil.setString(Main.this, "mode", language);
+                        PrefData.setLanguage(Main.this, language);
                     }
-                    if (TextUtils.isEmpty(kboxConfig.getSn())) {
-//                        PreferenceUtil.setBoolean(Main.this, "isSingle", false);
-                    } else {
-//                        PrefData.setRoomCode(Main.this,kboxConfig.getSn());
-                        PreferenceUtil.setBoolean(Main.this, "isSingle", true);
-                    }
-//                    dismissInitLoading();
-//                    mMarqueePlayer.loadAds("Z1");
-//                    mMarqueePlayer.startPlayer();
                     checkDeviceStore();
                     checkUsbKey();
                     //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
-                    UDPSocket udpSocket = UDPSocket.getIntance(getApplicationContext());
-                    udpSocket.startUDPSocket();
-//                    udpClient.send();
-//                    startService(new Intent(getApplicationContext(), OctopusService.class));
+                    UDPSocket.getIntance(getApplicationContext()).startUDPSocket();
                     if (TextUtils.isEmpty(PrefData.getRoomCode(Main.this))) {
                         ToastUtils.toast(Main.this, getString(R.string.room_num_error));
                     } else {
@@ -363,7 +344,6 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     }
                 } else {
                     PromptCfgDialog(getString(R.string.getting_config_error));
-//                    showCfgDialog(getString(R.string.getting_config), getString(R.string.getting_config_error));
                 }
             }
         }).getConfig(DeviceUtil.getCupChipID());
@@ -403,7 +383,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             lable.setText(kBox.getLabel());
                             lable.setVisibility(View.VISIBLE);
                         }
-                        if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+
+                        //单机版本
+                        if (PrefData.getIsSingle(Main.mMainActivity)) {
                             ll_service.setVisibility(View.GONE);
                             mTvBuy.setVisibility(View.GONE);
                         } else {
@@ -414,23 +396,31 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             }
                             mTvBuy.setVisibility(View.VISIBLE);
                         }
+
+                        //开启投币机口串口,使用投币机收款
+                        Common.isICT = false;
                         if (kBox != null && !TextUtils.isEmpty(kBox.getCoin_unit())) {
                             Common.isICT = true;
-                            SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
-                        } else {
-                            Common.isICT = false;
+                            SerialController.getInstance(getApplicationContext()).openICT(
+                                    PrefData.getDeviceSerial(getApplicationContext(), 2),
+                                    Common.mInfraredBaudRate
+                            );
                         }
+
+                        //开启pos机口串口,使用pos机收款
+                        Common.isOCT = false;
                         if (kBox != null && kBox.getUse_pos() == 1) {
                             Common.isOCT = true;
-                            SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-                        } else {
-                            Common.isOCT = false;
+                            SerialController.getInstance(getApplicationContext()).openOst(
+                                    PrefData.getDeviceSerial(getApplicationContext(), 1),
+                                    Common.mInfraredBaudRate
+                            );
                         }
                         getBoughtMeal();
                         restoreUserInfo();
                     }
                 } else {
-                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                    if (PrefData.getIsSingle(Main.mMainActivity)) {
                         ChooseSongs.getInstance(Main.this).cleanChoose();
                         BoughtMeal.getInstance().clearMealInfoSharePreference();
                         BoughtMeal.getInstance().restoreMealInfoFromSharePreference();
@@ -438,10 +428,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if (getApplicationContext() != null) {
                         ToastUtils.toast(getApplicationContext(), msg);
                     }
-
-
                 }
-//                PreferenceUtil.setBoolean(Main.mMainActivity, "isSingle", false);
             }
 
         }).getBoxInfo(PrefData.getRoomCode(this.getApplicationContext()), DeviceUtil.getCupChipID());
@@ -483,6 +470,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
 
     private DlgInitLoading mDlgInitLoading;
 
+    /**
+     * 展示网络连接对话框
+     */
     private void showNetDialog(final String text, final String error) {
         if (mDlgInitLoading == null || !mDlgInitLoading.isShowing()) {
             mDlgInitLoading = new DlgInitLoading(this);
@@ -491,7 +481,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mDlgInitLoading.setPositiveButton(getString(R.string.setting_network), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    toSetting();
+                    //toSetting();
+                    mDlgInitLoading.dismiss();
+                    showMngPass(-1);
                 }
             });
             mDlgInitLoading.show();
@@ -662,7 +654,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         iv_logo.setOnLongClickListener(this);
         mTvService.setVisibility(Common.isAuto ? View.GONE : View.VISIBLE);
         if (Common.isEn) {
-            mTvBuy.setBackgroundResource(R.drawable.selector_main_buy_en);
+            mTvBuy.setBackgroundResource(R.drawable.selector_main_buy_en);//改为英文版本的logo
             mBtnBack.setBackgroundResource(R.drawable.selector_main_back_en);
             iv_logo.setImageResource(R.drawable.logo_en);
         }
@@ -684,43 +676,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
         registerUsbReceiver();
 
         try {
-            int baudrate = Integer.valueOf(PrefData.getSerilBaudrate(getApplicationContext()));
-            if (PrefData.getSERIAL_RJ45(Main.this) == 0) {
-                SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_RJ45(Main.this) == 1) {
-                SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_RJ45(Main.this) == 2) {
-                SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_RJ45(Main.this) == 3) {
-                SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
-            } else {
-                SerialController.getInstance(getApplicationContext()).open(Common.mPort, baudrate);
-            }
-
-            if (PrefData.getSERIAL_UP(Main.this) == 0) {
-                SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_UP(Main.this) == 1) {
-                SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_UP(Main.this) == 2) {
-                SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_RJ45(Main.this) == 3) {
-                SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
-            } else {
-                SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, baudrate);
-            }
-
-            if (PrefData.getSERIAL_DOWN(Main.this) == 0) {
-                SerialController.getInstance(getApplicationContext()).open(Common.mPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_DOWN(Main.this) == 1) {
-                SerialController.getInstance(getApplicationContext()).openOst(Common.mOTCPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_DOWN(Main.this) == 2) {
-                SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, Common.mInfraredBaudRate);
-            } else if (PrefData.getSERIAL_RJ45(Main.this) == 3) {
-                SerialController.getInstance(getApplicationContext()).openMcu(Common.mPort, Common.mMCURate);
-            } else {
-                SerialController.getInstance(getApplicationContext()).openICT(Common.mICTPort, baudrate);
-            }
-
+            //启动效果器连接
+            SerialController.getInstance(getApplicationContext()).open(
+                    PrefData.getDeviceSerial(getApplicationContext(), 0),
+                    PrefData.getSerilBaudrate(getApplicationContext())
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -954,7 +914,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 pay_sucessed(event);
                 break;
             case EventBusId.id.MEAL_EXPIRE:
-                if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+//                if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                if (!PrefData.getIsSingle(Main.mMainActivity)) {
                     CommonDialog commonDialog = CommonDialog.getInstance();
                     if (commonDialog.isAdded()) {
                         commonDialog.dismiss();
@@ -968,7 +929,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             case EventBusId.id.ROOM_CLOSE:
                 Log.e("test", "停止播放");
                 BoughtMeal.getInstance().clearMealInfo();
-                PayUserInfo.getInstance().removeAllUser();
+                PayUserInfo.getInstance().removeAllUser(getApplicationContext());
                 //清空已点
                 ChooseSongs.getInstance(getApplicationContext()).cleanChoose();
                 //清空已已唱
@@ -1139,7 +1100,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 //确保支付的套餐是正确的
                 meal.setAmount(payStatus.getAmount());
                 meal.setType(payStatus.getType());
-                mQureyHelper.reportCoinPayFinish(meal).post();
+                mQureyHelper.reportCoinPayFinish(meal);
                 //设置当前购买的套餐
                 BoughtMeal.getInstance().setBoughtMeal(meal, payStatus);
                 EventBusUtil.postPaySucceed(isMealExpire);
@@ -1179,7 +1140,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 switch (signDown.getEvent().toLowerCase()) {
                     case "sign.ok":
                         PrefData.setAuth(Main.this, true);
-                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+//                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+                        if (PrefData.getIsSingle(Main.this)) {
                             if (BoughtMeal.getInstance().isMealExpire()) {
 //                            Log.e("test", "心跳检测，初始化套餐");
                                 Meal defMeal = new Meal();
@@ -1195,10 +1157,11 @@ public class Main extends BaseActivity implements View.OnClickListener,
                                 //设置当前购买的套餐
                                 BoughtMeal.getInstance().setBoughtMeal(defMeal, defPayStatus);
                             }
-
-                        }
-                        if (KBoxInfo.getInstance().getmPayMentlist() == null) {
-                            new QueryKboxHelper(getApplicationContext(), null, null).getPayment();
+                        } else {
+                            //单机版不用读取支付在线支付方式
+                            if (KBoxInfo.getInstance().getmPayMentlist() == null) {
+                                QueryKboxHelper.getInstance(getApplicationContext(), null, null).getPayment();
+                            }
                         }
                         if (CommonDialog.mInstance != null && CommonDialog.mInstance.getTag() != null && CommonDialog.mInstance.getTag().equals("pay_service")) {
                             CommonDialog.mInstance.dismiss();
@@ -1398,7 +1361,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 SignDown signDownERROR = (SignDown) event.data;
                 switch (signDownERROR.getCode()) {
                     case "2003":
-                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+//                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+                        if (PrefData.getIsSingle(Main.this)) {
                             Logger.e("test", "心跳检测没交服务费，清空套餐");
                             ChooseSongs.getInstance(Main.this).cleanChoose();
                             BoughtMeal.getInstance().clearMealInfoSharePreference();
@@ -1445,7 +1409,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
                             mDialogAuth.setMessage(getResources().getString(R.string.auth_fail));
                             mDialogAuth.show();
                         }
-                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+//                        if (PreferenceUtil.getBoolean(Main.this, "isSingle", false)) {
+                        if (PrefData.getIsSingle(Main.this)) {
                             Logger.d(TAG, "单机版授权终止,清空套餐");
                             ChooseSongs.getInstance(Main.this).cleanChoose();
                             BoughtMeal.getInstance().clearMealInfoSharePreference();
@@ -1504,6 +1469,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
 //        }
     }
 
+    /**
+     * 支付成功后的操作
+     */
     private void pay_sucessed(BusEvent event) {
         boolean isExpire = true;
         try {
@@ -1514,16 +1482,16 @@ public class Main extends BaseActivity implements View.OnClickListener,
         Logger.d(TAG, "EventBusId  id PAY_SUCCEED isExpire:" + isExpire);
         //查询用户信息
         Meal meal = BoughtMeal.getInstance().getTheLastMeal();
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-            if (meal != null) {
-                mQureyHelper.queryUser().post();
-                if (isExpire) {//
-                    mKaraokeController.setMicMute(false);//mic静音
-                    showGuideDialog();//使用帮助指引
-                }
-                startChooseSongTimer();
-            }
+//        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+        if (PrefData.getIsSingle(Main.mMainActivity)) return;//单机的，不查
+        if (meal == null) return;//套餐出错的，不查
+        mQureyHelper.queryUser();
+
+        if (isExpire) {//前套餐已经过期的
+            mKaraokeController.setMicMute(false);//mic静音
+            showGuideDialog();//使用帮助指引
         }
+        startChooseSongTimer();
     }
 
     private PromptDialog mDialogAuth;
@@ -1886,9 +1854,10 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mTvPlayerPause.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.selector_main_play, 0, 0);
         }
         mTvPlayerPause.setText(isPlaying ? R.string.pause : R.string.play);
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-            startChooseSongTimer();
-        }
+//        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+//        if (!PrefData.getIsSingle(Main.mMainActivity)) {
+        startChooseSongTimer();
+//        }
     }
 
     private void updateOriAccStatus(PlayerStatus playerStatus) {
@@ -2005,7 +1974,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             mPresentation.cleanScreen();
 
         mPresentation.showQrCode();
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player == null)
                 return;
 //        EventBus.getDefault().postSticky(BusEvent.getEvent(EventBusId.id.PLAYER_PLAY_BEGIN));
@@ -2065,7 +2034,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void stopPlay() {
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player != null) {
                 player.stop();
                 player = null;
@@ -2093,7 +2062,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     private void initPlayer() {
         stopPlay();
         if (mPresentation != null) {
-            if (DiskFileUtil.is901()) {
+            if (BnsConfig.is901()) {
                 player = new BnsPlayer(mPresentation.getSurfaceView(), main_surf, mPresentation.getHdmiWidth(), mPresentation.getHdmiHeight());
                 player.setBeidouPlayerListener(this);
                 player.setOnKeyInfoListener(this);
@@ -2247,106 +2216,107 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
 
+    /**
+     * 公播随机播放
+     */
     private void playVideoAdRandom() {
         if (countDownTimer == null) {
             initCountDownTimer();
         }
-
         String path = "";
         Logger.d(TAG, "playAD");
         handler.removeMessages(HandlerSystem.MSG_UPDATE_TIME);
         hideSurf();
         mAdVideo = new Ad();
-        String str = PreferenceUtil.getString(this, "def_play");
-        if (TextUtils.isEmpty(str) || str.equals("[]")) {
+        List<BasePlay> basePlayList = BasePlay.getBasePlay(this);
+        int list_size = 0;
+        try {
+            list_size = basePlayList.size();
+        } catch (Exception e) {
+            e.getMessage();
+            Logger.w(TAG, e.getMessage());
+        }
+        if (basePlayList == null || list_size == 0) {
             path = PublicSong.getAdVideo();
             mAdVideo.DownLoadUrl = path;
             mAdVideo.ADContent = path;
         } else {
-            List<BasePlay> basePlayList = BasePlay.arrayBasePlayFromData(str);
-            Logger.d("def_play", basePlayList.toString());
-            if (basePlayList != null && basePlayList.size() > 0) {
-                int index = -1;
-                if (KBoxInfo.getInstance().getKBox() == null || TextUtils.isEmpty(KBoxInfo.getInstance().getKBox().getBaseplay_type())) {
-                    index = PublicSong.getNum(basePlayList.size());
-                    Logger.d(TAG, "random:" + "index:" + index);
-                } else {
-                    switch (KBoxInfo.getInstance().getKBox().getBaseplay_type()) {
-                        case "single":
-                            if (KBoxInfo.getInstance().getKBox().getSingle_index() > 0 && KBoxInfo.getInstance().getKBox().getSingle_index() < basePlayList.size()) {
-                                index = KBoxInfo.getInstance().getKBox().getSingle_index();
-                            } else {
-                                index = 0;
-                            }
-                            Logger.d(TAG, "single:" + "index:" + index);
-                            break;
-                        case "cycle":
-                            index = PublicSong.getCycleNum(basePlayList.size());
-                            Logger.d(TAG, "cycle:" + "index:" + index + "   ListSize:" + basePlayList.size());
-                            break;
-                        case "random":
-                            index = PublicSong.getNum(basePlayList.size());
-                            Logger.d(TAG, "random:" + "index:" + index);
-                            break;
-                    }
-                }
-
-                BasePlay basePlay = basePlayList.get(index);
-                if (basePlay.getType().equals("url")) {
-                    Logger.d(TAG, "play url:" + "url:" + basePlay.getDownload_url());
-                    if (!TextUtils.isEmpty(basePlay.getDownload_url())) {
-                        downLoadInfo downLoadInfo = new downLoadInfo();
-                        downLoadInfo.setDownUrl(basePlay.getDownload_url());
-                        downLoadInfo.setSavePath("");
-                        if (countDownTimer == null) {
-                            initCountDownTimer();
-                        }
-                        countDownTimer.start();
-                        if (DiskFileUtil.is901()) {
-                            player.stop();
-                        } else {
-                            player_cx.stop();
-                        }
-                        mPresentation.PlayWebView(basePlayList.get(index).getDownload_url());
-                        Common.curSongPath = "";
-                        return;
-                    } else {
-                        next();
-                    }
-                } else if (basePlayList.get(index).getType().equals("mp4")) {
-                    Logger.d(TAG, "play url:" + "url:" + basePlay.getDownload_url());
-                    mAdVideo.DownLoadUrl = basePlayList.get(index).getDownload_url();
-                    mAdVideo.ADContent = basePlayList.get(index).getSave_path();
-                }
-            } else {
-                mAdVideo.DownLoadUrl = path;
-                mAdVideo.ADContent = path;
+            int index = -1;
+            String baseplay_type = BasePlay.getPlayPlan(this);
+            switch (baseplay_type) {
+                case "single":
+                    index = BasePlay.getSingle_index(this, list_size);
+                    break;
+                case "cycle":
+                    index = BasePlay.getCycleNum(this);
+                    break;
+                default:
+                    index = BasePlay.getRandIndex(this);
+                    break;
             }
-
+            BasePlay basePlay = basePlayList.get(index);
+            Logger.d(TAG, "playVideoAdRandom=>" + baseplay_type + ":" + ",index:" + index + ",max:" + list_size + ",basePlay:" + basePlay.getType());
+            if (basePlay.getType().equals("url")) {
+                Logger.d(TAG, "play url:" + "url:" + basePlay.getDownload_url());
+                if (!TextUtils.isEmpty(basePlay.getDownload_url())) {
+                    if (countDownTimer == null) {
+                        initCountDownTimer();
+                    }
+                    countDownTimer.start();
+                    if (BnsConfig.is901()) {
+                        player.stop();
+                    } else {
+                        player_cx.stop();
+                    }
+                    mPresentation.PlayWebView(basePlay.getDownload_url());
+                    Common.curSongPath = "";
+                    Logger.d(TAG, "play web url:" + "url:" + basePlay.getDownload_url());
+                    return;
+                } else {
+                    next();
+                }
+            } else if (basePlay.getType().equals("mp4")) {
+                Logger.d(TAG, "play movie url:" + "url:" + basePlay.getDownload_url());
+                mAdVideo.DownLoadUrl = basePlay.getDownload_url();
+                mAdVideo.ADContent = basePlay.getSave_path();
+            }
         }
-
         mAudioChannelFlag = 4;
         mKaraokeController.getPlayerStatus().playingType = 0;
         mPlayingSong = null;
-        Logger.d(TAG, "DownUrl:" + ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl) + "--------savePath:" + mAdVideo.ADContent);
-
         playUrl(ServerFileUtil.getFileUrl(mAdVideo.DownLoadUrl), mAdVideo.ADContent, 0.5f, BnsConfig.PUBLIC);
-
     }
 
+    /**
+     * 播放完成得分动画视频后出现现的事件
+     */
     private Runnable runShowScoreResult = new Runnable() {
         @Override
         public void run() {
-            if (mPresentation != null) {
-                try {
-                    mPresentation.showScoreResult(mScoreSong, mSongScore, (mScorePercent <= 0 ? 0 : mScorePercent) + "%");
-                } catch (Exception e) {
-                    Logger.w(TAG, "requestResult ex:" + e.toString());
+            try {
+                String PlayingSourcePath = "";
+                if (BnsConfig.is901()) {
+                    if (player == null) return;
+                    PlayingSourcePath = player.getPlayingSourcePath();
+                } else {
+                    if (player_cx == null) return;
+                    PlayingSourcePath = player_cx.getPlayingSourcePath();
                 }
+                int start_num = PlayingSourcePath.indexOf(AdDefault.getScoreResultVideo());
+                Log.d("PlayedScoreVideo", player.getPlayingSourcePath());
+                Log.d("PlayedScoreVideo", AdDefault.getScoreResultVideo());
+                //限制当前播放视频，如果不是评分动画，就不要显示出来了
+                if (start_num >= 0)
+                    mPresentation.showScoreResult();//显示得分以及排名
+            } catch (Exception e) {
+                Logger.w(TAG, "requestResult ex:" + e.toString());
             }
         }
     };
 
+    /**
+     * 存在歌曲得分的加调函数
+     */
     private void playScoreResult(final Song song, final int score) {
 
         try {
@@ -2359,7 +2329,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
             @Override
             public void run() {
                 mKaraokeController.getPlayerStatus().playingType = 5;
-                if (DiskFileUtil.is901()) {
+                if (BnsConfig.is901()) {
                     if (player != null) {
                         try {
                             player.playUrl(ServerFileUtil.getFileUrl(AdDefault.getScoreResultVideo()), AdDefault.getScoreResultVideo(), null, BnsConfig.NORMAL);
@@ -2370,45 +2340,15 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     }
                 } else {
                     if (player_cx != null) {
-//                        Song secSong = ChooseSongs.getInstance(getApplicationContext()).getSecSong();
                         player_cx.playUrl(ServerFileUtil.getFileUrl(AdDefault.getScoreResultVideo()), AdDefault.getScoreResultVideo(), ServerFileUtil.getFileUrl(AdDefault.getScoreResultVideo()), null, BnsConfig.NORMAL);
                     }
                 }
+                mTvPlayerPause.postDelayed(runShowScoreResult, 3000);
             }
         });
-        mSongScore = score;
-        mScorePercent = score;
-        mScoreSong = song;
-        requestResult(song, score);
-
-        mTvPlayerPause.postDelayed(runShowScoreResult, 3000);
-
+        SongScoreRanking.getInstance().setPlaySonginfo(song, score);//记录评分的歌信息
+        SongHelper.getInstance(Main.this, null).QueryScoreRanking(song.ID, score);//提交数据查询排名
         mPlayingSong = null;
-    }
-
-    private void requestResult(final Song song, final int score) {
-        HttpRequest request = new HttpRequest(getApplicationContext(), RequestMethod.GET_GRADE_RECORD);
-        request.addParam("SongID", song.ID);
-        request.addParam("Score", score + "");
-        request.setHttpRequestListener(new HttpRequestListener() {
-            @Override
-            public void onStart(String method) {
-            }
-
-            @Override
-            public void onSuccess(String method, Object object) {
-                try {
-                    mScorePercent = (int) (Float.valueOf(object.toString()) * 100);
-                } catch (Exception e) {
-                    Logger.d(getClass().getSimpleName(), "requestResult ex:" + e.toString());
-                }
-            }
-
-            @Override
-            public void onFailed(String method, String error) {
-            }
-        });
-        request.doPost(0);
     }
 
 
@@ -2443,7 +2383,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void initCurrentMode() {
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player != null && player.getCurrentPosition() < 5 * 1000) {
                 mTvPlayerPause.postDelayed(new Runnable() {
                     @Override
@@ -2477,7 +2417,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void onOriginal(boolean showOnScreen) {
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player != null)
                 player.onOriginal(mAudioChannelFlag);
         } else {
@@ -2490,7 +2430,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void onAccom(boolean showOnScreen) {
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player != null)
                 player.onAccom(mAudioChannelFlag);
         } else {
@@ -2503,7 +2443,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void initVol() {
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player != null)
                 player.setVol(mVolPercent);
         } else {
@@ -2517,7 +2457,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
         int mode = mKaraokeController.getPlayerStatus().scoreMode;
         if (mPresentation != null) {
             if (mPlayingSong != null && "1".equals(mPlayingSong.IsGradeLib)) {
-                if (DiskFileUtil.is901()) {
+                if (BnsConfig.is901()) {
                     if (player != null)
                         player.setScoreOn(mode);
                 } else {
@@ -2527,7 +2467,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                 mPresentation.showScoreView(mode);
             } else {
                 mPresentation.showScoreView(0);
-                if (DiskFileUtil.is901()) {
+                if (BnsConfig.is901()) {
                     if (player != null)
                         player.setScoreOn(0);
                 } else {
@@ -2570,27 +2510,24 @@ public class Main extends BaseActivity implements View.OnClickListener,
     }
 
     private void volOn() {
-        if (DiskFileUtil.is901()) {
-            if (player != null)
-                player.volOn();
-        } else {
-            if (player_cx != null)
-                player_cx.volOn();
+        if (BnsConfig.is901()) {
+            if (player != null) player.volOn();
+            return;
         }
+        if (player_cx != null) player_cx.volOn();
+
     }
 
     private void volOff() {
-        if (DiskFileUtil.is901()) {
-            if (player != null)
-                player.volOff();
-        } else {
-            if (player_cx != null)
-                player_cx.volOff();
+        if (BnsConfig.is901()) {
+            if (player != null) player.volOff();
+            return;
         }
+        if (player_cx != null) player_cx.volOff();
     }
 
     private void play() {
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player != null) {
                 player.play();
                 mKaraokeController.getPlayerStatus().isPlaying = true;
@@ -2598,20 +2535,19 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mPresentation.tipOperation(0, 0, true);
                 }
             }
-        } else {
-            if (player_cx != null) {
-                player_cx.play();
-                mKaraokeController.getPlayerStatus().isPlaying = true;
-                if (mPresentation != null) {
-                    mPresentation.tipOperation(0, 0, true);
-                }
+            return;
+        }
+        if (player_cx != null) {
+            player_cx.play();
+            mKaraokeController.getPlayerStatus().isPlaying = true;
+            if (mPresentation != null) {
+                mPresentation.tipOperation(0, 0, true);
             }
         }
-
     }
 
     private void pause() {
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player != null) {
                 player.pause();
                 mKaraokeController.getPlayerStatus().isPlaying = false;
@@ -2619,13 +2555,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     mPresentation.tipOperation(R.drawable.main_bottom_bar_pause_p, R.string.pause, false);
                 }
             }
-        } else {
-            if (player_cx != null) {
-                player_cx.pause();
-                mKaraokeController.getPlayerStatus().isPlaying = false;
-                if (mPresentation != null) {
-                    mPresentation.tipOperation(R.drawable.main_bottom_bar_pause_p, R.string.pause, false);
-                }
+            return;
+        }
+        if (player_cx != null) {
+            player_cx.pause();
+            mKaraokeController.getPlayerStatus().isPlaying = false;
+            if (mPresentation != null) {
+                mPresentation.tipOperation(R.drawable.main_bottom_bar_pause_p, R.string.pause, false);
             }
         }
     }
@@ -2634,43 +2570,42 @@ public class Main extends BaseActivity implements View.OnClickListener,
      * 重播
      */
     private void replay() {
-        if (DiskFileUtil.is901()) {
-            if (player != null) {
-                Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
-                if (song != null) {
-                    if (BoughtMeal.getInstance().isBuySong()) {
-                        Logger.d(TAG, "next 2>>>>>>>");
-                        BoughtMeal.getInstance().checkLeftSong();
-                    }
-                    playSong(song);
-                } else {
-                    try {
-                        player.replay();
-                    } catch (IOException e) {
-                        ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
-                        Logger.w(TAG, "playSong ex:" + e.toString());
-                    }
+        //音乐恒设备
+        if (BnsConfig.is901()) {
+            if (player.equals(null)) return;
+            Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
+            if (song != null) {
+                if (BoughtMeal.getInstance().isBuySong()) {
+                    Logger.d(TAG, "next 2>>>>>>>");
+                    BoughtMeal.getInstance().checkLeftSong();
+                }
+                playSong(song);
+            } else {
+                try {
+                    player.replay();
+                } catch (IOException e) {
+                    ToastUtils.toast(Main.mMainActivity, getString(R.string.play_error));
+                    Logger.w(TAG, "playSong ex:" + e.toString());
                 }
             }
-        } else {
-            if (player_cx != null) {
-                Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
-                if (song != null) {
-                    if (BoughtMeal.getInstance().isBuySong()) {
-                        Logger.d(TAG, "next 2>>>>>>>");
-                        BoughtMeal.getInstance().checkLeftSong();
-                    }
-                    playSong(song);
-                } else {
-                    player_cx.replay();
-                }
-            }
+            return;
         }
-
+        //晨芯设备
+        if (player_cx.equals(null)) return;
+        Song song = ChooseSongs.getInstance(getApplicationContext()).getFirstSong();
+        if (song != null) {
+            if (BoughtMeal.getInstance().isBuySong()) {
+                Logger.d(TAG, "next 2>>>>>>>");
+                BoughtMeal.getInstance().checkLeftSong();
+            }
+            playSong(song);
+        } else {
+            player_cx.replay();
+        }
     }
 
     private void setTone(int tone) {
-        if (DiskFileUtil.is901()) {
+        if (BnsConfig.is901()) {
             if (player != null) {
                 player.setTone(tone);
             }
@@ -2689,9 +2624,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
         } else {
             mTvPlayerPause.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.selector_main_play, 0, 0);
             //单机版不限制暂停次数
-            if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-                popPauseTipView();
-            }
+//            if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+            popPauseTipView();
+//            }
         }
         mTvPlayerPause.setText(isPlaying ? R.string.pause : R.string.play);
         updateOriAccStatus(playerStatus);
@@ -2873,8 +2808,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
         super.onPause();
     }
 
+    /**
+     *
+     */
     private void restoreUserInfo() {
-        mQureyHelper.queryUser().post();
+        Log.d(TAG, "mQureyHelper.queryUser restoreUserInfo");
+        mQureyHelper.queryUser();
         checkMic();
     }
 
@@ -2883,7 +2822,8 @@ public class Main extends BaseActivity implements View.OnClickListener,
         long lasttime = PrefData.getLastTime(Main.this);
         long currenttime = System.currentTimeMillis();
 //        Log.e("test", "lasttime:" + lasttime / (60 * 1000) + "分钟" + "   " + "currenttime：" + currenttime / (60 * 1000) + "分钟");
-        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false) && currenttime - lasttime > Common.timelimit) {
+//        if (!PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false) && currenttime - lasttime > Common.timelimit) {
+        if (!PrefData.getIsSingle(Main.mMainActivity) && currenttime - lasttime > Common.timelimit) {
 //            Log.e("test", "关机超过5小时后，套餐清0");
             ChooseSongs.getInstance(getApplication()).cleanChoose();
             BoughtMeal.getInstance().clearMealInfo();
@@ -2952,8 +2892,13 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
     }
 
+
+    /**
+     * 显示...
+     */
     private void showPayService() {
         CommonDialog dialog = CommonDialog.getInstance();
+        Logger.d(getClass().getSimpleName(), "showPayService:" + "OK");
         if (!dialog.isAdded()) {
             dialog.setShowClose(true);
             dialog.setContent(FmPaySevice.createPaySeviceFragment());
@@ -2993,23 +2938,25 @@ public class Main extends BaseActivity implements View.OnClickListener,
             @Override
             public void onFeedback(boolean suceed, String msg, Object obj) {
                 hideTips();
-                if (suceed) {
-                    if (obj != null && obj instanceof KBox) {
-                        if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
-                            ll_service.setVisibility(View.GONE);
-                            mTvBuy.setVisibility(View.GONE);
-                        } else {
+                if (!suceed) {
+                    ToastUtils.toast(getApplicationContext(), msg);
+                    return;
+                }
 
-                            if (Common.isEn) {
-                                ll_service.setVisibility(View.GONE);
-                            } else {
-                                ll_service.setVisibility(View.VISIBLE);
-                            }
-                            mTvBuy.setVisibility(View.VISIBLE);
+                if (obj != null && obj instanceof KBox) {
+//                    if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+                    if (PrefData.getIsSingle(Main.mMainActivity)) {
+                        ll_service.setVisibility(View.GONE);
+                        mTvBuy.setVisibility(View.GONE);
+                    } else {
+
+                        if (Common.isEn) {
+                            ll_service.setVisibility(View.GONE);
+                        } else {
+                            ll_service.setVisibility(View.VISIBLE);
                         }
-                        ToastUtils.toast(getApplicationContext(), msg);
+                        mTvBuy.setVisibility(View.VISIBLE);
                     }
-                } else {
                     ToastUtils.toast(getApplicationContext(), msg);
                 }
             }
@@ -3078,12 +3025,14 @@ public class Main extends BaseActivity implements View.OnClickListener,
         }
     }
 
+    /**
+     * 重置密码操作
+     */
     private void checkUsbKey() {
         boolean isStore = UsbFileUtil.isUsbExitBoxKey();
-        if (isStore) {
-            PrefData.setPassword(this, "666888");
-            Toast.makeText(this, getString(R.string.kbox_reset_psw), Toast.LENGTH_LONG).show();
-        }
+        if (!isStore) return;
+        PrefData.setPassword(this, "666888");
+        Toast.makeText(this, getString(R.string.kbox_reset_psw), Toast.LENGTH_LONG).show();
     }
 
     private long preCall = 0;
@@ -3091,21 +3040,20 @@ public class Main extends BaseActivity implements View.OnClickListener,
     @Override
     public void onRecordData(byte[] data, int bufSize) {
 //        Logger.d(TAG, "onRecordData len:" + data.length + "  bufSize:" + bufSize);
-        if (mPresentation != null) {
-            if (mPresentation.getWidgetScore().isShown()) {
-                mPresentation.getWidgetScore().stopFlake();
-                long cur = System.currentTimeMillis();
-                if (cur - preCall >= 200) {
-                    byte[] bytes = new byte[bufSize];
-                    System.arraycopy(data, 0, bytes, 0, bufSize);
-                    int decibel = calculateDecibel(bytes, bufSize);
+        if (mPresentation == null) return;
+        if (!mPresentation.getWidgetScore().isShown()) {
+            mPresentation.getWidgetScore().stopFlake();
+            return;
+        }
+        mPresentation.getWidgetScore().stopFlake();
+        long cur = System.currentTimeMillis();
+        if (cur - preCall >= 200) {
+            byte[] bytes = new byte[bufSize];
+            System.arraycopy(data, 0, bytes, 0, bufSize);
+            int decibel = calculateDecibel(bytes, bufSize);
 //                    Logger.d(TAG, "onRecordData calculateDecibel decibel:" + decibel);
-                    mPresentation.getWidgetScore().setVisualizerData(decibel);
-                    preCall = cur;
-                }
-            } else {
-                mPresentation.getWidgetScore().stopFlake();
-            }
+            mPresentation.getWidgetScore().setVisualizerData(decibel);
+            preCall = cur;
         }
     }
 
@@ -3277,7 +3225,7 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     if (mPresentation == null) {
                         return;
                     }
-                    if (time > 10 && windowsfocus && DiskFileUtil.is901()) {
+                    if (time > 10 && windowsfocus && BnsConfig.is901()) {
                         showSurf();
                     } else {
                         time++;
@@ -3340,6 +3288,9 @@ public class Main extends BaseActivity implements View.OnClickListener,
         return super.onKeyUp(keyCode, event);
     }
 
+    /**
+     * 点击屏幕时，分析
+     */
     private void TouchScreen() {
         ChooseSongs chooseSongs = ChooseSongs.getInstance(getApplicationContext());
         hideSurf();
@@ -3348,18 +3299,24 @@ public class Main extends BaseActivity implements View.OnClickListener,
             handler.sendEmptyMessage(HandlerSystem.MSG_RESET);
             handler.sendEmptyMessageDelayed(HandlerSystem.MSG_UPDATE_TIME, 100);
         }
-//        if (!PrefData.getLastAuth(Main.this)) {
-//            restartHeat();
-//        }
-//        Log.e("test","curTime:"+System.currentTimeMillis()+"|lastTime:"+PrefData.getLastTime(Main.this)+"|相差:"+String.valueOf(System.currentTimeMillis()-PrefData.getLastTime(Main.this)));
+
+        /**
+         * 长时间不联网或联网后跟据时间分析
+         * */
+        long sysTimeMillis = System.currentTimeMillis();
+        long minTime = 1573984730 * 1000;//限制系统时间最小为2019/11/17号，小于当前时间不做处理
+        sysTimeMillis = (sysTimeMillis > minTime) ? sysTimeMillis : minTime;
+        long lastTime = PrefData.getLastTime(Main.this);
+        lastTime = lastTime > minTime ? lastTime : minTime;
+        Log.d(TAG, "System.currentTimeMillis " + sysTimeMillis);
         if (NetWorkUtils.isNetworkAvailable(Main.this)) {
-            if (System.currentTimeMillis() - PrefData.getLastTime(Main.this) > 10 * 60 * 60 * 1000) {
+            if (sysTimeMillis - lastTime > 10 * 60 * 60 * 1000) {
                 PrefData.setAuth(Main.this, false);
                 KBoxStatusInfo.getInstance().setKBoxStatus(null);
                 ToastUtils.toast(getApplicationContext(), getString(R.string.device_auth_fail));
             }
         } else {
-            if (System.currentTimeMillis() - PrefData.getLastTime(Main.this) > 10 * 60 * 1000) {
+            if (sysTimeMillis - lastTime > 10 * 60 * 1000) {
                 PrefData.setAuth(Main.this, false);
                 KBoxStatusInfo.getInstance().setKBoxStatus(null);
                 ToastUtils.toast(getApplicationContext(), getString(R.string.device_auth_fail));

@@ -71,6 +71,8 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
     private Handler mHandlerVolInit = new Handler();
     private ScheduledExecutorService mScheduledExecutorService;
 
+    private String SourcePath;//当前播放的资源路径
+
 
     public OriginPlayer(SurfaceView surfaceView, SurfaceView minor, BeidouPlayerListener l, int surfaceWidth, int surfaceHeight) {
         mBeidouPlayerListener = l;
@@ -581,5 +583,9 @@ public class OriginPlayer implements IAudioRecordListener, OnKeyInfoListener, Be
         if (mOnKeyInfoListener != null) {
             mOnKeyInfoListener.onRecordData(data, bufSize);
         }
+    }
+
+    public String getPlayingSourcePath(){
+        return  SourcePath;
     }
 }

@@ -13,6 +13,7 @@ import com.beidousat.libbns.upgrade.AppUpgrader;
 import com.beidousat.libbns.upgrade.SystemUpgrader;
 import com.beidousat.libbns.util.DiskFileUtil;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.BnsConfig;
 import com.czt.mp3recorder.AudioRecordFileUtil;
 
 import java.util.concurrent.Executors;
@@ -38,7 +39,7 @@ public class LanService extends Service {
 
         AppUpgrader appUpgrader = new AppUpgrader(getApplicationContext());
 
-        appUpgrader.checkVersion(!DiskFileUtil.is901() ? 18 : 24);
+        appUpgrader.checkVersion(!BnsConfig.is901() ? 18 : 24);
 
         AudioRecordFileUtil.deleteRecordFiles();
 //        startScreenTimer();
@@ -137,7 +138,7 @@ public class LanService extends Service {
 
             }
         });
-        systemUpgrader.checkVersion(!DiskFileUtil.is901() ? 19 : 23);
+        systemUpgrader.checkVersion(!BnsConfig.is901() ? 19 : 23);
     }
 
     private void startScreenTimer() {

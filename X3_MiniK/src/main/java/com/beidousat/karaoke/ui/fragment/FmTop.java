@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ public class FmTop extends BaseFragment implements AdtTopType.OnTopTypeSelectLis
     private TextView mTvPages;
     private int mCurPage = 0;
     private Map<String, String> mRequestParam;
+    private String Tag= "FmTop";
 
 
     @Nullable
@@ -98,11 +100,9 @@ public class FmTop extends BaseFragment implements AdtTopType.OnTopTypeSelectLis
         }else{
             resId = new int[]{R.drawable.selector_top_total, R.drawable.selector_top_month, R.drawable.selector_top_day, R.drawable.selector_top_mandarin, R.drawable.selector_top_cantonese};
         }
-
         mAdtTopType.setData(resId);
 
         mRvTopType.setAdapter(mAdtTopType);
-
         requestSongs(1);
     }
 
@@ -117,11 +117,11 @@ public class FmTop extends BaseFragment implements AdtTopType.OnTopTypeSelectLis
 
 
     public void initSongPager(int totalPage, List<Song> firstPageSong, Map<String, String> params) {
-        Logger.i(getClass().getSimpleName(), "Current total page:" + totalPage);
+        Logger.i(Tag, "Current total page:" + totalPage);
         mTotalPage = totalPage;
         mCurPage = 0;
         mTvPages.setText((mCurPage + 1) + "/" + mTotalPage);
-        mSongPager.initPager(RequestMethod.SONG_RANKING, mTotalPage, firstPageSong, params);
+        mSongPager.initPager(RequestMethod.SONG_RANKING, mTotalPage, firstPageSong, params);Log.d(Tag,"resId 2");
     }
 
     @Override
@@ -132,7 +132,7 @@ public class FmTop extends BaseFragment implements AdtTopType.OnTopTypeSelectLis
                 initSongPager(songs.totalPages, songs.list, mRequestParam);
             }
         }
-        super.onSuccess(method, object);
+        super.onSuccess(method, object);Log.d(Tag,"resId 3");
     }
 
     @Override
@@ -140,7 +140,7 @@ public class FmTop extends BaseFragment implements AdtTopType.OnTopTypeSelectLis
         super.onFailed(method, error);
         if (RequestMethod.SONG_RANKING.equalsIgnoreCase(method)) {
             if(getContext()!=null) {
-                ToastUtils.toast(getContext().getApplicationContext(), error);
+                ToastUtils.toast(getContext().getApplicationContext(), error);Log.d(Tag,"resId 4");
             }
 //            initSongPager(0, null, mRequestParam);
         }
@@ -152,7 +152,7 @@ public class FmTop extends BaseFragment implements AdtTopType.OnTopTypeSelectLis
         if (position >= 2) {
             type = position + 2;
         }
-        requestSongs(type);
+        requestSongs(type);Log.d(Tag,"resId 5");
     }
 
 
@@ -183,6 +183,6 @@ public class FmTop extends BaseFragment implements AdtTopType.OnTopTypeSelectLis
         mTvPages.setText((mCurPage + 1) + "/" + mTotalPage);
         mSongPager.notifyCurrentPage();
         mTvPre.setPressed(false);
-        mTvNext.setPressed(false);
+        mTvNext.setPressed(false);Log.d(Tag,"resId 6");
     }
 }

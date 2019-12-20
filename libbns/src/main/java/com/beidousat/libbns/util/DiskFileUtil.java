@@ -3,6 +3,7 @@ package com.beidousat.libbns.util;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import com.beidousat.libbns.util.BnsConfig;
 
 import com.beidousat.libbns.model.ServerConfigData;
 
@@ -25,20 +26,15 @@ public class DiskFileUtil {
     public final static String USB_PATH_901 = "/mnt/usb_storage/SATA/C/";
 
     //歌星大图目录
-    private final static String SINGER_IMG_DIR = (is901()?USB_PATH_901:USB_PATH) + "data/Img/SingerImg/";
+    private final static String SINGER_IMG_DIR = (BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + "data/Img/SingerImg/";
 
 
     //歌星缩略图目录
-    private final static String SINGER_THUNB_IMG_DIR = (is901()?USB_PATH_901:USB_PATH) + "data/Img/SingerImg150/";
+    private final static String SINGER_THUNB_IMG_DIR = (BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + "data/Img/SingerImg150/";
 
     //评分文件
-    private final static String GRADE_DIR = (is901()?USB_PATH_901:USB_PATH) + "data/grade/";
+    private final static String GRADE_DIR = (BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + "data/grade/";
 
-
-    public static boolean is901() {
-        String model = android.os.Build.MODEL;
-        return "rk3288_box".equalsIgnoreCase(model);
-    }
     /**
      * 根据URL获取硬盘中文件
      *
@@ -46,14 +42,14 @@ public class DiskFileUtil {
      * @return
      */
     public static File getDiskFileByUrl(String url) {
-        Logger.d(TAG, TAG+"     "+"getDiskFileByUrl url==" + url);
+        Logger.d(TAG, TAG + "     " + "getDiskFileByUrl url==" + url);
         try {
             int indexOf = url.indexOf("data/");
             String path = url.substring(indexOf, url.length());
-            Logger.d(TAG, TAG+"     "+"getDiskFileByUrl path==" + path);
+            Logger.d(TAG, TAG + "     " + "getDiskFileByUrl path==" + path);
 
-            File file = new File((DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH) + path);
-            Logger.d(TAG, TAG+"     "+"getDiskFileByUrl disk file==" + file.getAbsolutePath());
+            File file = new File((BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + path);
+            Logger.d(TAG, TAG + "     " + "getDiskFileByUrl disk file==" + file.getAbsolutePath());
 
             if (file.exists()) {
                 return file;
@@ -64,20 +60,21 @@ public class DiskFileUtil {
         }
         return null;
     }
-      //获取文件相对路径
+
+    //获取文件相对路径
     public static String convertDiskpathToServerPath(String diskPath) {
         if (TextUtils.isEmpty(diskPath)) {
             return null;
         }
         String serverurl = null;
-        if (diskPath.contains(DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH)) {
-            serverurl = diskPath.replace(DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH, "");
+        if (diskPath.contains(BnsConfig.is901() ? USB_PATH_901 : USB_PATH)) {
+            serverurl = diskPath.replace(BnsConfig.is901() ? USB_PATH_901 : USB_PATH, "");
         }
         return serverurl;
     }
 
     public static boolean hasDiskStorage() {
-        File disk = new File(DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH);
+        File disk = new File(BnsConfig.is901() ? USB_PATH_901 : USB_PATH);
         return disk.exists();
     }
 
@@ -90,20 +87,24 @@ public class DiskFileUtil {
     public static String getFileSavedPath(String path) {
         if (TextUtils.isEmpty(path))
             return null;
-        String url="";
+        String url = "";
         try {
             int indexOf = path.indexOf("data/");
             url = path.substring(indexOf, path.length());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            url="";
+            url = "";
         }
 
-        return (DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH) + url;
+        return (BnsConfig.is901() ? USB_PATH_901 : USB_PATH) + url;
     }
 
+    /**
+     * 跟据设备信息，取得根目录
+     * */
+
     public final static String getUsbDiskPath() {
-        return  DiskFileUtil.is901() ? USB_PATH_901 : USB_PATH;
+        return BnsConfig.is901() ? USB_PATH_901 : USB_PATH;
     }
 
     /**
@@ -116,11 +117,11 @@ public class DiskFileUtil {
         }
         File file = new File(SINGER_THUNB_IMG_DIR, fileName);
         if (file != null && file.exists()) {
-            Logger.d(TAG,TAG+"         "+"getSingerThumbnailImg:"+file.getAbsolutePath());
+            Logger.d(TAG, TAG + "         " + "getSingerThumbnailImg:" + file.getAbsolutePath());
             return Uri.fromFile(file);
         }
         String url = (fileName.startsWith("http://") || fileName.startsWith("https://") ? fileName : ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/Img/SingerImg150/" + fileName);
-        Logger.d(TAG,TAG+"         "+"getSingerThumbnailImg:"+url);
+        Logger.d(TAG, TAG + "         " + "getSingerThumbnailImg:" + url);
         return Uri.parse(url);
     }
 
@@ -134,11 +135,11 @@ public class DiskFileUtil {
         }
         File file = new File(SINGER_IMG_DIR, fileName);
         if (file != null && file.exists()) {
-            Logger.d(TAG,TAG+"         "+"getSingerImg:"+file.getAbsolutePath());
+            Logger.d(TAG, TAG + "         " + "getSingerImg:" + file.getAbsolutePath());
             return Uri.fromFile(file);
         }
         String url = (fileName.startsWith("http://") || fileName.startsWith("https://") ? fileName : ServerConfigData.getInstance().getServerConfig().getVod_server() + "data/Img/SingerImg/" + fileName);
-        Logger.d(TAG,TAG+"         "+"getSingerImg:"+url);
+        Logger.d(TAG, TAG + "         " + "getSingerImg:" + url);
         return Uri.parse(url);
     }
 
@@ -153,14 +154,14 @@ public class DiskFileUtil {
     public static File getScoreNote(String songFilePath) {
         String noteFileName = ServerFileUtil.getFileName(songFilePath) + ".txt";
         File fileNote = new File(getGradeDir(), noteFileName);
-        Logger.d(TAG,TAG+"         "+"getScoreNote:"+fileNote.getAbsolutePath());
+        Logger.d(TAG, TAG + "         " + "getScoreNote:" + fileNote.getAbsolutePath());
         return fileNote;
     }
 
     public static File getScoreNoteSec(String songFilePath) {
         String note2 = ServerFileUtil.getFileName(songFilePath) + ".sec.txt";
         File fileNote2 = new File(getGradeDir(), note2);
-        Logger.d(TAG,TAG+"         "+"getScoreNoteSec:"+fileNote2.getAbsolutePath());
+        Logger.d(TAG, TAG + "         " + "getScoreNoteSec:" + fileNote2.getAbsolutePath());
         return fileNote2;
     }
 
@@ -182,6 +183,7 @@ public class DiskFileUtil {
         }
         return null;
     }
+
     /**
      * 根据http url 转为硬盘文件路径
      *
@@ -195,7 +197,7 @@ public class DiskFileUtil {
         try {
             int indexOf = httpPath.indexOf("data/");
             String path = httpPath.substring(indexOf, httpPath.length());
-            Logger.d(TAG, TAG+"   "+"getDiskPathByHttpPath path==" + path);
+            Logger.d(TAG, TAG + "   " + "getDiskPathByHttpPath path==" + path);
             return path;
         } catch (Exception e) {
             e.printStackTrace();

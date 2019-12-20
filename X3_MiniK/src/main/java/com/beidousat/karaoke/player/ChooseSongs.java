@@ -99,7 +99,7 @@ public class ChooseSongs {
     }
 
     private boolean canAddSong() {
-        if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+        if (PrefData.getIsSingle(Main.mMainActivity)) {
             if (PrefData.getLastAuth(mContext)) {
                 return true;
             } else {
@@ -165,7 +165,7 @@ public class ChooseSongs {
             if (mPromptDialog == null || !mPromptDialog.isShowing()) {
                 mPromptDialog = new PromptDialog(Main.mMainActivity);
             }
-            if (PreferenceUtil.getBoolean(Main.mMainActivity, "isSingle", false)) {
+            if (PrefData.getIsSingle(Main.mMainActivity)) {
                 if (R.string.no_pay_service == resId) {
                     mPromptDialog.setPositiveButton(mContext.getString(R.string.pay_for_service), new View.OnClickListener() {
                         @Override

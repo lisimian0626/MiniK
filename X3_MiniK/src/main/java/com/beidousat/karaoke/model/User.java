@@ -4,6 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+import com.beidousat.karaoke.R;
+
+import android.content.Context;
+
 /**
  * author: Hanson
  * date:   2017/4/14
@@ -22,7 +26,13 @@ public class User implements Serializable {
     @SerializedName("language")
     private String Language;    //用户所用语言
 
-    public String getNickName() {
+    public void setNickName(String val) {
+        NickName = val;
+    }
+
+    public String getNickName(Context context) {
+        if (UserId==0)
+            NickName = context.getString(R.string.anonymous);
         return NickName;
     }
 
@@ -34,6 +44,10 @@ public class User implements Serializable {
         return UserId;
     }
 
+    public void setAvatar(String val) {
+        Avatar = val;
+    }
+
     public String getAvatar() {
         return Avatar;
     }
@@ -42,11 +56,10 @@ public class User implements Serializable {
         return Language;
     }
 
-
     public static boolean isEmpty(User user) {
         if (user == null) return true;
-
-        return user.UserId == 0;
+        //return user.UserId == 0;
+        return false;
     }
 
     @Override
@@ -59,6 +72,6 @@ public class User implements Serializable {
             return false;
         User other = (User) obj;
 
-        return  UserId == other.UserId;
+        return UserId == other.UserId;
     }
 }

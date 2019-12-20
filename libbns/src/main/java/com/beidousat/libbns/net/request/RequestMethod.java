@@ -51,7 +51,8 @@ public class RequestMethod {
 
     public static final String GET_SONG_RANKING = "getSongRanking";
 
-    public static final String GET_GRADE_RECORD = "GradeRecord";
+//    public static final String GET_GRADE_RECORD = "GradeRecord";//演唱得分排名
+    public static final String GET_GRADE_RECORD = "play_song/score_order";//演唱得分排名
 
     public static final String MUZIKLAND_LEVEL = "MuziklandLevel";
 
@@ -72,32 +73,6 @@ public class RequestMethod {
      */
     public final static String GET_AD_START_END = "getAdHeadTail";
 
-
-    /**
-     * 创建支付订单
-     */
-//    public static final String CREATE_ORDER = "CreateOrder";
-
-    /**
-     * 查询订单是否支付成功
-     */
-//    public static final String QUERY_ORDER = "QueryOrder";
-
-    /**
-     * 查询用户信息
-     */
-//    public static final String QUERY_USER = "QueryUser";
-
-    /**
-     * 取消订单
-     */
-//    public static final String CANCEL_ORDER = "OrderCancel";
-
-    /**
-     * 录音文件上传
-     */
-    public static final String UPLOAD_RECORD = ServerConfigData.getInstance().getServerConfig().getVod_url() + "m=netbar&a=Record";
-
     /**
      * 排行榜
      * 参数：Type
@@ -105,18 +80,9 @@ public class RequestMethod {
      */
     public static final String SONG_RANKING = "SongRanking";
 
-//    public static final String GET_KBOX = "StoreKbox";
-//public static final String DEVICE_STORE = "Localstore/warehouse";
-    public static final String DEVICE_STORE = "device/push_store";
+    public static final String DEVICE_STORE = "device/push_store";//入库
 
-    public static final String GET_CONFIG = "getConfig";
-
-    public static final String GET_AD_DOOR_MINI = "getAdDoorMini";
-
-    public static final String RECORD_UPLOAD = "Binary";
-
-    public static final String SHARE_HTML_URL = "/share/recording.html?query=";
-
+    public static final String RECORD_UPLOAD = "Binary";//录音上传
 
     /**
      * 屏保广告
@@ -160,7 +126,7 @@ public class RequestMethod {
     /**
      * 获取支付服务费二维码
      */
-    public static final String ORDER_ACCOUNT="Order/change_account";
+    public static final String ORDER_ACCOUNT = "Order/change_account";
     /**
      * 查询支付后的用户信息
      */
@@ -185,18 +151,16 @@ public class RequestMethod {
     /**
      * 房间列表
      */
-    public static final String ROOM_LIST = "Kbox/user_to_list ";
+    public static final String ROOM_LIST = "Kbox/user_to_list ";//通过账号，查询当前账号下的所有可用房号
 
     /**
      * 支付方式
      */
     public static final String PAY_PAYMENT = "Pay/payment";
 
-    public static final String GET_SERVER_CFG="Index/getConfig";
+    public static final String GET_SERVER_CFG = "Index/getConfig";//获取配置文件
 
-    public static final String UPLOAD_SONG="Play_song/set_song";
+    public static final String UPLOAD_SONG = "Play_song/set_song";//演唱歌曲记录
 
-    public static final String BASEPLAY="index/baseplay ";
-
-    public static final String DOWNLOAD_TIMES="Binary/download_times";
+    public static final String DOWNLOAD_TIMES = "Binary/download_times";//下载次数记录
 }

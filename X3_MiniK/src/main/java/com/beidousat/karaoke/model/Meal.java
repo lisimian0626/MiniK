@@ -163,9 +163,9 @@ public class Meal implements Serializable {
     public String getTitle() {
         String str=null;
         if(Common.isEn){
-            str=String.format("%s￥%.2f", "original cost：", getPrice());
+            str=String.format("%s￥%.2f", "original: ", getPrice());
         }else{
-            str=String.format("%s￥%.2f", "原价：", getPrice());
+            str=String.format("%s￥%.2f", "原价: ", getPrice());
         }
         return str;
 

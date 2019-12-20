@@ -139,7 +139,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
         //确保支付的套餐是正确的
         mSelectedMeal.setAmount(payStatus.getAmount());
         mSelectedMeal.setType(payStatus.getType());
-        mQueryOrderHelper.reportCoinPayFinish(mSelectedMeal).post();
+        mQueryOrderHelper.reportCoinPayFinish(mSelectedMeal);
 
         //设置当前购买的套餐
         BoughtMeal.getInstance().setBoughtMeal(mSelectedMeal, payStatus);
@@ -375,7 +375,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                                mQueryOrderHelper.cancelOrder(mSelectedMeal);
                                 Common.lastMoney=0;
                                 Common.TBcount=0;
                             }
@@ -386,7 +386,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             }
                         }, getString(R.string.text_cancel_order_coin2) + String.valueOf(df.format(totoal /100f)) + unit);
             } else {
-                mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                mQueryOrderHelper.cancelOrder(mSelectedMeal);
             }
         } else {
             if (Common.TBcount > 0) {//已投币提示损失
@@ -394,7 +394,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                                mQueryOrderHelper.cancelOrder(mSelectedMeal);
                                 Common.lastMoney=0;
                                 Common.TBcount=0;
                             }
@@ -405,7 +405,7 @@ public class FmTBPayNumber extends FmBaseDialog implements SupportQueryOrder {
                             }
                         }, getString(R.string.text_cancel_order_coin, Common.TBcount));
             } else {
-                mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                mQueryOrderHelper.cancelOrder(mSelectedMeal);
             }
         }
     }

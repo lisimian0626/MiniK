@@ -37,17 +37,17 @@ import java.util.TimerTask;
  * dscribe:
  */
 
-public class FmPayCard extends FmBaseDialog implements View.OnClickListener,SupportQueryOrder{
-//    private TextView mTvMoney;
-    private TextView mTvMeal,mTvMoney;
+public class FmPayCard extends FmBaseDialog implements View.OnClickListener, SupportQueryOrder {
+    //    private TextView mTvMoney;
+    private TextView mTvMeal, mTvMoney;
     private ImageView iv_qrcode;
     private ImageView mIvback;
     private AlertDialog mConfirmDlg;
     private Meal mSelectedMeal;
     private QueryOrderHelper mQueryOrderHelper;
-//
+    //
     private Timer mQueryTimer = new Timer();
-//
+    //
     private final static int HTTP_REQUEST_MSG = 1;
     private final static int CLOSE_DIALOG = 2;
 
@@ -56,7 +56,7 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case HTTP_REQUEST_MSG:
-                    mQueryOrderHelper.queryOrder(mSelectedMeal).post();
+                    mQueryOrderHelper.queryOrder(mSelectedMeal);
                     break;
                 case CLOSE_DIALOG:
                     if (mConfirmDlg != null)
@@ -79,7 +79,7 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
 
     public final static String MEAL_TAG = "SelectedMeal";
     public final static String TYPE_TAG = "type";
-//
+    //
     private String mType;
 
 
@@ -99,20 +99,18 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
 
     @Override
     void initView() {
-        mIvback=findViewById(R.id.paycard_iv_back);
-        iv_qrcode=findViewById(R.id.iv_qrcode);
+        mIvback = findViewById(R.id.paycard_iv_back);
+        iv_qrcode = findViewById(R.id.iv_qrcode);
         iv_qrcode.setImageBitmap(QrCodeUtil.createQRCode(mSelectedMeal.getQrcode()));
         mIvback.setOnClickListener(this);
         mTvMeal = findViewById(R.id.tv_selected_meal);
         mTvMeal.setText(getResources().getString(R.string.text_selected_pay_meal,
                 mSelectedMeal.getAmount(), mSelectedMeal.getUnit()));
 //        lin_paycard_succed=findViewById(R.id.lin_paycard_succed);
-        mTvMoney=findViewById(R.id.tv_money);
+        mTvMoney = findViewById(R.id.tv_money);
         mTvMoney.setText(String.valueOf(mSelectedMeal.getPrice()));
 
     }
-
-
 
 
     @Override
@@ -126,13 +124,12 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
     }
 
 
-
     private void showConfirmDialog() {
         mConfirmDlg = DialogFactory.showCancelOrderDialog(getContext(),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+                        mQueryOrderHelper.cancelOrder(mSelectedMeal);
                     }
                 }, new DialogInterface.OnClickListener() {
                     @Override
@@ -202,15 +199,15 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
 
     @Override
     public void onClick(View v) {
-     switch (v.getId()){
-         case R.id.paycard_iv_back:
-             CommonDialog dialog = CommonDialog.getInstance();
-             dialog.onBackPressed();
-             break;
-     }
+        switch (v.getId()) {
+            case R.id.paycard_iv_back:
+                CommonDialog dialog = CommonDialog.getInstance();
+                dialog.onBackPressed();
+                break;
+        }
     }
 
-    private void payCard(String orderSn,String cardCode) {
+    private void payCard(String orderSn, String cardCode) {
         StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_CARD);
         request.setStoreHttpRequestListener(this);
         request.addParam("order_sn", orderSn);
@@ -218,6 +215,7 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
         request.setConvert2Class(PayResult.class);
         request.post();
     }
+
     @Override
     public void onStoreStart(String method) {
         LoadingUtil.showLoadingDialog(Main.mMainActivity);
@@ -227,8 +225,8 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
     @Override
     public void onStoreSuccess(String url, Object object) {
         LoadingUtil.closeLoadingDialog();
-        PayResult payResult= (PayResult) object;
-        if(payResult.getIs_pay()==0){
+        PayResult payResult = (PayResult) object;
+        if (payResult.getIs_pay() == 0) {
             CommonDialog dialog = CommonDialog.getInstance();
             dialog.onBackPressed();
         }
@@ -243,8 +241,8 @@ public class FmPayCard extends FmBaseDialog implements View.OnClickListener,Supp
     public void onStoreFailed(String url, String error) {
         LoadingUtil.closeLoadingDialog();
 //        Log.e("test","error:"+error);
-        if(getContext()!=null){
-            ToastUtils.toast(getContext(),error);
+        if (getContext() != null) {
+            ToastUtils.toast(getContext(), error);
         }
         super.onStoreFailed(url, error);
     }

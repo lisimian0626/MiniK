@@ -33,6 +33,8 @@
     <string name="menu_bill">账单</string>
     <string name="handwriting">手写</string>
     <string name="number">数字</string>
+    <string name="anonymous">匿名</string>
+    <string name="nologin">登陆</string>
 
     <string name="search_all">快速搜索</string>
     <string name="choose_x">已点<Data><![CDATA[ <b><font color="#f4d573">%d</font></b> ]]></Data>首</string>
@@ -146,7 +148,7 @@
     <string name="pls_input_mng_pwd">请输入管理密码</string>
     <string name="wrong_pwd">密码错误</string>
     <string name="mic">话筒</string>
-    <string name="copyright">Copyright © 2015-2018 BNS. All Rights Reserved.</string>
+    <string name="copyright">Copyright © 2015-2020 BNS. All Rights Reserved.</string>
 
     <string name="gift_choose">赠品选择</string>
     <string name="package_detail">套餐详情</string>
@@ -243,7 +245,7 @@
     <string name="tv_show_setting">电视屏显示设置</string>
     <string name="back_to_ktv">返回点歌</string>
     <string name="ktv_name">星娱KTV</string>
-    <string name="android_setting">安卓系统界面</string>
+    <string name="android_setting">系统设置</string>
     <string name="order_submit_success">下单成功</string>
     <string name="upload_mv_x">上传了自制MV《%1$s》</string>
     <string name="invitation_x">邀请%1$s合唱 《%2$s》</string>
@@ -287,17 +289,19 @@
     <string name="text_pay_scan">扫码支付</string>
     <string name="text_pay_tb_scan">代币支付</string>
     <string name="text_choose_pay">选择支付方式</string>
-    <string name="text_pay_zhifubao">支付宝支付</string>
-    <string name="text_pay_weixin">微信支付</string>
-    <string name="text_pay_toubi">投币支付</string>
-    <string name="text_pay_octo">八达通支付</string>
-    <string name="text_pay_card">礼品卡支付</string>
+    <string name="text_pay_zhifubao">支付宝</string>
+    <string name="text_pay_weixin">微信</string>
+    <string name="text_pay_unionpay">云闪付</string>
+    <string name="text_pay_toubi">投币</string>
+    <string name="text_pay_octo">八达通</string>
+    <string name="text_pay_card">礼品卡</string>
     <string name="cancle_pay">正在取消订单...</string>
     <string name="input_limit">请输入16位有效卡密</string>
     <string name="paycard_fail">礼品卷余额不足</string>
     <string name="text_selected_pay_meal">已选套餐：%1$d%2$s</string>
-    <string name="text_pay_prompt">请用微信扫描左侧二维码付款</string>
-    <string name="text_pay_prompt_zhifubao">请用支付宝扫描左侧二维码付款</string>
+    <string name="text_pay_prompt_unionpay">请用 云闪付 扫描左侧二维码付款</string>
+    <string name="text_pay_prompt">请用 微信 扫描左侧二维码付款</string>
+    <string name="text_pay_prompt_zhifubao">请用 支付宝 扫描左侧二维码付款</string>
     <string name="text_money_unit">￥</string>
     <string name="text_back">返回</string>
     <string name="text_music_name">歌曲</string>
@@ -347,7 +351,7 @@
     <string name="checking_network">网络检测中...</string>
     <string name="init_system">系统正在初始化...</string>
     <string name="device_auth">设备授权中...</string>
-    <string name="getting_box_info">正在获取KBox信息...</string>
+    <string name="getting_box_info">正在获取信息...</string>
     <string name="setting">设置</string>
     <string name="enter_store_success">入库成功！</string>
     <string name="enter_store_fail">入库失败：%1$s</string>
@@ -356,6 +360,8 @@
     <string name="language_different">语言包设置成功需重启应用才可生效</string>
     <string name="serial_different">修改串口需重启应用才可生效</string>
     <string name="reboot">重启</string>
+
+    <string name="loading_video">正在加载...</string>
 
     <string name="baudrate_format">波特率应为数字</string>
     <string name="reverb">混响</string>
@@ -390,7 +396,7 @@
     <string name="toast_network_error">网络连接异常，请检查网络</string>
     <string name="language">语言</string>
 
-    //infrared
+    <!--//infrared-->
     <string name="infrared_setting">红外设置</string>
     <string name="infrared_open">开</string>
     <string name="infrared_close">关</string>
@@ -402,7 +408,7 @@
 
     <string name="cfg_retry">重试</string>
     <string name="room_et_input">请输入手机号</string>
-    <string name="checking_kbox_error">获取kox信息失败,请检查房间号设置是否有误</string>
+    <string name="checking_kbox_error">获取房间信息失败,请检查房间号设置是否有误</string>
     <string name="checking_network_error">网络连接失败,请检查网络</string>
     <string name="getting_config_error">获取配置文件失败,请重试</string>
     <string name="room_select">选择房间</string>
@@ -415,7 +421,7 @@
     <string name="password_confirm">请确认密码</string>
     <string name="room_repeat">房间号没有改变</string>
 
-
+    <!--效果器-->
     <string name="Porter_rate">波特率</string>
     <string name="Reset">重 置</string>
     <string name="MIC_UP">麦克风+</string>
@@ -432,7 +438,10 @@
     <string name="kbox_reset_psw">重置机顶盒密码完成</string>
     <string name="has_order">已点</string>
     <string name="has_sing">已唱</string>
-    //温度
+    <string name="sound_effects_brand">效果器品牌</string>
+    <string name="mixing_vol_label">混响</string>
+    <string name="mic_vol_label">麦克风</string>
+    <!--//温度-->
     <string name="infrared_reset">清除所有</string>
     <string name="twenty_one">21℃</string>
     <string name="twenty_two">22℃</string>
@@ -443,7 +452,7 @@
     <string name="twenty_seven">27℃</string>
     <string name="twenty_eight">28℃</string>
     <string name="twenty_night">29℃</string>
-    //风速
+    <!--//风速-->
     <string name="wind_auto">自动</string>
     <string name="wind_high">高</string>
     <string name="wind_mid">中</string>
@@ -460,7 +469,7 @@
     <string name="infrared_confirm_tips">重置红外学习信号需要重新学习\n否则将导致空调遥控不可用</string>
     <string name="infrared_study_success">学习成功</string>
     <string name="infrared_study_fail">学习失败</string>
-    //heartbeat
+    <!--//heartbeat-->
     <string name="room_not_exist">包房信息不存在</string>
     <string name="room_closed">包房已停止营业</string>
     <string name="unpaid_service" >未交服务费</string>
@@ -472,23 +481,23 @@
     <string name="room_number_error">房间编号冲突，或给占用</string>
     <string name="unknow_error">未知错误</string>
     <string name="room_succed">房间设置成功</string>
-    //下载歌曲
+    <!--//下载歌曲-->
     <string name="downloan_time_out">网络超时!</string>
     <string name="download_fail">下载失败</string>
     <string name="download_waiting">等待下载</string>
     <string name="download_error_waiting">下载歌曲过多，请等待下载完成再试</string>
-    //Octo
+    <!--//Octo-->
     <string name="octo_check">请稍候,正在连接八达通主机...</string>
     <string name="octo_error">八达通故障</string>
     <string name="octo_nomal">请刷八达通.</string>
     <string name="octo_paysucced">支付成功.</string>
     <string name="octo_payfail">支付失败.</string>
     <string name="octo_canclepay">取消支付...</string>
-    //upd
+    <!--//upd-->
 
     <string name="error_setting">设置有误</string>
 
-    //Serial
+    <!--//Serial-->
     <string name="serial_RJ45">RJ45接口</string>
     <string name="serial_down">左下角耳机</string>
     <string name="serial_up">左上角耳机</string>
@@ -497,5 +506,13 @@
     <string name="serial_oct">纸钞机</string>
     <string name="download_tips">正在下载:%s</string>
     <string name="qrcode_tips">微信扫码点歌</string>
+
+    <!--//效果器品牌-->
+    <string name="brand_xfive">X5</string>
+    <string name="brand_amda">阿曼达</string>
+
+    <!--用户登陆-->
+    <string name="login_tips">使用微信扫码即可登陆</string>
+    <string name="to_loginout">退出登陆</string>
 </resources>
 

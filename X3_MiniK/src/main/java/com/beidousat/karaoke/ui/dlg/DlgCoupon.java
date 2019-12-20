@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.beidousat.karaoke.R;
 import com.beidousat.karaoke.data.BoughtMeal;
+import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.karaoke.model.CouponDetail;
@@ -34,6 +35,7 @@ import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.ListUtil;
 import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.QrCodeUtil;
 import com.beidousat.libwidget.image.RecyclerImageView;
 import com.beidousat.libwidget.recycler.HorizontalDividerItemDecoration;
 import com.beidousat.libwidget.recycler.VerticalDividerItemDecoration;
@@ -44,24 +46,24 @@ import java.util.List;
 
 public class DlgCoupon extends BaseDialog implements View.OnClickListener, StoreHttpRequestListener {
 
-    private final String TAG = DlgCoupon.class.getSimpleName();
+    private final String TAG = "DlgCoupon";
     private View mViewInput, mViewDetail, mViewProgress;
-    private TextView tvDlgTitle;
+    private TextView tvDlgTitle,vScanTips;
     private EditText mEtInput;
     private Button button;
     private TextView tvRmb, tvValue, tvUnit, tvCouponName, tvLimit, tvNotice, tvTitle, tvDetail, tvTime;
     private RecyclerView mRvKeyboard;
     private TextView mTvErrTip, mTvProgress;
     private ProgressBar mProgressBar;
-    private RecyclerImageView mRivStatus;
+    private RecyclerImageView mRivStatus, mRivQrcode;//状态图片、领券二维码
     //优惠券类型 1.折扣卷 ,代金卷 使用后转到支付界面支付时候抵扣;2.礼品卷 使用后直接生效
-    private int ticket_type=-1;
+    private int ticket_type = -1;
     private CouponDetail couponDetail;
+
     public DlgCoupon(Context context) {
         super(context, R.style.MyDialog);
         init();
     }
-
 
 
     void init() {
@@ -72,6 +74,7 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
         lp.height = getContext().getResources().getInteger(R.integer.preview_h);
         lp.gravity = Gravity.CENTER;
         getWindow().setAttributes(lp);
+        vScanTips = (TextView) findViewById(R.id.scan_tips);
         tvDlgTitle = (TextView) findViewById(android.R.id.title);
         mViewInput = findViewById(android.R.id.inputArea);
         mViewDetail = findViewById(android.R.id.extractArea);
@@ -95,6 +98,7 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
         mTvProgress = (TextView) findViewById(android.R.id.text1);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mRivStatus = (RecyclerImageView) findViewById(R.id.riv_status);
+        mRivQrcode = (RecyclerImageView) findViewById(R.id.riv_coupon);
 
         HorizontalDividerItemDecoration horDivider = new HorizontalDividerItemDecoration.Builder(getContext())
                 .color(Color.TRANSPARENT).size(15).margin(15, 15)
@@ -113,6 +117,9 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
         mRvKeyboard.setAdapter(adapter);
         adapter.setData(ListUtil.array2List(getContext().getResources().getStringArray(R.array.keyboard_numbers)));
 
+        mRivQrcode.setImageBitmap(QrCodeUtil.createQRCode(KBoxInfo.WEBVIEW+"shareCoupon?bybox="+PrefData.getRoomCode(getContext())));
+        vScanTips.setVisibility(View.VISIBLE);
+
         mEtInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(19)});
         mEtInput.addTextChangedListener(new TextWatcher() {
             int beforeTextLength = 0;
@@ -122,6 +129,7 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
             private char[] tempChar;
             private StringBuffer buffer = new StringBuffer();
             int konggeNumberB = 0;
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 beforeTextLength = charSequence.length();
@@ -197,6 +205,7 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
         });
 
     }
+
     //显示卡卷信息
     private void setCouponDetail(CouponDetail detail) {
         if (detail != null) {
@@ -211,13 +220,13 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
 
             button.setText("马上使用");
             if (!TextUtils.isEmpty(detail.use_date_str))
-                tvTime.setText("有效时间:"+detail.use_date_str);
+                tvTime.setText("有效时间:" + detail.use_date_str);
 
-            if (!TextUtils.isEmpty(detail.limit)){
-                if(detail.limit.equalsIgnoreCase("0")){
+            if (!TextUtils.isEmpty(detail.limit)) {
+                if (detail.limit.equalsIgnoreCase("0")) {
                     tvLimit.setText("无限制");
-                }else {
-                    tvLimit.setText("最低消费"+BigDecimal.valueOf(Long.valueOf(detail.limit)).divide(new BigDecimal(100)).toString()+"元");
+                } else {
+                    tvLimit.setText("最低消费" + BigDecimal.valueOf(Long.valueOf(detail.limit)).divide(new BigDecimal(100)).toString() + "元");
                 }
             }
 
@@ -225,29 +234,29 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
             if ("CASH".equalsIgnoreCase(detail.card_type)) {//代金券
                 tvCouponName.setText("代金券");
                 tvDetail.setText(detail.description);
-                if(!TextUtils.isEmpty(detail.show_product)) {
+                if (!TextUtils.isEmpty(detail.show_product)) {
                     tvValue.setText(BigDecimal.valueOf(Long.valueOf(detail.show_product)).divide(new BigDecimal(100)).toString());
                 }
                 tvRmb.setText("¥");
                 tvUnit.setText("元");
-                ticket_type=1;
+                ticket_type = 1;
             } else if ("DISCOUNT".equalsIgnoreCase(detail.card_type)) {//折扣券
                 tvCouponName.setText("折扣券");
                 tvValue.setText(detail.show_product);
                 tvRmb.setText("");
                 tvUnit.setText("折");
-                ticket_type=1;
+                ticket_type = 1;
             } else if ("GIFT".equalsIgnoreCase(detail.card_type)) {//礼品券
                 tvRmb.setText("");
                 tvCouponName.setText("兑换券");
                 tvValue.setText(detail.show_product);
-                ticket_type=2;
+                ticket_type = 2;
                 if ("music".equalsIgnoreCase(detail.pre_product)) {//歌曲
                     tvUnit.setText("首");
                 } else if ("time".equalsIgnoreCase(detail.pre_product)) {//分钟
                     tvUnit.setText("分钟");
                 }
-            }else if("GENERAL_CARD".equalsIgnoreCase(detail.card_type)){ //礼品卷
+            } else if ("GENERAL_CARD".equalsIgnoreCase(detail.card_type)) { //礼品卷
                 tvCouponName.setText("礼品卡");
                 tvDetail.setText(detail.description);
                 tvValue.setText(BigDecimal.valueOf(Long.valueOf(detail.show_product)).divide(new BigDecimal(100)).toString());
@@ -265,56 +274,41 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
                 dismiss();
                 break;
             case android.R.id.extractArea:
-//                if (mViewInput.isShown()) {//查看详情
-//                    if (!TextUtils.isEmpty(mEtInput.getText())&&mEtInput.getText().length()==19) {
-//                        requestDetail(mEtInput.getText().toString());
-//                    } else {
-//                        mTvErrTip.setText("请输入16位有效卡券号码进行兑换");
-//                    }
-//                } else
-                    if (mViewDetail.isShown()) {
-//                    mViewInput.setVisibility(View.VISIBLE);
-//                    tvDlgTitle.setVisibility(View.GONE);
-//                    mViewDetail.setVisibility(View.GONE);
-                    if(couponDetail!=null){
-                        if(!TextUtils.isEmpty(couponDetail.use_date_str)){
-                            boolean isStart=false;
+                if (mViewDetail.isShown()) {
+                    if (couponDetail != null) {
+                        if (!TextUtils.isEmpty(couponDetail.use_date_str)) {
+                            boolean isStart = false;
                             try {
-                                String[] data=couponDetail.use_date_str.split("~");
-                                isStart=DateUtil.DateCompare(data[0],data[1]);
-                            }catch (Exception e){
+                                String[] data = couponDetail.use_date_str.split("~");
+                                isStart = DateUtil.DateCompare(data[0], data[1]);
+                            } catch (Exception e) {
                                 e.printStackTrace();
-                                isStart=false;
+                                isStart = false;
                             }
-                            if(isStart){
-                                if(couponDetail.card_type.toUpperCase().equals("GIFT")){
-                                    int play_type=-1;
-                                    if(couponDetail.pre_product.equalsIgnoreCase("music")){
-                                        play_type=1;
-                                    }else if(couponDetail.pre_product.equalsIgnoreCase("time")){
-                                        play_type=2;
+                            if (isStart) {
+                                if (couponDetail.card_type.toUpperCase().equals("GIFT")) {
+                                    int play_type = -1;
+                                    if (couponDetail.pre_product.equalsIgnoreCase("music")) {
+                                        play_type = 1;
+                                    } else if (couponDetail.pre_product.equalsIgnoreCase("time")) {
+                                        play_type = 2;
                                     }
-                                    if(BoughtMeal.getInstance().getTheFirstMeal()==null||play_type== BoughtMeal.getInstance().getTheFirstMeal().getType()){
+                                    if (BoughtMeal.getInstance().getTheFirstMeal() == null || play_type == BoughtMeal.getInstance().getTheFirstMeal().getType()) {
                                         EventBusUtil.postGiftDetail(couponDetail);
-                                        requestGift(mEtInput.getText().toString().replace(" ",""),1);
-                                    }else{
-
+                                        requestGift(mEtInput.getText().toString().replace(" ", ""), 1);
+                                    } else {
                                         EventBusUtil.postGiftFail("卡卷与当前套餐不一致，不能使用");
                                     }
-                                }else{
-                                    couponDetail.setCard_code(mEtInput.getText().toString().replace(" ",""));
+                                } else {
+                                    couponDetail.setCard_code(mEtInput.getText().toString().replace(" ", ""));
                                     EventBusUtil.postGiftDetail(couponDetail);
                                 }
-                            }else{
+                            } else {
                                 EventBusUtil.postGiftFail("卡券过期或未到生效日期");
                             }
                         }
-
-
                         dismiss();
                     }
-
-
                 }
                 break;
         }
@@ -334,22 +328,16 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
         request.post();
     }
 
-    private void requestGift(String inputCode,int static_code) {
+    private void requestGift(String inputCode, int static_code) {
         StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.GIFT_CREATE);
         request.setStoreHttpRequestListener(this);
         request.addParam(HttpParamsUtils.initGiftParams(DeviceUtil.getCupChipID(), PrefData.getRoomCode(getContext()),
-                inputCode,1));
+                inputCode, 1));
         request.setConvert2Class(GiftDetail.class);
         request.post();
     }
-//    private void requestGift_Order(int pay_type,int pay_count,String inputCode,int static_code) {
-//        StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.ORDER_CREATE);
-//        request.setStoreHttpRequestListener(this);
-//        request.addParam(HttpParamsUtils.initCreateOrderParams(pay_type,pay_count,null,DeviceUtil.getCupChipID(), PrefData.getRoomCode(getContext()),
-//                inputCode,1));
-//        request.setConvert2Class(GiftDetail.class);
-//        request.post();
-//    }
+
+
     @Override
     public void onStoreSuccess(String method, Object object) {
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -385,16 +373,8 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
                     mViewProgress.setVisibility(View.GONE);
                 }
             }, 2000);
-        }else if (RequestMethod.GIFT_CREATE.equalsIgnoreCase(method)) {
-              EventBusUtil.postGiftFail(error);
-//            mTvProgress.setText("使用优惠卷失败！" + error);
-//            mRivStatus.setImageResource(R.drawable.dlg_fail);
-//            mViewProgress.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    mViewProgress.setVisibility(View.GONE);
-//                }
-//            }, 2000);
+        } else if (RequestMethod.GIFT_CREATE.equalsIgnoreCase(method)) {
+            EventBusUtil.postGiftFail(error);
         }
     }
 
@@ -405,7 +385,7 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
         mRivStatus.setVisibility(View.GONE);
         if (RequestMethod.CARD_DETAIL.equalsIgnoreCase(method)) {
             mTvProgress.setText("正在读取卡券信息......");
-        }else if (RequestMethod.GIFT_CREATE.equalsIgnoreCase(method)) {
+        } else if (RequestMethod.GIFT_CREATE.equalsIgnoreCase(method)) {
             mTvProgress.setText("正在读取优惠卷信息......");
         }
     }
@@ -460,13 +440,13 @@ public class DlgCoupon extends BaseDialog implements View.OnClickListener, Store
                                     String txt = text.substring(0, text.length() - 1);
                                     mEtInput.setText(txt);
                                 }
-                            } else if(keyText.equals("确定")){
-                                if (!TextUtils.isEmpty(mEtInput.getText())&&mEtInput.getText().length()==19) {
+                            } else if (keyText.equals("确定")) {
+                                if (!TextUtils.isEmpty(mEtInput.getText()) && mEtInput.getText().length() == 19) {
                                     requestDetail(mEtInput.getText().toString());
                                 } else {
                                     mTvErrTip.setText("请输入16位有效卡券号码进行兑换");
                                 }
-                            }else {
+                            } else {
                                 mEtInput.setText(mEtInput.getText() + keyText);
                             }
                         }

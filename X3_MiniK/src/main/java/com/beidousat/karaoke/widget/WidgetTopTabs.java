@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,23 +27,24 @@ public class WidgetTopTabs extends RelativeLayout {
     private View mRootView;
     private RecyclerView mHlvLeft, mHlvRight;
     private OnTabClickListener mLeftOnItemClickListener, mRightOnItemClickListener;
+    private String Tag = "WidgetTopTabs";
 
     private AdapterTabs mAdapterTabsLeft, mAdapterTabsRight;
 
     public WidgetTopTabs(Context context) {
-        super(context);
+        super(context);Log.d(Tag,"initView 0");
         initView();
     }
 
     public WidgetTopTabs(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+        super(context, attrs, defStyle);Log.d(Tag,"initView 1");
         initView();
 
         readAttr(attrs);
     }
 
     public WidgetTopTabs(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs);Log.d(Tag,"initView 2");
         initView();
 
         readAttr(attrs);
@@ -52,7 +54,7 @@ public class WidgetTopTabs extends RelativeLayout {
         mRootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_top_tabs, this);
         mHlvLeft = (RecyclerView) mRootView.findViewById(R.id.hlv_left);
         mHlvRight = (RecyclerView) mRootView.findViewById(R.id.hlv_right);
-
+        Log.d(Tag,"initView");
         init();
     }
 
@@ -61,55 +63,29 @@ public class WidgetTopTabs extends RelativeLayout {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.WidgetTopTabs);
             float leftWeight = a.getFloat(R.styleable.WidgetTopTabs_leftTabWeight, 3);
             float rightWeight = a.getFloat(R.styleable.WidgetTopTabs_rightTabWeight, 1);
-
-//            setLeftTabWeight(leftWeight);
-//            setRightTabWeight(rightWeight);
         }
     }
 
-//    public void setLeftTabWeight(float weight) {
-//        LayoutParams paramLeft = new LayoutParams(0, LayoutParams.MATCH_PARENT, weight);
-//        mHlvLeft.setLayoutParams(paramLeft);
-//    }
-//
-//    public void setRightTabWeight(float weight) {
-//        LayoutParams paramLeft = new LayoutParams(0, LayoutParams.MATCH_PARENT, weight);
-//        mHlvRight.setLayoutParams(paramLeft);
-//    }
-
 
     private void init() {
-//        int dividerW = DensityUtil.dip2px(getContext(), 8);
-
-//        VerticalDividerItemDecoration verDivider = new VerticalDividerItemDecoration.Builder(getContext())
-//                .color(Color.TRANSPARENT).size(dividerW)
-//                .margin(dividerW, dividerW)
-//                .build();
-
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
         layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
         mHlvRight.setLayoutManager(layoutManager2);
-
-//        mHlvRight.addItemDecoration(verDivider);
         mAdapterTabsRight = new AdapterTabs(rightOnTabClickListener, false);
         mHlvRight.setAdapter(mAdapterTabsRight);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mHlvLeft.setLayoutManager(layoutManager);
-
-//        mHlvLeft.addItemDecoration(verDivider);
         mAdapterTabsLeft = new AdapterTabs(leftOnTabClickListener, true);
         mHlvLeft.setAdapter(mAdapterTabsLeft);
-
+        Log.d(Tag,"init");
     }
 
     private boolean mIsRightClickSelect = true;
-
     public void setRightClickSelect(boolean isClickSelect) {
         mIsRightClickSelect = isClickSelect;
     }
-
     public void setRightTabShow(boolean show) {
         mHlvRight.setVisibility(show ? VISIBLE : GONE);
     }
@@ -129,11 +105,9 @@ public class WidgetTopTabs extends RelativeLayout {
     private OnTabClickListener leftOnTabClickListener = new OnTabClickListener() {
         @Override
         public void onTabClick(int position) {
-//            if (mAdapterTabsLeft.getFocusedTab() != position) {
             setLeftTabFocus(position);
             if (mLeftOnItemClickListener != null)
                 mLeftOnItemClickListener.onTabClick(position);
-//            }
         }
     };
     private OnTabClickListener rightOnTabClickListener = new OnTabClickListener() {
@@ -184,8 +158,6 @@ public class WidgetTopTabs extends RelativeLayout {
 
         public View contentView;
         public TextView tvName;
-
-
         public ViewHolder(View view) {
             super(view);
         }

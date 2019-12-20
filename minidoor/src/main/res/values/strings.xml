@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">MiniDoor</string>
-    <string name="setting_network">设置网络</string>
-    <string name="checking_network">检查网络中...</string>
-    <string name="connecting_server">连接服务器...</string>
-</resources>

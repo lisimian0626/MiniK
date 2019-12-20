@@ -7,7 +7,13 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 
+import java.io.InputStream;
 import java.util.Hashtable;
+
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
 
 /**
  * Created by J Wong on 2015/11/18 15:12.
@@ -88,6 +94,20 @@ public class QrCodeUtil {
     private static final int BLACK = 0xff000000;
     private static final int WHITE = 0xffffffff;
 
+    /**
+     * 生成一个带logo的二维码
+     */
+    public static Bitmap createLogoQrcode(String data_str, Bitmap logoBitmap, float logoPercent) {
+        Bitmap bitmap = createQRCode(data_str);
+        if (bitmap == null) return null;
+        /** 5.为二维码添加logo图标 */
+        if (logoBitmap != null) {
+            logoBitmap = logoBitmap.copy(Bitmap.Config.ARGB_8888, true);
+            return addLogo(bitmap, logoBitmap, logoPercent);
+        }
+        return null;
+    }
+
     public static Bitmap createQRCode(String str) {
         try {
             Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
@@ -136,5 +156,46 @@ public class QrCodeUtil {
             }
         }
         return resMatrix;
+    }
+
+
+    /**
+     * 向二维码中间添加logo图片(图片合成)
+     *
+     * @param srcBitmap   原图片（生成的简单二维码图片）
+     * @param logoBitmap  logo图片
+     * @param logoPercent 百分比 (用于调整logo图片在原图片中的显示大小, 取值范围[0,1] )
+     * @return
+     */
+    private static Bitmap addLogo(Bitmap srcBitmap, Bitmap logoBitmap, float logoPercent) {
+        if (srcBitmap == null) {
+            return null;
+        }
+        if (logoBitmap == null) {
+            return srcBitmap;
+        }
+        //传值不合法时使用0.2F
+        if (logoPercent < 0F || logoPercent > 1F) {
+            logoPercent = 0.2F;
+        }
+
+        /** 1. 获取原图片和Logo图片各自的宽、高值 */
+        int srcWidth = srcBitmap.getWidth();
+        int srcHeight = srcBitmap.getHeight();
+        int logoWidth = logoBitmap.getWidth();
+        int logoHeight = logoBitmap.getHeight();
+
+        /** 2. 计算画布缩放的宽高比 */
+        float scaleWidth = srcWidth * logoPercent / logoWidth;
+        float scaleHeight = srcHeight * logoPercent / logoHeight;
+
+        /** 3. 使用Canvas绘制,合成图片 */
+        Bitmap bitmap = Bitmap.createBitmap(srcWidth, srcHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawBitmap(srcBitmap, 0, 0, null);
+        canvas.scale(scaleWidth, scaleHeight, srcWidth / 2, srcHeight / 2);
+        canvas.drawBitmap(logoBitmap, srcWidth / 2 - logoWidth / 2, srcHeight / 2 - logoHeight / 2, null);
+
+        return bitmap;
     }
 }

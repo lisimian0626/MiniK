@@ -9,7 +9,7 @@ import android.webkit.WebSettings;
  */
 
 public class BnsConfig {
-      public final static String ProxyHost="http://media.imtbox.com/";
+    public final static String ProxyHost = "http://media.imtbox.com/";
     public final static String LocalAddress = "http://127.0.0.1/";
 //    public final static String LocalAddress = "http://vl.imbox.com/";
     /**
@@ -49,14 +49,18 @@ public class BnsConfig {
      */
     public static final int CHOOSE_SONG_TIME = 60 * 10;
 
+    /**
+     * 分析是否为音诺恒的设备
+     */
 
     public static boolean is901() {
         String model = android.os.Build.MODEL;
         return "rk3288_box".equalsIgnoreCase(model);
     }
-    public static final int PREVIEW = 1;
-    public static final int NORMAL = 2;
-    public static final int PUBLIC = 3;
+
+    public static final int PREVIEW = 1;//预览
+    public static final int NORMAL = 2;//正常播放
+    public static final int PUBLIC = 3;//播放公播歌曲
 
     public static String getUserAgent(Context context) {
         String userAgent = "";

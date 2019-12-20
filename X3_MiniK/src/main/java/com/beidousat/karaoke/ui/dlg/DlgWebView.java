@@ -46,13 +46,19 @@ public class DlgWebView extends BaseDialog implements OnClickListener {
         mWebView = (ProgressWebView) findViewById(R.id.webview);
 
         Headers = new HashMap<String, String>();
-        Headers.put("minik", "minikbox");//设备标识(前面是key，后面是value)
+        Headers.put("mink", "minkbox");//设备标识(前面是key，后面是value)
         WebSettings settings = mWebView.getSettings();
-        settings.setJavaScriptEnabled(true);
-
-
-        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        mWebView.getSettings().setUserAgentString("minikbox");
+        settings.setJavaScriptEnabled(true);//开启支持javascript
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setUserAgentString("minkbox");
+        settings.setAllowFileAccess(true);//支持文件流
+        settings.setSupportZoom(false);//不支持缩放
+        settings.setBuiltInZoomControls(false);//不支持缩放
+        settings.setUseWideViewPort(false);// 调整到适合webview大小
+        settings.setLoadWithOverviewMode(false);//  调整到适合webview大小
+        settings.setBlockNetworkImage(true);////提高网页加载速度，暂时阻塞图片加载，然后网页加载好了，在进行加载图片
+        //settings.setAppCacheEnabled(true);//开启缓存机制
+        settings.setDomStorageEnabled(true);//开启DOM
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

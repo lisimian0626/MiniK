@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -53,6 +54,7 @@ public class BaseActivity extends FragmentActivity implements OnScreenAdListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLastTouchTime = 0;
+        Log.d("switchLanguage", "onCreate");
         switchLanguage(PrefData.getLastLanguage(this));
         getWindow().getDecorView().setSystemUiVisibility(SYS_UI);
 //        startScreenTimer();
@@ -172,7 +174,7 @@ public class BaseActivity extends FragmentActivity implements OnScreenAdListener
         resources.updateConfiguration(config, dm);
 
         // 保存设置语言的类型
-        PrefData.setLanguage(this, language);
+//        PrefData.setLanguage(this, language);
     }
 
     protected void exitApp() {

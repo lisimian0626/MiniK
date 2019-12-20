@@ -1,6 +1,7 @@
 package com.beidousat.karaoke.biz;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
@@ -51,6 +52,9 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         this.mCard_code = card_code;
     }
 
+    /**
+     * 读取包厢信息
+     */
     public void getBoxInfo(String kbox_sn, String chip) {
         if (ServerConfigData.getInstance().getServerConfig() == null) {
             return;
@@ -64,6 +68,9 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
 
     }
 
+    /**
+     * 读取支付方式信息
+     */
     public void getPayment() {
         if (ServerConfigData.getInstance().getServerConfig() == null) {
             return;
@@ -75,7 +82,11 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         storeHttpRequest.post();
     }
 
+    /**
+     * 读取设备配置信息
+     */
     public void getConfig(String device_sn) {
+        Log.d(TAG, "读取配置信息");
         StoreHttpRequest storeHttpRequest = new StoreHttpRequest(KBoxInfo.STORE_WEB, RequestMethod.GET_SERVER_CFG);
         storeHttpRequest.addParam(HttpParamsUtils.initConfigParams(device_sn));
         storeHttpRequest.setStoreHttpRequestListener(this);
@@ -105,27 +116,37 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         }
     }
 
+
+    /**
+     * 查询成功，响应结果处理
+     */
     @Override
     public void onStoreSuccess(String method, Object object) {
-        Logger.d("QueryKboxHelper", "onSuccess :" + object);
+        Logger.d(TAG, "onSuccess :" + object);
         if (object != null && object instanceof KBox) {
+            //收到包房配置信息
             final KBox kBox = (KBox) object;
+            //把不用计费的标记为单机版本
             if (kBox.getAutocephalous() != null && kBox.getAutocephalous().equals("1")) {
-                PreferenceUtil.setBoolean(mContext, "isSingle", true);
+                PrefData.setIsSingle(mContext, true);
             } else {
-                PreferenceUtil.setBoolean(mContext, "isSingle", false);
+                PrefData.setIsSingle(mContext, false);
             }
-            Logger.d(TAG, "def_play:" + kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
-            PreferenceUtil.setString(mContext, "def_play", kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+            //设置公播信息
+            BasePlay.setBasePlay(mContext, kBox.basePlaytoJsonStr(kBox.getBasePlayList()));
+            //设置公播的方式
+            BasePlay.setPlayPlan(mContext, kBox.getBaseplay_type());
+            //设置单曲播放的序号
+            BasePlay.setSingle_index(mContext, kBox.getSingle_index());
+            //保存包房信息到变量
             KBoxInfo.getInstance().setKBox(kBox);
         } else if (object != null && object instanceof KboxConfig) {
+            //收到配置基本配置信息
             KboxConfig kboxConfig = (KboxConfig) object;
             ServerConfig config = new ServerConfig();
             PrefData.setNodisk(mContext, kboxConfig.noDisk);
-//            PrefData.setNodisk(mContext,1);
             EventBusUtil.postSticky(EventBusId.id.NODISK, kboxConfig.noDisk);
             config.setAd_web(kboxConfig.getAd_web());
-//            config.setKbox_ip(kboxConfig.getKbox_ip());
             String kbox_url = kboxConfig.getStore_ip_port();
             String[] kbox_ipandport = kbox_url.split(":");
             if (kbox_ipandport != null) {
@@ -140,7 +161,6 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
             config.setDownload_server(kboxConfig.downloadServer);
             ServerConfigData.getInstance().setConfigData(config);
             KBoxInfo.getInstance().setKboxConfig(kboxConfig);
-
 //            Logger.d(TAG,"kbox_ipandport:"+kboxConfig.getStore_ip_port()+"~~~~~~"+"kbox_url:"+kboxConfig.getStore_ip_port()+"~~~~~~~~~~~~"+"kbox_ip:"+kboxConfig.getKbox_ip());
         } else if (object != null && object instanceof ArrayList) {
             List<PayMent> payMentList = (List<PayMent>) object;

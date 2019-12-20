@@ -33,6 +33,8 @@
     <string name="menu_bill">Bill</string>
     <string name="handwriting">Handwritten</string>
     <string name="number">Digit</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="nologin">Login</string>
 
     <string name="search_all">Search</string>
     <string name="choose_x"><Data><![CDATA[ <b><font color="#f4d573">%d</font></b> ]]></Data>songs</string>
@@ -136,7 +138,7 @@
 
     <string name="shopping_car">shopping car</string>
 
-    <string name="tab_song">点歌</string>
+    <string name="tab_song">Select</string>
     <string name="tab_mood">心情</string>
     <string name="tab_film">影院</string>
     <string name="tab_live">直播</string>
@@ -147,11 +149,11 @@
     <string name="pls_input_mng_pwd">Please input management password</string>
     <string name="wrong_pwd">Password error</string>
     <string name="mic">Microphone</string>
-    <string name="copyright">Copyright ? 2015-2018 BNS. All Rights Reserved.</string>
+    <string name="copyright">Copyright ? 2015-2020 BNS. All Rights Reserved.</string>
 
     <string name="gift_choose">赠品选择</string>
     <string name="package_detail">Package Details</string>
-    <string name="read_video_fail">读取视频失败^,^</string>
+    <string name="read_video_fail">Fail to load MV ^ ^</string>
     <string name="order_count">Number of orders</string>
     <string name="cancel">cancel</string>
     <string name="abort">abort</string>
@@ -159,10 +161,10 @@
     <string name="retry">retry</string>
     <string name="exit">exit</string>
     <string name="remarks">remarks</string>
-    <string name="gift_choose_x">赠品选择(<Data><![CDATA[ <b><font color="#c93462">x %1$s</font></b> ]]></Data>)</string>
+    <string name="gift_choose_x">Gift Select(<Data><![CDATA[ <b><font color="#c93462">x %1$s</font></b> ]]></Data>)</string>
     <string name="gift_count_max_tip">已达最大赠送数量</string>
 
-    <string name="phone_song">手机点歌</string>
+    <string name="phone_song">Phone control</string>
     <string name="share">share</string>
     <string name="call_service">call_service</string>
     <string name="score">score</string>
@@ -282,6 +284,8 @@
     <string name="buy">Purchase</string>
     <string name="rule">Guide</string>
 
+    <string name="loading_video">loading video...</string>
+
 
     <string name="text_wx_scan">Scan QR code with Wechat</string>
     <string name="text_pay">Pay</string>
@@ -289,7 +293,8 @@
     <string name="text_pay_tb_scan">Coin</string>
     <string name="text_choose_pay">Choose the mode of payment</string>
     <string name="text_pay_zhifubao">Alipay</string>
-    <string name="text_pay_weixin">WeChat</string>
+    <string name="text_pay_weixin">Wechat</string>
+    <string name="text_pay_unionpay">Unionpay</string>
     <string name="text_pay_toubi">Coin</string>
     <string name="text_pay_octo">Octo</string>
     <string name="text_pay_Octopus">Octopus</string>
@@ -298,6 +303,7 @@
     <string name="input_limit">Please enter 16 characters of valid passwords</string>
     <string name="paycard_fail">The gift coupons is insufficient</string>
     <string name="text_selected_pay_meal">Package：%1$d%2$s</string>
+    <string name="text_pay_prompt_unionpay">Scan the QR code on the left to pay.</string>
     <string name="text_pay_prompt">Scan the QR code on the left to pay.</string>
     <string name="text_pay_prompt_zhifubao">Scan the QR code on the left to pay.</string>
     <string name="text_money_unit">￥</string>
@@ -404,7 +410,7 @@
     <string name="password_before">Please input the original password</string>
     <string name="password_new">Please set up a new password</string>
     <string name="password_confirm">Please confirm the password</string>
-
+    <!--效果器-->
     <string name="Porter_rate">Baud rate</string>
     <string name="Reset">Reset</string>
     <string name="MIC_UP">MIC+</string>
@@ -421,7 +427,10 @@
     <string name="kbox_reset_psw">Complete to reset the device password</string>
     <string name="has_order">Selected</string>
     <string name="has_sing">Sang</string>
-    //温度
+    <string name="sound_effects_brand">Effects Brand</string>
+    <string name="mixing_vol_label">Reverberation Vol</string>
+    <string name="mic_vol_label">MIC VOL</string>
+    <!--//温度-->
     <string name="infrared_reset">Reset</string>
     <string name="twenty_one">21℃</string>
     <string name="twenty_two">22℃</string>
@@ -432,7 +441,7 @@
     <string name="twenty_seven">27℃</string>
     <string name="twenty_eight">28℃</string>
     <string name="twenty_night">29℃</string>
-    //风速
+    <!--//风速-->
     <string name="wind_auto">Auto</string>
     <string name="wind_high">High</string>
     <string name="wind_mid">Mid</string>
@@ -449,7 +458,7 @@
     <string name="infrared_study_success">Learning success</string>
     <string name="infrared_study_fail">Learning failure</string>
 
-    //heartbeat
+    <!--//heartbeat-->
     <string name="room_not_exist">Device information does not exist</string>
     <string name="room_closed">Device has stopped wording</string>
     <string name="unpaid_service" >Service charge of the device is unpaid</string>
@@ -466,15 +475,23 @@
     <string name="download_fail">Download failed</string>
     <string name="download_waiting">Waiting for download...</string>
     <string name="download_error_waiting">Download too many songs, please wait until the download is complete and try again</string>
-    //Octo
+    <!--//Octo-->
     <string name="octo_check">Please connect to Octopus host later...</string>
     <string name="octo_error">Octopus failure</string>
     <string name="octo_nomal">Please pay with Octopus.</string>
     <string name="octo_paysucced">Successful payment.</string>
     <string name="octo_payfail">Payment Failed.</string>
     <string name="octo_canclepay">Cancel payment...</string>
-    //upd
+    <!--//upd-->
     <string name="error_setting">Error setting</string>
     <string name="download_tips">Downloading:%s</string>
     <string name="qrcode_tips">Scan QR code with Wechat</string>
+
+    <!--//效果器品牌-->
+    <string name="brand_xfive">X5</string>
+    <string name="brand_amda">Amda</string>
+
+    <!--用户登陆-->
+    <string name="login_tips">Scan to login</string>
+    <string name="to_loginout">Longout</string>
 </resources>

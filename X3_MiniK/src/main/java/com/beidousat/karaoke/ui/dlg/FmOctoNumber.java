@@ -115,7 +115,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
         //确保支付的套餐是正确的
         mSelectedMeal.setAmount(payStatus.getAmount());
         mSelectedMeal.setType(payStatus.getType());
-        mQueryOrderHelper.reportCoinPayFinish(mSelectedMeal).post();
+        mQueryOrderHelper.reportCoinPayFinish(mSelectedMeal);
 
         //设置当前购买的套餐
         BoughtMeal.getInstance().setBoughtMeal(mSelectedMeal, payStatus);
@@ -273,7 +273,7 @@ public class FmOctoNumber extends FmBaseDialog implements SupportQueryOrder {
 //                    }
 //            );
 
-        mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+        mQueryOrderHelper.cancelOrder(mSelectedMeal);
     }
 
     @Override

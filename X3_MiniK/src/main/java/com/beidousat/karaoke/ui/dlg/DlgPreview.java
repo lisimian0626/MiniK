@@ -74,7 +74,7 @@ public class DlgPreview extends BaseDialog implements OnClickListener, BeidouPla
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (DiskFileUtil.is901()) {
+                if (BnsConfig.is901()) {
                     try {
                         mMediaPlayer = new BnsPlayer(mSurfaceView, null, 0, 0);
                         String filePath = TextUtils.isEmpty(mSong.download_url) ? mSong.SongFilePath : mSong.download_url;

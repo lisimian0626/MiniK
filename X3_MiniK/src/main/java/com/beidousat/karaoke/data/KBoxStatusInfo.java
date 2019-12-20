@@ -1,5 +1,7 @@
 package com.beidousat.karaoke.data;
 
+import android.util.Log;
+
 import com.beidousat.libbns.model.KBoxStatus;
 
 /**
@@ -7,7 +9,6 @@ import com.beidousat.libbns.model.KBoxStatus;
  */
 
 public class KBoxStatusInfo {
-
     private static KBoxStatusInfo mKBoxStatusInfo;
 
     private KBoxStatus mKBoxStatus;

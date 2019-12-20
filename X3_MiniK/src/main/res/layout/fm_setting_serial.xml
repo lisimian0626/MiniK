@@ -42,12 +42,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp">
 
-
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="12dp">
+            android:gravity="left"
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,12 +54,13 @@
                 android:layout_marginRight="20dp"
                 android:text="@string/Porter_rate"
                 android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:layout_marginLeft="30dp"
+                android:textSize="16sp" />
 
             <com.beidousat.karaoke.widget.EditTextEx
                 android:id="@+id/et_baudrate"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
+                android:layout_width="230dp"
+                android:layout_height="42dp"
                 android:background="@drawable/selector_edit_serial"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/selector_edit_text_clear"
@@ -70,22 +70,22 @@
                 android:paddingRight="20dp"
                 android:textColor="@android:color/white"
                 android:textCursorDrawable="@null"
-                android:textSize="20sp" />
+                android:textSize="14sp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
+                android:layout_marginLeft="30dp"
                 android:layout_marginRight="20dp"
                 android:text="@string/Reset"
                 android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <com.beidousat.karaoke.widget.EditTextEx
                 android:id="@+id/et_reset"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
+                android:layout_width="230dp"
+                android:layout_height="42dp"
                 android:background="@drawable/selector_edit_serial"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/selector_edit_text_clear"
@@ -94,13 +94,13 @@
                 android:paddingRight="20dp"
                 android:textColor="@android:color/white"
                 android:textCursorDrawable="@null"
-                android:textSize="20sp" />
+                android:textSize="14sp" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:gravity="left"
             android:padding="12dp">
 
             <TextView
@@ -109,12 +109,13 @@
                 android:layout_marginRight="20dp"
                 android:text="@string/MIC_UP"
                 android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:layout_marginLeft="30dp"
+                android:textSize="16sp" />
 
             <com.beidousat.karaoke.widget.EditTextEx
                 android:id="@+id/et_mic_up"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
+                android:layout_width="230dp"
+                android:layout_height="42dp"
                 android:background="@drawable/selector_edit_serial"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/selector_edit_text_clear"
@@ -123,51 +124,78 @@
                 android:paddingRight="20dp"
                 android:textColor="@android:color/white"
                 android:textCursorDrawable="@null"
-                android:textSize="20sp" />
+                android:textSize="14sp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
+                android:layout_marginLeft="30dp"
                 android:layout_marginRight="20dp"
                 android:text="@string/MIC_DOWN"
                 android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <com.beidousat.karaoke.widget.EditTextEx
                 android:id="@+id/et_mic_down"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
+                android:layout_width="230dp"
+                android:layout_height="42dp"
                 android:background="@drawable/selector_edit_serial"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/selector_edit_text_clear"
                 android:gravity="center_vertical"
                 android:paddingLeft="12dp"
-                android:paddingRight="20dp"
+                android:paddingRight="10dp"
                 android:textColor="@android:color/white"
                 android:textCursorDrawable="@null"
-                android:textSize="20sp" />
+                android:textSize="14sp" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/mic_vol_label"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <com.beidousat.karaoke.widget.EditTextEx
+                android:id="@+id/et_mic_vol"
+                android:layout_width="230dp"
+                android:layout_height="42dp"
+                android:background="@drawable/selector_edit_serial"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/selector_edit_text_clear"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="2dp"
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp" />
+
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:gravity="left"
             android:padding="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
+                android:layout_marginLeft="30dp"
                 android:text="@string/Resounding_up"
                 android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <com.beidousat.karaoke.widget.EditTextEx
                 android:id="@+id/et_reverb_up"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
+                android:layout_width="230dp"
+                android:layout_height="42dp"
                 android:background="@drawable/selector_edit_serial"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/selector_edit_text_clear"
@@ -176,22 +204,22 @@
                 android:paddingRight="20dp"
                 android:textColor="@android:color/white"
                 android:textCursorDrawable="@null"
-                android:textSize="20sp" />
+                android:textSize="14sp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
+                android:layout_marginLeft="30dp"
                 android:layout_marginRight="20dp"
                 android:text="@string/Resounding_down"
                 android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <com.beidousat.karaoke.widget.EditTextEx
                 android:id="@+id/et_reverb_down"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
+                android:layout_width="230dp"
+                android:layout_height="42dp"
                 android:background="@drawable/selector_edit_serial"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/selector_edit_text_clear"
@@ -200,7 +228,33 @@
                 android:paddingRight="20dp"
                 android:textColor="@android:color/white"
                 android:textCursorDrawable="@null"
-                android:textSize="20sp" />
+                android:textSize="14sp" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/mixing_vol_label"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <com.beidousat.karaoke.widget.EditTextEx
+                android:id="@+id/et_reverb_vol"
+                android:layout_width="230dp"
+                android:layout_height="42dp"
+                android:background="@drawable/selector_edit_serial"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/selector_edit_text_clear"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="2dp"
+                android:textColor="@android:color/white"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp" />
+
         </TableRow>
     </TableLayout>
 

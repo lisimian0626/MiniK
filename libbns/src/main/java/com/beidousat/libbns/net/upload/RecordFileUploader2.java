@@ -1,5 +1,7 @@
 package com.beidousat.libbns.net.upload;
 
+import android.util.Log;
+
 import com.beidousat.libbns.util.Logger;
 
 import java.io.File;
@@ -114,6 +116,7 @@ public class RecordFileUploader2 implements FileUploadListener {
 
     @Override
     public void onUploadCompletion(File file, String desPath) {
+        Log.d("onUploadCompletion", desPath);
         if (!desPath.startsWith("http")) {
             desPath = mShareDomain + desPath;
         }

@@ -98,8 +98,6 @@ public class FmShare extends FmBaseDialog implements View.OnClickListener {
                 mAttached.dismiss();
                 break;
             case R.id.iv_share:
-//                DlgShare dlgShare = new DlgShare(Main.mMainActivity, song);
-//                dlgShare.show();
                 DialogHelper.showShareDialog(Main.mMainActivity, song);
                 break;
             case R.id.iv_audition:

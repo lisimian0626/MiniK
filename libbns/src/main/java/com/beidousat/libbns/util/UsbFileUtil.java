@@ -16,32 +16,45 @@ public class UsbFileUtil {
 
     private final static String USB_PATH_901 = "/mnt/usb_storage/USB_DISK0/C/";
 
+    public static String DevPath() {
+        return BnsConfig.is901() ? USB_PATH_901 : USB_PATH;
+    }
+
     public static boolean isUsbExitBoxCode() {
-        File file = new File(BnsConfig.is901() ? USB_PATH_901 : USB_PATH, "BNS_KBox");
+        File file = new File(DevPath(), "BNS_KBox");
         if (file.exists()) {
             return true;
         }
         return false;
     }
+
+    /**
+     * 是否接入U盘，并且U盘中带有重量密码的文件
+     */
     public static boolean isUsbExitBoxKey() {
-        File file = new File(BnsConfig.is901() ? USB_PATH_901 : USB_PATH, "resetpassword");
+        File file = new File(DevPath(), "resetpassword");
         if (file.exists()) {
             return true;
         }
         return false;
     }
+
+
     public static File isUsbExitUpdataApp() {
-        File file = new File(BnsConfig.is901() ? USB_PATH_901 : USB_PATH, "appupdate");
+        File file = new File(DevPath(), "appupdate");
         return file;
     }
 
+    /**
+     * 入库U盘
+     */
     public static String readKBoxCode() {
         BufferedReader br = null;
         String ret = "";
         try {
             StringBuilder sb = new StringBuilder();
             String s = "";
-            File file = new File(BnsConfig.is901() ? USB_PATH_901 : USB_PATH, "BNS_KBox");
+            File file = new File(DevPath(), "BNS_KBox");
             br = new BufferedReader(new FileReader(file));
             while ((s = br.readLine()) != null) {
                 sb.append(s);

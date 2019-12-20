@@ -1,11 +1,15 @@
 package com.beidousat.karaoke.data;
 
+import android.content.Context;
+
 import com.beidousat.karaoke.model.User;
 import com.beidousat.libbns.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+
+import com.beidousat.karaoke.R;
 
 /**
  * author: Hanson
@@ -46,14 +50,13 @@ public class PayUserInfo extends Observable {
     }
 
     public void addUser(User user) {
-        if (!User.isEmpty(user)) {
-            if (mUsers.contains(user)) {
-                mUsers.remove(user);
-            }
-            mUsers.add(0, user);
-            notifyUserObservers();
+        if (User.isEmpty(user)) return;
+        if (mUsers.contains(user)) {
+            mUsers.remove(user);
         }
-        Logger.d("PayUserInfo", "当前用户="+mUsers.size());
+        mUsers.add(0, user);
+        notifyUserObservers();
+        Logger.d("PayUserInfo", "当前用户=" + mUsers.size());
     }
 
     public void removeUser(User user) {
@@ -68,8 +71,13 @@ public class PayUserInfo extends Observable {
         }
     }
 
-    public void removeAllUser() {
-        mUsers.clear();
+    public void removeAllUser(Context context) {
+//        mUsers.clear();
+        User tmp_user = new User();
+        tmp_user.setNickName(context.getString(R.string.nologin));
+        tmp_user.setAvatar("");
+        addUser(tmp_user);
+        tmp_user = null;
         notifyUserObservers();
     }
 

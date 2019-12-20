@@ -27,13 +27,4 @@ public class PublicSong {
         }
         return 0;
     }
-    public static int getCycleNum(int endNum){
-        if(index<endNum-1){
-            index++;
-        }else{
-            index=0;
-        }
-        Logger.d("Main","index:"+index);
-        return index;
-    }
 }

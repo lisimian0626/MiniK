@@ -312,9 +312,15 @@
     </string-array>
 
     <string-array name="spinner_item">
-        <item>中控效果器</item>
+        <item>效果器</item>
         <item>pos机</item>
         <item>纸钞机</item>
-        <item>MCU</item>
     </string-array>
+
+
+    <string-array name="effects_brands">
+        <item>@string/brand_xfive</item>
+        <item>@string/brand_amda</item>
+    </string-array>
+
 </resources>

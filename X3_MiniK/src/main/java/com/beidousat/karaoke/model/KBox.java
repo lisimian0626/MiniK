@@ -14,59 +14,47 @@ import java.util.List;
 public class KBox {
 
     @SerializedName("kbox_sn") //房间编号
-    String KBoxSn;
-    @SerializedName("store_id") //店家ID
-    int StoreID;
-    @SerializedName("store_code") //店家编号
-    String StoreCode;
+            String KBoxSn;
     @SerializedName("label") //标签
-    String Label;
+            String Label;
     @SerializedName("province")  //省
-    String Province;
+            String Province;
     @SerializedName("city") //市
-    String City;
+            String City;
     @SerializedName("area") //区域
-    String Area;
+            String Area;
     @SerializedName("address") //地址明细
-    String Address;
+            String Address;
     @SerializedName("status")//状态
-    String  status;
+            String status;
     @SerializedName("skin")//皮肤
-    String  skin;
+            String skin;
     @SerializedName("start_use_time")//开始营业时间
-    String start_use_time;
+            String start_use_time;
     @SerializedName(" update_time")//更新时间
-    String  update_time;
+            String update_time;
     @SerializedName("add_time")//添加时间
-    String add_time;
+            String add_time;
     @SerializedName("is_pause")//是否停机
-    int is_pause;
+            int is_pause;
 
     @SerializedName("use_online") //是否使用在线支付方案，1=是，0=否
-    int use_online;
+            int use_online;
 
     @SerializedName("use_coin") //是否使用投币方案，1=是，0=否
-    int use_coin;
+            int use_coin;
     @SerializedName("use_gift_card") //是否使用礼品卡方案，1=是，0=否
             int use_gift_card;
     @SerializedName("coin_exchange_rate") //汇率，一个币的价格
-    int coin_exchange_rate;
+            int coin_exchange_rate;
     @SerializedName("service_telphone")//客服电话
-    String service_desc;
+            String service_desc;
     @SerializedName("service_qrcode_str")//客服二维码
-    String service_qrcode_str;
+            String service_qrcode_str;
     @SerializedName("packages")
     List<Package> Packages;
     @SerializedName("banknote_code")
-    List<Notecode>  banknote_code;
-    @SerializedName("vod_thumbnail_server")
-    String kbox_ip;
-    @SerializedName("vod_http_server")
-    String SERVER_ADDRESS;
-    @SerializedName("socket_server")
-    String store_ip;
-    @SerializedName("ad_server")
-    String ad_web;
+    List<Notecode> banknote_code;
     @SerializedName("autocephalous")
     String autocephalous;
     @SerializedName("baseplay")
@@ -91,14 +79,6 @@ public class KBox {
 
     public String getKBoxSn() {
         return KBoxSn;
-    }
-
-    public int getStoreID() {
-        return StoreID;
-    }
-
-    public String getStoreCode() {
-        return StoreCode;
     }
 
     public String getLabel() {
@@ -152,14 +132,6 @@ public class KBox {
 
     public void setKBoxSn(String KBoxSn) {
         this.KBoxSn = KBoxSn;
-    }
-
-    public void setStoreID(int storeID) {
-        StoreID = storeID;
-    }
-
-    public void setStoreCode(String storeCode) {
-        StoreCode = storeCode;
     }
 
     public void setLabel(String label) {
@@ -250,38 +222,6 @@ public class KBox {
         Packages = packages;
     }
 
-    public String getKbox_ip() {
-        return kbox_ip;
-    }
-
-    public void setKbox_ip(String kbox_ip) {
-        this.kbox_ip = kbox_ip;
-    }
-
-    public String getSERVER_ADDRESS() {
-        return SERVER_ADDRESS;
-    }
-
-    public void setSERVER_ADDRESS(String SERVER_ADDRESS) {
-        this.SERVER_ADDRESS = SERVER_ADDRESS;
-    }
-
-    public String getStore_ip() {
-        return store_ip;
-    }
-
-    public void setStore_ip(String store_ip) {
-        this.store_ip = store_ip;
-    }
-
-    public String getAd_web() {
-        return ad_web;
-    }
-
-    public void setAd_web(String ad_web) {
-        this.ad_web = ad_web;
-    }
-
     public String getAutocephalous() {
         return autocephalous;
     }
@@ -338,10 +278,10 @@ public class KBox {
         this.single_index = single_index;
     }
 
-    public String basePlaytoJsonStr(List<BasePlay> basePlayList){
-
+    public String basePlaytoJsonStr(List<BasePlay> basePlayList) {
         return toJson(basePlayList);
     }
+
     private String toJson(List<BasePlay> basePlayList) {
         try {
             Gson gson = new Gson();

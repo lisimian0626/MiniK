@@ -35,6 +35,8 @@
     <string name="menu_bill">賬單</string>
     <string name="handwriting">手寫</string>
     <string name="number">數字</string>
+    <string name="anonymous">匿名</string>
+    <string name="nologin">登入</string>
 
     <string name="search_all">快速搜索</string>
     <string name="choose_x">已點<Data><![CDATA[ <b><font color="#f4d573">%d</font></b> ]]></Data>首</string>
@@ -136,7 +138,7 @@
 
     <string name="shopping_car">购物车</string>
 
-    <string name="tab_song">点歌</string>
+    <string name="tab_song">點歌</string>
     <string name="tab_mood">心情</string>
     <string name="tab_film">影院</string>
     <string name="tab_live">直播</string>
@@ -147,7 +149,7 @@
     <string name="pls_input_mng_pwd">請輸入管理密碼</string>
     <string name="wrong_pwd">密碼錯誤</string>
     <string name="mic">話筒</string>
-    <string name="copyright">Copyright © 2015-2018 BNS. All Rights Reserved.</string>
+    <string name="copyright">Copyright © 2015-2020 BNS. All Rights Reserved.</string>
 
     <string name="gift_choose">贈品選擇</string>
     <string name="package_detail">套餐詳情</string>
@@ -282,23 +284,27 @@
     <string name="buy">購買套餐</string>
     <string name="rule">K歌流程</string>
 
+    <string name="loading_video">正在加載...</string>
+
 
     <string name="text_wx_scan">微信掃一掃</string>
     <string name="text_pay">購買</string>
     <string name="text_pay_scan">掃碼支付</string>
     <string name="text_pay_tb_scan">代幣支付</string>
     <string name="text_choose_pay">選擇支付方式</string>
-    <string name="text_pay_zhifubao">支付寶支付</string>
-    <string name="text_pay_weixin">微信支付</string>
-    <string name="text_pay_toubi">投幣支付</string>
-    <string name="text_pay_octo">八達通支付</string>
-    <string name="text_pay_card">禮品卡支付</string>
+    <string name="text_pay_zhifubao">支付寶</string>
+    <string name="text_pay_weixin">微信</string>
+    <string name="text_pay_unionpay">雲閃付</string>
+    <string name="text_pay_toubi">投幣</string>
+    <string name="text_pay_octo">八達通</string>
+    <string name="text_pay_card">禮品卡</string>
     <string name="cancle_pay">正在取消訂單...</string>
     <string name="input_limit">請輸入16位有效卡密</string>
     <string name="paycard_fail">禮品卷餘額不足</string>
     <string name="text_selected_pay_meal">已選套餐：%1$d%2$s</string>
-    <string name="text_pay_prompt">請用微信掃描左側二維碼付款</string>
-    <string name="text_pay_prompt_zhifubao">請用支付宝掃描左側二維碼付款</string>
+    <string name="text_pay_prompt_unionpay">請用 雲閃付 掃描左側二維碼付款</string>
+    <string name="text_pay_prompt">請用 微信 掃描左側二維碼付款</string>
+    <string name="text_pay_prompt_zhifubao">請用 支付宝 掃描左側二維碼付款</string>
     <string name="text_money_unit">￥</string>
     <string name="text_back">返回</string>
     <string name="text_music_name">歌曲</string>
@@ -414,7 +420,7 @@
     <string name="password_before">請輸入原密碼</string>
     <string name="password_new">請設置新密碼</string>
     <string name="password_confirm">請確認密碼</string>
-
+    <!--效果器-->
     <string name="Porter_rate">波特率</string>
     <string name="Reset">重 置</string>
     <string name="MIC_UP">麥克風+</string>
@@ -431,7 +437,10 @@
     <string name="kbox_reset_psw">重置機頂盒密碼完成</string>
     <string name="has_order">已點</string>
     <string name="has_sing">已唱</string>
-    //温度
+    <string name="sound_effects_brand">效果器品牌</string>
+    <string name="mixing_vol_label">混 響</string>
+    <string name="mic_vol_label">麥克風</string>
+    <!--//温度-->
     <string name="infrared_reset">清除所有</string>
     <string name="twenty_one">21℃</string>
     <string name="twenty_two">22℃</string>
@@ -488,4 +497,12 @@
     <string name="error_setting">设置有误</string>
     <string name="download_tips">正在下载:%s</string>
     <string name="qrcode_tips">微信扫码点歌</string>
+
+    <!--//效果器品牌-->
+    <string name="brand_xfive">X5</string>
+    <string name="brand_amda">艾曼達</string>
+
+    <!--用户登陆-->
+    <string name="login_tips">使用微信掃碼即可登入</string>
+    <string name="to_loginout">退出登入</string>
 </resources>

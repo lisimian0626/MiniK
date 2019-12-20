@@ -13,13 +13,12 @@
         android:id="@+id/main_surf"
         android:layout_width="1dp"
         android:layout_height="1dp"
-        android:visibility="visible"
-        />
+        android:visibility="visible" />
+
     <RelativeLayout
         android:id="@+id/rl_top"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        >
+        android:layout_height="60dp">
 
         <ImageView
             android:id="@+id/iv_logo"
@@ -29,9 +28,8 @@
             android:layout_marginLeft="20dp"
             android:clickable="true"
             android:onClick="onClick"
-            android:src="@drawable/ic_logo"
             android:scaleType="centerCrop"
-             />
+            android:src="@drawable/ic_logo" />
 
 
         <com.beidousat.karaoke.widget.MarqueePlayer
@@ -40,8 +38,8 @@
             android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="50dp"
             android:layout_marginTop="6dp"
+            android:layout_marginRight="50dp"
             android:layout_toRightOf="@+id/iv_logo"
             android:visibility="gone"
             app:direction="left"
@@ -52,18 +50,18 @@
             app:textcolor="@android:color/white" />
 
         <TextView
-            android:layout_margin="10dp"
             android:id="@+id/main_lable"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
             android:layout_toRightOf="@+id/iv_logo"
             android:singleLine="true"
+            android:scrollHorizontally="true"
             android:textSize="26sp"
             android:textStyle="bold"
-            android:scrollHorizontally="true"
-            android:visibility="invisible"
-            />
+            android:visibility="invisible" />
 
         <com.beidousat.karaoke.widget.MealInfoTextView
             android:id="@+id/tv_buy"
@@ -77,22 +75,22 @@
             android:onClick="onClick"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_material"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
+
         <TextView
-            android:layout_margin="10dp"
             android:id="@+id/tv_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_margin="10dp"
             android:layout_toLeftOf="@+id/ll_service"
+            android:scrollHorizontally="true"
             android:singleLine="true"
+            android:text="@string/switch_language"
             android:textSize="26sp"
             android:textStyle="bold"
-            android:text="@string/switch_language"
-            android:scrollHorizontally="true"
-            android:visibility="invisible"
-            />
+            android:visibility="invisible" />
+
         <LinearLayout
             android:id="@+id/ll_service"
             android:layout_width="wrap_content"
@@ -101,8 +99,8 @@
             android:layout_toLeftOf="@+id/tv_buy"
             android:background="@drawable/main_top_bar_bg"
             android:orientation="horizontal"
-            android:visibility="gone"
-            android:paddingRight="8dp">
+            android:paddingRight="8dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_service"
@@ -114,8 +112,7 @@
                 android:onClick="onClick"
                 android:text="@string/services"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
-                 />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tv_coupon"
@@ -127,8 +124,7 @@
                 android:onClick="onClick"
                 android:text="@string/coupon"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
-                 />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tv_rule"
@@ -165,17 +161,16 @@
         android:id="@+id/contentPanel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
+
         <TextView
             android:id="@+id/main_process_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:textSize="22sp"
             android:singleLine="true"
-            android:visibility="gone"
-            />
+            android:textSize="22sp"
+            android:visibility="gone" />
     </FrameLayout>
 
     <RelativeLayout
@@ -192,8 +187,8 @@
             android:background="@drawable/main_bottom_bar_bg"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingBottom="6dp"
-            android:paddingTop="8dp">
+            android:paddingTop="8dp"
+            android:paddingBottom="6dp">
 
             <TextView
                 android:id="@+id/tv_next"
@@ -310,9 +305,8 @@
                 android:clickable="true"
                 android:drawableTop="@drawable/selector_main_air"
                 android:onClick="onClick"
-                android:visibility="gone"
                 android:text="@string/infrared_control"
-                 />
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
@@ -327,7 +321,7 @@
             android:focusable="true"
             android:gravity="center"
             android:maxWidth="200dp"
-            android:paddingLeft="15dp"
+            android:paddingLeft="18dp"
             android:paddingRight="15dp"
             android:singleLine="true"
             android:textColor="@color/main_playing_time"

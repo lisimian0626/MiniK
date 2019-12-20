@@ -98,7 +98,7 @@
             android:id="@+id/tv_android_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="130dp"
+            android:layout_marginRight="180dp"
             android:gravity="right"
             android:text="@string/android_setting"
             android:textColor="@android:color/white"
@@ -112,6 +112,19 @@
             android:drawableTop="@drawable/service_setting_android"
             android:gravity="center"
             android:text="@string/system_setting"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_serial_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:drawablePadding="14dp"
+            android:drawableTop="@drawable/ico_interface"
+            android:gravity="center"
+            android:text="@string/serial_setting"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -153,17 +166,6 @@
             android:drawableTop="@drawable/service_setting_backtoktv"
             android:gravity="center"
             android:text="@string/back_to_ktv"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-        <TextView
-            android:id="@+id/tv_serial_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
-            android:drawablePadding="14dp"
-            android:drawableTop="@drawable/icon_setting_password"
-            android:gravity="center"
-            android:text="@string/serial_setting"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
     </TableRow>

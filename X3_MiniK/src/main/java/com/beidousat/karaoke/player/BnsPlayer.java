@@ -87,6 +87,8 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
 
     private boolean isPlaying = false;
 
+    private String SourcePath;
+
 
     public BnsPlayer(SurfaceView videoSurfaceView, SurfaceView minor, int width, int height) {
         mVideoSurfaceView = videoSurfaceView;
@@ -125,100 +127,86 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
     }
 
     private void open(String uri, final String savePath, int playmode) throws IOException {
-        switch (playmode) {
-            case BnsConfig.PREVIEW:
-            case BnsConfig.NORMAL:
-                if (KBoxInfo.getInstance().getKboxConfig() != null && PrefData.Nodisk(Main.mMainActivity.getApplicationContext()) == 1) {
-                    if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
-                        return;
-                    }
-                    Logger.d(TAG, "open net file:" + uri);
-                    mMediaPlayer.setDataSource(uri);
-                    if (mMinor != null)
-                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                    mMediaPlayer.prepare();
-                    isPlaying = true;
-                    getTrack(mMediaPlayer);
-                } else {
-                    Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
-                    File file = DiskFileUtil.getDiskFileByUrl(savePath);
-                    if (file != null) {//存在本地文件
-                        Logger.d(TAG, "open local file:" + file.getAbsolutePath());
-                        mMediaPlayer.setDataSource(file.getAbsolutePath());
-                        if (mMinor != null)
-                            mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                        mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                        mMediaPlayer.prepare();
-                        isPlaying = true;
-                        getTrack(mMediaPlayer);
-                    } else {//本地文件不存在
-                        if (playmode == BnsConfig.PREVIEW) {
-                            if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
-                                return;
-                            }
-                            Logger.d(TAG, "open net file:" + uri);
 
-                            mMediaPlayer.setDataSource(uri);
-                            if (mMinor != null)
-                                mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                            mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                            mMediaPlayer.prepare();
-                            isPlaying = true;
-                            getTrack(mMediaPlayer);
-                        } else {
-                            Logger.w(TAG, "onError  =========================> 歌曲不存在");
-                            if (mBeidouPlayerListener != null) {
-                                mBeidouPlayerListener.onPlayerCompletion();
-                            }
-                            BnsAudioRecorder.getInstance().release();
-                            NativeScoreRunner.getInstance().stop();
-                        }
-                    }
+        Logger.d(TAG, String.valueOf(playmode) + "<= playmode");
+        while (true) {
+            //使用网络播放
+            if (KBoxInfo.getInstance().getKboxConfig() != null && PrefData.Nodisk(Main.mMainActivity.getApplicationContext()) == 1) {
+                if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
+                    Logger.d(TAG, "net is disconnect to open net file:" + uri);
+                    break;
                 }
+                Logger.d(TAG, "NORMAL open net file:" + uri);
+                SourceToPlay(uri, true);
                 break;
-            case BnsConfig.PUBLIC:
-                if (KBoxInfo.getInstance().getKboxConfig() != null && PrefData.Nodisk(Main.mMainActivity.getApplicationContext()) == 1) {
+            }
+
+            if (playmode == BnsConfig.PREVIEW || playmode == BnsConfig.NORMAL) {
+                Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
+                File file = DiskFileUtil.getDiskFileByUrl(savePath);
+                if (file != null) {//存在本地文件
+                    Logger.d(TAG, String.valueOf(playmode) + "<= playmode open local file:" + file.getAbsolutePath());
+                    SourceToPlay(file.getAbsolutePath(), false);
+                    break;
+                }
+                //本地文件不存在
+                if (playmode == BnsConfig.PREVIEW) {
                     if (!NetWorkUtils.isNetworkAvailable(Main.mMainActivity.getApplicationContext())) {
                         return;
                     }
-                    Logger.d(TAG, "open net file:" + uri);
-                    mMediaPlayer.setDataSource(uri);
-                    if (mMinor != null)
-                        mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                    mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                    mMediaPlayer.prepare();
-                    isPlaying = true;
-                    getTrack(mMediaPlayer);
-                } else {
-                    Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
-                    File public_file = DiskFileUtil.getDiskFileByUrl(savePath);
-                    if (public_file != null) {//存在本地文件
-                        Logger.d(TAG, "open local file:" + public_file.getAbsolutePath());
-                        mMediaPlayer.setDataSource(public_file.getAbsolutePath());
-                        if (mMinor != null)
-                            mMediaPlayer.setMinorDisplay(mMinor.getHolder());
-                        mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
-                        mMediaPlayer.prepareAsync();
-                        isPlaying = true;
-                        getTrack(mMediaPlayer);
-                    } else {//本地文件不存在
-                        try {
-                            downLoadInfo downLoadInfo = new downLoadInfo();
-                            downLoadInfo.setDownUrl(uri);
-                            downLoadInfo.setSavePath(savePath);
-                            downLoadInfo.setPlayMode(playmode);
-                            EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e("test", "下载失败");
-                        }
-                    }
+                    Logger.d(TAG, "PREVIEW open net file:" + uri);
+                    SourceToPlay(uri, true);
+                    break;
                 }
+                Logger.w(TAG, "onError  =========================> 歌曲不存在");
+                if (mBeidouPlayerListener != null) {
+                    mBeidouPlayerListener.onPlayerCompletion();
+                }
+                BnsAudioRecorder.getInstance().release();
+                NativeScoreRunner.getInstance().stop();
                 break;
+            }
+
+            //公播的情况
+            Logger.d(TAG, "uri:" + DiskFileUtil.getDiskFileByUrl(savePath));
+            File public_file = DiskFileUtil.getDiskFileByUrl(savePath);
+            if (public_file != null) {//存在本地文件
+                Logger.d(TAG, "open local file:" + public_file.getAbsolutePath());
+                SourceToPlay(public_file.getAbsolutePath(), true);
+                break;
+            }
+
+            //本地文件不存在
+            try {
+                downLoadInfo downLoadInfo = new downLoadInfo();
+                downLoadInfo.setDownUrl(uri);
+                downLoadInfo.setSavePath(savePath);
+                downLoadInfo.setPlayMode(playmode);
+                EventBusUtil.postSticky(EventBusId.id.PLAYER_NEXT_DELAY, downLoadInfo);//切歌并且加入下载
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
+            }
+            break;
         }
+    }
 
-
+    /**
+     * 使用资源，正式播放
+     */
+    private void SourceToPlay(String source_str, boolean isAsync) throws IOException {
+        mMediaPlayer.setDataSource(source_str);
+        SourcePath = source_str;//记录当前的资源路径
+        if (mMinor != null)
+            mMediaPlayer.setMinorDisplay(mMinor.getHolder());
+        mMediaPlayer.setDisplay(mVideoSurfaceView.getHolder());
+        if (isAsync) {
+            mMediaPlayer.prepareAsync();//如果是较大的资源或者网络资源建议使用prepareAsync方法,异步加载
+        } else {
+            mMediaPlayer.prepare();//是将资源同步缓存到内存中,一般加载本地较小的资源可以用这个
+        }
+        isPlaying = true;
+        getTrack(mMediaPlayer);
     }
 
     @Override
@@ -691,5 +679,7 @@ public class BnsPlayer implements IAudioRecordListener, OnKeyInfoListener, Media
         }
     }
 
-
+    public String getPlayingSourcePath(){
+        return  SourcePath;
+    }
 }

@@ -26,7 +26,7 @@ public class InfraredSerialSendRecvHelper {
             @Override
             protected void onReceive(final byte[] btData) {
                 data = new StringBuffer();
-                Log.i("SerialSendRecvHelper", new String(btData));
+//                Log.i("SerialSendRecvHelper", new String(btData));
                 // int i=0;
                 for (byte b : btData) {
                     data.append(DataTransition.byte2Hex(b) + " ");
@@ -40,7 +40,7 @@ public class InfraredSerialSendRecvHelper {
         try {
             mSerialHelper.open();
         } catch (Exception ex) {
-            Log.e("SerialSendRecvHelper", ex.toString());
+            Log.e("SerialSendRecvHelper open error", ex.toString());
         }
     }
 
@@ -48,7 +48,7 @@ public class InfraredSerialSendRecvHelper {
         try {
             mSerialHelper.close();
         } catch (Exception ex) {
-            Log.e("SerialSendRecvHelper", ex.toString());
+            Log.e("SerialSendRecvHelper close error", ex.toString());
         }
     }
 
@@ -63,7 +63,7 @@ public class InfraredSerialSendRecvHelper {
             Log.d("SerialSendRecvHelper", "send :" + code);
             mSerialHelper.sendTxt(code);
         } catch (Exception ex) {
-            Log.e("SerialSendRecvHelper", ex.toString());
+            Log.e("SerialSendRecvHelper send String error", ex.toString());
         }
     }
     public void send(byte[] code) {
@@ -71,7 +71,7 @@ public class InfraredSerialSendRecvHelper {
             Log.i("SerialSendRecvHelper", "send :" + code.toString());
             mSerialHelper.send(code);
         } catch (Exception ex) {
-            Log.e("SerialSendRecvHelper", ex.toString());
+            Log.e("SerialSendRecvHelper send byte error", ex.toString());
         }
     }
     public interface OnInfraredSerialReceiveListener {

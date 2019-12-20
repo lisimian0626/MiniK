@@ -1,5 +1,9 @@
 package com.beidousat.karaoke.model;
 
+import android.content.Context;
+
+import com.beidousat.libbns.util.Logger;
+import com.beidousat.libbns.util.PreferenceUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -7,6 +11,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class BasePlay {
 
@@ -21,6 +26,90 @@ public class BasePlay {
     private String song_name;
     private String object_name;
     private String download_url;
+
+    public static int index = -1;//当前播放的歌曲序号
+
+    private static String Tag = "BasePlay";
+
+
+    /**
+     * 设置公播的播放方案
+     */
+    public static void setPlayPlan(Context mContext, String playplan) {
+        PreferenceUtil.setString(mContext, "PlayPlan", playplan);
+    }
+
+    /**
+     * 读取公播的播放方案
+     */
+    public static String getPlayPlan(Context mContext) {
+        return PreferenceUtil.getString(mContext, "PlayPlan", "random");//默认为随机的
+    }
+
+
+    /**
+     * 设置公播中中固定歌曲
+     */
+    public static void setSingle_index(Context mContext, int single) {
+        PreferenceUtil.setInt(mContext, "Single_index", single);
+    }
+
+    /**
+     * 设置公播中中固定歌曲
+     */
+    public static int getSingle_index(Context mContext, int max_size) {
+        int Single_index = PreferenceUtil.getInt(mContext, "Single_index", 0);
+        if (max_size < Single_index) Single_index = max_size;
+        return Single_index;
+    }
+
+    /**
+     * 保存公播放信息
+     */
+    public static void setBasePlay(Context mContext, String basePlay) {
+        PreferenceUtil.setString(mContext, "BasePlaySong", basePlay);
+    }
+
+    /**
+     * 读取公播放信息
+     */
+    public static List<BasePlay> getBasePlay(Context mContext) {
+        String BasePlaySong = PreferenceUtil.getString(mContext, "BasePlaySong", null);
+        if (BasePlaySong == null) {
+            return null;
+        }
+        return arrayBasePlayFromData(BasePlaySong);
+    }
+
+
+    /**
+     * 取得当前可以播放的歌曲序号
+     */
+    public static int getCycleNum(Context mContext) {
+        List<BasePlay> basePlaylist = getBasePlay(mContext);
+        int max_size = basePlaylist.size();
+        if (index < max_size - 1) {
+            index++;
+        } else {
+            index = 0;
+        }
+        Logger.d("Main", "index:" + index);
+        return index;
+    }
+
+    /**
+     * 取得随机的合法序号
+     */
+    public static int getRandIndex(Context mContext) {
+        List<BasePlay> basePlaylist = getBasePlay(mContext);
+        int max_size = basePlaylist.size();
+        if (max_size > 0) {
+            Random random = new Random();
+            return random.nextInt(max_size);
+        }
+        return 0;
+    }
+
 
     public static List<BasePlay> arrayBasePlayFromData(String str) {
 
@@ -74,6 +163,7 @@ public class BasePlay {
     public String toString() {
         return toJson();
     }
+
     private String toJson() {
         try {
             Gson gson = new Gson();

@@ -38,9 +38,9 @@ import java.util.List;
 
 public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, SupportQueryOrder {
 
-    private LinearLayout mZhiFuBaoBtn, mWeiXinBtn, mTouBiBtn, mCardBtn,mOctBtn;
-    private ImageView mBackBtn, mIv_zhifubao, mIv_wechat, mIv_toubi;
-    private String mPayment;
+    private LinearLayout mZhiFuBaoBtn, mWeiXinBtn, mUnionpayBtn, mTouBiBtn, mCardBtn, mOctBtn;
+    private ImageView mBackBtn, mIv_zhifubao, mIv_wechat, mIv_unionpay, mIv_toubi;
+    private String mPayment = "";
     public final static String MEAL_TAG = "SelectedMeal";
     public final static String MEAL_CARDCODE = "CardCode";
     private Meal mMeal;
@@ -64,49 +64,55 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
 
     @Override
     void initView() {
-
-        mZhiFuBaoBtn =  findViewById(R.id.zhifubao_btn);
-        mWeiXinBtn =  findViewById(R.id.weixin_btn);
-        mBackBtn =  findViewById(R.id.dlg_fm_pay_back);
-        mTouBiBtn =  findViewById(R.id.toubi_btn);
+        mZhiFuBaoBtn = findViewById(R.id.zhifubao_btn);
+        mWeiXinBtn = findViewById(R.id.weixin_btn);
+        mUnionpayBtn = findViewById(R.id.unionpay_btn);
+        mBackBtn = findViewById(R.id.dlg_fm_pay_back);
+        mTouBiBtn = findViewById(R.id.toubi_btn);
         mCardBtn = findViewById(R.id.card_btn);
-        mIv_zhifubao =  findViewById(R.id.iv_zhifubao);
-        mIv_wechat =  findViewById(R.id.iv_wechat);
-        mIv_toubi =  findViewById(R.id.iv_toubi);
-        mOctBtn=findViewById(R.id.lin_ost);
-
-        List<PayMent> payMentList = KBoxInfo.getInstance().getmPayMentlist();
-        if (payMentList != null && payMentList.size() > 0) {
-            for (PayMent payMent : payMentList) {
-                switch (payMent.getName()) {
-                    case "alipay":
-                        GlideUtils.showImageView(getActivity(), R.drawable.pay_zhifubao, payMent.getLogo_url(), mIv_zhifubao);
-                        break;
-                    case "wechat":
-                        GlideUtils.showImageView(getActivity(), R.drawable.pay_weixin, payMent.getLogo_url(), mIv_wechat);
+        mIv_zhifubao = findViewById(R.id.iv_zhifubao);
+        mIv_wechat = findViewById(R.id.iv_wechat);
+        mIv_unionpay = findViewById(R.id.iv_unionpay);
+        mIv_toubi = findViewById(R.id.iv_toubi);
+        mOctBtn = findViewById(R.id.lin_ost);
+        //先停用所有的线上支付方式，不是所有方式都需要支持，跟据列表开启
+        mZhiFuBaoBtn.setVisibility(View.GONE);
+        mWeiXinBtn.setVisibility(View.GONE);
+        mUnionpayBtn.setVisibility(View.GONE);
+        if (KBoxInfo.getInstance().getKBox().getUse_online() == 1) {
+            List<PayMent> payMentList = KBoxInfo.getInstance().getmPayMentlist();
+            if (payMentList != null && payMentList.size() > 0) {
+                for (PayMent payMent : payMentList) {
+                    switch (payMent.getName()) {
+                        case "alipay":
+                            GlideUtils.showImageView(getActivity(), R.drawable.pay_zhifubao, payMent.getLogo_url(), mIv_zhifubao);
+                            mZhiFuBaoBtn.setVisibility(View.VISIBLE);
+                            break;
+                        case "wechat":
+                            GlideUtils.showImageView(getActivity(), R.drawable.pay_weixin, payMent.getLogo_url(), mIv_wechat);
+                            mWeiXinBtn.setVisibility(View.VISIBLE);
+                            break;
+                        case "unionpay":
+                            GlideUtils.showImageView(getActivity(), R.drawable.pay_unionpay, payMent.getLogo_url(), mIv_unionpay);
+                            mUnionpayBtn.setVisibility(View.VISIBLE);
+                            break;
+                    }
                 }
             }
-        }
-        if(KBoxInfo.getInstance().getKBox().getUse_online()==1){
-            mZhiFuBaoBtn.setVisibility(View.VISIBLE);
-            mWeiXinBtn.setVisibility(View.VISIBLE);
-        }else{
-            mZhiFuBaoBtn.setVisibility(View.GONE);
-            mWeiXinBtn.setVisibility(View.GONE);
         }
         if (KBoxInfo.getInstance().getKBox().getUse_coin() == 1) {
             mTouBiBtn.setVisibility(View.VISIBLE);
         } else {
             mTouBiBtn.setVisibility(View.GONE);
         }
-        if(KBoxInfo.getInstance().getKBox().getUse_gift_card() == 1){
+        if (KBoxInfo.getInstance().getKBox().getUse_gift_card() == 1) {
             mCardBtn.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mCardBtn.setVisibility(View.GONE);
         }
-        if(KBoxInfo.getInstance().getKBox().getUse_pos() == 1){
+        if (KBoxInfo.getInstance().getKBox().getUse_pos() == 1) {
             mOctBtn.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mOctBtn.setVisibility(View.GONE);
         }
     }
@@ -116,6 +122,7 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
         mWeiXinBtn.setOnClickListener(this);
         mTouBiBtn.setOnClickListener(this);
         mZhiFuBaoBtn.setOnClickListener(this);
+        mUnionpayBtn.setOnClickListener(this);
         mBackBtn.setOnClickListener(this);
         mCardBtn.setOnClickListener(this);
         mOctBtn.setOnClickListener(this);
@@ -149,18 +156,20 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
                 mPayment = "wechat";
                 initStoreRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_CREATE).post();
                 break;
+            case R.id.unionpay_btn:
+                mPayment = "joinpay_unionpay";
+                initStoreRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_CREATE).post();
+                break;
             case R.id.toubi_btn:
                 mPayment = "coin";
                 showTBPayNumber();
-//                initStoreRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_CREATE).post();
                 break;
             case R.id.card_btn:
                 mPayment = "card";
                 showCardPay();
-//                initStoreRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.PAY_CREATE).post();
                 break;
             case R.id.lin_ost:
-                mPayment="Oct";
+                mPayment = "Oct";
                 showOctPayNumber();
                 break;
             case R.id.dlg_fm_pay_back:
@@ -179,17 +188,9 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
 
     @Override
     public StoreHttpRequest initStoreRequest(String urlHost, String method) {
-        StoreHttpRequest request = new StoreHttpRequest(urlHost,method);
+        StoreHttpRequest request = new StoreHttpRequest(urlHost, method);
         request.setStoreHttpRequestListener(this);
-        switch (mPayment){
-            case "alipay":
-                request.addParam(HttpParamsUtils.initPayCreateParams(mMeal.getOrderSn(),"alipay"));
-                break;
-            case "wechat":
-                request.addParam(HttpParamsUtils.initPayCreateParams(mMeal.getOrderSn(),"wechat"));
-                break;
-
-        }
+        request.addParam(HttpParamsUtils.initPayCreateParams(mMeal.getOrderSn(), mPayment));
         request.setConvert2Class(PayResult.class);
         return request;
     }
@@ -202,18 +203,8 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
             case RequestMethod.PAY_CREATE:
                 if (object instanceof PayResult) {
                     PayResult payResult = (PayResult) object;
-                    switch (mPayment){
-                        case "alipay":
-                            showQrCode(payResult);
-                            break;
-                        case "wechat":
-                            showQrCode(payResult);
-                            break;
-                        case "coin":
-                            break;
-                        case "card":
-                            break;
-                    }
+                    if (mPayment == "alipay" || mPayment == "wechat" || mPayment == "joinpay_unionpay")
+                        showQrCode(payResult);
                 }
                 break;
         }
@@ -258,6 +249,9 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
         LoadingUtil.showLoadingDialog(Main.mMainActivity);
     }
 
+    /**
+     * 显示要扫的二维码
+     * */
     private void showQrCode(PayResult payResult) {
         CommonDialog dialog = CommonDialog.getInstance();
         dialog.setShowClose(true);
@@ -265,7 +259,7 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
         Bundle bundle = new Bundle();
         bundle.putSerializable(FmPayQrCode.MEAL_TAG, mMeal);
         bundle.putString(FmPayQrCode.TYPE_TAG, mPayment);
-        bundle.putString(FmPayQrCode.QR_CODE,payResult.getQrcode_data());
+        bundle.putString(FmPayQrCode.QR_CODE, payResult.getQrcode_data());
         qrCode.setArguments(bundle);
         dialog.setContent(qrCode);
         if (!dialog.isAdded()) {
@@ -287,6 +281,7 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
             dialog.show(getChildFragmentManager(), "commonDialog");
         }
     }
+
     private void showOctPayNumber() {
 //        Logger.d(getClass().getSimpleName(), "showTBPayNumber  meal:" + mMeal.getPrice() + "  ");
         CommonDialog dialog = CommonDialog.getInstance();
@@ -300,6 +295,7 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
             dialog.show(getChildFragmentManager(), "commonDialog");
         }
     }
+
     private void showCardPay() {
         Logger.d(getClass().getSimpleName(), "showPayCard  meal:" + mMeal.getPrice() + "  ");
         CommonDialog dialog = CommonDialog.getInstance();
@@ -348,7 +344,7 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
 //            mDlgPriceChange.setCancelButton(getString(R.string.not_buy), new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
-//                    mQueryOrderHelper.cancelOrder(mSelectedMeal).post();
+//                    mQueryOrderHelper.cancelOrder(mSelectedMeal);
 //                    mDlgPriceChange.dismiss();
 //                }
 //            });
@@ -376,7 +372,6 @@ public class FmChoosePay extends FmBaseDialog implements View.OnClickListener, S
                 break;
         }
     }
-
 
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.beidousat.karaoke.data.PrefData;
@@ -12,14 +13,13 @@ import com.beidousat.libbns.evenbus.EventBusUtil;
 import com.beidousat.libbns.util.Logger;
 import com.beidousat.libserial.ICTRecvHelper;
 import com.beidousat.libserial.InfraredSerialSendRecvHelper;
-import com.beidousat.libserial.McuRecvHelper;
 import com.beidousat.libserial.OSTSendRecvHelper;
 import com.beidousat.libserial.SerialSendRecvHelper;
 
 /**
  * Created by J Wong on 2015/11/5 10:18.
  */
-public class SerialController implements SerialSendRecvHelper.OnSerialReceiveListener, InfraredSerialSendRecvHelper.OnInfraredSerialReceiveListener, OSTSendRecvHelper.OnOstSerialReceiveListener, ICTRecvHelper.OnICTSerialReceiveListener, McuRecvHelper.OnMcuSerialReceiveListener {
+public class SerialController implements SerialSendRecvHelper.OnSerialReceiveListener, InfraredSerialSendRecvHelper.OnInfraredSerialReceiveListener, OSTSendRecvHelper.OnOstSerialReceiveListener, ICTRecvHelper.OnICTSerialReceiveListener {
 
     private static SerialController mSerialController;
     private Context mContext;
@@ -27,7 +27,6 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
     private InfraredSerialSendRecvHelper mInfraredHelper;
     private OSTSendRecvHelper mOSTHelper;
     private ICTRecvHelper mICTHelper;
-    private McuRecvHelper mcuRecvHelper;
     private final int Serial = 1;
     private final int InfraredSerial = 2;
     private final int ostSerial = 3;
@@ -47,29 +46,32 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         this.mContext = context;
     }
 
+    /**
+     * 建立效果器监听
+     */
     public void open(String port, int baudrate) {
+        Logger.i(TAG, "Sound effects opened：port=>" + port + ",baudrate=>" + baudrate);
+        if (TextUtils.isEmpty(port))
+            return;
         try {
             mSerialHelper = SerialSendRecvHelper.getInstance();
-//            if (mIsOpened) {
-//                mSerialHelper.close();
-//            }
-            Logger.i(TAG, "open");
-//            Toast.makeText(mContext,"open",Toast.LENGTH_SHORT);
             mSerialHelper.open(port, baudrate);
             mSerialHelper.setOnSerialReceiveListener(this);
+            Logger.i(TAG, "Sound effects opened：port=>" + port + ",baudrate=>" + baudrate);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * 建立红外线串口监听
+     */
     public void openInfrared(String port, int baudrate) {
-
+        if (TextUtils.isEmpty(port))
+            return;
         try {
             mInfraredHelper = InfraredSerialSendRecvHelper.getInstance();
-//                        if (mIsfraredOpened) {
-//                            mInfraredHelper.close();
-//            }
-            Logger.i(TAG, "Infrared open");
+            Logger.i(TAG, "Infrared opened：port=>" + port + ",baudrate=>" + baudrate);
             mInfraredHelper.open(port, baudrate);
             mInfraredHelper.setOnInfraredSerialReceiveListener(this);
         } catch (Exception e) {
@@ -77,14 +79,15 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         }
     }
 
+    /**
+     * 建立 pos机 串口监听
+     * */
     public void openOst(String port, int baudrate) {
-
+        if (TextUtils.isEmpty(port))
+            return;
         try {
             mOSTHelper = OSTSendRecvHelper.getInstance().getInstance();
-//                        if (mIsfraredOpened) {
-//                            mInfraredHelper.close();
-//            }
-            Logger.i(TAG, "OST open");
+            Logger.i(TAG, "OST opened：port=>" + port + ",baudrate=>" + baudrate);
             mOSTHelper.open(port, baudrate);
             mOSTHelper.setOnOstSerialReceiveListener(this);
         } catch (Exception e) {
@@ -92,11 +95,15 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         }
     }
 
+    /**
+     * 建立投币机监听
+     */
     public void openICT(String port, int baudrate) {
-
+        if (TextUtils.isEmpty(port))
+            return;
         try {
             mICTHelper = ICTRecvHelper.getInstance().getInstance();
-            Logger.i(TAG, "ICT open");
+            Logger.i(TAG, "ICT opened：port=>" + port + ",baudrate=>" + baudrate);
             mICTHelper.open(port, baudrate);
             mICTHelper.setOnICTSerialReceiveListener(this);
         } catch (Exception e) {
@@ -104,54 +111,63 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         }
     }
 
-    public void openMcu(String port, int baudrate) {
 
-        try {
-            mcuRecvHelper = McuRecvHelper.getInstance().getInstance();
-            mcuRecvHelper.open(port, baudrate);
-            mcuRecvHelper.setOnMcuSerialReceiveListener(this);
-            Logger.i(TAG, "Mcu open");
-        } catch (Exception e) {
-            e.printStackTrace();
+    /**
+     * 收到效果器数据后进行处理
+     */
+    @Override
+    public void OnSerialReceive(String data) {
+        Logger.d(TAG, "OnSerialReceive :" + data + "");
+        if (PrefData.getSoundEffectsBrand(mContext) == 1) {
+            codeCache += data;
+            int start_num = codeCache.indexOf("44");
+            int end_num = start_num + 11;
+            Log.d(TAG, "mcu " + codeCache);
+            if (start_num >= 0 && codeCache.length() >= end_num) {
+                String use_string = codeCache.substring(start_num, end_num);
+                Log.d(TAG, " use mcu str:" + use_string);
+                use_string = use_string.replace(" ", "").toUpperCase();
+                //以下为提交到消息处理
+                toMsg(McuSerial, use_string);
+                //提交完毕
+                codeCache = codeCache.substring(end_num);
+            }
+        } else {
+            toMsg(Serial, data);
         }
     }
 
     @Override
-    public void OnSerialReceive(String data) {
-        Logger.d(TAG, "OnSerialReceive :" + data + "");
-        Message msg = new Message();
-        msg.what = Serial;
-        msg.obj = data;
-        handler.sendMessage(msg);
-    }
-
-    @Override
     public void OnInfraredSerialReceive(String data) {
-//        Logger.i(TAG, "OnInfraredSerialReceive :" + data + "");
-        Message msg = new Message();
-        msg.what = InfraredSerial;
-        msg.obj = data;
-        handler.sendMessage(msg);
+        Logger.i(TAG, "OnInfraredSerialReceive :" + data + "");
+        toMsg(InfraredSerial, data);
     }
 
     @Override
     public void OnOstReceive(String data) {
         Logger.d(TAG, "OnOstReceive :" + data + "");
-        Message msg = new Message();
-        msg.what = ostSerial;
-        msg.obj = data;
-        handler.sendMessage(msg);
+        toMsg(ostSerial, data);
     }
 
+    /**
+     * 接收投币机的数据
+     */
     @Override
     public void OnICTReceive(String data) {
         Logger.d(TAG, "OnICTReceive :" + data + "");
+        toMsg(ictSerial, data);
+    }
+
+    private void toMsg(int setwhat, String data) {
         Message msg = new Message();
-        msg.what = ictSerial;
+        msg.what = setwhat;
         msg.obj = data;
         handler.sendMessage(msg);
     }
 
+    /**
+     * 跟据收取效果器返回的值做处理
+     */
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -160,80 +176,40 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
                 return;
             switch (msg.what) {
                 case Serial:
-                    Logger.d(TAG, "OnSerialReceive handler:" + data + "");
-                    if (!TextUtils.isEmpty(data)) {
-                        if (data.startsWith("A2 06 B0 0A 0D ")) {//mic音量
-                            try {
-                                String str = data.replace("A2 06 B0 0A 0D ", "");
-                                String hex = str.substring(0, 2);
-                                Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
-                                int micVol = Integer.parseInt(hex, 16);
-                                Logger.d(TAG, "OnSerialReceive handle mic vol :" + micVol + "");
-                                EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                    Logger.d(TAG, "OnSerialReceive handler:" + data);
+                    boolean ismic = (data.startsWith("A2 06 B0 0A 0D ") ? true : false);
+                    boolean iseff = (data.startsWith("A2 06 B0 0A 0E ") ? true : false);
+                    if ((ismic || iseff) && data.length() >= 17) {
+                        try {
+                            String hex = data.substring(15, 17);
+                            int useVol = Integer.parseInt(hex, 16);
+                            if (ismic) {//mic音量
+                                Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + ", vol :" + useVol);
+                                EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, useVol);
+                            } else if (iseff) {//效果音量
+                                Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + ",vol :" + useVol);
+                                EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, useVol);
                             }
-                        } else if (data.startsWith("A2 06 B0 0A 0E ")) {//效果音量
-                            try {
-                                String str = data.replace("A2 06 B0 0A 0E ", "");
-                                String hex = str.substring(0, 2);
-                                Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
-                                int effVol = Integer.parseInt(hex, 16);
-                                Logger.d(TAG, "OnSerialReceive handle eff vol :" + effVol + "");
-                                EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                     super.handleMessage(msg);
                     break;
                 case McuSerial:
-                    data = data.replace(" ", "").toUpperCase();
-                    codeCache += data;
-                    Logger.d(TAG, "dealCode codeCache >>>>>>>>>> " + codeCache);
-                    if (codeCache.contains("44BB0A")) {
-                        try {
-                            String str = codeCache.replace("44BB0A", "");
-                            String hex = str.substring(0, 2);
-                            Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + "");
-                            int micVol = Integer.parseInt(hex, 16);
-                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
-                            codeCache = "";
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    try {
+                        String hex = data.substring(6, 8);
+                        int useVol = Integer.parseInt(hex, 16);
+                        if (data.contains("44BB0A")) {
+                            Logger.d(TAG, "OnSerialReceive handle mic hex :" + hex + ", vol :" + useVol);
+                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, useVol);
+                        } else if (data.contains("44BB08")) {
+                            Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + ", vol :" + useVol);
+                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, useVol);
                         }
-                    } else if (codeCache.contains("44BB08")) {
-                        try {
-                            String str = codeCache.replace("44BB08", "");
-                            String hex = str.substring(0, 2);
-                            Logger.d(TAG, "OnSerialReceive handle eff hex :" + hex + "");
-                            int effVol = Integer.parseInt(hex, 16);
-                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, effVol);
-                            codeCache = "";
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-//                    try {
-//                        if (codeCache.contains("44BB0A")&&codeCache.substring(codeCache.indexOf("44BB0A")).length() >= 8) {
-//                            String str = codeCache.substring(codeCache.indexOf("44BB0A"));
-//                            String hex = str.substring(6, 8);
-//                            int micVol = Integer.parseInt(hex, 16);
-//                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_MIC_VOL, micVol);
-//                            Logger.d(TAG, "OnMcuReceive handle mic:" + "codeCache:"+codeCache+"       hex:"+hex+"    micVol:"+micVol + "");
-//                            codeCache = "";
-//                        }else if(codeCache.contains("44BB0B")&&codeCache.substring(codeCache.indexOf("44BB08")).length() >= 8){
-//                            String str = codeCache.substring(codeCache.indexOf("44BB08"));
-//                            String hex = str.substring(6, 8);
-//                            int micVol = Integer.parseInt(hex, 16);
-//                            EventBusUtil.postSticky(EventBusId.SERIAL.SERIAL_EFF_VOL, micVol);
-//                            Logger.d(TAG, "OnMcuReceive handle eff:" + "codeCache:"+codeCache+"       hex:"+hex+"    effVol:"+micVol + "");
-//                            codeCache = "";
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
                     break;
                 case InfraredSerial:
                     EventBusUtil.postSticky(EventBusId.INFARAED.RECEIVE_CODE, data);
@@ -251,142 +227,150 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
         }
     };
 
+
+    /**
+     * 麦克风增加
+     */
     public void onMicUp() {
-        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-            mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_up);
-        } else {
-            try {
-                String code = PrefData.getSerilMicUp(mContext);
-                Logger.d(TAG, "onMicUp:" + code);
-                if (!TextUtils.isEmpty(code))
-                    mSerialHelper.send(code);
-            } catch (Exception e) {
-                Logger.w(TAG, e.toString());
-            }
+        String code = PrefData.getSerilMicUp(mContext);
+        Logger.d(TAG, "onMicUp:" + code);
+        if (TextUtils.isEmpty(code))
+            return;
+        try {
+            mSerialHelper.send(code);
+        } catch (Exception e) {
+            Logger.w(TAG, e.toString());
         }
     }
+
+
+    /**
+     * 麦克风减小
+     */
 
     public void onMicDown() {
-        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-            mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_down);
-        } else {
-            try {
-                String code = PrefData.getSerilMicDown(mContext);
-                Logger.d(TAG, "onMicDown:" + code);
-                if (!TextUtils.isEmpty(code))
-                    mSerialHelper.send(code);
-            } catch (Exception e) {
-                Logger.w(TAG, e.toString());
-            }
+        String code = PrefData.getSerilMicDown(mContext);
+        Logger.d(TAG, "onMicDown:" + code);
+        if (TextUtils.isEmpty(code))
+            return;
+        try {
+            mSerialHelper.send(code);
+        } catch (Exception e) {
+            Logger.w(TAG, e.toString());
         }
     }
+
+    /**
+     * 混响增加
+     */
 
     public void onReverbUp() {
-        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-            mcuRecvHelper.sendbyte(McuRecvHelper.byte_effect_up);
-        } else {
-            try {
-                String code = PrefData.getSerilReverbUp(mContext);
-                if (!TextUtils.isEmpty(code))
-                    mSerialHelper.send(code);
-            } catch (Exception e) {
-                Logger.w(TAG, e.toString());
-            }
+        String code = PrefData.getSerilReverbUp(mContext);
+        Logger.d(TAG, "onReverbUp:" + code);
+        if (TextUtils.isEmpty(code))
+            return;
+        try {
+            mSerialHelper.send(code);
+        } catch (Exception e) {
+            Logger.w(TAG, e.toString());
         }
     }
 
+    /**
+     * 混响减小
+     */
     public void onReverbDown() {
-        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-            mcuRecvHelper.sendbyte(McuRecvHelper.byte_effect_down);
-        } else {
-            try {
-                String code = PrefData.getSerilReverbDown(mContext);
-                if (!TextUtils.isEmpty(code))
-                    mSerialHelper.send(code);
-            } catch (Exception e) {
-                Logger.w(TAG, e.toString());
-            }
+        String code = PrefData.getSerilReverbDown(mContext);
+        if (TextUtils.isEmpty(code))
+            return;
+        try {
+            mSerialHelper.send(code);
+        } catch (Exception e) {
+            Logger.w(TAG, e.toString());
         }
     }
 
     public void onReset() {
+        String code = PrefData.getSerilReset(mContext);
+        if (TextUtils.isEmpty(code))
+            return;
         try {
-            String code = PrefData.getSerilReset(mContext);
-            if (!TextUtils.isEmpty(code))
-                mSerialHelper.send(code);
+            mSerialHelper.send(code);
         } catch (Exception e) {
             Logger.w(TAG, e.toString());
         }
     }
 
+    /**
+     * 设置麦克风为静音
+     */
     public void setMicMute(boolean mute) {
+        String code = mute ? PrefData.getSerilMicMute(mContext) : PrefData.getSerilMicUnmute(mContext);
+        if (TextUtils.isEmpty(code))
+            return;
         try {
-            if (mute) {
-                if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-                    mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_mute);
-                } else {
-                    mSerialHelper.send("E0A206B70A0D0000AE");
-                }
-            } else {
-                if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-                    mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_reset);
-                } else {
-                    mSerialHelper.send("E0A206B70A0D3200E0");
-                }
-            }
+            mSerialHelper.send(code);
         } catch (Exception e) {
             Logger.w(TAG, e.toString());
         }
     }
 
+    /**
+     * 查询麦克风
+     */
     public void readMicVol() {
-        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-            mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_query);
-        } else {
-            try {
-                mSerialHelper.send("E0A204B00A0DA7");
-                //mSerialHelper.send("E0A204B00A0CA6");
-            } catch (Exception e) {
-                Logger.w(TAG, e.toString());
-            }
+        String code = PrefData.getSerilQMicVol(mContext);
+        if (TextUtils.isEmpty(code))
+            return;
+        try {
+            mSerialHelper.send(code);
+        } catch (Exception e) {
+            Logger.w(TAG, e.toString());
         }
     }
 
+    /**
+     * 查询混响
+     */
     public void readEffVol() {
-        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-            mcuRecvHelper.sendbyte(McuRecvHelper.byte_effect_query);
-        } else {
-            try {
-                mSerialHelper.send("E0A204B00A0EA8");
-                //mSerialHelper.send("E0A204B00A0CA6");
-            } catch (Exception e) {
-                Logger.w(TAG, e.toString());
-            }
+        String code = PrefData.getSerilQueryErrect(mContext);
+        Log.d(TAG, "readEffVol: " + code);
+        if (TextUtils.isEmpty(code))
+            return;
+        try {
+            mSerialHelper.send(code);
+        } catch (Exception e) {
+            Logger.w(TAG, "readEffVol error:"+e.toString());
         }
     }
 
+    /**
+     * 重置麦克风
+     */
     public void resetMic() {
-        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-            mcuRecvHelper.sendbyte(McuRecvHelper.byte_mic_reset);
-        } else {
-            try {
-                mSerialHelper.send("E0A206B70A0D3200E0");
-            } catch (Exception e) {
-                Logger.w(TAG, e.toString());
-            }
+        String code = PrefData.getSerilResetMic(mContext);
+        Log.d(TAG, "resetMic:" + code);
+        if (TextUtils.isEmpty(code))
+            return;
+        try {
+            mSerialHelper.send(code);
+        } catch (Exception e) {
+            Logger.w(TAG, e.toString());
         }
     }
 
-
+    /**
+     * 重置混响
+     */
     public void resetEff() {
-        if (PrefData.getSERIAL_RJ45(mContext) == 3) {
-            mcuRecvHelper.sendbyte(McuRecvHelper.byte_effect_reset);
-        } else {
-            try {
-                mSerialHelper.send("E0A206B70A0E1600C5");
-            } catch (Exception e) {
-                Logger.w(TAG, e.toString());
-            }
+        String code = PrefData.getSerilResetErrect(mContext);
+        Log.d(TAG, "resetMic:" + code);
+        if (TextUtils.isEmpty(code))
+            return;
+        try {
+            mSerialHelper.send(code);
+        } catch (Exception e) {
+            Logger.w(TAG, e.toString());
         }
     }
 
@@ -439,28 +423,5 @@ public class SerialController implements SerialSendRecvHelper.OnSerialReceiveLis
             Logger.i(TAG, "send");
             mICTHelper.sendbyte(cmddata);
         }
-    }
-
-    public void sendMCU(String msg) {
-        if (mcuRecvHelper != null) {
-//            Logger.i(TAG, "send" );
-            mcuRecvHelper.send(msg);
-        }
-    }
-
-    public void sendbyteMCU(byte[] cmddata) {
-        if (mcuRecvHelper != null) {
-            Logger.i(TAG, " mcu send");
-            mcuRecvHelper.sendbyte(cmddata);
-        }
-    }
-
-    @Override
-    public void OnMcuReceive(String data) {
-        Logger.d(TAG, "OnMcuReceive :" + data + "");
-        Message msg = new Message();
-        msg.what = McuSerial;
-        msg.obj = data;
-        handler.sendMessage(msg);
     }
 }

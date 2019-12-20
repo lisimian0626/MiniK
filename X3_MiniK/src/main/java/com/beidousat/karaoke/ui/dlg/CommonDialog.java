@@ -208,11 +208,11 @@ public class CommonDialog extends DialogFragment {
         //获取当前fragment上一级fragment
         if (lastIndex - 1 >= 0) {
             mContent = (FmBaseDialog) fmManager.getFragments().get(lastIndex - 1);
+            Logger.d("lastIndex", "OK");
         } else {
             mContent = null;
         }
-
-        if (fmManager.getFragments().size() - 1 < 0) {
+        if (lastIndex < 0) {
             dismiss();
         } else {
             fmManager.popBackStack();

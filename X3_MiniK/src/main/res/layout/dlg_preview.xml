@@ -70,7 +70,7 @@
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
             android:paddingTop="3dp"
-            android:text="优先"
+            android:text="@string/priority"
             android:textColor="@drawable/selector_tab_text"
             android:textSize="18sp" />
 
@@ -87,7 +87,7 @@
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
             android:paddingTop="3dp"
-            android:text="点歌"
+            android:text="@string/tab_song"
             android:textColor="@drawable/selector_tab_text"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -110,7 +110,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="视频连接中..."
+            android:text="@string/loading_video"
             android:textColor="@android:color/white"
             android:textSize="22sp" />
     </LinearLayout>

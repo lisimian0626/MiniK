@@ -52,6 +52,25 @@ public class DataTransition {
         return String.format("%02x", bt).toUpperCase(Locale.getDefault());
     }
 
+
+    /**
+     * 字节数数转换成字符串
+     */
+    public static String byteArrayToHexStr(byte[] byteArray) {
+        if (byteArray == null) {
+            return null;
+        }
+        char[] hexArray = "0123456789ABCDEF".toCharArray();
+        char[] hexChars = new char[byteArray.length * 2];
+        for (int j = 0; j < byteArray.length; j++) {
+            int v = byteArray[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
+
     /**
      * 字节数组转转hex字符串
      *
@@ -134,13 +153,14 @@ public class DataTransition {
         byte[] byteNum = new byte[8];
         for (int ix = 0; ix < 8; ++ix) {
             int offset = 64 - (ix + 1) * 8;
-            byteNum[7-ix] = (byte) ((num >> offset) & 0xff);
+            byteNum[7 - ix] = (byte) ((num >> offset) & 0xff);
         }
         return byteNum;
     }
 
     /**
      * 前面4字节wifi信号量，后4字节名称
+     *
      * @param num
      * @return
      */
@@ -148,12 +168,11 @@ public class DataTransition {
         byte[] byteNum = new byte[8];
         for (int ix = 0; ix < 4; ++ix) {
             int offset = 32 - (ix + 1) * 8;
-            byteNum[3-ix] = (byte) ((num >> offset) & 0xff);
+            byteNum[3 - ix] = (byte) ((num >> offset) & 0xff);
         }
-        byte[] namebyte=name.getBytes();
-        for(int i=0;i<4&&i<namebyte.length;i++)
-        {
-            byteNum[i+4]=namebyte[i];
+        byte[] namebyte = name.getBytes();
+        for (int i = 0; i < 4 && i < namebyte.length; i++) {
+            byteNum[i + 4] = namebyte[i];
         }
         return byteNum;
     }
@@ -194,7 +213,7 @@ public class DataTransition {
         return (mac[0] << 40) + (mac[1] << 32) + (mac[2] << 24) + (mac[3] << 16) + (mac[4] << 8) + mac[5];
     }
 
-    public static String bytesToHexString(byte[] src){
+    public static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder("");
         if (src == null || src.length <= 0) {
             return null;
@@ -209,11 +228,13 @@ public class DataTransition {
         }
         return stringBuilder.toString();
     }
-    public static int[] byte2Int(byte b[])
-    {	int val[] = new int[b.length];
 
-        for(int i = 0; i<b.length; i++)
-            val[i] = b[i]&0xFF;
+
+    public static int[] byte2Int(byte b[]) {
+        int val[] = new int[b.length];
+
+        for (int i = 0; i < b.length; i++)
+            val[i] = b[i] & 0xFF;
         return val;
     }
-    }
+}

@@ -6,6 +6,7 @@ import android.os.Message;
 
 import com.beidousat.libbns.R;
 import com.beidousat.libbns.model.BaseModel;
+import com.beidousat.libbns.model.ServerConfig;
 import com.beidousat.libbns.model.ServerConfigData;
 import com.beidousat.libbns.model.StoreBaseModel;
 import com.beidousat.libbns.net.NetWorkUtils;
@@ -101,7 +102,7 @@ public class HttpRequest {
             doPosOk(index);
         } else {
             String url = getUrl(index, mMethod);
-            LogRecorder.addString2File("/sdcard/net_conn.txt", "网络不可用：" + url);
+            LogRecorder.addString2File("/mnt/usb_storage/net_conn.txt", "网络不可用：" + url);
             if (mHttpRequestListener != null) {
                 mHttpRequestListener.onFailed(mMethod, mContext.getString(R.string.network_failure));
             }
@@ -113,7 +114,8 @@ public class HttpRequest {
             doGetOk();
         } else {
             String url = httpGet(mMethod);
-            LogRecorder.addString2File("/sdcard/net_conn.txt", "网络不可用：" + url);
+            if (url == "") return;
+            LogRecorder.addString2File("/mnt/usb_storage/net_conn.txt", "网络不可用：" + url);
             if (mHttpRequestListener != null) {
                 mHttpRequestListener.onFailed(mMethod, mContext.getString(R.string.network_failure));
             }
@@ -136,11 +138,8 @@ public class HttpRequest {
                 builder.append("&").append(key).append("=").append(val);
             }
         }
-
-        String url = ServerConfigData.getInstance().getServerConfig() == null ? builder.toString() : ServerConfigData.getInstance().getServerConfig().getVod_url() + builder.toString();
-//        Log.e("test","mDomainUrl:"+mDomainUrl);
-//        Log.e("test","BnsConfig:"+BnsConfig.DOMAIN_IP);
-        return url;
+        ServerConfig seconf = ServerConfigData.getInstance().getServerConfig();
+        return ((seconf == null) ? builder.toString() :seconf.getVod_url() + builder.toString());
     }
 
     private String httpGet(String urlMethod) {
@@ -159,7 +158,10 @@ public class HttpRequest {
                 i++;
             }
         }
-        String url = ServerConfigData.getInstance().getServerConfig().getStore_web() == null ? builder.toString() : ServerConfigData.getInstance().getServerConfig().getStore_web() + builder.toString();
+        String url = builder.toString();
+        if (ServerConfigData.getInstance().getServerConfig() != null) {
+            url = ServerConfigData.getInstance().getServerConfig().getStore_web() + url;
+        }
         return url;
     }
 
@@ -344,6 +346,7 @@ public class HttpRequest {
         try {
             String url = httpGet(mMethod);
             Logger.i(TAG, "url:" + url);
+            if (url == "") return;
             Request request = new Request.Builder().url(url).build();
 
             if (mHttpRequestListener != null) {

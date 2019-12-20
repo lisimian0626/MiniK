@@ -249,7 +249,7 @@ public class FileUploader {
                         Gson gson = new Gson();
                         BaseUpload baseModel = gson.fromJson(json, BaseUpload.class);
                         if ("0".equalsIgnoreCase(baseModel.error)) {
-                            String fileUrl = baseModel.data.getAsJsonObject().get("share_code").getAsString();
+                            String fileUrl = baseModel.data.getAsJsonObject().get("qrcode").getAsString();
                             Logger.d(TAG, "onResponse fileUrl:" + fileUrl);
                             sendSuccess(fileUrl);
                             return;

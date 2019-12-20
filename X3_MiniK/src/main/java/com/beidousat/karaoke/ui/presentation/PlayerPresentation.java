@@ -25,6 +25,7 @@ import com.beidousat.karaoke.ad.BannerGetter;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.model.Song;
+import com.beidousat.karaoke.model.SongScoreRanking;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.udp.UDPComment;
 import com.beidousat.karaoke.widget.WidgetScore;
@@ -544,10 +545,14 @@ public class PlayerPresentation extends Presentation implements BannerRequestLis
 
     }
 
-    public void showScoreResult(Song song, int score, String beatPercent) {
+    /**
+     * 在电视屏上显得得分以及排名
+     */
+    public void showScoreResult() {
         findViewById(R.id.rl_score_result).setVisibility(View.VISIBLE);
-        mTvResultScore.setText(String.valueOf(score));
-        mTvResultPercent.setText(String.valueOf(beatPercent));
+        mTvResultScore.setText(String.valueOf(SongScoreRanking.getInstance().getSongScore()));
+        mTvResultPercent.setText(SongScoreRanking.getInstance().getScorePercent());
+        Song song = SongScoreRanking.getInstance().getSong();
         mTvResultSong.setText(song.SimpName);
     }
 

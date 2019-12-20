@@ -3,7 +3,7 @@ package com.beidousat.karaoke.biz;
 import android.util.Log;
 
 import com.beidousat.karaoke.data.BoughtMeal;
-import com.beidousat.libbns.model.Common;
+import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.karaoke.data.KBoxInfo;
 import com.beidousat.karaoke.data.PayUserInfo;
 import com.beidousat.karaoke.model.Meal;
@@ -21,7 +21,6 @@ import com.beidousat.libbns.net.request.StoreHttpRequestListener;
 import com.beidousat.libbns.util.DeviceUtil;
 import com.beidousat.libbns.util.HttpParamsUtils;
 import com.beidousat.libbns.util.Logger;
-import com.beidousat.libbns.util.PreferenceUtil;
 
 /**
  * author: Hanson
@@ -33,11 +32,15 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
     SupportQueryOrder mSupporter;
     Meal mMeal;
     String order_sn;
+
     public QueryOrderHelper(SupportQueryOrder supporter) {
         mSupporter = supporter;
     }
 
-    public StoreHttpRequest queryOrder(Meal meal) {
+    /**
+     * 线上支付，查询支付情况
+     * */
+    public void queryOrder(Meal meal) {
         mMeal = meal;
 //        SSLHttpRequest request = new SSLHttpRequest(mSupporter.getSupportedContext(), RequestMethod.QUERY_ORDER);
         StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.ORDER_QUERY);
@@ -48,40 +51,55 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
                 KBoxInfo.getInstance().getKBox().getKBoxSn()
         ));
         request.setConvert2Class(PayStatus.class);
-        return request;
+        request.post();
     }
 
-    public StoreHttpRequest queryUser() {
+    /**
+     * 查询订单支付成功后的用户信息
+     */
+    public void queryUser() {
+        PayStatus payStatus = BoughtMeal.getInstance().getTheLastPaystatus();
+        if (payStatus == null) {
+            User tmp_user = new User();
+            tmp_user.setNickName("未登陆");
+            tmp_user.setAvatar("");
+            PayUserInfo.getInstance().addUser(tmp_user);
+            tmp_user = null;
+            return;
+        }
 //        SSLHttpRequest request = new SSLHttpRequest(mSupporter.getSupportedContext(), RequestMethod.QUERY_USER);
         StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.USER_QUERY);
         request.setStoreHttpRequestListener(this);
-        PayStatus payStatus = BoughtMeal.getInstance().getTheLastPaystatus();
-        Meal meal = BoughtMeal.getInstance().getTheLastMeal();
-        if (payStatus != null && meal != null) {
-            request.addParam(HttpParamsUtils.initQueryUserParams(
-                    payStatus.getPayUserID(),
-                    meal.getOrderSn(),
-                    DeviceUtil.getCupChipID(),
-                    ""
-            ));
-        }
+        request.addParam(HttpParamsUtils.initQueryUserParams(
+                payStatus.getPayUserID(),
+                "",
+                "",
+                ""
+        ));
         request.setConvert2Class(User.class);
-        return request;
+        request.post();
     }
 
-    public StoreHttpRequest cancelOrder(Meal meal) {
+    /**
+     * 点击取消订单
+     *
+     * */
+    public void cancelOrder(Meal meal) {
         StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.ORDER_CANCEL);
         request.setStoreHttpRequestListener(this);
         request.addParam(HttpParamsUtils.initCancelOrderParams(meal.getOrderSn()));
         request.setConvert2Class(User.class);
-        return request;
+        request.post();
     }
 
-    public StoreHttpRequest reportCoinPayFinish(Meal meal) {
+    /**
+     * 线下支付完成，通知服务器
+     * */
+    public void reportCoinPayFinish(Meal meal) {
         StoreHttpRequest request = new StoreHttpRequest(ServerConfigData.getInstance().getServerConfig().getStore_web(), RequestMethod.ORDER_FINISH_PAY);
         request.setStoreHttpRequestListener(this);
         request.addParam(HttpParamsUtils.initCancelOrderParams(meal.getOrderSn()));
-        return request;
+        request.post();
     }
 
     @Override
@@ -100,12 +118,13 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
         switch (method) {
             case RequestMethod.ORDER_QUERY:
                 PayStatus payStatus = (PayStatus) object;
-                Logger.d("pay", "接口返回查询订单结果,payStatus="+payStatus.getPayStatus());
+                Logger.d("pay", "接口返回查询订单结果,payStatus=" + payStatus.getPayStatus());
                 //防止多次触发导致套餐叠加
-                if (order_sn==null&&payStatus.getPayStatus() == PayStatus.PAY_SUCESS) {
-                    order_sn=payStatus.getOrderSn();
+                if (order_sn == null && payStatus.getPayStatus() == PayStatus.PAY_SUCESS) {
+                    order_sn = payStatus.getOrderSn();
                     boolean isMealExpire = BoughtMeal.getInstance().isMealExpire();
-                    if(!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)){
+//                    if(!PreferenceUtil.getBoolean(Main.mMainActivity,"isSingle", false)){
+                    if (!PrefData.getIsSingle(Main.mMainActivity)) {
                         CommonDialog dialog = CommonDialog.getInstance();
                         dialog.setShowClose(true);
                         dialog.setContent(new FmPayResult());
@@ -124,9 +143,7 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
                 break;
             case RequestMethod.USER_QUERY:
                 User user = (User) object;
-                if (!User.isEmpty(user)) {
-                    PayUserInfo.getInstance().addUser(user);
-                }
+                PayUserInfo.getInstance().addUser(user);
                 break;
             case RequestMethod.ORDER_CANCEL:
                 mSupporter.sendRequestMessage(true, method, null);
@@ -158,7 +175,6 @@ public class QueryOrderHelper implements StoreHttpRequestListener {
 
     @Override
     public void onStoreFailed(String method, String error) {
-
         LoadingUtil.closeLoadingDialog();
         mSupporter.sendRequestMessage(false, method, error);
     }

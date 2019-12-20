@@ -32,12 +32,11 @@ import java.util.List;
 
 public class FmSettingSerail extends BaseFragment implements View.OnClickListener, View.OnTouchListener {
 
-    private EditTextEx mEtBaudrate, mEtMicDown, mEtMicUp, mEtReverbDown, mEtReverbUp, mEtReset;
+    private EditTextEx mEtBaudrate, mEtMicDown, mEtMicUp, mEtReverbDown, mEtReverbUp, mEtReset,mEtReverbVol,mEtMicVol;
     private RecyclerView mRvNum, mRvLine1, mRvLine2, mRvLine3;
     private AdapterKeyboard mAdtLine1, mAdtLine2, mAdtLine3, mAdtmRvNum;
     private EditTextEx mEtFocus;
     private int mPreBaudrate;
-
 
     @Nullable
     @Override
@@ -58,6 +57,12 @@ public class FmSettingSerail extends BaseFragment implements View.OnClickListene
         mEtReverbDown = (EditTextEx) mRootView.findViewById(R.id.et_reverb_down);
         mEtReverbDown.setOnTouchListener(this);
 
+
+        mEtReverbVol = (EditTextEx) mRootView.findViewById(R.id.et_reverb_vol);//读取值混响的值
+        mEtReverbVol.setOnTouchListener(this);
+        mEtMicVol = (EditTextEx) mRootView.findViewById(R.id.et_mic_vol);//读取值麦克风的值
+        mEtMicVol.setOnTouchListener(this);
+
         mEtReset = (EditTextEx) mRootView.findViewById(R.id.et_reset);
         mEtReset.setOnTouchListener(this);
 
@@ -65,7 +70,6 @@ public class FmSettingSerail extends BaseFragment implements View.OnClickListene
         mRvLine1 = (RecyclerView) mRootView.findViewById(R.id.rv_keyboard_line1);
         mRvLine2 = (RecyclerView) mRootView.findViewById(R.id.rv_keyboard_line2);
         mRvLine3 = (RecyclerView) mRootView.findViewById(R.id.rv_keyboard_line3);
-
         initKeyboard();
 
         mPreBaudrate = PrefData.getSerilBaudrate(getContext().getApplicationContext());
@@ -138,6 +142,9 @@ public class FmSettingSerail extends BaseFragment implements View.OnClickListene
         mEtReverbUp.setSelected(false);
         mEtReset.setSelected(false);
 
+        mEtReverbVol.setSelected(false);
+        mEtMicVol.setSelected(false);
+
         mEtFocus = (EditTextEx) view;
         mEtFocus.setSelected(true);
         return false;
@@ -183,7 +190,6 @@ public class FmSettingSerail extends BaseFragment implements View.OnClickListene
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
 
                 if (mPreBaudrate != PrefData.getSerilBaudrate(getContext().getApplicationContext())) {
                     PromptDialog promptDialog = new PromptDialog(getActivity());

@@ -1,7 +1,5 @@
 package com.beidousat.libbns.model;
 
-import android.content.Context;
-
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
@@ -13,7 +11,7 @@ import java.io.Serializable;
 public class ServerConfig implements Serializable {
 
     @Expose
-    private String store_web;
+    private String store_web = "";
 
     @Expose
     private String ad_web;

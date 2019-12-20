@@ -10,14 +10,14 @@ import java.io.Serializable;
  */
 
 public class KboxConfig implements Serializable {
-//    @SerializedName("vod_thumbnail_server")
+    //    @SerializedName("vod_thumbnail_server")
 //    private String kbox_ip;
     @SerializedName("ad_server")
     private String ad_web;
     @SerializedName("socket_server")
     private String store_ip_port;
     @SerializedName("vod_server")
-    private String  vod_server;
+    private String vod_server;
     @SerializedName("language")
     private String language;
     @SerializedName("personal_sn")
@@ -28,6 +28,7 @@ public class KboxConfig implements Serializable {
     public int noDisk;
     @SerializedName("download_server")
     public String downloadServer;
+
     public String getLanguage() {
         return language;
     }

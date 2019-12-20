@@ -12,13 +12,27 @@
         android:layout_above="@android:id/button1"
         android:visibility="visible"
         >
+<!-- wrap_content -->
+
+        <TextView
+            android:id="@+id/scan_tips"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:text="扫二维码可领取优惠"
+            android:textColor="@android:color/black"
+            android:visibility="invisible"
+            android:textSize="16dp" />
 
         <com.beidousat.libwidget.image.RecyclerImageView
             android:id="@+id/riv_coupon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
-            android:layout_marginTop="50dp"
+            android:layout_below="@+id/scan_tips"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="110dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/pic_coupon" />
 
         <EditText
