@@ -433,6 +433,7 @@
     <string name="pay_service_succed">成功缴交服务费</string>
     <string name="room_num_success">房间号设置成功！</string>
     <string name="room_num_error">房间号有误</string>
+    <string name="socket_create_error">无法建立授权对像，请重启设备...</string>
     <string name="hand_disk">未连接硬盘或硬盘已损坏！</string>
     <string name="auth_fail">授权终止</string>
     <string name="kbox_reset_psw">重置机顶盒密码完成</string>

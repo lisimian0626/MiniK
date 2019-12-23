@@ -418,6 +418,7 @@
     <string name="Resounding_up">Reverberation+</string>
     <string name="Resounding_down">Reverberation-</string>
     <string name="room_num_error">Service NO. is wrong</string>
+    <string name="socket_create_error">Unable to establish authorized object, please restart the device...</string>
     <string name="hand_disk">Failure to connect the hard disk or hard disk has been damaged.</string>
     <string name="auth_fail">Termination of authorization</string>
     <string name="no_pay_service">Service charge unpaid</string>

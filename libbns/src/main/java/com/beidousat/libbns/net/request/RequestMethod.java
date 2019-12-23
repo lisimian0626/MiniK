@@ -41,7 +41,7 @@ public class RequestMethod {
     /**
      * banner广告
      */
-    public final static String GET_BANNER = "ad/pdetail";   //B1 Banner广告 J1角标广告
+    public final static String GET_BANNER = "ad/pdetail";   //B1 Banner广告 J1角标广告 Z2走马灯（新）
 
     /**
      * 广告计费

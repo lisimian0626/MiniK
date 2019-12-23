@@ -334,9 +334,12 @@ public class Main extends BaseActivity implements View.OnClickListener,
                     }
                     checkDeviceStore();
                     checkUsbKey();
-                    //开启心跳服务
                     startService(new Intent(getApplicationContext(), LanService.class));
-                    UDPSocket.getIntance(getApplicationContext()).startUDPSocket();
+                    //开启心跳授权服务(如果无法开启，提示给用户)
+                    if (!UDPSocket.getIntance(getApplicationContext()).startUDPSocket()) {
+                        ToastUtils.toast(Main.this, getString(R.string.socket_create_error));
+                        return;
+                    }
                     if (TextUtils.isEmpty(PrefData.getRoomCode(Main.this))) {
                         ToastUtils.toast(Main.this, getString(R.string.room_num_error));
                     } else {

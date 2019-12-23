@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceView;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.beidousat.karaoke.model.Song;
 import com.beidousat.karaoke.model.SongScoreRanking;
 import com.beidousat.karaoke.player.ChooseSongs;
 import com.beidousat.karaoke.udp.UDPComment;
+import com.beidousat.karaoke.widget.MarqueePlayer;
 import com.beidousat.karaoke.widget.WidgetScore;
 import com.beidousat.libbns.ad.AdBillHelper;
 import com.beidousat.libbns.ad.AdsRequestListener;
@@ -57,6 +59,9 @@ import de.greenrobot.event.EventBus;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
+ *
+ * 电视屏处理类？
+ *
  * Created by J Wong on 2015/10/9 17:19.
  */
 public class PlayerPresentation extends Presentation implements BannerRequestListener {
@@ -67,7 +72,7 @@ public class PlayerPresentation extends Presentation implements BannerRequestLis
     private SurfaceView surfaceView;
     private TextView mTvCenter;
     private Context mContext;
-    //    private MarqueePlayer mMarqueePlayer;
+    private MarqueePlayer mMarqueePlayer;
     private RecyclerImageView mIvAdCorner;
 
     public TextView mTvPasterTimer;
@@ -185,7 +190,7 @@ public class PlayerPresentation extends Presentation implements BannerRequestLis
         ivImage = (RecyclerImageView) findViewById(R.id.iv_image);
         mIvAdPasue = (RecyclerImageView) findViewById(R.id.iv_ad_pause);
 //        mIvAdLast = (RecyclerImageView) findViewById(R.id.iv_ad_last);
-//        mMarqueePlayer = (MarqueePlayer) findViewById(R.id.ads_marquee);
+        mMarqueePlayer = (MarqueePlayer) findViewById(R.id.ads_marquee);
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
 //        mTvScore = (TextView) findViewById(R.id.tv_score);
 //        mTvScoreMode = (TextView) findViewById(R.id.tv_score_mode);
@@ -207,7 +212,8 @@ public class PlayerPresentation extends Presentation implements BannerRequestLis
         initCountDownTimer();
         EventBus.getDefault().register(this);
 
-//        mMarqueePlayer.loadAds("Z2");
+        //走马灯广告
+        mMarqueePlayer.loadAds("Z2");
         setSize();
 
         initWebView();
@@ -307,18 +313,18 @@ public class PlayerPresentation extends Presentation implements BannerRequestLis
     @Override
     protected void onStop() {
         super.onStop();
-//        mMarqueePlayer.stopPlayer();
+        mMarqueePlayer.stopPlayer();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//        mTvCenter.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mMarqueePlayer.startPlayer();
-//            }
-//        }, 10 * 1000);
+        mTvCenter.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMarqueePlayer.startPlayer();
+            }
+        }, 10 * 1000);
     }
 
 //    public void onCurrentTimeChange(long time) {
@@ -366,6 +372,10 @@ public class PlayerPresentation extends Presentation implements BannerRequestLis
         ivImage.postDelayed(runnableImageDismiss, 10 * 1000);
     }
 
+
+    /**
+     * 显示手机点歌二维码
+     */
     public void showQrCode() {
         if (KBoxInfo.getInstance().getKboxConfig() != null && KBoxInfo.getInstance().getKboxConfig().mobileQrcode == 1 && UDPComment.isSign && !TextUtils.isEmpty(UDPComment.QRcode)) {
             qr_code.setVisibility(View.VISIBLE);
@@ -400,7 +410,7 @@ public class PlayerPresentation extends Presentation implements BannerRequestLis
     };
 
     public void playMarquee(String text, boolean isRepeat) {
-//        mMarqueePlayer.playMsg(text);
+        mMarqueePlayer.playMsg(text);
     }
 
     public void onEventMainThread(BusEvent event) {
@@ -496,6 +506,9 @@ public class PlayerPresentation extends Presentation implements BannerRequestLis
         showScoreView(0);
     }
 
+    /**
+     * J1角标广告？
+     * */
     private void showCorner() {
         mViewAdCorner.setVisibility(View.VISIBLE);
         mViewAdCorner.startAnimation(mAnimCornerIn);

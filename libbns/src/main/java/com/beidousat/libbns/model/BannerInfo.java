@@ -9,10 +9,12 @@ public class BannerInfo {
      * img_url : http://f.imtbox.com/ad/201905252019-05-25/5ce82939f3978.png
      */
 
-    private String action_type;
-    private String action_url;
-    private String media_type;
-    private String img_url;
+    private String action_type;//广告点击类型
+    private String action_url;//点击事件值
+    private String media_type;//广告媒体类型
+    private String img_url;//图片地址
+    private String pcode;//广告位名称
+    private String text;//广告文字内容
 
     public String getAction_type() {
         return action_type;
@@ -44,5 +46,13 @@ public class BannerInfo {
 
     public void setImg_url(String img_url) {
         this.img_url = img_url;
+    }
+
+    public String getPcode() {
+        return pcode;
+    }
+
+    public String getText() {
+        return text;
     }
 }

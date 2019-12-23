@@ -94,6 +94,10 @@ public class QueryKboxHelper implements StoreHttpRequestListener {
         storeHttpRequest.post();
     }
 
+    /**
+     * 读取广告信息（用不上）
+     *
+     * */
     public void getBanner(String position, String sn) {
         StoreHttpRequest storeHttpRequest = new StoreHttpRequest(KBoxInfo.STORE_WEB, RequestMethod.GET_BANNER);
         storeHttpRequest.addParam(HttpParamsUtils.initGetBannerParams(position, sn));

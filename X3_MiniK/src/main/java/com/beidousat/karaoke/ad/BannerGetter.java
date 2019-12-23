@@ -21,10 +21,17 @@ public class BannerGetter implements HttpRequestListener {
     Context mContext;
     BannerRequestListener mBannerRequestListener;
 
-    public BannerGetter(Context mContext, BannerRequestListener mBannerRequestListener) {
+    public BannerGetter(Context mContext, BannerRequestListener mRequestListener) {
         this.mContext = mContext;
-        this.mBannerRequestListener = mBannerRequestListener;
+        this.mBannerRequestListener = mRequestListener;
     }
+
+    HttpRequest initRequest(String method) {
+        HttpRequest request = new HttpRequest(mContext.getApplicationContext(), method);
+        request.setHttpRequestListener(this);
+        return request;
+    }
+
 
     public void getBanner(String position, String sn) {
         HttpRequest r = initRequest(RequestMethod.GET_BANNER);
@@ -43,11 +50,7 @@ public class BannerGetter implements HttpRequestListener {
 //        request.setConvert2Class(BannerInfo.class);
 //        request.get();
 //    }
-    HttpRequest initRequest(String method) {
-        HttpRequest request = new HttpRequest(mContext.getApplicationContext(), method);
-        request.setHttpRequestListener(this);
-        return request;
-    }
+
     @Override
     public void onStart(String method) {
 

@@ -39,7 +39,7 @@ public class UDPSocket {
 
     private static final String BROADCAST_IP = "39.108.224.58";//服务器地址
 
-    public static final int LOCAL_PORT = 18811;//本地端口
+    public static int LOCAL_PORT = 10811;//本地端口
     public static final int SERVER_PORT = 8960;//远程端口
     private boolean isThreadRunning = false;
 
@@ -77,21 +77,34 @@ public class UDPSocket {
     }
 
 
-    public void startUDPSocket() {
-        if (client != null) return;
-        try {
-            // 表明这个 Socket 在设置的端口上监听数据。
-            client = new DatagramSocket(LOCAL_PORT);
-
-            if (receivePacket == null) {
-                // 创建接受数据的 packet
-                receivePacket = new DatagramPacket(receiveByte, BUFFER_LENGTH);
+    /**
+     * 建立udp监听
+     * 并且返回是否监听成功
+     */
+    public boolean startUDPSocket() {
+        if (client != null) return true;
+        boolean ConnectSuccess = false;
+        int use_port, max = 300, min = 10,icount = 0;
+        while (true) {
+            use_port = ((int) (Math.random() * (max - min) + min)) + LOCAL_PORT;
+            try {
+                // 表明这个 Socket 在设置的端口上监听数据。
+                client = new DatagramSocket(use_port);
+                if (receivePacket == null) {
+                    // 创建接受数据的 packet
+                    receivePacket = new DatagramPacket(receiveByte, BUFFER_LENGTH);
+                }
+                startSocketThread();
+                ConnectSuccess = true;
+                break;
+            } catch (SocketException e) {
+                e.printStackTrace();
+                icount++;
+                if (icount >= 5) break;
             }
-
-            startSocketThread();
-        } catch (SocketException e) {
-            e.printStackTrace();
         }
+        Log.d(TAG, "use udp LOCAL_PORT:" + String.valueOf(use_port));
+        return ConnectSuccess;
     }
 
     /**

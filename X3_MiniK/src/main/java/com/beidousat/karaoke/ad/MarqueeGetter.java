@@ -1,14 +1,13 @@
 package com.beidousat.karaoke.ad;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.beidousat.karaoke.data.PrefData;
 import com.beidousat.libbns.model.Ad;
+import com.beidousat.libbns.model.BannerInfo;
 import com.beidousat.libbns.net.request.HttpRequest;
 import com.beidousat.libbns.net.request.HttpRequestListener;
 import com.beidousat.libbns.net.request.RequestMethod;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ import java.util.List;
 public class MarqueeGetter implements HttpRequestListener {
 
     public interface AdMarqueeRequestListener {
-        void onAdMarqueeRequest(List<Ad> ads);
+        void onAdMarqueeRequestSuccess(BannerInfo bannerInfo);
 
         void onAdMarqueeRequestFail();
     }
@@ -37,27 +36,28 @@ public class MarqueeGetter implements HttpRequestListener {
         return request;
     }
 
-    public void getMarquee(String position, String songId, String area) {
-        HttpRequest r = initRequest(RequestMethod.GET_MARQUEE);
-        r.addParam("RoomCode", PrefData.getRoomCode(mContext));
-        r.addParam("ADPosition", position);
-        if (!TextUtils.isEmpty(songId))
-            r.addParam("SongID", songId);
-        if (!TextUtils.isEmpty(area))
-            r.addParam("region", area);
-        r.setConvert2Token(new TypeToken<List<Ad>>() {
-        });
-        r.doPost(0);
-    }
+    /**
+     * 查询走马灯广告
+     */
+//    public void getMarquee(String position, String songId, String area) {
+//        HttpRequest r = initRequest(RequestMethod.GET_MARQUEE);
+//        r.addParam("RoomCode", PrefData.getRoomCode(mContext));
+//        r.addParam("ADPosition", position);
+//        if (!TextUtils.isEmpty(songId))
+//            r.addParam("SongID", songId);
+//        if (!TextUtils.isEmpty(area))
+//            r.addParam("region", area);
+//        r.setConvert2Token(new TypeToken<List<Ad>>() {
+//        });
+//        r.doPost(0);
+//    }
 
-
-    private void getMarquee(String position) {
-        HttpRequest r = initRequest(RequestMethod.GET_MARQUEE);
-        r.addParam("RoomCode", PrefData.getRoomCode(mContext));
-        r.addParam("ADPosition", position);
-        r.setConvert2Token(new TypeToken<List<Ad>>() {
-        });
-        r.doPost(0);
+    public void getMarquee(String position, String sn) {
+        HttpRequest r = initRequest(RequestMethod.GET_BANNER);
+        r.addParam("device_sn", sn);
+        r.addParam("pcode", position);
+        r.setConvert2Class(BannerInfo.class);
+        r.doGet();
     }
 
     @Override
@@ -74,10 +74,10 @@ public class MarqueeGetter implements HttpRequestListener {
 
     @Override
     public void onSuccess(String method, Object object) {
-        if (RequestMethod.GET_MARQUEE.equals(method)) {
-            List<Ad> ads = (List<Ad>) object;
-            if (ads != null)
-                mAdMarqueeRequestListener.onAdMarqueeRequest(ads);
+        if (RequestMethod.GET_BANNER.equals(method)) {
+            BannerInfo bannerInfo = (BannerInfo) object;
+            if (bannerInfo != null)
+                mAdMarqueeRequestListener.onAdMarqueeRequestSuccess(bannerInfo);
         }
     }
 }

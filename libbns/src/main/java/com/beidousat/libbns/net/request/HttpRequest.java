@@ -97,6 +97,9 @@ public class HttpRequest {
         mDomainUrl = domainUrl;
     }
 
+    /**
+     * 发送post请求(vod格式)
+     */
     public void doPost(int index) {
         if (NetWorkUtils.isNetworkAvailable(mContext)) {
             doPosOk(index);
@@ -109,6 +112,9 @@ public class HttpRequest {
         }
     }
 
+    /**
+     * get mink格式请求
+     * */
     public void doGet() {
         if (NetWorkUtils.isNetworkAvailable(mContext)) {
             doGetOk();
@@ -122,10 +128,13 @@ public class HttpRequest {
         }
     }
 
+    /**
+     * 建立vod服务器请求字符串
+     */
     private String getUrl(int index, String urlMethod) {
         StringBuilder builder = new StringBuilder();
 
-        setRequestModel(builder);
+        setRequestModel(builder);//自动加上index参数
         builder.append("&").append("a=").append(urlMethod);
         if (index > 0)
             builder.append("&").append("page=").append(index);
@@ -139,9 +148,12 @@ public class HttpRequest {
             }
         }
         ServerConfig seconf = ServerConfigData.getInstance().getServerConfig();
-        return ((seconf == null) ? builder.toString() :seconf.getVod_url() + builder.toString());
+        return ((seconf == null) ? builder.toString() : seconf.getVod_url() + builder.toString());
     }
 
+    /**
+     * 格式化get参数
+     */
     private String httpGet(String urlMethod) {
         StringBuilder builder = new StringBuilder();
         builder.append(urlMethod).append("?");
@@ -165,6 +177,9 @@ public class HttpRequest {
         return url;
     }
 
+    /**
+     * 处理vod格式数据，自动在url上加上参数
+     */
     public void setRequestModel(StringBuilder builder) {
         builder.append("m=index");
     }
@@ -193,6 +208,9 @@ public class HttpRequest {
         }
     }
 
+    /**
+     * 处理store标准响应的数据
+     */
     private void doResolveStore(String response) {
         if (response != null) {
             Logger.d(TAG, mMethod + " : " + response);
@@ -219,6 +237,9 @@ public class HttpRequest {
         }
     }
 
+    /**
+     *
+     */
     private BaseModel convert2BaseModel(String response) {
         BaseModel baseModel = null;
         try {
@@ -231,6 +252,9 @@ public class HttpRequest {
     }
 
 
+    /**
+     *
+     */
     private StoreBaseModel convert2StoreBaseModel(String response) {
         StoreBaseModel baseModel = null;
         try {
@@ -242,6 +266,10 @@ public class HttpRequest {
         return baseModel;
     }
 
+
+    /**
+     *
+     */
     private Object convert2Object(Object object) {
         Object obj = null;
         if (object != null) {
@@ -255,6 +283,10 @@ public class HttpRequest {
         return obj;
     }
 
+
+    /**
+     *
+     */
     private Object convert2Token(Object object) {
         Object obj = null;
         try {
@@ -267,6 +299,9 @@ public class HttpRequest {
         return obj;
     }
 
+    /**
+     * 处理消息
+     */
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -286,6 +321,9 @@ public class HttpRequest {
     };
 
 
+    /**
+     * 发送数据错误，转消息处理
+     */
     private void sendFailMessage(String msg) {
         Message message = new Message();
         message.what = 1;
@@ -294,6 +332,9 @@ public class HttpRequest {
     }
 
 
+    /**
+     * 发送请求成功，转消息处理
+     */
     private void sendSuccessMessage(Object obj) {
         Message message = new Message();
         message.what = 2;
@@ -301,6 +342,9 @@ public class HttpRequest {
         mHandler.sendMessage(message);
     }
 
+    /**
+     * post 数据成功，处理数据
+     */
     private void doPosOk(int index) {
         try {
             String url = getUrl(index, mMethod);
@@ -342,6 +386,9 @@ public class HttpRequest {
     }
 
 
+    /**
+     * 发送get 请求
+     */
     private void doGetOk() {
         try {
             String url = httpGet(mMethod);
@@ -383,6 +430,9 @@ public class HttpRequest {
         }
     }
 
+    /**
+     * 处理请求错误，返回错误原因
+     */
     private String parseErrorMsg(Exception e) {
         String error = mContext.getResources().getString(R.string.network_failure);
         if (e instanceof SocketTimeoutException) {
