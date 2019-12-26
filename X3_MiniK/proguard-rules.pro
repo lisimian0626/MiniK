@@ -112,10 +112,11 @@
  -keep class com.beidousat.karaoke.widget.** { *; }
  -keep class com.beidousat.libwidget.** { *; }
 
--dontwarn com.squareup.okhttp.**
-
+-dontwarn com.squareup.okhttp3.**
+-keep class com.squareup.okhttp3.** { *;}
+-dontwarn okhttp3.**
 -dontwarn okio.**
-
+-dontwarn java.util.**
 -keep public class com.wwengine.hw.WWHandWrite {
     *;
 }
