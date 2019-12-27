@@ -65,17 +65,14 @@ android {
             signingConfig signingConfigs.relealse
         }
     }
-//    applicationVariants.all { variant ->
-//        variant.outputs.each { output ->
-//            def outputFile = output.outputFile
-//            if (outputFile != null && outputFile.name.endsWith('apk')) {
-//                // 输出apk名称为test_v1.0_2016-08-15_wandoujia.apk
-//                def fileName = "YNH_MiniK_${defaultConfig.versionName}__${defaultConfig.versionCode}_${releaseTime()}.apk"
-//                output.outputFile = new File(outputFile.parent, fileName)
-//            }
-//        }
-//    }
-    lintOptions {
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def fileName = "MiniK_${defaultConfig.versionName}_${defaultConfig.versionCode}_${releaseTime()}.apk"
+            outputFileName = fileName
+        }
+    }
+        lintOptions {
         checkReleaseBuilds false
         abortOnError false
     }
