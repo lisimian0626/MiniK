@@ -2,7 +2,6 @@ package com.beidousat.karaoke.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -57,16 +56,11 @@ public class AdtTopType extends RecyclerView.Adapter<AdtTopType.ViewHolder> {
         int resId = mData[position];
         holder.imageView.setImageResource(resId);
         holder.imageView.setSelected(position == mFocusTab);
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int preF = mFocusTab;
-                mFocusTab = position;
-                notifyItemChanged(position);
-                notifyItemChanged(preF);
-                if (mOnTopTypeSelectListener != null)
-                    mOnTopTypeSelectListener.onTopSelect(position);
-            }
+        holder.imageView.setOnClickListener(v -> {
+            mFocusTab = position;
+            notifyDataSetChanged();
+            if (mOnTopTypeSelectListener != null)
+                mOnTopTypeSelectListener.onTopSelect(position);
         });
     }
 
